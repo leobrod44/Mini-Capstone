@@ -1,0 +1,20 @@
+
+.editProfile,
+.changePassword,
+.saveChanges,
+.cancelButton {
+  background-color: #4540db !important;
+  color: white !important;
+  width: 250px !important;
+}
+
+.editProfile:hover,
+.changePassword:hover,
+.saveChanges:hover,
+.cancelButton:hover {
+  background-color: #382fb8 !important;
+}
+
+.cancelButton {
+  width: 100% !important;
+}
