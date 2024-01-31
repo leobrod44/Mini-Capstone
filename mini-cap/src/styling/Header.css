@@ -1,0 +1,49 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #dcdcf0;
+    color: white; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); 
+}
+  
+  .hamburger-menu {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+.header-button {
+    background-color:#4540db;/* Green color */
+    color: white; /* White text color */
+    border: none;
+    width: 6rem;
+    height:2rem;
+    margin-right: 2rem; /* Add some spacing to separate the button from the logo */
+    border-radius: 5px;
+    padding: 0.375rem 0.75rem;
+    box-shadow: var(--shadow-2);
+    transition: var(--transition);
+    display: inline-block;
+  }
+  
+  .header-button:hover {
+    background: #7975d6;
+    box-shadow: var(--shadow-3);
+  }
+
+  
+.button-text {
+    margin-right: 8px; 
+    color: white; /* White text color */
+    font-size: 15px; 
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+  }
+  
