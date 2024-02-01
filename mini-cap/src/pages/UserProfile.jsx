@@ -192,8 +192,7 @@ useEffect(()=>{
             <div className="row gutters-sm">
               <div className="col-md-4 mb-3">
 
-              {(role !== "mgmt") && 
-              (
+            
                 <div className="card">
                   <div className="card-body">
                     <div className="d-flex flex-column align-items-center text-center">
@@ -221,10 +220,7 @@ useEffect(()=>{
                     </div>
                   </div>
                 </div>
-              )}
-
-            {(role !== "mgmt") && 
-              (               
+               
                 <form onSubmit={handleSubmitPhoto}>
                   <label className="form-label mt-3" htmlFor="customFile">
                     Choose an image:
@@ -246,7 +242,7 @@ useEffect(()=>{
                     </div>
                   </div>
                 </form>
-                  )}
+                 
              {(role === "mgmt") && 
               ( 
              <div className="card mt-3">
