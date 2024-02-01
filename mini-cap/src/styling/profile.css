@@ -18,3 +18,7 @@
 .cancelButton {
   width: 100% !important;
 }
+
+.footerwrapper{
+  background-color: rgb(248,249,250);
+}
