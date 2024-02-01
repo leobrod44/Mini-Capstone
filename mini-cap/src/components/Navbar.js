@@ -5,6 +5,7 @@ import tempProfilePic from "../assets/user.png";
 import { useNavigate } from "react-router-dom";
 import logoutt from "../assets/log-out.png";
 
+import { FaCalendarAlt } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineHome } from "react-icons/ai"
 import { CiLogout } from "react-icons/ci"
@@ -12,6 +13,8 @@ import { CgProfile } from "react-icons/cg"
 import { MdWorkOutline } from "react-icons/md"
 import { IoCreateOutline } from "react-icons/io5";
 import {IoIosBusiness} from "react-icons/io";
+import { LiaHandsHelpingSolid } from "react-icons/lia";
+import { FaBriefcase } from "react-icons/fa";
 
 const Navbar = () => {
 
@@ -37,7 +40,10 @@ const Navbar = () => {
 
 
   React.useEffect(() => {
-    const user = { role: "condoOwner" }; // or "renter"
+    //roles, condoOwner, renter , or mgmt
+    //const user = { role: "condoOwner" }; 
+   //const user = { role: "renter" }; 
+   const user = { role: "mgmt" }; 
     setRole(user.role);
 
 
@@ -67,14 +73,14 @@ const Navbar = () => {
       <div ref={menuRef}>
           <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu} >
             {/* insert users profile pic here
-            if there is no profile pic, we should default to using the hamburger menu*/}
+            if there is no profile pic, we should default to using the hamburger menu */}
            <img src={tempProfilePic} alt="User profile picture"></img>
           </div>
 
           <div className={`${NavbarCSS.myDropdownMenu} ${open ? NavbarCSS.active : NavbarCSS.inactive}`}>
             <h3 className={NavbarCSS.h3}>
               {/*Insert userss first name here for personalization*/}
-               Hello 'first name' <br />
+               Hello 'mgmt company' <br />
             </h3>
             <ul className={NavbarCSS.ul}>
 
@@ -82,7 +88,9 @@ const Navbar = () => {
                 address={"/user-profile"}
                 icon={<CgProfile />}
                 text={"My Profile"}
-              />            
+              />     
+
+           
             {role === 'condoOwner' && 
                 (<DropdownItem
                 address={"/dashboard"}
@@ -90,6 +98,15 @@ const Navbar = () => {
                 text={"My properties"}
               />)
             }
+            
+            {role === 'condoOwner' && 
+                (<DropdownItem
+                address={"/requests"}
+                icon={<LiaHandsHelpingSolid />}
+                text={"My Requests"}
+              />)
+            }
+
 
 
             {role === 'renter' && 
@@ -99,6 +116,35 @@ const Navbar = () => {
                 text={"My property"}
               />)
             }
+
+            {role=== 'mgmt' && 
+            (<DropdownItem
+              address={"/propertyprofile"}
+              icon={<IoIosBusiness />}
+              text={"Create a profile"}
+            />)
+            }
+
+          {role=== 'mgmt' && 
+            (<DropdownItem
+              address={"/myemployees"}
+              icon={<FaBriefcase />}
+              text={"My employees"}
+            />)
+            }
+            
+            {role=== 'mgmt' && 
+            (<DropdownItem
+              address={"/myrequests"}
+              icon={<LiaHandsHelpingSolid />}
+              text={"My requests"}
+            />)
+            }
+             <DropdownItem
+              address={"/reservations"}
+              icon={<FaCalendarAlt />}
+              text={"Reservations"}
+            />
 
            
               <LogoutBtn img={logoutt} />
