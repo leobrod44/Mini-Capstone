@@ -2,16 +2,7 @@
     user-select: none;
     font-family: Arial, Helvetica, sans-serif;
   }
-  .myLogo {
-    display: block;
-    flex-direction: row;
-    margin: 0.5rem;
-    margin-right: 0;
-    margin-left: 0;
-    align-items: left;
-    justify-content: left;
-  }
-  
+
   .ul {
     list-style: none;
     padding: 0px !important;
@@ -53,7 +44,7 @@
   }
   
   .myBurger {
-    
+    display:none;
     flex-direction: row;
     justify-content: flex-start;
     align-items: left;

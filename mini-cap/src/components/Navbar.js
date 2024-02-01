@@ -1,7 +1,7 @@
 import NavbarCSS from '../styling/Navbar.module.css'
 import React, { useState, useEffect, useRef } from "react";
 //import { useDispatch, useSelector } from "react-redux";
-
+import tempProfilePic from "../assets/user.png";
 import { useNavigate } from "react-router-dom";
 import logoutt from "../assets/log-out.png";
 
@@ -11,7 +11,7 @@ import { CiLogout } from "react-icons/ci"
 import { CgProfile } from "react-icons/cg"
 import { MdWorkOutline } from "react-icons/md"
 import { IoCreateOutline } from "react-icons/io5";
-
+import {IoIosBusiness} from "react-icons/io";
 
 const Navbar = () => {
 
@@ -19,7 +19,7 @@ const Navbar = () => {
   //to display Hello user! message , grab the name and their profile pic
  // const firstName = useSelector(selectName);
  // const photo = useSelector(selectPhoto);
-
+ const [role, setRole] = useState(""); // <-- State to store user role
   const [open, setOpen] = useState(false);
   let menuRef = useRef();
 
@@ -37,6 +37,10 @@ const Navbar = () => {
 
 
   React.useEffect(() => {
+    const user = { role: "condoOwner" }; // or "renter"
+    setRole(user.role);
+
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -61,9 +65,10 @@ const Navbar = () => {
         />
 
       <div ref={menuRef}>
-          <div className={NavbarCSS.myMenuTrigger} >
-            {/* insert users profile pic here*/}
-           {/* <img src={photo} alt=""></img>*/}
+          <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu} >
+            {/* insert users profile pic here
+            if there is no profile pic, we should default to using the hamburger menu*/}
+           <img src={tempProfilePic} alt="User profile picture"></img>
           </div>
 
           <div className={`${NavbarCSS.myDropdownMenu} ${open ? NavbarCSS.active : NavbarCSS.inactive}`}>
@@ -78,33 +83,24 @@ const Navbar = () => {
                 icon={<CgProfile />}
                 text={"My Profile"}
               />            
-  {/*       {role === 'applicant' && 
+            {role === 'condoOwner' && 
                 (<DropdownItem
                 address={"/dashboard"}
-                icon={<AiOutlineHome />}
-                text={"Dashboard"}
+                icon={<IoIosBusiness />}
+                text={"My properties"}
               />)
             }
 
 
-            {role === 'recruiter' && 
+            {role === 'renter' && 
               (<DropdownItem
-                address={"/job/create-job"}
-                icon={<IoCreateOutline />}
-                text={"Create A Job"}
+                address={"/myproperty"}
+                icon={<AiOutlineHome />}
+                text={"My property"}
               />)
             }
 
-              {role === "recruiter" && 
-              (
-                <DropdownItem address={"/job/my-jobs"} text={"My Jobs"} icon={<MdWorkOutline />} />
-              )
-            }
-              {role === "applicant" && 
-              (
-                <DropdownItem address={'/applications/my-applications'} text={"My applications"} icon={<MdWorkOutline />} />
-              )
-              } */}
+           
               <LogoutBtn img={logoutt} />
             </ul>
           </div>
