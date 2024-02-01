@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import the 
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import Logo from '../components/Logo';
+import Navbar from './Navbar';
 
 
 const Header = () => {
@@ -13,7 +14,7 @@ const Header = () => {
         <Logo/>
       </div>
       <div className="header-right">
-        
+        <Navbar/>
       </div>
     </header>
   );
