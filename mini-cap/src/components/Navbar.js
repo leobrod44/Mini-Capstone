@@ -41,7 +41,7 @@ const Navbar = () => {
     //roles, condoOwner, renter , or mgmt
     const user = { role: "condoOwner" }; 
    //const user = { role: "renter" }; 
-  // const user = { role: "mgmt" }; 
+   //const user = { role: "mgmt" }; 
     setRole(user.role);
 
 
@@ -62,24 +62,33 @@ const Navbar = () => {
   return (
     <>
       <nav className={NavbarCSS.myNavbar}>
+      {(role === "mgmt") && (
         <GiHamburgerMenu 
         size={24} 
         className={`${NavbarCSS.myBurger} ${NavbarCSS.myCursorPointer}`} 
         onClick={toggleMenu}
         />
-
+      )}
       <div ref={menuRef}>
           <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu} >
-            {/* insert users profile pic here
-            if there is no profile pic, we should default to using the hamburger menu */}
-           <img src={tempProfilePic} alt="User profile picture"></img>
+              {/* if there is no profile pic, we should default to using the hamburger menu */}
+              {role !== "mgmt" && (
+               <img src={tempProfilePic} alt="User profile picture" />
+               )}
           </div>
 
           <div className={`${NavbarCSS.myDropdownMenu} ${open ? NavbarCSS.active : NavbarCSS.inactive}`}>
-            <h3 className={NavbarCSS.h3}>
-              {/*Insert userss first name here for personalization*/}
-               Hello 'condo owner' <br />
-            </h3>
+          {role === "mgmt" && (
+              <h3 className={NavbarCSS.h3}>
+                Hello company!  <br /> </h3>
+               )}
+            
+            {role !== "mgmt" && (
+              <h3 className={NavbarCSS.h3}>
+                Hello first name!  <br /> </h3>
+               )}
+            
+            
             <ul className={NavbarCSS.ul}>
 
               <DropdownItem
