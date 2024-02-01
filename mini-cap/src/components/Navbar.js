@@ -93,7 +93,7 @@ const Navbar = () => {
                 (<DropdownItem
                 address={"/dashboard"}
                 icon={<IoIosBusiness />}
-                text={"My properties"}
+                text={"Dashboard"}
               />)
             }
             
@@ -111,7 +111,7 @@ const Navbar = () => {
               (<DropdownItem
                 address={"/myproperty"}
                 icon={<AiOutlineHome />}
-                text={"My property"}
+                text={"My rental"}
               />)
             }
 
