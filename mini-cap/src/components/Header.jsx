@@ -5,7 +5,7 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import Logo from '../components/Logo';
 import Navbar from './Navbar';
-
+import  Notification from '../components/Notification';
 
 const Header = () => {
   return (
@@ -14,7 +14,12 @@ const Header = () => {
         <Logo/>
       </div>
       <div className="header-right">
+        <div className='notification-wrapper'>
+        <Notification/>
+        </div>
+    <div>
         <Navbar/>
+        </div>
       </div>
     </header>
   );

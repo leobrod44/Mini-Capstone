@@ -10,8 +10,6 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineHome } from "react-icons/ai"
 import { CiLogout } from "react-icons/ci"
 import { CgProfile } from "react-icons/cg"
-import { MdWorkOutline } from "react-icons/md"
-import { IoCreateOutline } from "react-icons/io5";
 import {IoIosBusiness} from "react-icons/io";
 import { LiaHandsHelpingSolid } from "react-icons/lia";
 import { FaBriefcase } from "react-icons/fa";
