@@ -1,9 +1,7 @@
 import NavbarCSS from '../styling/Navbar.module.css'
 import React, { useState, useEffect, useRef } from "react";
 //import { useDispatch, useSelector } from "react-redux";
-import Logo from './Logo';
 
-import SmallLogo from './SmallLogo';
 import { useNavigate } from "react-router-dom";
 import logoutt from "../assets/log-out.png";
 
@@ -18,57 +16,60 @@ import { IoCreateOutline } from "react-icons/io5";
 const Navbar = () => {
 
   const navigate = useNavigate();
-
   //to display Hello user! message , grab the name and their profile pic
  // const firstName = useSelector(selectName);
  // const photo = useSelector(selectPhoto);
-  const [open, setOpen] = useState(true);
 
+  const [open, setOpen] = useState(false);
   let menuRef = useRef();
 
-  useEffect(() => {
-    let handler = (e) => {
-      if (!menuRef.current.contains(e.target)) {
-        setOpen(false);
-      }
-    };
+  const toggleMenu = () => {
+    setOpen((prevOpen)=> !prevOpen);
+  };
 
-    document.addEventListener("mousedown", handler);
+  const handleClickOutside = (e) => {
+    const isHamburgerMenuClicked = e.target.closest(`.${NavbarCSS.myBurger}`);
+    
+    if (!isHamburgerMenuClicked && menuRef.current && !menuRef.current.contains(e.target)) {
+      setOpen(false);
+    }
+  };
 
+
+  React.useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handler);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  });
+  }, []);
+
   const logout = async (e) => {
     e.preventDefault();
     //if user clicks logout then send them to the login page
-    //logout user function here
-
+    //insert logout user function here
     navigate("/login");
-
   };
+
+  
   return (
     <>
       <nav className={NavbarCSS.myNavbar}>
-      <SmallLogo className={NavbarCSS.myLogo} />
+        <GiHamburgerMenu 
+        size={24} 
+        className={`${NavbarCSS.myBurger} ${NavbarCSS.myCursorPointer}`} 
+        onClick={toggleMenu}
+        />
 
-        <GiHamburgerMenu size={24} className={`${NavbarCSS.myBurger} ${NavbarCSS.myCursorPointer}`} />
-
-        <div ref={menuRef}>
-          <div
-            className={NavbarCSS.myMenuTrigger}
-            onClick={() => {
-              setOpen(!open);
-            }}
-          >
-
+      <div ref={menuRef}>
+          <div className={NavbarCSS.myMenuTrigger} >
             {/* insert users profile pic here*/}
            {/* <img src={photo} alt=""></img>*/}
           </div>
 
           <div className={`${NavbarCSS.myDropdownMenu} ${open ? NavbarCSS.active : NavbarCSS.inactive}`}>
             <h3 className={NavbarCSS.h3}>
-             {/* Hello {firstName}! <br />*/}
+              {/*Insert userss first name here for personalization*/}
+               Hello 'first name' <br />
             </h3>
             <ul className={NavbarCSS.ul}>
 
@@ -76,28 +77,34 @@ const Navbar = () => {
                 address={"/user-profile"}
                 icon={<CgProfile />}
                 text={"My Profile"}
-              />
-
-            
-  {/*             {role === 'applicant' && (<DropdownItem
+              />            
+  {/*       {role === 'applicant' && 
+                (<DropdownItem
                 address={"/dashboard"}
                 icon={<AiOutlineHome />}
                 text={"Dashboard"}
-              />)}
+              />)
+            }
 
 
-              {role === 'recruiter' && (<DropdownItem
+            {role === 'recruiter' && 
+              (<DropdownItem
                 address={"/job/create-job"}
                 icon={<IoCreateOutline />}
                 text={"Create A Job"}
-              />)}
+              />)
+            }
 
-              {role === "recruiter" && (
+              {role === "recruiter" && 
+              (
                 <DropdownItem address={"/job/my-jobs"} text={"My Jobs"} icon={<MdWorkOutline />} />
-              )}
-              {role === "applicant" && (
+              )
+            }
+              {role === "applicant" && 
+              (
                 <DropdownItem address={'/applications/my-applications'} text={"My applications"} icon={<MdWorkOutline />} />
-              )} */}
+              )
+              } */}
               <LogoutBtn img={logoutt} />
             </ul>
           </div>

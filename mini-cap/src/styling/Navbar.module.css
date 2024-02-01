@@ -53,7 +53,7 @@
   }
   
   .myBurger {
-    display: none;
+    
     flex-direction: row;
     justify-content: flex-start;
     align-items: left;
