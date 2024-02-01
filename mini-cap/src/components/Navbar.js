@@ -41,9 +41,9 @@ const Navbar = () => {
 
   React.useEffect(() => {
     //roles, condoOwner, renter , or mgmt
-    //const user = { role: "condoOwner" }; 
+    const user = { role: "condoOwner" }; 
    //const user = { role: "renter" }; 
-   const user = { role: "mgmt" }; 
+  // const user = { role: "mgmt" }; 
     setRole(user.role);
 
 
@@ -80,7 +80,7 @@ const Navbar = () => {
           <div className={`${NavbarCSS.myDropdownMenu} ${open ? NavbarCSS.active : NavbarCSS.inactive}`}>
             <h3 className={NavbarCSS.h3}>
               {/*Insert userss first name here for personalization*/}
-               Hello 'mgmt company' <br />
+               Hello 'condo owner' <br />
             </h3>
             <ul className={NavbarCSS.ul}>
 
