@@ -1,5 +1,6 @@
 import "../styling/profile.css"
 import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import React, { useState, useEffect } from "react";
 import DeleteModal from "../components/DeleteModal";
 import { Link, useNavigate } from "react-router-dom";
@@ -26,7 +27,6 @@ const UserProfile =() => {
   const [role, setRole] = useState(null);
 
 
-  
   //edit button
   const handleEditClick = () => {
     setIsEditMode(true);
@@ -37,10 +37,12 @@ const UserProfile =() => {
     ev.preventDefault();
     if (!firstName || !lastName)
       return toast.error("Please make sure all required fields aren't empty");
-
+   
 
     if (phoneNumber && !/^\d{10}$/.test(phoneNumber))
       return toast.error("Please make sure the phone number format is correct");
+
+
     const formData = {
       firstName,
       lastName,
@@ -138,7 +140,7 @@ const UserProfile =() => {
       return toast.error("Please make sure all password fields are filled out");
 
     if (newPassword !== confirmPassword)
-      return toast.error("New password do not match");
+      return toast.error("New passwords do not match");
 
     if (newPassword.length < 8)
       return toast.error("Password must be at least 8 characters");
