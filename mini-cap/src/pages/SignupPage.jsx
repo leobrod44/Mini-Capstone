@@ -179,7 +179,7 @@ const SignupPage = () => {
               onChange={handleChange}
             />
           </div>
-          <button type="submit">Signup</button>
+          <button className="signupbtn" type="submit">Signup</button>
         </form>
         <ToastContainer position="top-right" autoClose={3000} />
       </div>

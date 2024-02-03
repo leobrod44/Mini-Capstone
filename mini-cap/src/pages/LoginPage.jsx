@@ -65,7 +65,7 @@ const LoginPage = () => {
               onChange={handleChange}
             />
           </div>
-          <button type="submit">Login</button>
+          <button className="loginbtn"type="submit">Login</button>
           <a href="#" className="forgot-password-link">
             Forgot Password?
           </a>

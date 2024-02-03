@@ -44,7 +44,7 @@ input {
 }
 
 /* Button styles */
-button {
+.loginbtn {
   font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
   background-color: #c7c7e2; /* A bit darker lilac color when idle */
   color: #3531a1; /* Use a matching text color */
@@ -56,7 +56,7 @@ button {
   transition: background-color 0.3s;
 }
 
-button:hover {
+.loginbtn:hover {
   background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
   color: #ffffff; /* Change text color on hover to white or a contrasting color */
 }
