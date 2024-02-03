@@ -43,17 +43,20 @@ input {
   font-size: 16px;
 }
 
-/* Button styles */
+/* Button styles with lilac theme */
 button {
-  font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
-  background-color: #c7c7e2; /* A bit darker lilac color when idle */
-  color: #3531a1; /* Use a matching text color */
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  font-size: 18px;
+  background-color: #4540db;
+  width: 1;
   cursor: pointer;
-  transition: background-color 0.3s;
+  color: var(--white);
+  border: transparent;
+  border-radius: var(--borderRadius);
+  letter-spacing: var(--letterSpacing);
+  padding: 0.375rem 0.75rem;
+  box-shadow: var(--shadow-2);
+  transition: var(--transition);
+  text-transform: capitalize;
+  display: inline-block;
 }
 
 button:hover {

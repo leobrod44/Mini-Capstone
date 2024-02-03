@@ -65,7 +65,10 @@ const LoginPage = () => {
               onChange={handleChange}
             />
           </div>
-          <button type="submit">Login</button>
+          <button type="submit"  style={{marginBottom:"20px", marginTop:"20px", width:"100%"}}>
+            Login
+          </button>
+
           <a href="#" className="forgot-password-link" style={{color:"#3531a1"}}>
             Forgot Password?
           </a>
