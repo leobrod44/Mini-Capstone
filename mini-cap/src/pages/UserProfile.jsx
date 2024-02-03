@@ -6,13 +6,14 @@ import DeleteModal from "../components/DeleteModal";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import user from "../assets/user.png"; 
 
 const UserProfile =() => {
 
   const navigate = useNavigate();
 
   const [isEditMode, setIsEditMode] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(user);
   const [file, setFile] = useState(null);
   const [profilePicUrl, setProfilePicUrl] = useState(null);
   const [show, setShow] = useState(false);

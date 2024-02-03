@@ -4,9 +4,11 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styling/SignupPage.css"; // Make sure your CSS file path is correct
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import user from "../assets/user.png"; // Adjust the path accordingly
+
 
 const SignupPage = () => {
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(user);
   const [profilePicUrl, setProfilePicUrl] = useState(null);
 
 
