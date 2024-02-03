@@ -6,6 +6,10 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 const SignupPage = () => {
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [profilePicUrl, setProfilePicUrl] = useState(null);
+
+
   const [formData, setFormData] = useState({
     role: "publicUser", // Set "Public User" as the default role
     firstName: "",
@@ -73,14 +77,99 @@ const SignupPage = () => {
     console.log("Signup clicked");
   };
 
+  
+    //photo change
+    const handlePhotoChange = (event) => {
+      const photo = event.target.files[0];
+      if (
+        photo.type !== "image/png" &&
+        photo.type !== "image/jpeg" &&
+        photo.type !== "image/jpg"
+      ) {
+        return toast.error("File not supported");
+      }
+      if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
+  
+      setProfilePicUrl(photo);
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        setPreviewUrl(fileReader.result);
+      };
+      fileReader.readAsDataURL(photo);
+    };
+
+
+    //submitting photo to backend
+    const handleSubmitPhoto = async (event) => {
+      event.preventDefault();
+
+    }
+
+
   return (
     <div>
       <Header />
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+        crossOrigin="anonymous"
+      />
       <div className="signup-container">
         <form className="signup-form" onSubmit={handleSignup}>
-          <h2>Signup</h2>
+          <h2 style={{marginBottom:"40px"}}>Signup</h2>
+          
+          <div className="card">
+                  <div className="card-body">
+                    <div className="d-flex flex-column align-items-center text-center">
+                    
+                    {previewUrl ? (
+                        <img
+                          src={previewUrl}
+                          alt="profile.jpg"
+                          className="rounded-circle"
+                          style={{
+                            width: "150px",
+                            height: "150px",
+                            objectFit: "cover",
+                          }}
+                        />
+                      ) : (
+                        <img
+                          src={profilePicUrl}
+                          alt="profile.jpg"
+                          className="rounded-circle"
+                          width={150}
+                        />
+                      )}
+
+                    </div>
+                  </div>
+                </div>
+          <form onSubmit={handleSubmitPhoto}>
+                  <label className="form-label mt-3" htmlFor="customFile">
+                    Choose an image:
+                  </label>
+
+                  <div className="row">
+                    <div className="col-sm-8">
+                      <input
+                        type="file"
+                        className="form-control"
+                        id="customFile"
+                        onChange={handlePhotoChange}
+                      />
+                    </div>
+                    <div className="col-sm-4">
+                      <button type="submit" className="form-control">
+                        Upload
+                      </button>
+                    </div>
+                  </div>
+                </form>
+                 
           <div className="input-group">
-            <label htmlFor="role">Select Role</label>
+            <label htmlFor="role"  style={{marginTop:"24px"}}>Select Role</label>
             <select
               id="role"
               name="role"
@@ -179,7 +268,10 @@ const SignupPage = () => {
               onChange={handleChange}
             />
           </div>
-          <button type="submit">Signup</button>
+          <button type="submit" style={{borderRadius:"5px"}}>Signup</button>
+          <a href="/login" className="forgot-password-link" style={{color:"#3531a1", marginTop:"35px"}}>
+            Already have an account?
+          </a>
         </form>
         <ToastContainer position="top-right" autoClose={3000} />
       </div>
