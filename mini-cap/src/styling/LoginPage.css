@@ -30,7 +30,7 @@
 label {
   display: block;
   margin-bottom: 6px;
-  color: #003366;
+  color:#382fb8;
   font-weight: bold;
 }
 
@@ -68,10 +68,13 @@ button:hover {
   margin-top: 10px;
   text-align: right;
   text-decoration: none;
-  color: #003366;
+  color:  #3531a1;
   font-weight: bold;
 }
 
 .forgot-password-link:hover {
   text-decoration: underline;
+}
+.footerwrapper{
+  background-color:#f0f4f8;
 }
