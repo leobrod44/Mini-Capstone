@@ -66,7 +66,7 @@ const LoginPage = () => {
             />
           </div>
           <button type="submit">Login</button>
-          <a href="#" className="forgot-password-link">
+          <a href="#" className="forgot-password-link" style={{color:"#3531a1"}}>
             Forgot Password?
           </a>
         </form>
