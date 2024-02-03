@@ -22,3 +22,8 @@
 .footerwrapper{
   background-color: rgb(248,249,250) !important;
 }
+.btn-danger {
+  background: var(--red-light);
+  color: var(--red-dark);
+  margin-left: 0 !important; /* Added this line to override Bootstrap styles */
+}
