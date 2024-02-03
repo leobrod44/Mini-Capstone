@@ -1,0 +1,142 @@
+
+.background-container {
+    position: relative;
+    width: 100%;
+    height: 55vh; 
+    background-image: url('../assets/mtl5.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); 
+  }
+
+  .card2-container {
+    position: absolute;
+    top: 45px; 
+    left: 20px;
+    width: fit-content;
+    height:min-content;
+  }
+
+  .small-card {
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.85); 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    border-radius: 5px; 
+  }
+  
+
+.landingpage{
+    color:#4540db;
+}
+
+.lptext1{
+    padding-top: 0;
+}
+.about-us {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10%;
+  }
+  
+  .about-us-content {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .aboutusp {
+    margin-top: 5px;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-size: large;
+  }
+  
+  .paragraphs {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .paragraphs p {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-size: larger;
+    padding: 20px;
+  }
+  .line-div {
+    text-align: center;
+  }
+  
+  .green-line {
+    width: 60px; 
+    height: 4px; 
+    background-color: #2f2c9b;
+    margin: 10px auto; 
+  }
+
+  .aboutush3{
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    position: relative;
+    margin-bottom: 3px;
+    color:#2f2c9b;
+  }
+
+
+  .cards2 {
+    display: flex;
+    justify-content: space-around; 
+    flex-wrap: wrap; 
+  }
+  
+  .card2 {
+    text-align: center;
+    flex: 1; 
+    padding: 10px;
+    background-color: #fff; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    border-radius: 5px; 
+    transition: transform 0.2s;
+    margin: 10px; 
+    max-width: 300px; 
+    margin-bottom:75px;
+  }
+  
+  .card img {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    margin: 0 auto 10px;
+  }
+  
+  .card-text2 {
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    font-size: larger;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .card2:hover {
+    transform: scale(1.05); 
+    background-color:#7875d62d;
+  }
+
+  .card-title2{
+    padding-top:10%;
+   color: #2f2c9b;
+  }
+
+
+.btndiv{
+
+}
+
+.btn{
+    margin-left:20px;
+}
+
+.footer-wrapper{
+background-color: rgb(248,249,250);
+}
