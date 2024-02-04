@@ -46,7 +46,7 @@ const LoginPage = () => {
         <form className="login-form" onSubmit={handleLogin}>
           <h2>Login</h2>
           <div className="input-group">
-            <label className="login" htmlFor="email">Email</label>
+            <label htmlFor="email">Email</label>
             <input
               type="text"
               id="email"
@@ -56,7 +56,7 @@ const LoginPage = () => {
             />
           </div>
           <div className="input-group">
-            <label className="login"  htmlFor="password">Password</label>
+            <label htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
@@ -65,8 +65,11 @@ const LoginPage = () => {
               onChange={handleChange}
             />
           </div>
-          <button className="loginbtn"type="submit">Login</button>
-          <a href="#" className="forgot-password-link">
+          <button type="submit"  style={{marginBottom:"20px", marginTop:"20px", width:"100%"}}>
+            Login
+          </button>
+
+          <a href="#" className="forgot-password-link" style={{color:"#3531a1"}}>
             Forgot Password?
           </a>
         </form>

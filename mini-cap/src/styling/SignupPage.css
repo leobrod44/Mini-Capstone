@@ -1,6 +1,4 @@
-/* SignupPage.css */
 
-/* Overall page styles */
 .signup-container {
   font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
   display: flex;
@@ -32,7 +30,7 @@
 .signup {
   display: block;
   margin-bottom: 6px;
-  color: #003366;
+  color:#382fb8;
   font-weight: bold;
 }
 
@@ -71,10 +69,14 @@ select {
   margin-top: 10px;
   text-align: right;
   text-decoration: none;
-  color: #003366;
+  color:#3531a1;
   font-weight: bold;
 }
 
 .forgot-password-link:hover {
   text-decoration: underline;
+}
+
+.footerwrapper{
+  background-color:#f0f4f8;
 }
