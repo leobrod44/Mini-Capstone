@@ -27,10 +27,10 @@
   text-align: left;
 }
 
-label {
+.login {
   display: block;
   margin-bottom: 6px;
-  color:#382fb8;
+  color: #382fb8;
   font-weight: bold;
 }
 
@@ -43,25 +43,27 @@ input {
   font-size: 16px;
 }
 
-/* Button styles with lilac theme */
-button {
-  background-color: #4540db;
-  width: 1;
-  cursor: pointer;
-  color: var(--white);
-  border: transparent;
-  border-radius: var(--borderRadius);
-  letter-spacing: var(--letterSpacing);
-  padding: 0.375rem 0.75rem;
-  box-shadow: var(--shadow-2);
-  transition: var(--transition);
-  text-transform: capitalize;
-  display: inline-block;
+/* Resolved Button styles combining both branches */
+button,
+.loginbtn {
+  font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+  background-color: #4540db; /* Chosen background color from signup2 branch */
+  color: #fff; /* Assuming var(--white) is white, replaced with #fff */
+  padding: 10px 20px; /* Combined padding */
+  border: none; /* No border */
+  border-radius: 4px; /* Chosen border-radius */
+  font-size: 18px; /* Chosen font size */
+  cursor: pointer; /* Hand cursor on hover */
+  transition: all 0.3s ease; /* Example transition */
+  text-transform: capitalize; /* Text style */
+  display: inline-block; /* Display style */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
 }
 
+.loginbtn:hover,
 button:hover {
   background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
-  color: #ffffff; /* Change text color on hover to white or a contrasting color */
+  color: #ffffff; /* Change text color on hover to white */
 }
 
 /* Forgot password link */
@@ -71,13 +73,14 @@ button:hover {
   margin-top: 10px;
   text-align: right;
   text-decoration: none;
-  color:  #3531a1;
+  color: #3531a1;
   font-weight: bold;
 }
 
 .forgot-password-link:hover {
   text-decoration: underline;
 }
-.footerwrapper{
-  background-color:#f0f4f8;
+
+.footerwrapper {
+  background-color: #f0f4f8;
 }

@@ -172,6 +172,7 @@ const SignupPage = () => {
                  
           <div className="input-group">
             <label htmlFor="role"  style={{marginTop:"24px"}}>Select Role</label>
+            <label className="signup" htmlFor="role">Select Role</label>
             <select
               id="role"
               name="role"
@@ -185,7 +186,7 @@ const SignupPage = () => {
           {formData.role === "publicUser" && (
             <div>
               <div className="input-group">
-                <label htmlFor="firstName">First Name</label>
+                <label className="signup" htmlFor="firstName">First Name</label>
                 <input
                   type="text"
                   id="firstName"
@@ -195,7 +196,7 @@ const SignupPage = () => {
                 />
               </div>
               <div className="input-group">
-                <label htmlFor="lastName">Last Name</label>
+                <label className="signup" htmlFor="lastName">Last Name</label>
                 <input
                   type="text"
                   id="lastName"
@@ -205,7 +206,7 @@ const SignupPage = () => {
                 />
               </div>
               <div className="input-group">
-                <label htmlFor="email">Email</label>
+                <label className="signup"  htmlFor="email">Email</label>
                 <input
                   type="email"
                   id="email"
@@ -215,7 +216,7 @@ const SignupPage = () => {
                 />
               </div>
               <div className="input-group">
-                <label htmlFor="phoneNumber">Phone Number</label>
+                <label className="signup" htmlFor="phoneNumber">Phone Number</label>
                 <input
                   type="text"
                   id="phoneNumber"
@@ -229,7 +230,7 @@ const SignupPage = () => {
           {formData.role === "managementCompany" && (
             <div>
               <div className="input-group">
-                <label htmlFor="companyName">Company Name</label>
+                <label  className="signup" htmlFor="companyName">Company Name</label>
                 <input
                   type="text"
                   id="companyName"
@@ -239,7 +240,7 @@ const SignupPage = () => {
                 />
               </div>
               <div className="input-group">
-                <label htmlFor="email">Email</label>
+                <label  className="signup" htmlFor="email">Email</label>
                 <input
                   type="email"
                   id="email"
@@ -251,7 +252,7 @@ const SignupPage = () => {
             </div>
           )}
           <div className="input-group">
-            <label htmlFor="password">Password</label>
+            <label  className="signup" htmlFor="password">Password</label>
             <input
               type="password"
               id="password"
@@ -261,7 +262,7 @@ const SignupPage = () => {
             />
           </div>
           <div className="input-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
+            <label className="signup"  htmlFor="confirmPassword">Confirm Password</label>
             <input
               type="password"
               id="confirmPassword"
@@ -276,6 +277,7 @@ const SignupPage = () => {
           <a href="/login" className="forgot-password-link" style={{color:"#3531a1", marginTop:"35px"}}>
             Already have an account?
           </a>
+          <button className="signupbtn" type="submit">Signup</button>
         </form>
         <ToastContainer position="top-right" autoClose={3000} />
       </div>
