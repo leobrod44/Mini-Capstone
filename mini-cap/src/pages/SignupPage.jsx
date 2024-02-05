@@ -179,7 +179,7 @@ const SignupPage = () => {
               value={formData.role}
               onChange={handleChange}
             >
-              <option value="publicUser">Public User</option>
+              <option value="publicUser">Renter/Owner</option>
               <option value="managementCompany">Management Company</option>
             </select>
           </div>
