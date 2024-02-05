@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../styling/SignupPage.css"; // Make sure your CSS file path is correct
+import "../styling/SignupPage.css"; // Ensure your CSS file path is correct
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import user from "../assets/user.png"; // Adjust the path accordingly
-
 
 const SignupPage = () => {
   const [previewUrl, setPreviewUrl] = useState(user);
   const [profilePicUrl, setProfilePicUrl] = useState(null);
 
-
   const [formData, setFormData] = useState({
-    role: "publicUser", // Set "Public User" as the default role
+    role: "renter/owner", // "Renter/Owner" as the default role
     firstName: "",
     lastName: "",
     email: "",
-    phoneNumber: "",
+    phoneNumber: "", // Phone number for both roles
     companyName: "",
     password: "",
     confirmPassword: "",
@@ -33,9 +31,9 @@ const SignupPage = () => {
   const handleSignup = (e) => {
     e.preventDefault();
 
-    // Check if all mandatory fields are filled
+    // Validation checks
     if (
-      (formData.role === "publicUser" &&
+      (formData.role === "renter/owner" &&
         (!formData.firstName ||
           !formData.lastName ||
           !formData.email ||
@@ -51,7 +49,6 @@ const SignupPage = () => {
       return;
     }
 
-    // Perform email validation check
     if (!formData.email.includes("@") || !formData.email.includes(".")) {
       toast.error(
         "Invalid email format. Please include '@' and '.' in your email address."
@@ -59,7 +56,6 @@ const SignupPage = () => {
       return;
     }
 
-    // Perform password validation checks
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match.");
       return;
@@ -76,37 +72,27 @@ const SignupPage = () => {
     }
 
     // Add your signup logic here
-    console.log("Signup clicked");
+    console.log("Signup Form Data:", formData);
   };
 
-  
-    //photo change
-    const handlePhotoChange = (event) => {
-      const photo = event.target.files[0];
-      if (
-        photo.type !== "image/png" &&
-        photo.type !== "image/jpeg" &&
-        photo.type !== "image/jpg"
-      ) {
-        return toast.error("File not supported");
-      }
-      if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
-  
-      setProfilePicUrl(photo);
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        setPreviewUrl(fileReader.result);
-      };
-      fileReader.readAsDataURL(photo);
-    };
-
-
-    //submitting photo to backend
-    const handleSubmitPhoto = async (event) => {
-      event.preventDefault();
-
+  const handlePhotoChange = (event) => {
+    const photo = event.target.files[0];
+    if (
+      photo.type !== "image/png" &&
+      photo.type !== "image/jpeg" &&
+      photo.type !== "image/jpg"
+    ) {
+      return toast.error("File not supported");
     }
+    if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
 
+    setProfilePicUrl(photo);
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      setPreviewUrl(fileReader.result);
+    };
+    fileReader.readAsDataURL(photo);
+  };
 
   return (
     <div>
@@ -119,74 +105,80 @@ const SignupPage = () => {
       />
       <div className="signup-container">
         <form className="signup-form" onSubmit={handleSignup}>
-          <h2 style={{marginBottom:"40px"}}>Signup</h2>
-          
-          <div className="card"  style={{borderColor:"transparent"}}>
-                  <div className="card-body">
-                    <div className="d-flex flex-column align-items-center text-center">
-                    
-                    {previewUrl ? (
-                        <img
-                          src={previewUrl}
-                          alt="profile.jpg"
-                          className="rounded-circle"
-                          style={{
-                            width: "120px",
-                            height: "120px",
-                            objectFit: "cover",
-                          }}
-                        />
-                      ) : (
-                        <img
-                          src={profilePicUrl}
-                          alt="profile.jpg"
-                          className="rounded-circle"
-                          width={100}
-                        />
-                      )}
+          <h2 style={{ marginBottom: "40px" }}>Signup</h2>
 
-                    </div>
-                  </div>
-                </div>
-          <form onSubmit={handleSubmitPhoto}>
-                  <label className="form-label mt-3" htmlFor="customFile">
-                    Choose an image:
-                  </label>
+          <div className="card" style={{ borderColor: "transparent" }}>
+            <div className="card-body">
+              <div className="d-flex flex-column align-items-center text-center">
+                {previewUrl ? (
+                  <img
+                    src={previewUrl}
+                    alt="profile"
+                    className="rounded-circle"
+                    style={{
+                      width: "120px",
+                      height: "120px",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : (
+                  <img
+                    src={user}
+                    alt="profile"
+                    className="rounded-circle"
+                    width={100}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
 
-                  <div className="row">
-                    <div className="col-sm-8">
-                      <input
-                        type="file"
-                        className="form-control"
-                        id="customFile"
-                        onChange={handlePhotoChange}
-                      />
-                    </div>
-                    <div className="col-sm-4">
-                      <button type="submit" className="form-control">
-                        Upload
-                      </button>
-                    </div>
-                  </div>
-                </form>
-                 
+          <form onSubmit={handleSignup}>
+            <label className="form-label mt-3" htmlFor="customFile">
+              Choose an image:
+            </label>
+            <div className="row">
+              <div className="col-sm-8">
+                <input
+                  type="file"
+                  className="form-control"
+                  id="customFile"
+                  onChange={handlePhotoChange}
+                />
+              </div>
+              <div className="col-sm-4">
+                <button type="submit" className="form-control">
+                  Upload
+                </button>
+              </div>
+            </div>
+          </form>
+
           <div className="input-group">
-           
-            <label className="signup" htmlFor="role" style={{paddingTop:"50px"}}>Select Role</label>
+            <label
+              className="signup"
+              htmlFor="role"
+              style={{ paddingTop: "50px" }}
+            >
+              Select Role
+            </label>
             <select
               id="role"
               name="role"
               value={formData.role}
               onChange={handleChange}
             >
-              <option value="publicUser">Public User</option>
+              <option value="renter/owner">Renter/Owner</option>
               <option value="managementCompany">Management Company</option>
             </select>
           </div>
-          {formData.role === "publicUser" && (
-            <div>
+
+          {formData.role === "renter/owner" && (
+            <>
               <div className="input-group">
-                <label className="signup" htmlFor="firstName">First Name</label>
+                <label className="signup" htmlFor="firstName">
+                  First Name
+                </label>
                 <input
                   type="text"
                   id="firstName"
@@ -196,7 +188,9 @@ const SignupPage = () => {
                 />
               </div>
               <div className="input-group">
-                <label className="signup" htmlFor="lastName">Last Name</label>
+                <label className="signup" htmlFor="lastName">
+                  Last Name
+                </label>
                 <input
                   type="text"
                   id="lastName"
@@ -206,7 +200,9 @@ const SignupPage = () => {
                 />
               </div>
               <div className="input-group">
-                <label className="signup"  htmlFor="email">Email</label>
+                <label className="signup" htmlFor="email">
+                  Email
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -216,7 +212,9 @@ const SignupPage = () => {
                 />
               </div>
               <div className="input-group">
-                <label className="signup" htmlFor="phoneNumber">Phone Number</label>
+                <label className="signup" htmlFor="phoneNumber">
+                  Phone Number (optional)
+                </label>
                 <input
                   type="text"
                   id="phoneNumber"
@@ -225,12 +223,15 @@ const SignupPage = () => {
                   onChange={handleChange}
                 />
               </div>
-            </div>
+            </>
           )}
+
           {formData.role === "managementCompany" && (
-            <div>
+            <>
               <div className="input-group">
-                <label  className="signup" htmlFor="companyName">Company Name</label>
+                <label className="signup" htmlFor="companyName">
+                  Company Name
+                </label>
                 <input
                   type="text"
                   id="companyName"
@@ -240,7 +241,9 @@ const SignupPage = () => {
                 />
               </div>
               <div className="input-group">
-                <label  className="signup" htmlFor="email">Email</label>
+                <label className="signup" htmlFor="email">
+                  Email
+                </label>
                 <input
                   type="email"
                   id="email"
@@ -249,10 +252,25 @@ const SignupPage = () => {
                   onChange={handleChange}
                 />
               </div>
-            </div>
+              <div className="input-group">
+                <label className="signup" htmlFor="phoneNumber">
+                  Phone Number (optional)
+                </label>
+                <input
+                  type="text"
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                />
+              </div>
+            </>
           )}
+
           <div className="input-group">
-            <label  className="signup" htmlFor="password">Password</label>
+            <label className="signup" htmlFor="password">
+              Password
+            </label>
             <input
               type="password"
               id="password"
@@ -262,7 +280,9 @@ const SignupPage = () => {
             />
           </div>
           <div className="input-group">
-            <label className="signup"  htmlFor="confirmPassword">Confirm Password</label>
+            <label className="signup" htmlFor="confirmPassword">
+              Confirm Password
+            </label>
             <input
               type="password"
               id="confirmPassword"
@@ -271,16 +291,24 @@ const SignupPage = () => {
               onChange={handleChange}
             />
           </div>
-          <button type="submit" className="loginbtn" style={{width:"100%", borderRadius:"5px"}}>
+          <button
+            type="submit"
+            className="loginbtn"
+            style={{ width: "100%", borderRadius: "5px" }}
+          >
             Signup
-            </button>
-          <a href="/login" className="forgot-password-link" style={{color:"#3531a1", marginTop:"35px"}}>
+          </button>
+          <a
+            href="/login"
+            className="forgot-password-link"
+            style={{ color: "#3531a1", marginTop: "35px" }}
+          >
             Already have an account?
           </a>
         </form>
         <ToastContainer position="top-right" autoClose={3000} />
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };
