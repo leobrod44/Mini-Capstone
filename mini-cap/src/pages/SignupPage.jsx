@@ -121,7 +121,7 @@ const SignupPage = () => {
         <form className="signup-form" onSubmit={handleSignup}>
           <h2 style={{marginBottom:"40px"}}>Signup</h2>
           
-          <div className="card">
+          <div className="card"  style={{borderColor:"transparent"}}>
                   <div className="card-body">
                     <div className="d-flex flex-column align-items-center text-center">
                     
@@ -131,8 +131,8 @@ const SignupPage = () => {
                           alt="profile.jpg"
                           className="rounded-circle"
                           style={{
-                            width: "150px",
-                            height: "150px",
+                            width: "120px",
+                            height: "120px",
                             objectFit: "cover",
                           }}
                         />
@@ -141,7 +141,7 @@ const SignupPage = () => {
                           src={profilePicUrl}
                           alt="profile.jpg"
                           className="rounded-circle"
-                          width={150}
+                          width={100}
                         />
                       )}
 
@@ -171,8 +171,8 @@ const SignupPage = () => {
                 </form>
                  
           <div className="input-group">
-            <label htmlFor="role"  style={{marginTop:"24px"}}>Select Role</label>
-            <label className="signup" htmlFor="role">Select Role</label>
+           
+            <label className="signup" htmlFor="role" style={{paddingTop:"50px"}}>Select Role</label>
             <select
               id="role"
               name="role"
@@ -277,11 +277,10 @@ const SignupPage = () => {
           <a href="/login" className="forgot-password-link" style={{color:"#3531a1", marginTop:"35px"}}>
             Already have an account?
           </a>
-          <button className="signupbtn" type="submit">Signup</button>
         </form>
         <ToastContainer position="top-right" autoClose={3000} />
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 };

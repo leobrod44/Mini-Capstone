@@ -1,5 +1,12 @@
 /* LoginPage.css */
 
+
+h2{
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  position: relative;
+  margin-bottom: 3px;
+  color:#2f2c9b;
+}
 /* Overall page styles */
 .login-container {
   font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
@@ -44,7 +51,7 @@ input {
 }
 
 /* Resolved Button styles combining both branches */
-button,
+
 .loginbtn {
   font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
   background-color: #4540db; /* Chosen background color from signup2 branch */
@@ -60,8 +67,7 @@ button,
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
 }
 
-.loginbtn:hover,
-button:hover {
+.loginbtn:hover {
   background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
   color: #ffffff; /* Change text color on hover to white */
 }
@@ -82,5 +88,5 @@ button:hover {
 }
 
 .footerwrapper {
-  background-color: #f0f4f8;
+  background-color: #f0f4f8 !important;
 }
