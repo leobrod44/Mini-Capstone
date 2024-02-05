@@ -1,4 +1,12 @@
 
+
+h2{
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  position: relative;
+  margin-bottom: 3px;
+  color:#2f2c9b;
+}
+
 .signup-container {
   font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
   display: flex;
@@ -44,23 +52,6 @@ select {
   font-size: 16px;
 }
 
-/* Button styles with lilac theme */
-.signupbtn {
-  font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
-  background-color: #c7c7e2; /* A bit darker lilac color when idle */
-  color: #3531a1; /* Use a matching text color */
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.signupbtn:hover {
-  background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
-  color: #ffffff; /* Change text color on hover to white or a contrasting color */
-}
 
 /* Forgot password link */
 .forgot-password-link {
@@ -78,5 +69,5 @@ select {
 }
 
 .footerwrapper{
-  background-color:#f0f4f8;
+  background-color:#f0f4f8 !important;
 }

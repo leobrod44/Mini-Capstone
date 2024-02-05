@@ -6,6 +6,7 @@
   background-color: #4540db !important;
   color: white !important;
   width: 250px !important;
+  transition: 0.3s ease-in-out all;
 }
 
 .editProfile:hover,
