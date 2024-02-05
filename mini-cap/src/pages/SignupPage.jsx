@@ -271,7 +271,7 @@ const SignupPage = () => {
               onChange={handleChange}
             />
           </div>
-          <button type="submit"  style={{width:"100%", borderRadius:"5px"}}>
+          <button type="submit" className="loginbtn" style={{width:"100%", borderRadius:"5px"}}>
             Signup
             </button>
           <a href="/login" className="forgot-password-link" style={{color:"#3531a1", marginTop:"35px"}}>
