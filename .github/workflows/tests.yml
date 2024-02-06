@@ -21,7 +21,7 @@ jobs:
       run: pwd
 
     - name: List Directories
-        run: ls -d */
+      run: ls -d */
 
     - name: Install dependencies
       run: npm install
