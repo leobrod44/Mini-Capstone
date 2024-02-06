@@ -18,8 +18,7 @@ jobs:
       with:
         node-version: '20'
     - name: Echo Current Directory
-        run: |
-          pwd
+        run: pwd
 
     - name: Install dependencies
       run: npm install
