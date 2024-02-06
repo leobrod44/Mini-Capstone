@@ -39,7 +39,8 @@ const Navbar = () => {
 
   React.useEffect(() => {
     //roles, condoOwner, renter , or mgmt
-    const user = { role: "condoOwner" }; 
+   const user= {role: "individual"};
+    //const user = { role: "condoOwner" }; 
    //const user = { role: "renter" }; 
    //const user = { role: "mgmt" }; 
     setRole(user.role);
@@ -98,15 +99,15 @@ const Navbar = () => {
               />     
 
            
-            {role === 'condoOwner' && 
-                (<DropdownItem
+          
+                <DropdownItem
                 address={"/dashboard"}
                 icon={<IoIosBusiness />}
                 text={"Dashboard"}
-              />)
-            }
+              />
             
-            {role === 'condoOwner' && 
+            
+            {role === 'individual' && 
                 (<DropdownItem
                 address={"/requests"}
                 icon={<LiaHandsHelpingSolid />}
@@ -124,13 +125,7 @@ const Navbar = () => {
               />)
             }
 
-            {role=== 'mgmt' && 
-            (<DropdownItem
-              address={"/propertyprofile"}
-              icon={<IoIosBusiness />}
-              text={"Create a profile"}
-            />)
-            }
+      
 
           {role=== 'mgmt' && 
             (<DropdownItem
