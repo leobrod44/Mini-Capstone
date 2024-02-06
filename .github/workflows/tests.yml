@@ -17,9 +17,11 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '20'
-
     - name: Install dependencies
-      run: npm install
+      run: cd mini-cap/ && npm install
 
     - name: Run tests
-      run: npm test
+      run: cd mini-cap/ && npm test
+    
+    - name: Run coverage
+      run: cd mini-cap/ && npm test:coverage

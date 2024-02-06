@@ -3,6 +3,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import SignupPage from "../pages/SignupPage.jsx"; // Adjust this import to the correct path of your SignupPage component
+import { BrowserRouter as Router } from 'react-router-dom';
 import { toast } from "react-toastify";
 
 jest.mock("react-toastify", () => ({
