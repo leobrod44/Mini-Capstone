@@ -20,6 +20,9 @@ jobs:
     - name: Echo Current Directory
       run: pwd
 
+    - name: List Directories
+        run: ls -d */
+
     - name: Install dependencies
       run: npm install
 
