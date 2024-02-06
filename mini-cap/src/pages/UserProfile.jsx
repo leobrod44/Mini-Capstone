@@ -33,8 +33,8 @@ useEffect(()=>{
  //temporary til backend is done and we can actully receive users and their roless
   //roles, condoOwner, renter , or mgmt
     
-    const user = { role: "condoOwner" }; 
-   //const user = { role: "renter" }; 
+    const user = { role: "individual" }; 
+
    //const user = { role: "mgmt" }; 
  
     setRole(user.role);
