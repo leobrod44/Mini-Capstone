@@ -18,13 +18,13 @@ jobs:
       with:
         node-version: '20'
     - name: Echo Current Directory
-      run: cd mini-cap/
+      run: cd mini-cap/ && pwd
 
     - name: List Directories
       run: ls -d */
 
     - name: Install dependencies
-      run: npm install
+      run: mini-cap/ && npm install
 
     - name: Run tests
-      run: npm test
+      run: cd mini-cap/ && npm test
