@@ -24,7 +24,7 @@ jobs:
       run: ls -d */
 
     - name: Install dependencies
-      run: mini-cap/ && npm install
+      run: cd mini-cap/ && npm install
 
     - name: Run tests
       run: cd mini-cap/ && npm test
