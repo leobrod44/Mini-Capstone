@@ -18,7 +18,7 @@ jobs:
       with:
         node-version: '20'
     - name: Echo Current Directory
-      run: pwd
+      run: cd mini-cap/
 
     - name: List Directories
       run: ls -d */
