@@ -17,6 +17,9 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '20'
+    - name: Echo Current Directory
+        run: |
+          pwd
 
     - name: Install dependencies
       run: npm install
