@@ -1,45 +1,40 @@
-import ReactDOM from "react-dom";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
+import React from "react";
+import { render, fireEvent, waitFor } from "@testing-library/react";
+import App from "../App";
+import { BrowserRouter } from "react-router-dom";
+import { rest } from "msw";
 
-// Mocking ReactDOM.createRoot and reportWebVitals
-jest.mock("react-dom", () => ({
-  createRoot: jest.fn().mockImplementation(() => ({
-    render: jest.fn(),
-  })),
-}));
-jest.mock("./reportWebVitals");
+import { setupServer } from "msw/node";
 
-describe("index.js", () => {
-  beforeEach(() => {
-    // Clear all mocks before each test
-    jest.clearAllMocks();
-    document.body.innerHTML = '<div id="root"></div>'; // Reset the DOM
-  });
+// Mock server for handling API requests in tests
+const server = setupServer(
+  rest.get("/api/data", (req, res, ctx) => {
+    return res(ctx.json({ data: "some data" }));
+  })
+);
 
-  it("renders App component without crashing", () => {
-    // Require index.js to execute it
-    require("./index");
+beforeAll(() => server.listen());
+afterEach(() => server.resetHandlers());
+afterAll(() => server.close());
 
-    // Check if ReactDOM.createRoot was called with the correct element
-    const rootElement = document.getElementById("root");
-    expect(ReactDOM.createRoot).toHaveBeenCalledWith(rootElement);
+test("renders App component and interacts with UI", async () => {
+  const { getByText, getByRole } = render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
 
-    // Verify that createRoot().render was called with <App />
-    const mockCreateRootInstance = ReactDOM.createRoot.mock.results[0].value;
-    expect(mockCreateRootInstance.render).toHaveBeenCalledWith(
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    );
-  });
+  // Simulate user interactions
+  fireEvent.click(getByText("Some Button")); // Adjust text to match your actual UI
 
-  it("calls reportWebVitals", () => {
-    // Re-import index.js to re-execute it
-    jest.resetModules();
-    require("./index");
+  // Test for conditional rendering
+  const conditionalElement = getByText("Conditional Element"); // Adjust text to match your actual UI
+  expect(conditionalElement).toBeInTheDocument();
 
-    // Verify reportWebVitals was called
-    expect(reportWebVitals).toHaveBeenCalled();
-  });
+  // Test routing
+  fireEvent.click(getByRole("link", { name: "About" })); // Adjust link text to match your actual UI
+  await waitFor(() => expect(getByText("About Page")).toBeInTheDocument()); // Adjust text to match your actual UI
+
+  // Test side effects (e.g., data fetching)
+  await waitFor(() => expect(getByText("some data")).toBeInTheDocument());
 });
