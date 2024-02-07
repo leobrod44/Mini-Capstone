@@ -1,9 +1,8 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { BrowserRouter as Router } from "react-router-dom"; // If you're using routing
-import { ToastContainer } from "react-toastify";
-import LoginPage from "../pages/LoginPage.jsx"; // Update this path
+import { BrowserRouter as Router } from "react-router-dom";
+import LoginPage from "../pages/LoginPage.jsx";
 
 // Mocking toast
 jest.mock("react-toastify", () => {
@@ -17,54 +16,65 @@ jest.mock("react-toastify", () => {
   };
 });
 
-describe("LoginPage", () => {
-  beforeEach(() => {
-    render(
-      <Router>
-        <LoginPage />
-      </Router>
-    );
+test("LoginPage: renders the login form with email and password fields", () => {
+  render(
+    <Router>
+      <LoginPage />
+    </Router>
+  );
+
+  expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
+});
+
+test("LoginPage: updates the email and password fields when they are changed", () => {
+  render(
+    <Router>
+      <LoginPage />
+    </Router>
+  );
+
+  fireEvent.change(screen.getByLabelText(/email/i), {
+    target: { value: "test@example.com" },
+  });
+  fireEvent.change(screen.getByLabelText(/password/i), {
+    target: { value: "password" },
   });
 
-  it("renders the login form with email and password fields", () => {
-    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
+  expect(screen.getByLabelText(/email/i).value).toBe("test@example.com");
+  expect(screen.getByLabelText(/password/i).value).toBe("password");
+});
+
+test("LoginPage: shows a toast message when the email format is invalid", () => {
+  render(
+    <Router>
+      <LoginPage />
+    </Router>
+  );
+
+  fireEvent.change(screen.getByLabelText(/email/i), {
+    target: { value: "invalidemail" },
   });
-
-  it("updates the email and password fields when they are changed", () => {
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: "test@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: "password" },
-    });
-
-    expect(screen.getByLabelText(/email/i).value).toBe("test@example.com");
-    expect(screen.getByLabelText(/password/i).value).toBe("password");
+  fireEvent.change(screen.getByLabelText(/password/i), {
+    target: { value: "password" },
   });
+  fireEvent.click(screen.getByRole("button", { name: /login/i }));
 
-  it("shows a toast message when the email format is invalid", () => {
-    fireEvent.change(screen.getByLabelText(/email/i), {
-      target: { value: "invalidemail" },
-    });
-    fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: "password" },
-    });
-    fireEvent.click(screen.getByRole("button", { name: /login/i }));
+  expect(toast.error).toHaveBeenCalledWith(
+    "Invalid email format. Please include '@' and '.' in your email address."
+  );
+});
 
-    expect(toast.error).toHaveBeenCalledWith(
-      "Invalid email format. Please include '@' and '.' in your email address."
-    );
-  });
+test("LoginPage: shows a toast message when the email or password is not entered", () => {
+  render(
+    <Router>
+      <LoginPage />
+    </Router>
+  );
 
-  it("shows a toast message when the email or password is not entered", () => {
-    fireEvent.click(screen.getByRole("button", { name: /login/i }));
-    expect(toast.error).toHaveBeenCalledWith(
-      "Please enter both email and password."
-    );
-  });
-
-  // Note: When you have the actual login logic, you would mock it
-  // and test if it's called with the right arguments upon form submission
+  fireEvent.click(screen.getByRole("button", { name: /login/i }));
+  expect(toast.error).toHaveBeenCalledWith(
+    "Please enter both email and password."
+  );
 });
