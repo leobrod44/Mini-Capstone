@@ -54,6 +54,4 @@ describe("Navbar Component", () => {
     fireEvent.click(logoutButton);
     // Here, you would normally assert the navigation, but since it's mocked to jest.fn(), we can't assert it here
   });
-
-  // Add more role-based tests if necessary
 });

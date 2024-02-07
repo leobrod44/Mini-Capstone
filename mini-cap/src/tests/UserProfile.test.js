@@ -332,8 +332,4 @@ describe("UserProfile Component", () => {
       expect(toast.error).toHaveBeenCalledWith("Error uploading file");
     });
   });
-
-  // Add more tests as needed based on the scenarios listed
-
-  // Add more tests as per the scenarios listed above
 });
