@@ -21,6 +21,12 @@ const LoginPage = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
+    // Perform validation for email and password
+    if (!credentials.email || !credentials.password) {
+      toast.error("Please enter both email and password.");
+      return;
+    }
+
     // Perform email validation check
     if (!credentials.email.includes("@") || !credentials.email.includes(".")) {
       toast.error(
@@ -29,11 +35,6 @@ const LoginPage = () => {
       return;
     }
 
-    // Perform validation for email and password
-    if (!credentials.email || !credentials.password) {
-      toast.error("Please enter both email and password.");
-      return;
-    }
 
     // Add your login logic here
     console.log("Login clicked");

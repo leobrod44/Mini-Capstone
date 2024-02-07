@@ -1,10 +1,16 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom"; 
+import { toast } from "react-toastify";
 import LoginPage from "../pages/LoginPage.jsx";
 
 // Mocking toast
+
+
+afterEach(cleanup);
+
+
 jest.mock("react-toastify", () => {
   const originalModule = jest.requireActual("react-toastify");
   return {
@@ -16,65 +22,55 @@ jest.mock("react-toastify", () => {
   };
 });
 
-test("LoginPage: renders the login form with email and password fields", () => {
-  render(
-    <Router>
-      <LoginPage />
-    </Router>
-  );
 
-  expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-  expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-  expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
-});
-
-test("LoginPage: updates the email and password fields when they are changed", () => {
-  render(
-    <Router>
-      <LoginPage />
-    </Router>
-  );
-
-  fireEvent.change(screen.getByLabelText(/email/i), {
-    target: { value: "test@example.com" },
-  });
-  fireEvent.change(screen.getByLabelText(/password/i), {
-    target: { value: "password" },
+describe("LoginPage", () => {
+  beforeEach(() => {
+    render(
+      <Router>
+        <LoginPage />
+      </Router>
+    );
   });
 
-  expect(screen.getByLabelText(/email/i).value).toBe("test@example.com");
-  expect(screen.getByLabelText(/password/i).value).toBe("password");
-});
-
-test("LoginPage: shows a toast message when the email format is invalid", () => {
-  render(
-    <Router>
-      <LoginPage />
-    </Router>
-  );
-
-  fireEvent.change(screen.getByLabelText(/email/i), {
-    target: { value: "invalidemail" },
+  it("renders the login form with email and password fields", () => {
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
   });
-  fireEvent.change(screen.getByLabelText(/password/i), {
-    target: { value: "password" },
+
+  it("updates the email and password fields when they are changed", () => {
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "test@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "password" },
+    });
+
+    expect(screen.getByLabelText(/email/i).value).toBe("test@example.com");
+    expect(screen.getByLabelText(/password/i).value).toBe("password");
   });
-  fireEvent.click(screen.getByRole("button", { name: /login/i }));
 
-  expect(toast.error).toHaveBeenCalledWith(
-    "Invalid email format. Please include '@' and '.' in your email address."
-  );
-});
+  
+  it("shows a toast message when the email format is invalid", () => {
+    fireEvent.change(screen.getByLabelText(/email/i), {
+      target: { value: "invalidemail" },
+    });
+    fireEvent.change(screen.getByLabelText(/password/i), {
+      target: { value: "password" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: /login/i }));
 
-test("LoginPage: shows a toast message when the email or password is not entered", () => {
-  render(
-    <Router>
-      <LoginPage />
-    </Router>
-  );
+    expect(toast.error).toHaveBeenCalledWith(
+      "Invalid email format. Please include '@' and '.' in your email address."
+    );
+  });
+  
+  it("shows a toast message when the email format is invalid", () => {
+    fireEvent.click(screen.getByRole("button", { name: /login/i }));
 
-  fireEvent.click(screen.getByRole("button", { name: /login/i }));
-  expect(toast.error).toHaveBeenCalledWith(
-    "Please enter both email and password."
-  );
+    expect(toast.error).toHaveBeenCalledWith(
+      "Please enter both email and password."
+    );
+  });
+
 });

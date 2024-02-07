@@ -20,6 +20,9 @@ const SignupPage = () => {
     password: "",
     confirmPassword: "",
   });
+  SignupPage.getFormData = () => {
+    return formData;
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -133,26 +136,19 @@ const SignupPage = () => {
             </div>
           </div>
 
-          <form onSubmit={handleSignup}>
-            <label className="form-label mt-3" htmlFor="customFile">
-              Choose an image:
-            </label>
-            <div className="row">
-              <div className="col-sm-8">
-                <input
-                  type="file"
-                  className="form-control"
-                  id="customFile"
-                  onChange={handlePhotoChange}
-                />
-              </div>
-              <div className="col-sm-4">
-                <button type="submit" className="form-control">
-                  Upload
-                </button>
-              </div>
+          <label className="form-label mt-3" htmlFor="customFile">
+            Choose an image:
+          </label>
+          <div className="row">
+            <div className="col-sm-8">
+              <input
+                type="file"
+                className="form-control"
+                id="customFile"
+                onChange={handlePhotoChange}
+              />
             </div>
-          </form>
+          </div>
 
           <div className="input-group">
             <label
@@ -292,6 +288,7 @@ const SignupPage = () => {
             />
           </div>
           <button
+            id = "signup"
             type="submit"
             className="loginbtn"
             style={{ width: "100%", borderRadius: "5px" }}
