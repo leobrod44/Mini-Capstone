@@ -1,11 +1,16 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { BrowserRouter as Router } from "react-router-dom"; // If you're using routing
-import { ToastContainer } from "react-toastify";
-import LoginPage from "../pages/LoginPage.jsx"; // Update this path
+import { BrowserRouter as Router } from "react-router-dom"; 
+import { toast } from "react-toastify";
+import LoginPage from "../pages/LoginPage.jsx";
 
 // Mocking toast
+
+
+afterEach(cleanup);
+
+
 jest.mock("react-toastify", () => {
   const originalModule = jest.requireActual("react-toastify");
   return {
@@ -16,6 +21,7 @@ jest.mock("react-toastify", () => {
     },
   };
 });
+
 
 describe("LoginPage", () => {
   beforeEach(() => {
@@ -44,6 +50,7 @@ describe("LoginPage", () => {
     expect(screen.getByLabelText(/password/i).value).toBe("password");
   });
 
+  
   it("shows a toast message when the email format is invalid", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "invalidemail" },
@@ -57,14 +64,13 @@ describe("LoginPage", () => {
       "Invalid email format. Please include '@' and '.' in your email address."
     );
   });
-
-  it("shows a toast message when the email or password is not entered", () => {
+  
+  it("shows a toast message when the email format is invalid", () => {
     fireEvent.click(screen.getByRole("button", { name: /login/i }));
+
     expect(toast.error).toHaveBeenCalledWith(
       "Please enter both email and password."
     );
   });
 
-  // Note: When you have the actual login logic, you would mock it
-  // and test if it's called with the right arguments upon form submission
 });
