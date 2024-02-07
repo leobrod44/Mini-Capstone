@@ -35,9 +35,8 @@ const LoginPage = () => {
       return;
     }
 
-
     // Add your login logic here
-    console.log("Login clicked");
+    //console.log("Login clicked");
   };
 
   return (
@@ -66,11 +65,19 @@ const LoginPage = () => {
               onChange={handleChange}
             />
           </div>
-          <button  className="loginbtn" type="submit"  style={{marginBottom:"20px", marginTop:"20px", width:"100%"}}>
+          <button
+            className="loginbtn"
+            type="submit"
+            style={{ marginBottom: "20px", marginTop: "20px", width: "100%" }}
+          >
             Login
           </button>
 
-          <a href="#" className="forgot-password-link" style={{color:"#3531a1"}}>
+          <a
+            href="#"
+            className="forgot-password-link"
+            style={{ color: "#3531a1" }}
+          >
             Forgot Password?
           </a>
         </form>
