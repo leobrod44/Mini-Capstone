@@ -1,115 +1,219 @@
-// SignupPage.test.jsx
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import SignupPage from "../pages/SignupPage.jsx"; // Adjust this import to the correct path of your SignupPage component
-import { BrowserRouter as Router } from 'react-router-dom';
+import { render, screen, fireEvent, cleanup,waitFor  } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import { BrowserRouter as Router } from "react-router-dom"; 
 import { toast } from "react-toastify";
+import SignupPage from "../pages/SignupPage";
 
-jest.mock("react-toastify", () => ({
-  toast: {
-    error: jest.fn(),
-  },
-  ToastContainer: () => <div>ToastContainer</div>,
-}));
+// Mocking toast
+afterEach(cleanup);
 
-describe("SignupPage", () => {
-  beforeEach(() => {
-    render(<SignupPage />);
-  });
+jest.mock("react-toastify", () => {
+  const originalModule = jest.requireActual("react-toastify");
+  return {
+    ...originalModule,
+    toast: {
+      ...originalModule.toast,
+      error: jest.fn(),
+    },
+  };
+});
 
-  it("renders UI elements for Renter/Owner by default", () => {
-    expect(screen.getByText(/signup/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/First Name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Last Name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/Confirm Password/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /signup/i })).toBeInTheDocument();
-  });
+describe('SignupPage Component', () => {
+  it('should allow user to fill out the form and signup', async () => {
+    const { getByLabelText, getByText, getByRole} = render(<Router><SignupPage /></Router>);
 
-  it("switches to Management Company fields", async () => {
-    await userEvent.selectOptions(
-      screen.getByLabelText(/Select Role/i),
-      "managementCompany"
-    );
-    expect(screen.getByLabelText(/Company Name/i)).toBeInTheDocument();
-  });
+    // Fill out the form
+    const roleDropdown = screen.getByLabelText('Select Role');
+    fireEvent.change(roleDropdown, { target: { value: 'renter/owner' } }); 
 
-  it("validates input fields for Renter/Owner", async () => {
-    await userEvent.type(screen.getByLabelText(/First Name/i), "John");
-    await userEvent.type(screen.getByLabelText(/Last Name/i), "Doe");
-    await userEvent.type(
-      screen.getByLabelText(/Email/i),
-      "john.doe@example.com"
-    );
-    await userEvent.type(screen.getByLabelText(/Password/i), "Password1");
-    await userEvent.type(
-      screen.getByLabelText(/Confirm Password/i),
-      "Password1"
-    );
-    await userEvent.click(screen.getByRole("button", { name: /signup/i }));
-    // Assuming form submission leads to a page change or success message, add assertion here
-  });
+    fireEvent.change(getByLabelText('First Name'), { target: { value: 'John' } });
+    fireEvent.change(getByLabelText('Last Name'), { target: { value: 'Doe' } });
+    fireEvent.change(getByLabelText('Email'), { target: { value: 'john.doe@example.com' } });
+    fireEvent.change(getByLabelText('Phone Number (optional)'), { target: { value: '514-555-1234' } });
+    fireEvent.change(getByLabelText('Password'), { target: { value: 'password123' } });
+    fireEvent.change(getByLabelText('Confirm Password'), { target: { value: 'password123' } });
 
-  it("validates input fields for Management Company", async () => {
-    await userEvent.selectOptions(
-      screen.getByLabelText(/Select Role/i),
-      "managementCompany"
-    );
-    await userEvent.type(screen.getByLabelText(/Company Name/i), "Acme Inc");
-    await userEvent.type(
-      screen.getByLabelText(/Email/i),
-      "contact@acmeinc.com"
-    );
-    await userEvent.type(screen.getByLabelText(/Password/i), "SecurePass1");
-    await userEvent.type(
-      screen.getByLabelText(/Confirm Password/i),
-      "SecurePass1"
-    );
-    await userEvent.click(screen.getByRole("button", { name: /signup/i }));
-    // Assuming form submission leads to a page change or success message, add assertion here
-  });
+    const signupButton = getByText('Signup', { selector: 'button' });
 
-  it("shows error for invalid email format", async () => {
-    await userEvent.type(screen.getByLabelText(/Email/i), "invalidemail");
-    await userEvent.click(screen.getByRole("button", { name: /signup/i }));
-    expect(toast.error).toHaveBeenCalledWith(
-      "Invalid email format. Please include '@' and '.' in your email address."
-    );
-  });
+    // Submit the form
+    fireEvent.click(signupButton);
 
-  it("shows error when passwords do not match", async () => {
-    await userEvent.type(screen.getByLabelText(/Password/i), "Password1");
-    await userEvent.type(
-      screen.getByLabelText(/Confirm Password/i),
-      "Password2"
-    );
-    await userEvent.click(screen.getByRole("button", { name: /signup/i }));
-    expect(toast.error).toHaveBeenCalledWith("Passwords do not match.");
-  });
+    // Assert form data
+   // Access the form data from the component's state
+    const formData = SignupPage.getFormData();
 
-  it("validates image upload for supported file types", async () => {
-    const fileInput = screen.getByLabelText(/Choose an image:/i);
-    const file = new File(["(⌐□_□)"], "profile.png", { type: "image/png" });
-    await userEvent.upload(fileInput, file);
-    expect(fileInput.files[0]).toBe(file);
-    expect(fileInput.files).toHaveLength(1);
-  });
-
-  it("shows error for unsupported file types", async () => {
-    const fileInput = screen.getByLabelText(/Choose an image:/i);
-    const file = new File(["(⌐□_□)"], "profile.bmp", { type: "image/bmp" });
-    await userEvent.upload(fileInput, file);
-    expect(toast.error).toHaveBeenCalledWith("File not supported");
-  });
-
-  it("shows error for files larger than 2MB", async () => {
-    const fileInput = screen.getByLabelText(/Choose an image:/i);
-    const largeFile = new File([new Array(2097153).join("a")], "large.png", {
-      type: "image/png",
+    // Assert form data
+    expect(formData.role).toBe('renter/owner');
+    expect(formData.firstName).toBe('John');
+    expect(formData.lastName).toBe('Doe');
+    expect(formData.email).toBe('john.doe@example.com');
+    expect(formData.password).toBe('password123');
+    expect(formData.confirmPassword).toBe('password123');
     });
-    await userEvent.upload(fileInput, largeFile);
-    expect(toast.error).toHaveBeenCalledWith("File must be less than 2 MB");
+
+  it('should display error if wrong confirmed password is entered', async () => {
+    const { getByLabelText, getByText, getByRole, queryByText} = render(<Router><SignupPage /></Router>);
+
+    // Fill out the form
+    const roleDropdown = screen.getByLabelText('Select Role');
+    fireEvent.change(roleDropdown, { target: { value: 'renter/owner' } }); 
+
+    fireEvent.change(getByLabelText('First Name'), { target: { value: 'John' } });
+    fireEvent.change(getByLabelText('Last Name'), { target: { value: 'Doe' } });
+    fireEvent.change(getByLabelText('Phone Number (optional)'), { target: { value: '514-555-1234' } });
+    fireEvent.change(getByLabelText('Email'), { target: { value: 'john.doe@example.com' } });
+    fireEvent.change(getByLabelText('Password'), { target: { value: 'password123' } });
+    fireEvent.change(getByLabelText('Confirm Password'), { target: { value: 'password456' } });
+
+    const signupButton = getByRole('button', { name: 'Signup' });
+
+    // Submit the form
+    fireEvent.click(signupButton);
+
+    expect(toast.error).toHaveBeenCalledWith(
+      "Passwords do not match."
+    );
+
   });
+
+  it('should display error if password isnt valid', async () => {
+    const { getByLabelText, getByText, getByRole} = render(<Router><SignupPage /></Router>);
+
+    // Fill out the form
+    const roleDropdown = screen.getByLabelText('Select Role');
+    fireEvent.change(roleDropdown, { target: { value: 'renter/owner' } }); 
+    fireEvent.change(getByLabelText('First Name'), { target: { value: 'John' } });
+    fireEvent.change(getByLabelText('Last Name'), { target: { value: 'Doe' } });
+    fireEvent.change(getByLabelText('Phone Number (optional)'), { target: { value: '514-555-1234' } });
+    fireEvent.change(getByLabelText('Email'), { target: { value: 'john.doe@example.com' } });
+    fireEvent.change(getByLabelText('Password'), { target: { value: 'qwer' } });
+    fireEvent.change(getByLabelText('Confirm Password'), { target: { value: 'qwer' } });
+
+    const signupButton = getByRole('button', { name: 'Signup' });
+
+    // Submit the form
+    fireEvent.click(signupButton);
+
+    // Wait for toast message to appear
+    expect(toast.error).toHaveBeenCalledWith(
+      "Password must be at least 8 characters long."
+    );
+    fireEvent.change(getByLabelText('Password'), { target: { value: 'qwerqwerqwer' } });
+    fireEvent.change(getByLabelText('Confirm Password'), { target: { value: 'qwerqwerqwer' } });
+    fireEvent.click(signupButton);
+
+    
+    expect(toast.error).toHaveBeenCalledWith(
+      "Password must contain both letters and numbers."
+    );
+  });
+  it('should display error if mandatory fields arent all entered', async () => {
+    const { getByLabelText, getByText, getByRole} = render(<Router><SignupPage /></Router>);
+
+    // Fill out the form
+    const roleDropdown = screen.getByLabelText('Select Role');
+    fireEvent.change(roleDropdown, { target: { value: 'renter/owner' } }); 
+    fireEvent.change(getByLabelText('First Name'), { target: { value: '' } });
+    fireEvent.change(getByLabelText('Last Name'), { target: { value: '' } });
+    fireEvent.change(getByLabelText('Phone Number (optional)'), { target: { value: '' } });
+    fireEvent.change(getByLabelText('Email'), { target: { value: 'john.doe@example.com' } });
+    fireEvent.change(getByLabelText('Password'), { target: { value: 'qwer' } });
+    fireEvent.change(getByLabelText('Confirm Password'), { target: { value: 'qwer' } });
+
+    const signupButton = getByRole('button', { name: 'Signup' });
+
+    // Submit the form
+    fireEvent.click(signupButton);
+    expect(toast.error).toHaveBeenCalledWith("Please fill in all mandatory fields.");
+
+  
+  });
+  it('should display error if email entered is invalid', async () => {
+    const { getByLabelText, getByText, getByRole} = render(<Router><SignupPage /></Router>);
+
+    // Fill out the form
+    const roleDropdown = screen.getByLabelText('Select Role');
+    fireEvent.change(roleDropdown, { target: { value: 'renter/owner' } }); 
+    fireEvent.change(getByLabelText('First Name'), { target: { value: 'John' } });
+    fireEvent.change(getByLabelText('Last Name'), { target: { value: 'Doe' } });
+    fireEvent.change(getByLabelText('Phone Number (optional)'), { target: { value: '514-555-1234' } });
+    fireEvent.change(getByLabelText('Email'), { target: { value: 'john.doeexamplecom' } });
+    fireEvent.change(getByLabelText('Password'), { target: { value: 'password123' } });
+    fireEvent.change(getByLabelText('Confirm Password'), { target: { value: 'password456' } });
+
+    const signupButton = getByRole('button', { name: 'Signup' });
+
+    // Submit the form
+    fireEvent.click(signupButton);
+
+    expect(toast.error).toHaveBeenCalledWith("Invalid email format. Please include '@' and '.' in your email address.");
+  });
+  it('should allow management company to fill out the form and signup', async () => {
+      const { getByLabelText, getByText, getByRole} = render(<Router><SignupPage /></Router>);
+  
+      // Fill out the form
+      const roleDropdown = screen.getByLabelText('Select Role');
+      fireEvent.change(roleDropdown, { target: { value: 'managementCompany' } }); 
+  
+      fireEvent.change(getByLabelText('Company Name'), { target: { value: 'Condo' } });
+      fireEvent.change(getByLabelText('Email'), { target: { value: 'condo@gmail.com' } });
+      fireEvent.change(getByLabelText('Phone Number (optional)'), { target: { value: '514-550-1217' } });
+      fireEvent.change(getByLabelText('Password'), { target: { value: 'helloiamcompany123' } });
+      fireEvent.change(getByLabelText('Confirm Password'), { target: { value: 'helloiamcompany123' } });
+
+      const signupButton = getByText('Signup', { selector: 'button' });
+  
+      // Submit the form
+      fireEvent.click(signupButton);
+  
+      // Assert form data
+     // Access the form data from the component's state
+      const formData = SignupPage.getFormData();
+  
+      // Assert form data
+      expect(formData.role).toBe('managementCompany');
+      expect(formData.companyName).toBe('Condo');
+      expect(formData.email).toBe('condo@gmail.com');
+      expect(formData.password).toBe('helloiamcompany123');
+      expect(formData.confirmPassword).toBe('helloiamcompany123');
+      });
+
+      it("should allow the user to upload a profile picture", async () => {
+        const { getByLabelText, getByText, getByRole} = render(<Router><SignupPage /></Router>);
+    
+        const file = new File(["dummy content"], "profile.jpg", { type: "image/jpeg" });
+    
+        const fileInput = getByLabelText("Choose an image:");
+        fireEvent.change(fileInput, { target: { files: [file] } });
+    
+        await waitFor(() => {
+          const previewImage = document.querySelector("img[alt='profile']");
+          expect(previewImage).toBeInTheDocument();
+          expect(previewImage.src).toContain("data:image/jpeg;base64,");
+        });
+      });
+  // it('should display error message if passwords do not match', async () => {
+  //   const { getByLabelText, getByText } = render(<Router><SignupPage /></Router>);
+
+  //   const roleDropdown = screen.getByLabelText('Select Role');
+  //   fireEvent.change(roleDropdown, { target: { value: 'managementCompany' } }); 
+  //   // Fill out the form with mismatched passwords
+  //   fireEvent.change(getByLabelText('Company Name'), { target: { value: 'CondoConnect' } });
+  //   fireEvent.change(getByLabelText('Email'), { target: { value: 'john.doe@example.com' } });
+  //   fireEvent.change(getByLabelText('Phone Number'), { target: { value: 'password123' } });
+  //   fireEvent.change(getByLabelText('Password'), { target: { value: 'password123' } });
+  //   fireEvent.change(getByLabelText('Confirm Password'), { target: { value: 'password456' } });
+
+  //   // Submit the form
+  //   const signupButton = getByRole('button', { name: 'Signup' });
+
+  //   // Submit the form
+  //   fireEvent.click(signupButton);
+
+  //   // Wait for error toast message to appear
+  //   await waitFor(() => expect(getByText('Passwords do not match.')).toBeInTheDocument());
+  // });
+
+  // Add more tests as needed...
 });

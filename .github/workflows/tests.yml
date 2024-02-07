@@ -24,4 +24,4 @@ jobs:
       run: cd mini-cap/ && npm test
     
     - name: Run coverage
-      run: cd mini-cap/ && npm test:coverage
+      run: cd mini-cap/ && npm run test:coverage
