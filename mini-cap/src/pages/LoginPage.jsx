@@ -21,6 +21,12 @@ const LoginPage = () => {
   const handleLogin = (e) => {
     e.preventDefault();
 
+    // Perform validation for email and password
+    if (!credentials.email || !credentials.password) {
+      toast.error("Please enter both email and password.");
+      return;
+    }
+
     // Perform email validation check
     if (!credentials.email.includes("@") || !credentials.email.includes(".")) {
       toast.error(
@@ -29,14 +35,8 @@ const LoginPage = () => {
       return;
     }
 
-    // Perform validation for email and password
-    if (!credentials.email || !credentials.password) {
-      toast.error("Please enter both email and password.");
-      return;
-    }
-
     // Add your login logic here
-    console.log("Login clicked");
+    //console.log("Login clicked");
   };
 
   return (
@@ -65,11 +65,19 @@ const LoginPage = () => {
               onChange={handleChange}
             />
           </div>
-          <button  className="loginbtn" type="submit"  style={{marginBottom:"20px", marginTop:"20px", width:"100%"}}>
+          <button
+            className="loginbtn"
+            type="submit"
+            style={{ marginBottom: "20px", marginTop: "20px", width: "100%" }}
+          >
             Login
           </button>
 
-          <a href="#" className="forgot-password-link" style={{color:"#3531a1"}}>
+          <a
+            href="#"
+            className="forgot-password-link"
+            style={{ color: "#3531a1" }}
+          >
             Forgot Password?
           </a>
         </form>
