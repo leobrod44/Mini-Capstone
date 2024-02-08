@@ -1,13 +1,15 @@
 import React from "react";
 import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom"; 
 import { toast } from "react-toastify";
 import LoginPage from "../pages/LoginPage.jsx";
 
 // Mocking toast
 
+
 afterEach(cleanup);
+
 
 jest.mock("react-toastify", () => {
   const originalModule = jest.requireActual("react-toastify");
@@ -19,6 +21,7 @@ jest.mock("react-toastify", () => {
     },
   };
 });
+
 
 describe("LoginPage", () => {
   beforeEach(() => {
@@ -47,6 +50,7 @@ describe("LoginPage", () => {
     expect(screen.getByLabelText(/password/i).value).toBe("password");
   });
 
+  
   it("shows a toast message when the email format is invalid", () => {
     fireEvent.change(screen.getByLabelText(/email/i), {
       target: { value: "invalidemail" },
@@ -60,7 +64,7 @@ describe("LoginPage", () => {
       "Invalid email format. Please include '@' and '.' in your email address."
     );
   });
-
+  
   it("shows a toast message when the email format is invalid", () => {
     fireEvent.click(screen.getByRole("button", { name: /login/i }));
 
@@ -68,4 +72,5 @@ describe("LoginPage", () => {
       "Please enter both email and password."
     );
   });
+
 });
