@@ -4,6 +4,7 @@ import UserProfile from './pages/UserProfile';
 import LandingPage from './pages/LandingPage';
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import Dashboard from "./pages/Dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -17,7 +18,7 @@ function App() {
     <Route path="/user-profile" element={<UserProfile/>} />
     <Route path="/login" element={<LoginPage />} />
     <Route path="/signup" element={<SignupPage />} />
-    
+    <Route path="/dashboard" element={<Dashboard />} />
     </Routes>
     </BrowserRouter>
   );
