@@ -139,13 +139,14 @@ const SignupPage = () => {
           <label className="form-label mt-3" htmlFor="customFile">
             Choose an image:
           </label>
-          <div className="row">
-            <div className="col-sm-8">
+          <div className="row justify-content-center" >
+            <div className="col-sm-" >
               <input
                 type="file"
                 className="form-control"
                 id="customFile"
                 onChange={handlePhotoChange}
+                
               />
             </div>
           </div>
