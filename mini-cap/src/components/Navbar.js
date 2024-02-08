@@ -62,19 +62,19 @@ const Navbar = () => {
   return (
     <>
       <nav className={NavbarCSS.myNavbar}>
-        {role === "mgmt" && (
+       {/*  {role === "mgmt" && (
           <GiHamburgerMenu
             size={24}
             className={`${NavbarCSS.myBurger} ${NavbarCSS.myCursorPointer}`}
             onClick={toggleMenu}
           />
-        )}
+        )} */}
         <div ref={menuRef}>
           <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu}>
             {/* if there is no profile pic, we should default to using the hamburger menu */}
-            {role !== "mgmt" && (
+           {/*  {role !== "mgmt" && ( */}
               <img src={tempProfilePic} alt="User profile picture" />
-            )}
+          {/*  )} */}
           </div>
 
           <div
@@ -129,7 +129,7 @@ const Navbar = () => {
                 <DropdownItem
                   address={"/propertyprofile"}
                   icon={<IoIosBusiness />}
-                  text={"Create a profile"}
+                  text={"My properties "}
                 />
               )}
 
