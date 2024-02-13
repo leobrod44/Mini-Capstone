@@ -6,6 +6,7 @@ import React, { useState,useEffect  } from "react";
 import Popup from "../components/Popup";
 import AddCondoBtn from "../components/AddCondoBtn";
 
+
 const Dashboard =() => {
 // State to represent whether the user has registered condos or not, since i dont have backend right now
 const [hasCondos, setHasCondos] = useState(false);
@@ -63,10 +64,10 @@ const [hasCondos, setHasCondos] = useState(false);
 	  		{showPopup && <Popup handleClose={handlePopupToggle} />}
 			
 			
-			{!showPopup && hasCondos && <AddCondoBtn onClick={handlePopupToggle}/> }
+			{!showPopup && hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={handlePopupToggle}/> }
 		</div>
 			<Footer/>
-			<button onClick={toggleHasCondos}>
+			<button onClick={toggleHasCondos} data-testid="toggle">
         Toggle Has Condos
       </button>
 		</div>

@@ -7,7 +7,7 @@ const AddCondoBtn = ({ onClick}) => {
     
     
   return (
-    <div className="floating_button"  onClick={onClick}>
+    <div className="floating_button" role="button" onClick={onClick} >
       <div className="button_circle">
         <span className="plus_sign">+</span>
       </div>

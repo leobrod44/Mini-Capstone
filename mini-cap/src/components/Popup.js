@@ -6,7 +6,7 @@ const Popup = ({ handleClose }) => {
   return (
     <div className="popup_container">
       <div className="popup_content">
-        <span className="close_popup" onClick={handleClose}>
+        <span className="close_popup" onClick={handleClose} data-testid="close-button">
           &times;
         </span>
         <h4 className="h4_db">Register your condo</h4>
