@@ -5,6 +5,7 @@ import "../styling/SignupPage.css"; // Ensure your CSS file path is correct
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import user from "../assets/user.png"; // Adjust the path accordingly
+import fb from "../backend/Firebase";
 
 const SignupPage = () => {
   const [previewUrl, setPreviewUrl] = useState(user);
@@ -76,6 +77,7 @@ const SignupPage = () => {
 
     // Add your signup logic here
     console.log("Signup Form Data:", formData);
+    fb.RegisterUser(formData);
   };
 
   const handlePhotoChange = (event) => {
