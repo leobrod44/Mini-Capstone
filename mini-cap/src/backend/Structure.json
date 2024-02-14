@@ -1,0 +1,24 @@
+{
+    "User": {
+        "role": "",
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "phoneNumber": "",
+        "companyName": "",
+        "password": "",
+        "picture": ""
+    },
+    "Company": {
+        "name": "",
+        "address": "",
+        "city": "",
+        "state": "",
+        "zip": "",
+        "phoneNumber": "",
+        "email": "",
+        "website": "",
+        "logo": ""
+    }
+}
+  

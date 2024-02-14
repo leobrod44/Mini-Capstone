@@ -5,11 +5,21 @@ import "../styling/SignupPage.css"; // Ensure your CSS file path is correct
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import user from "../assets/user.png"; // Adjust the path accordingly
-import fb from "../backend/Firebase";
+import { db, auth, storage } from "../config/firebase";
+import {
+  getDocs,
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
+
 
 const SignupPage = () => {
   const [previewUrl, setPreviewUrl] = useState(user);
   const [profilePicUrl, setProfilePicUrl] = useState(null);
+  const usersCollectionRef = collection(db, "users");
 
   const [formData, setFormData] = useState({
     role: "renter/owner", // "Renter/Owner" as the default role
@@ -20,6 +30,7 @@ const SignupPage = () => {
     companyName: "",
     password: "",
     confirmPassword: "",
+    profilePic: ""
   });
   SignupPage.getFormData = () => {
     return formData;
@@ -32,9 +43,9 @@ const SignupPage = () => {
     });
   };
 
-  const handleSignup = (e) => {
+const handleSignup = async (e) => {
     e.preventDefault();
-
+   
     // Validation checks
     if (
       (formData.role === "renter/owner" &&
@@ -74,10 +85,13 @@ const SignupPage = () => {
       toast.error("Password must contain both letters and numbers.");
       return;
     }
-
-    // Add your signup logic here
-    console.log("Signup Form Data:", formData);
-    fb.RegisterUser(formData);
+    
+    try {
+      const data = await addDoc(usersCollectionRef,formData);
+      console.log(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handlePhotoChange = (event) => {
@@ -96,7 +110,8 @@ const SignupPage = () => {
     fileReader.onload = () => {
       setPreviewUrl(fileReader.result);
     };
-    fileReader.readAsDataURL(photo);
+    var p = fileReader.readAsDataURL(photo);
+    profilePicUrl = p;
   };
 
   return (
