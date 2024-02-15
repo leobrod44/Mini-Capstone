@@ -9,24 +9,11 @@ import { Link, useNavigate } from "react-router-dom";
 const MGMTDashboard =() => {
 // State to represent whether the user has registered condos or not, since i dont have backend right now
 const [hasProperties, setHasProperties] = useState(false);
- const [showPopup, setShowPopup] = useState(false);
  const navigate = useNavigate();
 
-
-
-  const handlePopupToggle = () => {
-	setShowPopup(!showPopup);
-  };
-
-  const handleRegisterProperties = () => {
-	
-	console.log("Property registered!");
-	setShowPopup(false); 
-	setHasProperties(true);
-  };
    
-   // Function to simulate having condos or not
-   const toggleHasCondos = () => {
+   // TODO: This function simulates having properties or not. Used to decide what should be displayed on the dashboard
+   const toggleHasProperties = () => {
     setHasProperties(prevHasProperties => !prevHasProperties);
   };
 
@@ -49,7 +36,7 @@ const [hasProperties, setHasProperties] = useState(false);
               
             </div>
           ) : (
-            // Render registration section if the user has no condos
+            // Render registration section if the user has no properties
             <div className="white_card">
               <p className="card_title">You have not created a property yet.</p>
               <Link to="/add-property" className="button"> Create my first Property</Link>
@@ -57,13 +44,19 @@ const [hasProperties, setHasProperties] = useState(false);
             </div>
           )}
 			</div>
-			
+	  		
 			{ hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-property')} /> }
-		</div>
-			<Footer/>
-			<button onClick={toggleHasCondos} data-testid="toggle">
+		 
+     
+     {/* TODO: This button toggles the state of whether the user has properties or not. Should be deleted once we have backend connected  */}
+     <button 
+     onClick={toggleHasProperties} 
+     data-testid="toggle">
                 Toggle Has Properties
-            </button>
+      </button>
+    </div>
+			<Footer/>
+    
 		</div>
 	);
 
