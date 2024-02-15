@@ -1,7 +1,8 @@
 import React from 'react';
-import { render, screen, fireEvent,act } from '@testing-library/react';
+import { render, screen, fireEvent,waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect'; 
 import Dashboard from '../pages/Dashboard';
+import { BrowserRouter } from 'react-router-dom';
 
 // Mock the Header and Footer components
 jest.mock("../components/Header", () => () => <div>Header Mock</div>);
@@ -12,11 +13,29 @@ describe('Dashboard Component', () => {
   
   it('renders without crashing and contains all condos (if any)', () => {
     render(
+    <BrowserRouter>
     <Dashboard />
+    </BrowserRouter>
     );
     // Check if Header and Footer are rendered
     expect(screen.getByText("Header Mock")).toBeInTheDocument();
     expect(screen.getByText("Footer Mock")).toBeInTheDocument();
+
+    const toggleButton = screen.getByTestId('toggle');
+    fireEvent.click(toggleButton);
+
+    // Wait for the state update to complete
+    waitFor(() => {
+      expect(screen.getByText('You have not created a property yet.')).toBeInTheDocument();
+    });
+
+    fireEvent.click(toggleButton);
+
+    // Wait for the state update to complete
+    waitFor(() => {
+      expect(screen.getByText('You have registered properties:')).toBeInTheDocument();
+    });
+
   });
 
   
@@ -63,5 +82,27 @@ describe('Dashboard Component', () => {
 //when hascondos is true check that the register my first condo is not rendered
 
 // WHEN HAS condos is true condos should be rendered
+
+it('renders AddCondoBtn when hasCondos is true and does not render it when hasCondos is false', () => {
+  render(
+    <BrowserRouter>
+      <Dashboard />
+    </BrowserRouter>
+  );
+
+  expect(screen.queryByTestId('add-condo-btn')).not.toBeInTheDocument(); // Button shouldn't be rendered initially
+  const toggleButton = screen.getByTestId('toggle');
+  fireEvent.click(toggleButton); // Set hasProperties to true
+  
+ waitFor(() => {
+  expect(screen.getByTestId('add-condo-btn')).toBeInTheDocument(); // Button should be rendered now
+});
+fireEvent.click(toggleButton); // Set hasProperties to false
+// Wait for the component to update with the new state
+ waitFor(() => {
+  expect(screen.queryByTestId('add-condo-btn')).not.toBeInTheDocument(); // Button should not be rendered now
+});
+
+});
 
 });

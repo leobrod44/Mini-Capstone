@@ -17,12 +17,12 @@ const [hasCondos, setHasCondos] = useState(false);
 	setShowPopup(!showPopup);
   };
 
-  const handleRegisterCondo = () => {
-	
+  //TODO: implement the registering condo
+/*   const handleRegisterCondo = () => {
 	console.log("Condo registered!");
 	setShowPopup(false); 
 	setHasCondos(true);
-  };
+  }; */
    
    // Function to simulate having condos or not
    const toggleHasCondos = () => {
@@ -67,6 +67,7 @@ const [hasCondos, setHasCondos] = useState(false);
 			{!showPopup && hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={handlePopupToggle}/> }
 		</div>
 			<Footer/>
+      {/* TODO: This button toggles the state of whether the user has properties or not. Should be deleted once we have backend connected  */}
 			<button onClick={toggleHasCondos} data-testid="toggle">
         Toggle Has Condos
       </button>
