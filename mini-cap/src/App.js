@@ -8,9 +8,8 @@ import Dashboard from "./pages/Dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 function App() {
-  //const fb = new fb();
+
   return (
     <BrowserRouter>
        <ToastContainer pauseOnHover={false} autoClose={1000} />
