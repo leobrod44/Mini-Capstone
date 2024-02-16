@@ -1,0 +1,109 @@
+/* CondoComponent.css */
+
+
+h2{
+    font-family: "Roboto", sans-serif;
+    position: relative;
+    margin-bottom: 3px;
+    color:#2f2c9b;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  /* Overall page styles */
+  .condo-details-container {
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 55vh;
+    background-color: #f4f4f4;
+  }
+
+  .condo-name-user-tag {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    /* Add any additional styles for the condo name and user tag */
+  }
+  
+  .condo-info {
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 13px; /* Increased padding for wider form */
+    width: 100%; /* Full width on large screens */
+    max-width: 400px; /* Maximum width for the form */
+  }
+
+  .condo-info p{
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    font-weight: lighter;
+    font-size: 20px;
+    margin: 0; /* Remove default margin for paragraph elements */
+  }
+
+  .locker-details {
+    display: flex;
+    justify-content: space-between;
+    /* Add any additional styles for the details button and locker */
+  }
+
+  /* Profile Picture styles */
+  .profile-picture{
+    height: 76px;
+    width: 91px;
+  } 
+  
+  /* Tag styles */
+  .user-tag {
+    /* Shared styles for both renter and owner */
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 8px;
+    height: 28px;
+    width: 74px;
+    font-size: 20px;
+    font-family: "Roboto", sans-serif;
+    font-weight: lighter;
+}
+
+.owner {
+    /* Styles specific to owner */
+    background-color: #BFF877;
+    color: black;
+}
+
+.renter {
+    /* Styles specific to renter */
+    background-color: #77CAF8;
+    color: black;
+}
+  
+  /* Button styles */
+  
+  .details-button {
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    font-weight: 400;
+    font-size: 20px; /* Chosen font size */
+    background-color: #4540db; /* Chosen background color from signup2 branch */
+    color: #fff; /* Assuming var(--white) is white, replaced with #fff */
+    border: none; /* No border */
+    border-radius: 4px; /* Chosen border-radius */
+    cursor: pointer; /* Hand cursor on hover */
+    transition: all 0.3s ease; /* Example transition */
+    display: flex; /* Display style */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
+    height: 36px;
+    width: 125px;
+  }
+  
+  .details-button:hover {
+    background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
+    color: #ffffff; /* Change text color on hover to white */
+  }
+  
