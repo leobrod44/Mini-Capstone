@@ -96,7 +96,7 @@ const handleSignup = async (e) => {
       try {
         const newUser = await addUser(formData);
       } catch (err) {
-        toast.error("User already exists");
+        toast.error(err.message);
       }
     }
     
@@ -104,7 +104,7 @@ const handleSignup = async (e) => {
       try {
         const newUser = await addCompany(formData);
       } catch (err) {
-        toast.error("Company already exists");
+        toast.error(err.message);
       }
     }
     //TODO login user and navigate to home page

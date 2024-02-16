@@ -18,7 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app);
 const storage = getStorage();
-const profilePictureRef = ref(storage, 'profilePictures/');
+const profilePictureRef = 'profilePictures/';
 
 export async function getUserData() {
 
@@ -43,58 +43,53 @@ export async function addUser(data) {
     try {
         const userDoc = await getDoc(doc(db, "Users", data['email']));
         if (userDoc.exists()) {
-            console.log("User already exists.");
             throw new Error("User already exists.");
         }
-        if(data.picture){
-            try{
-                await setPicture(data);
-            }
-            catch(e){
-                throw new Error("Error adding picture: ", e);
-            }
-        }
-        const docRef = await setDoc(doc(db, "Users", data['email']), {
-            data
-        });
-        console.log("Document written with ID: ", docRef);
-        return true;
+       setPicture(data, profilePictureRef);
+       storeData("Users",data,data['email']);
+
     } catch (e) {
-        throw new Error("Error adding document: ", e);
+        throw new Error(e);
     }
 }
 export async function addCompany(data) {
     const companyCollection = collection(db, "Company");
-    const clean = cleanData("Company",data);
-   
+
     try {
+
         const userDoc = await getDoc(doc(db, "Company", data['email']));
         if (userDoc.exists()) {
             throw new Error("Company already exists.");
         }
-        if(data.picture){
-            try{
-                await setPicture(data);
-            }
-            catch(e){
-                throw new Error("Error adding picture: ", e);
-            }
-        }
-        const docRef = await setDoc(doc(db, "Company", data['email']), {
-            data
-        });
-        console.log("Document written with ID: ", docRef);
+
+        setPicture(data, profilePictureRef);
+
+        storeData("Company",data,data['email']);
+
     } catch (e) {
-        throw new Error("Error adding document: ", e);
+        throw new Error(e);
     }
 }
-async function setPicture(data){
-    var pictureData = data.picture;
-    if(pictureData){
-        var pic = await uploadBytes(profilePictureRef, pictureData).then((snapshot) => {
-            console.log('Uploaded a blob or file!');
-          });
-        return pic;
+async function setPicture(data, path){
+    try{
+        var pictureData = data.picture;
+        if(pictureData){
+            var pic = await uploadBytes(ref(storage,path + data.email), pictureData);
+        }
+    }
+    catch(e){
+        throw new Error("Error adding picture: ", e);
+    }
+}
+async function storeData(collection, data, key){
+    try{
+        const clean = cleanData(collection,data);
+        const docRef = await setDoc(doc(db, collection, key), {
+            data
+        });
+    }
+    catch(e){
+        throw new Error("Error adding document: ", e);
     }
 }
 

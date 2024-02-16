@@ -5,15 +5,13 @@ const structure = {
         "lastName": "",
         "email": "",
         "phoneNumber": "",
-        "companyName": "",
         "password": "",
-        "picture": ""
     },
     "Company": {
         "companyName": "",
         "phoneNumber": "",
         "email": "",
-        "picture": ""
+        "password": "",
     }
 }
 
