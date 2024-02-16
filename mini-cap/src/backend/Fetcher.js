@@ -46,6 +46,14 @@ export async function addUser(data) {
             console.log("User already exists.");
             throw new Error("User already exists.");
         }
+        if(data.picture){
+            try{
+                await setPicture(data);
+            }
+            catch(e){
+                throw new Error("Error adding picture: ", e);
+            }
+        }
         const docRef = await setDoc(doc(db, "Users", data['email']), {
             data
         });
@@ -58,13 +66,20 @@ export async function addUser(data) {
 export async function addCompany(data) {
     const companyCollection = collection(db, "Company");
     const clean = cleanData("Company",data);
-
+   
     try {
         const userDoc = await getDoc(doc(db, "Company", data['email']));
         if (userDoc.exists()) {
             throw new Error("Company already exists.");
         }
-
+        if(data.picture){
+            try{
+                await setPicture(data);
+            }
+            catch(e){
+                throw new Error("Error adding picture: ", e);
+            }
+        }
         const docRef = await setDoc(doc(db, "Company", data['email']), {
             data
         });
@@ -73,12 +88,13 @@ export async function addCompany(data) {
         throw new Error("Error adding document: ", e);
     }
 }
-function setPicture(data){
+async function setPicture(data){
     var pictureData = data.picture;
     if(pictureData){
-        uploadBytes(profilePictureRef, pictureData).then((snapshot) => {
+        var pic = await uploadBytes(profilePictureRef, pictureData).then((snapshot) => {
             console.log('Uploaded a blob or file!');
           });
+        return pic;
     }
 }
 

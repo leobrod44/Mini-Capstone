@@ -6,7 +6,6 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import user from "../assets/user.png"; // Adjust the path accordingly
 import { db, auth, storage } from "../config/firebase";
-import { Link, useNavigate } from "react-router-dom";
 
 import {
   getDocs,
@@ -34,7 +33,7 @@ const SignupPage = () => {
     companyName: "",
     password: "",
     confirmPassword: "",
-    profilePic: ""
+    picture: ""
   });
   SignupPage.getFormData = () => {
     return formData;
@@ -89,6 +88,9 @@ const handleSignup = async (e) => {
       toast.error("Password must contain both letters and numbers.");
       return;
     }
+    if(profilePicUrl){
+      formData.picture = profilePicUrl;
+    }
 
     if(formData.role === "renter/owner"){
       try {
@@ -125,6 +127,7 @@ const handleSignup = async (e) => {
     fileReader.onload = () => {
       setPreviewUrl(fileReader.result);
     };
+    //TODO profilePic preview dosent seem to be working anymore
     
   };
 
