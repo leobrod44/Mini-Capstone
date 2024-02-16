@@ -6,6 +6,8 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import user from "../assets/user.png"; // Adjust the path accordingly
 import { db, auth, storage } from "../config/firebase";
+import { Link, useNavigate } from "react-router-dom";
+
 import {
   getDocs,
   collection,
@@ -14,9 +16,11 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
+import { getUserData, addUser, addCompany } from "../backend/Fetcher";
 
 
 const SignupPage = () => {
+
   const [previewUrl, setPreviewUrl] = useState(user);
   const [profilePicUrl, setProfilePicUrl] = useState(null);
   const usersCollectionRef = collection(db, "users");
@@ -85,13 +89,24 @@ const handleSignup = async (e) => {
       toast.error("Password must contain both letters and numbers.");
       return;
     }
-    
-    try {
-      const data = await addDoc(usersCollectionRef,formData);
-      console.log(data);
-    } catch (err) {
-      console.error(err);
+
+    if(formData.role === "renter/owner"){
+      try {
+        const newUser = await addUser(formData);
+      } catch (err) {
+        toast.error("User already exists");
+      }
     }
+    
+    else if (formData.role === "managementCompany"){
+      try {
+        const newUser = await addCompany(formData);
+      } catch (err) {
+        toast.error("Company already exists");
+      }
+    }
+    //TODO login user and navigate to home page
+  
   };
 
   const handlePhotoChange = (event) => {
@@ -110,8 +125,7 @@ const handleSignup = async (e) => {
     fileReader.onload = () => {
       setPreviewUrl(fileReader.result);
     };
-    var p = fileReader.readAsDataURL(photo);
-    profilePicUrl = p;
+    
   };
 
   return (
