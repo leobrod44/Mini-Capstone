@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import "../styling/CondoComponent.css";
 
-const CondoComponent = ({ name, profilePicture, condo, address, unitNumber, parkingSpot, locker, userType }) => {
+const CondoComponent = ({ name, profilePicture, address, unitNumber, parkingSpot, locker, userType }) => {
     
     const userTypeClass = userType === 'Owner' ? 'owner' : 'renter';
 
@@ -15,7 +15,7 @@ const CondoComponent = ({ name, profilePicture, condo, address, unitNumber, park
                 </div>
                 
                     {profilePicture && <img src={profilePicture} alt="Profile" className="profile-picture" />}
-                    <p>Address: {address}</p>
+                    <p>{address}</p>
                     <p>Unit Number: {unitNumber}</p>
                     {parkingSpot && <p>Parking Spot: {parkingSpot}</p>}
                 
