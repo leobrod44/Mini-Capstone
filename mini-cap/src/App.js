@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import MGMTDashboard from './pages/MGMTDashboard';
 
 function App() {
+
   return (
     <BrowserRouter>
        <ToastContainer pauseOnHover={false} autoClose={1000} />
