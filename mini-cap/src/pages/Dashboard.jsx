@@ -1,6 +1,6 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import CondoComponent from '../components/CondoComponent.jsx';
+import CondoComponent from "../components/CondoComponent.jsx";
 
 const Dashboard =() => {
 

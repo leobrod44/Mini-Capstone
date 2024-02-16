@@ -24,7 +24,6 @@ h2{
     display: flex;
     justify-content: space-between;
     padding-bottom: 10px;
-    /* Add any additional styles for the condo name and user tag */
   }
   
   .condo-info {
@@ -34,6 +33,8 @@ h2{
     padding: 13px; /* Increased padding for wider form */
     width: 100%; /* Full width on large screens */
     max-width: 400px; /* Maximum width for the form */
+    display: flex;
+    flex-direction: column;
   }
 
   .condo-info p{
@@ -43,10 +44,17 @@ h2{
     margin: 0; /* Remove default margin for paragraph elements */
   }
 
+  .parking-send-key {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
   .locker-details {
     display: flex;
     justify-content: space-between;
-    /* Add any additional styles for the details button and locker */
+    align-items: flex-end;
+    margin-top: 5px;
   }
 
   /* Profile Picture styles */
