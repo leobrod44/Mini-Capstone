@@ -154,6 +154,7 @@ select {
     color: #382fb8; /* Match the color of other headers in the form */
     font-family: "Roboto", sans-serif;
     font-weight: bold;
+
   }
   
   .condo-preview p {
@@ -161,6 +162,7 @@ select {
     color: #2f2c9b; /* Match the color of other text in the form */
     font-family: "Roboto", sans-serif;
     font-weight: bold;
+    display: flex; 
   }
   
   .condo-preview img {

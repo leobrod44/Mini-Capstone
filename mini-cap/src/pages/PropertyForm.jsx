@@ -16,7 +16,9 @@ const PropertyForm = () => {
     condos: [],
   });
 
-  const [previewImage, setPreviewImage] = useState(null);
+  const [previewPropertyImage, setPreviewPropertyImage] = useState(null);
+  const [condoPreviewImages, setCondoPreviewImages] = useState([]);
+
   const [visibleCondoForms, setVisibleCondoForms] = useState([]);
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -26,8 +28,7 @@ const PropertyForm = () => {
         ...property,
         picture: null,
       });
-      setPreviewImage(null);
-      return;
+      
     }
   
     if (
@@ -44,15 +45,16 @@ const PropertyForm = () => {
   
     setProperty({
       ...property,
-      picture: file,
+      propertyPicture: file,
     });
   
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPreviewImage(reader.result);
+      setPreviewPropertyImage(reader.result);
     };
   
     reader.readAsDataURL(file);
+  
   };
 
   const handleCondoInputChange = (e, index) => {
@@ -108,12 +110,22 @@ const PropertyForm = () => {
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setPreviewImage(reader.result);
+      setCondoPreviewImages((prevImages) => {
+        const newImages = [...prevImages];
+        newImages[index] = reader.result;
+        return newImages;
+      });
     };
 
     reader.readAsDataURL(file);
-  };
 
+   
+
+    setProperty({
+      ...property,
+      condos: updatedCondos,
+    });
+  };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProperty({
@@ -163,9 +175,9 @@ const PropertyForm = () => {
               />
             </div>
           </div>
-          {previewImage && (
+          {previewPropertyImage && (
             <div className="image-preview">
-              <img src={previewImage} alt="Preview" />
+              <img src={previewPropertyImage} alt="Property Preview" />
             </div>
           )}
           <div className="input-group mt-3"></div>
@@ -240,7 +252,7 @@ const PropertyForm = () => {
   <div key={index}>
     {visibleCondoForms.includes(index) ? (
       <div className="condo-preview">
-        <h5>{`Condo ${condo.unitNumber} Preview`}</h5>
+        <h5>{`Condo ${condo.unitNumber} `}</h5>
         <p>Unit Number: {condo.unitNumber}</p>
         <p>Unit Price: {condo.unitPrice}</p>
         <p>Unit Size: {condo.unitSize}</p>
@@ -293,12 +305,14 @@ const PropertyForm = () => {
                     />
     </div>
   </div>
-  {condo.condoPicture && (
-    <img
-      src={URL.createObjectURL(condo.condoPicture)}
-      alt={`Condo ${index + 1} Preview`}
-    />
+  {condoPreviewImages[index] && (
+        <img
+          src={condoPreviewImages[index]}
+          alt={`Condo ${condo.unitNumber} Preview`}
+        />
+    
   )}
+  <div className="input-group mt-3"></div>
                     {/* "Submit Condo" button for each condo */}
                     <button
                       className="submit-condo-button"
