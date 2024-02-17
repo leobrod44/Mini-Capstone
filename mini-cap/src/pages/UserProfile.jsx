@@ -6,7 +6,9 @@ import DeleteModal from "../components/DeleteModal";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import user from "../assets/user.png"; 
+import user from "../assets/user.png";
+import {getUserData} from "../backend/Fetcher";
+import store from "storejs";
 
 const UserProfile =() => {
 
@@ -29,15 +31,21 @@ const UserProfile =() => {
   const [role, setRole] = useState(null);
 
 
+
 useEffect(()=>{
  //temporary til backend is done and we can actully receive users and their roless
   //roles, condoOwner, renter , or mgmt
-    
-    const user = { role: "condoOwner" }; 
-   //const user = { role: "renter" }; 
-   //const user = { role: "mgmt" }; 
- 
-    setRole(user.role);
+
+  //console.log(store("loggedUser"));
+
+  async function fetchUserData() {
+    let tempData = await getUserData(store("loggedUser"));
+    setFirstName(tempData.firstName)
+    //set rest of info here
+  }
+
+  fetchUserData();
+
 })
  
 

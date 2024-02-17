@@ -13,6 +13,7 @@ import { CgProfile } from "react-icons/cg";
 import { IoIosBusiness } from "react-icons/io";
 import { LiaHandsHelpingSolid } from "react-icons/lia";
 import { FaBriefcase } from "react-icons/fa";
+import store from "storejs";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -54,8 +55,7 @@ const Navbar = () => {
 
   const logout = async (e) => {
     e.preventDefault();
-    //if user clicks logout then send them to the login page
-    //insert logout user function here
+    store.remove("loggedUser");
     navigate("/login");
   };
 
