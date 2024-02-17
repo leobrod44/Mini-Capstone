@@ -41,9 +41,9 @@ const Navbar = () => {
 
   React.useEffect(() => {
     //roles, condoOwner, renter , or mgmt
-    const user = { role: "condoOwner" };
+    //const user = { role: "condoOwner" };
     //const user = { role: "renter" };
-    //const user = { role: "mgmt" };
+    const user = { role: "mgmt" };
     setRole(user.role);
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -127,7 +127,7 @@ const Navbar = () => {
 
               {role === "mgmt" && (
                 <DropdownItem
-                  address={"/propertyprofile"}
+                  address={"/MGMTDashboard"}
                   icon={<IoIosBusiness />}
                   text={"My properties "}
                 />

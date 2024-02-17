@@ -8,8 +8,10 @@ import PropertyForm from "./pages/PropertyForm";
 import Dashboard from "./pages/Dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MGMTDashboard from './pages/MGMTDashboard';
 
 function App() {
+
   return (
     <BrowserRouter>
        <ToastContainer pauseOnHover={false} autoClose={1000} />
@@ -20,7 +22,11 @@ function App() {
     <Route path="/login" element={<LoginPage />} />
     <Route path="/signup" element={<SignupPage />} />
     <Route path="/dashboard" element={<Dashboard />} />
+
     <Route path="/add-property" element={<PropertyForm />} />
+
+    <Route path="/mgmtdashboard" element={<MGMTDashboard />} />
+
     </Routes>
     </BrowserRouter>
   );
