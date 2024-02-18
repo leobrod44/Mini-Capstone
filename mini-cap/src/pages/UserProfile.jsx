@@ -6,7 +6,9 @@ import DeleteModal from "../components/DeleteModal";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-import user from "../assets/user.png"; 
+import user from "../assets/user.png";
+import {getUserData, updateUserInfo, changePassword, getProfilePicture, updatePicture} from "../backend/Fetcher";
+import store from "storejs";
 
 const UserProfile =() => {
 
@@ -29,16 +31,28 @@ const UserProfile =() => {
   const [role, setRole] = useState(null);
 
 
+
 useEffect(()=>{
  //temporary til backend is done and we can actully receive users and their roless
   //roles, condoOwner, renter , or mgmt
-    
-    const user = { role: "condoOwner" }; 
-   //const user = { role: "renter" }; 
-   //const user = { role: "mgmt" }; 
- 
-    setRole(user.role);
-})
+
+  //console.log(store("loggedUser"));
+
+  async function fetchUserData() {
+    let tempData = await getUserData(store("loggedUser"));
+    let profilePicURL = await getProfilePicture(store("loggedUser"));
+    setFirstName(tempData.firstName)
+    setLastName(tempData.lastName)
+    setPhoneNumber(tempData.phoneNumber)
+    console.log(profilePicURL);
+    setProfilePicUrl(profilePicURL);
+    setPreviewUrl(profilePicURL);
+    //set rest of info here
+  }
+
+  fetchUserData();
+
+}, [])
  
 
 
@@ -57,13 +71,14 @@ useEffect(()=>{
     if (phoneNumber && !/^\d{10}$/.test(phoneNumber))
       return toast.error("Please make sure the phone number format is correct");
 
-
     const formData = {
       firstName,
       lastName,
       phoneNumber,
     };
-    //await updateUserInfo(formData);
+
+    await updateUserInfo(store("loggedUser"), formData);
+
     toast.success("User info updated successfully");
     setIsEditMode(false);
   };
@@ -82,6 +97,7 @@ useEffect(()=>{
       if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
   
       setProfilePicUrl(photo);
+      updatePicture(store("loggedUser"), photo);
       const fileReader = new FileReader();
       fileReader.onload = () => {
         setPreviewUrl(fileReader.result);
@@ -159,14 +175,15 @@ useEffect(()=>{
 
     if (newPassword.length < 8)
       return toast.error("Password must be at least 8 characters");
-/* 
+
    // setIsLoading(true);
     const dataForm = {
       currentPassword,
       newPassword,
     };
 
-    const data = await changePassword(dataForm);
+    const data = await changePassword(store("loggedUser"), dataForm);
+
     //setIsLoading(false);
 
     if (data?.message === "Password updated successfully") {
@@ -174,7 +191,9 @@ useEffect(()=>{
       setNewPassword("");
       setConfirmPassword("");
       toast.success(data.message);
-    } */
+    }else{
+      toast.error(data.message);
+    }
   };
 
     return(

@@ -4,6 +4,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styling/LoginPage.css"; // Make sure your CSS file path is correct
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import {loginUser} from "../backend/Fetcher";
+import {useNavigate} from "react-router-dom";
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState({
@@ -18,7 +20,7 @@ const LoginPage = () => {
     });
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     // Perform validation for email and password
@@ -35,7 +37,11 @@ const LoginPage = () => {
       return;
     }
 
-    // Add your login logic here
+    try {
+      const currentUser = await loginUser(credentials);
+    } catch (err) {
+      toast.error(err.message);
+    }
     //console.log("Login clicked");
   };
 
