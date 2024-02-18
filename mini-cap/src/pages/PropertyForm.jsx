@@ -24,7 +24,6 @@ const PropertyForm = () => {
   const [condoPreviewImages, setCondoPreviewImages] = useState([]);
 
   const [visibleCondoForms, setVisibleCondoForms] = useState([]);
-  const [propertyFormComplete, setPropertyFormComplete] = useState(false);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -73,7 +72,7 @@ const PropertyForm = () => {
   };
 
   const handleAddCondo = () => {
-    if (!propertyFormComplete) {
+    if (!property.propertyName || !property.address || !property.unitCount || !property.parkingCount || !property.lockerCount ) {
       toast.error("Please complete property form first");
       return;
     }
@@ -132,14 +131,6 @@ const PropertyForm = () => {
       [name]: value,
     });
 
-    const isComplete =
-      property.propertyName &&
-      property.address &&
-      property.unitCount &&
-      property.parkingCount &&
-      property.lockerCount;
-
-    setPropertyFormComplete(isComplete);
   };
 
   const handleSubmit = (e) => {
@@ -204,7 +195,7 @@ const PropertyForm = () => {
         <form className="add-property-form" onSubmit={handleSubmit}>
           <h3>My Property</h3>
           <label className="form-label mt-3" htmlFor="customFile">
-            <label className="input-label" htmlFor="propertyName">
+            <label className="input-label" htmlFor="propertyPicture">
               Property Picture:
             </label>
           </label>
