@@ -136,10 +136,24 @@ const PropertyForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Submitted:", property);
-    // Add your logic to handle form submission, e.g., send data to the server
+  
   };
 
   const handleCondoSubmit = (index) => {
+    const submittedCondo = property.condos[index];
+
+ 
+  if (
+    Object.values(submittedCondo).every((value) =>
+      value === null || value === undefined || value === ""
+    )
+  ) {
+  
+    toast.error("Please fill in at least one field for the condo");
+    return;
+  }
+
+    
     console.log("Condo Submitted:", property.condos[index]);
     setVisibleCondoForms((prevVisibleCondoForms) => [
       ...prevVisibleCondoForms,
