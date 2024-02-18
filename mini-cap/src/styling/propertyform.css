@@ -45,6 +45,7 @@ h3 {
 }
 
 /* Input styles */
+
 .condo-form input,
 .input-group {
   margin-bottom: 20px;
@@ -57,6 +58,7 @@ h3 {
   color: #382fb8;
   font-weight: bold;
 }
+
 
 input,
 select {
@@ -166,9 +168,15 @@ select {
   }
   
   .condo-preview img {
-    max-width: 100%;
+    max-width: 50%;
     height: auto;
     margin-top: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    display: flex;
+  }
+  .custom-select {
+    width: 10%;
+   height: auto; 
+    display: flex;
   }

@@ -150,7 +150,14 @@ const PropertyForm = () => {
 
   return (
     <div>
-      <Header />
+      <Header />\
+      <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  integrity="sha512-Gn5384z6kqr8yn8XekdlLZ5NINkAqF5V07R98ljePtb8iKDIp0cmYEdn7yg9H9n57F9+3gp4nnfW9CaoSmw+z0w=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
       <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
@@ -254,8 +261,13 @@ const PropertyForm = () => {
       <div className="condo-preview">
         <h5>{`Condo ${condo.unitNumber} `}</h5>
         <p>Unit Number: {condo.unitNumber}</p>
-        <p>Unit Price: {condo.unitPrice}</p>
+        <p>Unit Price: {condo.currency} {condo.unitPrice}</p>
         <p>Unit Size: {condo.unitSize}</p>
+        <p>Square Feet: {condo.squareFeet}</p>
+        <p> Parking Spot Number: {condo.parkingNumber}</p>
+        <p> Locker Number: {condo.lockerNumber}</p>
+
+        
         {condo.condoPicture && (
           <img
             src={URL.createObjectURL(condo.condoPicture)}
@@ -265,12 +277,7 @@ const PropertyForm = () => {
       </div>
                 ) : (
                   <div className="condo-form">
- <link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-  integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-  crossOrigin="anonymous"
-/>
+ 
                     <h5>Condo {index + 1}</h5>
                     <label>Unit Number:</label>
                     <input
@@ -279,20 +286,66 @@ const PropertyForm = () => {
                       onChange={(e) => handleCondoInputChange(e, index)}
                       name="unitNumber"
                     />
-                    <label>Unit Price:</label>
-                    <input
-                      type="text"
-                      value={condo.unitPrice}
-                      onChange={(e) => handleCondoInputChange(e, index)}
-                      name="unitPrice"
-                    />
-                    <label>Unit Size:</label>
-                    <input
-                      type="text"
-                      value={condo.unitSize}
-                      onChange={(e) => handleCondoInputChange(e, index)}
-                      name="unitSize"
-                    />
+<label> Square Feet </label>
+<input
+type= "text"
+value={condo.squareFeet}
+onChange={(e) => handleCondoInputChange(e, index)}
+ name="squareFeet"
+ ></input>
+
+
+  <label>Unit Price:</label>
+  <div className="input-group">
+    <select
+      value={condo.currency}
+      onChange={(e) => handleCondoInputChange(e, index)}
+      name="currency"
+      className="form-select custom-select"
+    >
+      <option value="CAD">CAD $</option>
+      <option value="USD">USD $</option>
+      <option value="Euro">Euro €</option>
+    </select>
+    <input
+      type="text"
+      value={condo.unitPrice}
+      onChange={(e) => handleCondoInputChange(e, index)}
+      name="unitPrice"
+      className="form-control"
+    />
+  </div>
+
+
+
+<label>Unit Size:</label>
+<select
+  value={condo.unitSize}
+  onChange={(e) => handleCondoInputChange(e, index)}
+  name="unitSize"
+>
+  <option value="">Select Unit Size</option>
+  <option value="1.5">1 1/2</option>
+  <option value="2.5">2 1/2</option>
+  <option value="3.5">3 1/2</option>
+  <option value="4.5">4 1/2</option>
+  <option value="5.5">5 1/2</option>
+</select>
+<label> Parking Spot Number </label>
+<input
+type= "text"
+value={condo.parkingNumber}
+onChange={(e) => handleCondoInputChange(e, index)}
+ name="parkingNumber"
+ ></input>
+
+<label> Locker Number </label>
+<input
+type= "text"
+value={condo.lockerNumber}
+onChange={(e) => handleCondoInputChange(e, index)}
+ name="lockerNumber"
+ ></input>
                      <label>Condo Picture:</label>
                      <div className="row justify-content-center">
                      <div className="col-sm-">
@@ -303,6 +356,7 @@ const PropertyForm = () => {
                       style={{ paddingTop: "0px", paddingBottom: "0px" }}
                    
                     />
+                    
     </div>
   </div>
   {condoPreviewImages[index] && (
