@@ -6,7 +6,9 @@
     "@react-google-maps/api": "^2.19.3",
     "dotenv-webpack": "^8.0.1",
     "firebase": "^10.8.0",
+    "googleapis": "^133.0.0",
     "react-google-maps": "^9.4.5",
-    "react-places-autocomplete": "^7.3.0"
+    "react-places-autocomplete": "^7.3.0",
+    "storejs": "^2.0.7"
   }
 }

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styling/propertyform.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import DeleteModal from "../components/DeleteModal"; // Adjust the path accordingly
+import DeleteModal from "../components/DeleteModal"; 
+import AddressComponent from "../components/AddressComponent"; 
 
 const PropertyForm = () => {
   const [property, setProperty] = useState({
@@ -140,9 +142,11 @@ const PropertyForm = () => {
       return;
     }
    
-    //console.log("Submitted:", property);
-  
+    console.log("Submitted:", property);
+
+    
   };
+
 
   const handleCondoSubmit = (index) => {
     const submittedCondo = property.condos[index];
@@ -246,20 +250,23 @@ const PropertyForm = () => {
               onChange={(e) => handleInputChange(e)}
               required
             />
-          </div>
-          <div className="input-group">
-            <label className="input-label" htmlFor="address">
-              Address:
-            </label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              value={property.address}
-              onChange={(e) => handleInputChange(e)}
-              required
-            />
-          </div>
+            </div>
+            <div className="input" >
+              <AddressComponent 
+              type="address"
+              labelText="Address"
+              name="Address"
+              onChange={handleInputChange}
+              setFormData={setProperty}
+              
+              />
+
+               </div>
+          
+          
+       
+           
+
           <div className="input-group">
             <label className="input-label" htmlFor="unitCount">
               Unit Count:

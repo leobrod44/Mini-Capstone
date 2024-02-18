@@ -45,7 +45,6 @@ h3 {
 }
 
 /* Input styles */
-
 .condo-form input,
 .input-group {
   margin-bottom: 20px;
@@ -61,13 +60,15 @@ h3 {
 
 
 input,
-select {
+select
+ {
   font-family: "Roboto", sans-serif;
-  width: 100%;
+  width: relative;
   padding: 10px;
   border: 1px solid #e1e1e1;
   border-radius: 4px;
   font-size: 16px;
+  
 }
 
 .add-condo-button,
@@ -191,4 +192,4 @@ select {
    height: auto; 
     display: flex;
   }
- 
+  
