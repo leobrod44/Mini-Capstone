@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styling/propertyform.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import DeleteModal from "../components/DeleteModal"; // Adjust the path accordingly
 
 const PropertyForm = () => {
   const [property, setProperty] = useState({
@@ -15,6 +16,9 @@ const PropertyForm = () => {
     lockerCount: "",
     condos: [],
   });
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [condoToDelete, setCondoToDelete] = useState(null);
 
   const [previewPropertyImage, setPreviewPropertyImage] = useState(null);
   const [condoPreviewImages, setCondoPreviewImages] = useState([]);
@@ -147,6 +151,34 @@ const PropertyForm = () => {
       index,
     ]);
   };
+  const handleDeleteCondo = (index) => {
+    setCondoToDelete(index);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirmed = () => {
+    const updatedCondos = [...property.condos];
+    updatedCondos.splice(condoToDelete, 1);
+
+    setProperty({
+      ...property,
+      condos: updatedCondos,
+    });
+
+    setCondoPreviewImages((prevImages) => {
+      const newImages = [...prevImages];
+      newImages.splice(condoToDelete, 1);
+      return newImages;
+    });
+
+    setVisibleCondoForms([]);
+    setShowDeleteModal(false);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+    setCondoToDelete(null);
+  };
 
   return (
     <div>
@@ -255,9 +287,9 @@ const PropertyForm = () => {
           </div>
 
           <div className="condo-list">
-          {property.condos.map((condo, index) => (
-  <div key={index}>
-    {visibleCondoForms.includes(index) ? (
+            {property.condos.map((condo, index) => (
+              <div key={index}>
+                {visibleCondoForms.includes(index) ? (
       <div className="condo-preview">
         <h5>{`Condo ${condo.unitNumber} `}</h5>
         <p>Unit Number: {condo.unitNumber}</p>
@@ -274,9 +306,18 @@ const PropertyForm = () => {
             alt={`Condo ${condo.unitNumber} Preview`}
           />
         )}
-      </div>
+        <div className="input-group mt-3"></div>
+      <button  className="delete-condo-button"
+
+                  onClick={() => handleDeleteCondo(index)}
+                >
+                  Delete
+                </button>
+    
+  </div>
                 ) : (
                   <div className="condo-form">
+                    
  
                     <h5>Condo {index + 1}</h5>
                     <label>Unit Number:</label>
@@ -396,6 +437,12 @@ onChange={(e) => handleCondoInputChange(e, index)}
           </div>
         </form>
       </div>
+      <DeleteModal
+        show={showDeleteModal}
+        handleClose={handleCloseDeleteModal}
+        handleDeleteItem={handleDeleteConfirmed}
+        message="Are you sure you want to delete this condo?"
+      />
       <Footer />
     </div>
   );
