@@ -112,6 +112,7 @@ export async function addUser(data) {
        await storeData("Users",data,data['email']);
 
        store("loggedUser", data["email"]);
+       store("role", data["role"]);
        window.location.href = '/';
     } catch (e) {
         throw new Error(e);
@@ -148,7 +149,7 @@ export async function loginUser(data) {
         }
 
         store("loggedUser", data["email"]);
-        console.log("after login ", store("loggedUser"));
+        store("role", userDoc.data().role);
 
         window.location.href = '/';
     }

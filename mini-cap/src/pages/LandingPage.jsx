@@ -3,10 +3,10 @@ import Footer from "../components/Footer";
 import "../styling/LandingPage.css"
 import { Link, useNavigate } from "react-router-dom";
 import "../index.css";
+import store from "storejs";
 
 
 const LandingPage =() => {
-
     return(
        <div>
         <Header/>
@@ -17,7 +17,7 @@ const LandingPage =() => {
                     <p className="lptext1">
                     Elevating Condo Living with Seamless Management Solutions.  
                     </p>
-                     <div className="btndiv">
+                     <div className="btndiv" style={{ display: store.get('?loggedUser') ? "none" : "block" }}>
                         <Link to="/signup" className="btn"> Sign Up</Link>
                         <Link to="/login" className="btn" style={{marginLeft:"50px"}}>Login</Link>
                     </div>
