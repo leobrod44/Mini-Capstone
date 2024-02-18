@@ -133,9 +133,14 @@ const PropertyForm = () => {
 
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit =  (e) => {
     e.preventDefault();
-    console.log("Submitted:", property);
+    if (!property.propertyName || !property.address || !property.unitCount || !property.parkingCount || !property.lockerCount ) {
+      toast.error("Missing Property Information");
+      return;
+    }
+   
+    //console.log("Submitted:", property);
   
   };
 
@@ -439,7 +444,9 @@ onChange={(e) => handleCondoInputChange(e, index)}
               Add Condo
             </button>
          
-            <button className="add-property-button" type="submit">
+            <button className="add-property-button" type="submit"
+             onClick={handleSubmit}
+             >
               Submit Property
             </button>
            

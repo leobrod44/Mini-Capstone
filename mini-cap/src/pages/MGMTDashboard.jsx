@@ -45,7 +45,7 @@ const [hasProperties, setHasProperties] = useState(false);
           )}
 			</div>
 	  		
-			{ hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-property')} /> }
+			{ hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/mgmtdashboard')} /> }
 		 
      
      {/* TODO: This button toggles the state of whether the user has properties or not. Should be deleted once we have backend connected  */}
