@@ -24,41 +24,39 @@ const PropertyForm = () => {
   const [condoPreviewImages, setCondoPreviewImages] = useState([]);
 
   const [visibleCondoForms, setVisibleCondoForms] = useState([]);
+  const [propertyFormComplete, setPropertyFormComplete] = useState(false);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-  
+
     if (!file) {
       setProperty({
         ...property,
         picture: null,
       });
-      
     }
-  
-    if (
-      !["image/png", "image/jpeg", "image/jpg"].includes(file.type)
-    ) {
+
+    if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
       toast.error("File type not supported");
       return;
     }
-  
+
     if (file.size > 2097152) {
       toast.error("File must be less than 2 MB");
       return;
     }
-  
+
     setProperty({
       ...property,
       propertyPicture: file,
     });
-  
+
     const reader = new FileReader();
     reader.onloadend = () => {
       setPreviewPropertyImage(reader.result);
     };
-  
+
     reader.readAsDataURL(file);
-  
   };
 
   const handleCondoInputChange = (e, index) => {
@@ -75,6 +73,11 @@ const PropertyForm = () => {
   };
 
   const handleAddCondo = () => {
+    if (!propertyFormComplete) {
+      toast.error("Please complete property form first");
+      return;
+    }
+
     setProperty({
       ...property,
       condos: [...property.condos, {}],
@@ -89,9 +92,7 @@ const PropertyForm = () => {
       return;
     }
 
-    if (
-      !["image/png", "image/jpeg", "image/jpg"].includes(file.type)
-    ) {
+    if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
       toast.error("File type not supported");
       return;
     }
@@ -122,20 +123,23 @@ const PropertyForm = () => {
     };
 
     reader.readAsDataURL(file);
-
-   
-
-    setProperty({
-      ...property,
-      condos: updatedCondos,
-    });
   };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProperty({
       ...property,
       [name]: value,
     });
+
+    const isComplete =
+      property.propertyName &&
+      property.address &&
+      property.unitCount &&
+      property.parkingCount &&
+      property.lockerCount;
+
+    setPropertyFormComplete(isComplete);
   };
 
   const handleSubmit = (e) => {
