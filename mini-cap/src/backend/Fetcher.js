@@ -101,7 +101,7 @@ export async function getProfilePicture(email) {
 
 export async function addUser(data) {
     const usersCollection = collection(db, "Users");
-    const clean = cleanData("Users",data);
+    
     try {
         const userDoc = await getDoc(doc(db, "Users", data['email']));
         if (userDoc.exists()) {
