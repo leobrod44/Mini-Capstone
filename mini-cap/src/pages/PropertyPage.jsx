@@ -41,12 +41,12 @@ const PropertyPage = () => {
                         <div className="white_card">
                             <p className="card_title">You have not added any condos yet.</p>
                             {/*<p className="button"> Add a condo</p>*/}
-                            <Link to="/add-condo" className="button"> Add a condo</Link>
-
+                            <Link to="/Dashboard" className="button"> Add a condo</Link>
+                            {/*"/add-condo"*/}
                         </div>
                     )}
                 </div>
-                {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-condo')} />}
+                {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/Dashboard')} />}
 
 
                 {/* TODO: This button toggles the state of whether the user has properties or not. Should be deleted once we have backend connected  */}
