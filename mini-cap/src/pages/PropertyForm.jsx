@@ -335,7 +335,7 @@ const PropertyForm = () => {
               <div key={index}>
                 {visibleCondoForms.includes(index) ? (
       <div className="condo-preview">
-        <h5>{`Unit ${condo.unitNumber} `}</h5>
+        <h5>{`Condo ${condo.unitNumber} `}</h5>
         <p>Unit Number: {condo.unitNumber}</p>
         <p>Unit Price: {condo.currency} {condo.unitPrice}</p>
         <p>Unit Size: {condo.unitSize}</p>
@@ -447,7 +447,7 @@ onChange={(e) => handleCondoInputChange(e, index)}
   {condoPreviewImages[index] && (
         <img
           src={condoPreviewImages[index]}
-          alt={`Unit ${condo.unitNumber} Preview`}
+          alt={`Condo ${condo.unitNumber} Preview`}
         />
     
   )}
