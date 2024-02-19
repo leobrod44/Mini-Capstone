@@ -13,6 +13,7 @@ import { CgProfile } from "react-icons/cg";
 import { IoIosBusiness } from "react-icons/io";
 import { LiaHandsHelpingSolid } from "react-icons/lia";
 import { FaBriefcase } from "react-icons/fa";
+import store from "storejs";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -41,9 +42,9 @@ const Navbar = () => {
 
   React.useEffect(() => {
     //roles, condoOwner, renter , or mgmt
-    const user = { role: "condoOwner" };
+    //const user = { role: "condoOwner" };
     //const user = { role: "renter" };
-    //const user = { role: "mgmt" };
+    const user = { role: "mgmt" };
     setRole(user.role);
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -54,8 +55,7 @@ const Navbar = () => {
 
   const logout = async (e) => {
     e.preventDefault();
-    //if user clicks logout then send them to the login page
-    //insert logout user function here
+    store.remove("loggedUser");
     navigate("/login");
   };
 
@@ -127,7 +127,7 @@ const Navbar = () => {
 
               {role === "mgmt" && (
                 <DropdownItem
-                  address={"/propertyprofile"}
+                  address={"/MGMTDashboard"}
                   icon={<IoIosBusiness />}
                   text={"My properties "}
                 />

@@ -1,0 +1,31 @@
+
+  
+.floating_button {
+  position: fixed;
+  bottom: 20px; 
+  right: 20px; 
+  z-index: 1000;
+}
+
+  .button_circle {
+    width: 60px;
+    height: 60px;
+    background-color: #4540db;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); 
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .button_circle:hover {
+    transform: scale(1.1); 
+    background-color: #7975d6;
+  }
+  
+  .plus_sign {
+    color: #fff;
+    font-size: 24px;
+  }
