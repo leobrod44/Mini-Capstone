@@ -1,6 +1,5 @@
 import NavbarCSS from "../styling/Navbar.module.css";
 import React, { useState, useEffect, useRef } from "react";
-//import { useDispatch, useSelector } from "react-redux";
 import tempProfilePic from "../assets/user.png";
 import { useNavigate } from "react-router-dom";
 import logoutt from "../assets/log-out.png";
@@ -11,47 +10,49 @@ import { AiOutlineHome } from "react-icons/ai";
 import { CiLogout } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { IoIosBusiness } from "react-icons/io";
-import { LiaHandsHelpingSolid } from "react-icons/lia";
 import { FaBriefcase } from "react-icons/fa";
 import store from "storejs";
+import { getUserData, getProfilePicture } from "../backend/Fetcher"; // Make sure the path is correct
 
 const Navbar = () => {
   const navigate = useNavigate();
-  //to display Hello user! message , grab the name and their profile pic
-  // const firstName = useSelector(selectName);
-  // const photo = useSelector(selectPhoto);
-  const [role, setRole] = useState(""); // <-- State to store user role
+  const [role, setRole] = useState("");
   const [open, setOpen] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [profilePic, setProfilePic] = useState(tempProfilePic);
   let menuRef = useRef();
 
-  const toggleMenu = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userEmail = store("loggedUser");
+      if (userEmail) {
+        const data = await getUserData(userEmail);
+        setRole(data.role);
+        setFirstName(data.firstName);
+        setCompanyName(data.companyName);
+        const profilePicURL = await getProfilePicture(userEmail);
+        setProfilePic(profilePicURL || tempProfilePic);
+      }
+    };
 
-  const handleClickOutside = (e) => {
-    const isHamburgerMenuClicked = e.target.closest(`.${NavbarCSS.myBurger}`);
-
-    if (
-      !isHamburgerMenuClicked &&
-      menuRef.current &&
-      !menuRef.current.contains(e.target)
-    ) {
-      setOpen(false);
-    }
-  };
-
-  React.useEffect(() => {
-    //roles, condoOwner, renter , or mgmt
-    //const user = { role: "condoOwner" };
-    //const user = { role: "renter" };
-    const user = { role: "mgmt" };
-    setRole(user.role);
+    fetchUserData();
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  const toggleMenu = () => {
+    setOpen((prevOpen) => !prevOpen);
+  };
+
+  const handleClickOutside = (e) => {
+    if (!menuRef.current.contains(e.target)) {
+      setOpen(false);
+    }
+  };
 
   const logout = async (e) => {
     e.preventDefault();
@@ -62,19 +63,13 @@ const Navbar = () => {
   return (
     <>
       <nav className={NavbarCSS.myNavbar}>
-       {/*  {role === "mgmt" && (
-          <GiHamburgerMenu
-            size={24}
-            className={`${NavbarCSS.myBurger} ${NavbarCSS.myCursorPointer}`}
-            onClick={toggleMenu}
-          />
-        )} */}
         <div ref={menuRef}>
           <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu}>
-            {/* if there is no profile pic, we should default to using the hamburger menu */}
-           {/*  {role !== "mgmt" && ( */}
-              <img src={tempProfilePic} alt="User profile picture" />
-          {/*  )} */}
+            <img
+              src={profilePic}
+              alt="User profile picture"
+              className={NavbarCSS.profilePic}
+            />
           </div>
 
           <div
@@ -82,15 +77,13 @@ const Navbar = () => {
               open ? NavbarCSS.active : NavbarCSS.inactive
             }`}
           >
-            {role === "mgmt" && (
+            {role === "mgmt" ? (
               <h3 className={NavbarCSS.h3}>
-                Hello company! <br />{" "}
+                Hello, {companyName}! <br />
               </h3>
-            )}
-
-            {role !== "mgmt" && (
+            ) : (
               <h3 className={NavbarCSS.h3}>
-                Hello first name! <br />{" "}
+                Hello, {firstName}! <br />
               </h3>
             )}
 
@@ -109,14 +102,6 @@ const Navbar = () => {
                 />
               )}
 
-              {role === "condoOwner" && (
-                <DropdownItem
-                  address={"/requests"}
-                  icon={<LiaHandsHelpingSolid />}
-                  text={"My Requests"}
-                />
-              )}
-
               {role === "renter" && (
                 <DropdownItem
                   address={"/myproperty"}
@@ -129,7 +114,7 @@ const Navbar = () => {
                 <DropdownItem
                   address={"/MGMTDashboard"}
                   icon={<IoIosBusiness />}
-                  text={"My properties "}
+                  text={"My properties"}
                 />
               )}
 
@@ -141,13 +126,6 @@ const Navbar = () => {
                 />
               )}
 
-              {role === "mgmt" && (
-                <DropdownItem
-                  address={"/myrequests"}
-                  icon={<LiaHandsHelpingSolid />}
-                  text={"My requests"}
-                />
-              )}
               <DropdownItem
                 address={"/reservations"}
                 icon={<FaCalendarAlt />}
@@ -161,6 +139,7 @@ const Navbar = () => {
       </nav>
     </>
   );
+
   function LogoutBtn() {
     return (
       <li className={NavbarCSS.myDropdownItem}>
@@ -170,17 +149,16 @@ const Navbar = () => {
       </li>
     );
   }
-};
 
-function DropdownItem(props) {
-  return (
-    <li className={NavbarCSS.myDropdownItem}>
-      <a className={NavbarCSS.atag} href={props.address}>
-        {" "}
-        {props.icon} {props.text}
-      </a>
-    </li>
-  );
-}
+  function DropdownItem(props) {
+    return (
+      <li className={NavbarCSS.myDropdownItem}>
+        <a className={NavbarCSS.atag} href={props.address}>
+          {props.icon} {props.text}
+        </a>
+      </li>
+    );
+  }
+};
 
 export default Navbar;

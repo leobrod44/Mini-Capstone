@@ -4,8 +4,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styling/LoginPage.css"; // Make sure your CSS file path is correct
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import {loginUser} from "../backend/Fetcher";
-import {useNavigate} from "react-router-dom";
+import { loginUser } from "../backend/Fetcher";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [credentials, setCredentials] = useState({
@@ -52,7 +52,9 @@ const LoginPage = () => {
         <form className="login-form" onSubmit={handleLogin}>
           <h2>Login</h2>
           <div className="input-group">
-            <label className="signup" htmlFor="email">Email</label>
+            <label className="signup" htmlFor="email">
+              Email
+            </label>
             <input
               type="text"
               id="email"
@@ -62,7 +64,9 @@ const LoginPage = () => {
             />
           </div>
           <div className="input-group">
-            <label className="signup" htmlFor="password">Password</label>
+            <label className="signup" htmlFor="password">
+              Password
+            </label>
             <input
               type="password"
               id="password"
