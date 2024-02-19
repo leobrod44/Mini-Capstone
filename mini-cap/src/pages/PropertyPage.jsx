@@ -46,7 +46,7 @@ const PropertyPage = () => {
                         </div>
                     )}
                 </div>
-                {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/Dashboard')} />}
+                {/* {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/Dashboard')} />}*/}
 
 
                 {/* TODO: This button toggles the state of whether the user has properties or not. Should be deleted once we have backend connected  */}
