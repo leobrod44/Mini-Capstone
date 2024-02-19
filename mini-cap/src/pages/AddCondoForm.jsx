@@ -4,8 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styling/AddCondoForm.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-//import DeleteModal from "../components/DeleteModal"; 
-//import AddressComponent from "../components/AddressComponent"; 
+
 
 
 
@@ -55,15 +54,34 @@ const AddCondoForm = () => {
   
     const handleInputChange = (e) => {
       const { name, value } = e.target;
-      setCondo({ ...condo, [name]: value });
+    
+      // Check if the input is for unitPrice and if it contains only numbers
+      if (name === "unitPrice" && !(/^\d*\.?\d*$/).test(value)) {
+        toast.error("Please enter a valid number for Unit Price");
+        return;
+      }
+    
+      setCondo((prevCondo) => ({ ...prevCondo, [name]: value }));
     };
   
    
   
     const handleSubmit = (e) => {
       e.preventDefault();
-      // Perform any additional validation if needed
+    
+      // Check if any field is empty
+      for (const key in condo) {
+        if (condo.hasOwnProperty(key) && condo[key] === "") {
+          toast.error("All fields must be filled");
+          return;
+        }
+      }
+    
+      // Additional validation logic if needed
+    
+      // If all validation passes, submit the condo
       console.log("Condo Submitted:", condo);
+    
       // Reset the form after submission
       setCondo({
         unitNumber: "",
@@ -79,30 +97,29 @@ const AddCondoForm = () => {
     return (
         <div>
           <Header />
-          <link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  integrity="sha512-Gn5384z6kqr8yn8XekdlLZ5NINkAqF5V07R98ljePtb8iKDIp0cmYEdn7yg9H9n57F9+3gp4nnfW9CaoSmw+z0w=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-/>
-<div className="add-condo-container"></div>
+          
+<div className="add-condo-container">
 <form className="add-condo-form" onSubmit={handleSubmit}>
+<h3>Add a Condo</h3>
+<link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+        crossOrigin="anonymous"
+      />
+<label className="input-label" htmlFor="condoPicture">
 <label className="form-label mt-3" htmlFor="customFile">
-            <label className="input-label" htmlFor="condoPicture">
              Condo Picture:
-            </label>
-            </label>
-            <div className="row justify-content-center">
-            <div className="col-sm-">
+             </label> </label>
+
               <input
                 type="file"
                 className="form-control"
                 id="customFile"
                 onChange={(e) => handleFileChange(e)}
+                
               />
-            </div>
-          </div>
+          
           {previewCondoImage && (
             <div className="condo-image-preview">
               <img src={previewCondoImage} alt="Condo Preview" />
@@ -120,7 +137,7 @@ const AddCondoForm = () => {
             name="unitNumber"
             value={condo.unitNumber}
             onChange={(e) => handleInputChange(e)}
-            required
+            
           />
         
         </div>
@@ -135,21 +152,11 @@ const AddCondoForm = () => {
             name="squareFeet"
             value={condo.squareFeet}
             onChange={(e) => handleInputChange(e)}
-            required
+            
             />
       
           </div>
-          <div className="input-group">
-          <label className="input-label" htmlFor="unitPrice">
-        </label>
-          Unit Price:
-          <input
-            type="text"
-            name="unitPrice"
-            value={condo.unitPrice}
-            onChange={handleInputChange}
-          />
-        </div>
+          
         <div className="input-group">
         <label className="input-label" htmlFor="unitSize">
         
@@ -195,9 +202,9 @@ const AddCondoForm = () => {
           />
          </div>
   
-         <div className="input-group">
+         
          <label className="input-label" htmlFor="unitPrice">Unit Price:</label>
-  
+         <div className="input-group">
     <select
       value={condo.currency}
       onChange={(e) => handleInputChange(e)}
@@ -226,6 +233,7 @@ const AddCondoForm = () => {
               Submit Condo
             </button>
         </form>
+        </div>
       <Footer />
     </div>
   );

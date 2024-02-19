@@ -8,7 +8,7 @@ h3 {
 }
 .add-condo-container {
     font-family: "Roboto", sans-serif;
-    display: center;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
