@@ -30,7 +30,9 @@ test("renders PropertyPage component with registered properties", () => {
   );
 
   // Simulate having registered properties
-  fireEvent.click(screen.getByTestId("add-condo-btn"));
+  {
+    /* fireEvent.click(screen.getByTestId("add-condo-btn"));*/
+  }
 
   // Check if the message for registered properties is rendered
   expect(

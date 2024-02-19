@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import AddCondoBtn from "../components/AddCondoBtn";
+//import AddCondoBtn from "../components/AddCondoBtn";
 import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn component
 import "../index.css";
 import "../styling/PropertyPage.css";
