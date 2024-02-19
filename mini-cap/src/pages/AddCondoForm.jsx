@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-//import "../styling/propertyform.css";
+import "../styling/AddCondoForm.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 //import DeleteModal from "../components/DeleteModal"; 
@@ -19,24 +19,46 @@ const AddCondoForm = () => {
       lockerNumber: "",
       condoPicture: null,
     });
+    const [previewCondoImage, setPreviewCondoImage] = useState(null);
+    const handleFileChange = (e) => {
+      const file = e.target.files[0];
+  
+      if (!file) {
+        setCondo({
+          ...condo,
+          picture: null,
+        });
+      }
+  
+      if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
+        toast.error("File type not supported");
+        return;
+      }
+  
+      if (file.size > 2097152) {
+        toast.error("File must be less than 2 MB");
+        return;
+      }
+  
+      setCondo({
+        ...condo,
+        condoPicture: file,
+      });
+  
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewCondoImage(reader.result);
+      };
+  
+      reader.readAsDataURL(file);
+    };
   
     const handleInputChange = (e) => {
       const { name, value } = e.target;
       setCondo({ ...condo, [name]: value });
     };
   
-    const handleFileChange = (e) => {
-      const file = e.target.files[0];
-  
-      if (!file) {
-        setCondo({ ...condo, condoPicture: null });
-        return;
-      }
-  
-      // Add file type and size validation if needed
-  
-      setCondo({ ...condo, condoPicture: file });
-    };
+   
   
     const handleSubmit = (e) => {
       e.preventDefault();
@@ -57,30 +79,69 @@ const AddCondoForm = () => {
     return (
         <div>
           <Header />
-          <form onSubmit={handleSubmit}>
-        <h3>Add Condo</h3>
-        <label>
+          <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  integrity="sha512-Gn5384z6kqr8yn8XekdlLZ5NINkAqF5V07R98ljePtb8iKDIp0cmYEdn7yg9H9n57F9+3gp4nnfW9CaoSmw+z0w=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+<div className="add-condo-container"></div>
+<form className="add-condo-form" onSubmit={handleSubmit}>
+<label className="form-label mt-3" htmlFor="customFile">
+            <label className="input-label" htmlFor="condoPicture">
+             Condo Picture:
+            </label>
+            </label>
+            <div className="row justify-content-center">
+            <div className="col-sm-">
+              <input
+                type="file"
+                className="form-control"
+                id="customFile"
+                onChange={(e) => handleFileChange(e)}
+              />
+            </div>
+          </div>
+          {previewCondoImage && (
+            <div className="condo-image-preview">
+              <img src={previewCondoImage} alt="Condo Preview" />
+            </div>
+          )}
+           
+          <div className="input-group mt-3"></div>
+          <div className="input-group">
+            <label className="input-label" htmlFor="unitNumber">
+        
           Unit Number:
+          </label>
           <input
             type="text"
             name="unitNumber"
             value={condo.unitNumber}
-            onChange={handleInputChange}
+            onChange={(e) => handleInputChange(e)}
+            required
           />
-        </label>
-        {/* Add similar labels and inputs for other condo fields */}
+        
+        </div>
+        
   
-        <label>
+        <div className="input-group">
+            <label className="input-label" htmlFor="squareFeet">
           Square Feet:
+          </label>
           <input
             type="text"
             name="squareFeet"
             value={condo.squareFeet}
-            onChange={handleInputChange}
-          />
+            onChange={(e) => handleInputChange(e)}
+            required
+            />
+      
+          </div>
+          <div className="input-group">
+          <label className="input-label" htmlFor="unitPrice">
         </label>
-  
-        <label>
           Unit Price:
           <input
             type="text"
@@ -88,10 +149,12 @@ const AddCondoForm = () => {
             value={condo.unitPrice}
             onChange={handleInputChange}
           />
-        </label>
-  
-        <label>
+        </div>
+        <div className="input-group">
+        <label className="input-label" htmlFor="unitSize">
+        
           Unit Size:
+          </label>
           <select
             name="unitSize"
             value={condo.unitSize}
@@ -104,37 +167,64 @@ const AddCondoForm = () => {
             <option value="4.5">4 1/2</option>
             <option value="5.5">5 1/2</option>
           </select>
-        </label>
+          </div>
+        
   
-        <label>
+          <div className="input-group">
+        <label className="input-label" htmlFor="parkingNumber">
           Parking Spot Number:
+          </label>
           <input
             type="text"
             name="parkingNumber"
             value={condo.parkingNumber}
             onChange={handleInputChange}
           />
-        </label>
-  
-        <label>
+          </div>
+        
+          <div className="input-group">
+        <label className="input-label" htmlFor="lockerNumber">
+        
           Locker Number:
+          </label>
           <input
             type="text"
             name="lockerNumber"
             value={condo.lockerNumber}
             onChange={handleInputChange}
           />
-        </label>
+         </div>
   
-        <label>
-          Condo Picture:
-          <input
-            type="file"
-            onChange={handleFileChange}
-          />
-        </label>
+         <div className="input-group">
+         <label className="input-label" htmlFor="unitPrice">Unit Price:</label>
   
-        <button type="submit">Submit Condo</button>
+    <select
+      value={condo.currency}
+      onChange={(e) => handleInputChange(e)}
+      name="currency"
+      className="form-select custom-select"
+    >
+      <option value="CAD">CAD $</option>
+      <option value="USD">USD $</option>
+      <option value="Euro">Euro €</option>
+    </select>
+    <input
+      type="text"
+      value={condo.unitPrice}
+      onChange={(e) => handleInputChange(e)}
+      name="unitPrice"
+      className="form-control"
+    />
+  </div>
+
+
+
+
+<button className="add-condo-button" type="submit"
+             onClick={handleSubmit}
+             >
+              Submit Condo
+            </button>
         </form>
       <Footer />
     </div>
