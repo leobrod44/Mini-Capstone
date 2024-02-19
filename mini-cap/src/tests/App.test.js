@@ -11,6 +11,7 @@ jest.mock("../pages/UserProfile", () => () => <div>User Profile Mock</div>);
 jest.mock("../pages/LoginPage", () => () => <div>Login Page Mock</div>);
 jest.mock("../pages/SignupPage", () => () => <div>Signup Page Mock</div>);
 
+
 describe("App Component", () => {
   // Test for default route rendering LandingPage
   it('renders LandingPage component for "/" route', () => {
