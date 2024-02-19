@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import PropertyPage from "../pages/PropertyPage";
+import PropertyPage from "./PropertyPage";
 
 test("renders PropertyPage component with no registered properties", () => {
   render(
@@ -30,9 +30,7 @@ test("renders PropertyPage component with registered properties", () => {
   );
 
   // Simulate having registered properties
-  {
-    /* fireEvent.click(screen.getByTestId("add-condo-btn"));*/
-  }
+  fireEvent.click(screen.getByTestId("add-condo-btn"));
 
   // Check if the message for registered properties is rendered
   expect(

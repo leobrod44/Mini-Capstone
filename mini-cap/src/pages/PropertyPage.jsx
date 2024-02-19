@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-//import AddCondoBtn from "../components/AddCondoBtn";
+import AddCondoBtn from "../components/AddCondoBtn";
 import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn component
 import "../index.css";
 import "../styling/PropertyPage.css";
@@ -41,12 +41,11 @@ const PropertyPage = () => {
                         <div className="white_card">
                             <p className="card_title">You have not added any condos yet.</p>
                             {/*<p className="button"> Add a condo</p>*/}
-                            <Link to="/Dashboard" className="button"> Add a condo</Link>
-                            {/*"/add-condo"*/}
+                            <Link to="/add-condo" className="button"> Add a condo</Link>
                         </div>
                     )}
                 </div>
-                {/* {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/Dashboard')} />}*/}
+                {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-condo')} />}
 
 
                 {/* TODO: This button toggles the state of whether the user has properties or not. Should be deleted once we have backend connected  */}
