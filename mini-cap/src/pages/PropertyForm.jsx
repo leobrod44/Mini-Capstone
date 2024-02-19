@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,6 +26,9 @@ const PropertyForm = () => {
   const [condoPreviewImages, setCondoPreviewImages] = useState([]);
 
   const [visibleCondoForms, setVisibleCondoForms] = useState([]);
+
+
+
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -60,6 +63,8 @@ const PropertyForm = () => {
     reader.readAsDataURL(file);
   };
 
+
+
   const handleCondoInputChange = (e, index) => {
     const { name, value } = e.target;
     const updatedCondos = [...property.condos];
@@ -73,17 +78,7 @@ const PropertyForm = () => {
     });
   };
 
-  const handleAddCondo = () => {
-    if (!property.propertyName || !property.address || !property.unitCount || !property.parkingCount || !property.lockerCount ) {
-      toast.error("Please complete property form first");
-      return;
-    }
-
-    setProperty({
-      ...property,
-      condos: [...property.condos, {}],
-    });
-  };
+  
 
   const handleCondoFileChange = (e, index) => {
     const file = e.target.files[0];
@@ -126,28 +121,54 @@ const PropertyForm = () => {
     reader.readAsDataURL(file);
   };
 
+
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProperty({
       ...property,
       [name]: value,
     });
-
   };
 
-  const handleSubmit =  (e) => {
+  
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (!property.propertyName || !property.address || !property.unitCount || !property.parkingCount || !property.lockerCount ) {
+  
+    if (
+      !property.propertyName ||
+      !property.address ||
+      !property.unitCount ||
+      !property.parkingCount ||
+      !property.lockerCount
+    ) {
       toast.error("Missing Property Information");
       return;
     }
-   
+  
     console.log("Submitted:", property);
-
-    
   };
 
-
+  const handleAddCondo = () => {
+    // Check if all required fields in the property form are filled
+    if (
+      !property.propertyName ||
+      !property.address ||
+      !property.unitCount ||
+      !property.parkingCount ||
+      !property.lockerCount
+    ) {
+      toast.error("Please complete the property form first");
+      return;
+    }
+  
+    // If all required fields are filled, add a new condo
+    setProperty({
+      ...property,
+      condos: [...property.condos, {}],
+    });
+  };
   const handleCondoSubmit = (index) => {
     const submittedCondo = property.condos[index];
 
@@ -237,6 +258,7 @@ const PropertyForm = () => {
               <img src={previewPropertyImage} alt="Property Preview" />
             </div>
           )}
+
           <div className="input-group mt-3"></div>
           <div className="input-group">
             <label className="input-label" htmlFor="propertyName">
@@ -248,15 +270,16 @@ const PropertyForm = () => {
               name="propertyName"
               value={property.propertyName}
               onChange={(e) => handleInputChange(e)}
-              required
+              
             />
             </div>
             <div className="input" >
               <AddressComponent 
+              id="address"
               type="address"
               labelText="Address"
-              name="Address"
-              onChange={handleInputChange}
+              name="address"
+              onChange={(e) => handleInputChange(e)}
               setFormData={setProperty}
               
               />
@@ -277,7 +300,7 @@ const PropertyForm = () => {
               name="unitCount"
               value={property.unitCount}
               onChange={(e) => handleInputChange(e)}
-              required
+              
             />
           </div>
           <div className="input-group">
@@ -290,7 +313,7 @@ const PropertyForm = () => {
               name="parkingCount"
               value={property.parkingCount}
               onChange={(e) => handleInputChange(e)}
-              required
+              
             />
           </div>
           <div className="input-group">
@@ -303,7 +326,7 @@ const PropertyForm = () => {
               name="lockerCount"
               value={property.lockerCount}
               onChange={(e) => handleInputChange(e)}
-              required
+              
             />
           </div>
 
@@ -451,9 +474,8 @@ onChange={(e) => handleCondoInputChange(e, index)}
               Add Condo
             </button>
          
-            <button className="add-property-button" type="submit"
-             onClick={handleSubmit}
-             >
+            <button className="add-property-button" type="submit">
+                          
               Submit Property
             </button>
            
