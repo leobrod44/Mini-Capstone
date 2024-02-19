@@ -43,7 +43,7 @@ const AddressComponent = ({ name,  value, onChange, setFormData }) => {
   <label className="input-label" htmlFor="address">Address:</label>
             <input
               type="text"
-              className="form-input"
+              className="input"
               placeholder=""
               name={name}
               value={value} 
