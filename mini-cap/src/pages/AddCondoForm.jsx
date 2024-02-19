@@ -179,7 +179,7 @@ const AddCondoForm = () => {
   
           <div className="input-group">
         <label className="input-label" htmlFor="parkingNumber">
-          Parking Spot Number:
+          Parking Spot:
           </label>
           <input
             type="text"
@@ -192,7 +192,7 @@ const AddCondoForm = () => {
           <div className="input-group">
         <label className="input-label" htmlFor="lockerNumber">
         
-          Locker Number:
+          Locker:
           </label>
           <input
             type="text"
