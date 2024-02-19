@@ -45,4 +45,7 @@ describe("LandingPage Component", () => {
       screen.getByText("Explore what makes us unique.")
     ).toBeInTheDocument();
   });
+
+
+  
 });
