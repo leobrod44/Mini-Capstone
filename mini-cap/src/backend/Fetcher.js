@@ -4,6 +4,7 @@ import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc } from "fir
 import {cleanData} from "./DataCleaner";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import store from "storejs";
+import {useState} from "react";
 
 //npm install firebase
 //npm install storejs --save
@@ -23,11 +24,30 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app);
 const storage = getStorage();
 const profilePictureRef = 'profilePictures/';
+var role = "";
+// const [role, setRole] = useState(null);
 
 export async function getUserData(email) {
 
     try {
         const docRef = doc(db, "Users", email);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            return docSnap.data();
+        } else {
+            console.log("No such document!");
+        }
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+export async function getCompanyData(email) {
+
+    try {
+        const docRef = doc(db, "Company", email);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -108,11 +128,11 @@ export async function addUser(data) {
             throw new Error("User already exists.");
         }
         //console.log(data);
-       setPicture(data, profilePictureRef);
-       await storeData("Users",data,data['email']);
+        setPicture(data, profilePictureRef);
+        await storeData("Users",data,data['email']);
 
-       store("loggedUser", data["email"]);
-       window.location.href = '/';
+        store("loggedUser", data["email"]);
+        window.location.href = '/';
     } catch (e) {
         throw new Error(e);
     }
@@ -140,21 +160,42 @@ export async function loginUser(data) {
 
     try{
         const userDoc = await getDoc(doc(db, "Users", data['email']));
-        if (!userDoc.exists()) {
-            throw new Error("User does not exist.");
-        }
-        if(data['password'] != userDoc.data().password){
-            throw new Error("Incorrect password.");
-        }
+        const companyDoc = await getDoc(doc(db, "Company", data['email']));
 
-        store("loggedUser", data["email"]);
-        console.log("after login ", store("loggedUser"));
+        if (userDoc.exists()) {
+            if(data['password'] != userDoc.data().password){
+                throw new Error("Incorrect password.");
+            }
+
+            store("loggedUser", data["email"]);
+            await setRole("Renter/owner");
+        }
+        else if (companyDoc.exists()) {
+            if(data['password'] != companyDoc.data().password){
+                throw new Error("Incorrect password.");
+            }
+
+            store("loggedCompany", data["email"]);
+            await setRole("mgmt");
+        }
+        else
+            throw new Error("User does not exist.");
 
         window.location.href = '/';
     }
     catch(e){
         throw new Error(e);
     }
+}
+
+async function setRole(r) {
+    role = r;
+    console.log("+++++++++++" + role);
+}
+
+export async function getRole() {
+    console.log("------lllllll------" + role);
+    return role;
 }
 
 async function setPicture(data, path){
@@ -191,11 +232,3 @@ async function storeData(collection, data, key){
         throw new Error("Error adding document: ", e);
     }
 }
-
-
-
-
-
-
-
-

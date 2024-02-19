@@ -39,6 +39,7 @@ const LoginPage = () => {
 
     try {
       const currentUser = await loginUser(credentials);
+      console.log("2");
     } catch (err) {
       toast.error(err.message);
     }
