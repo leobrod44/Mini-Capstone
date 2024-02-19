@@ -2,17 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import "../styling/CondoComponent.css";
 
-const CondoComponent = ({ name, profilePicture, address, unitNumber, parkingSpot, locker }) => {
+const CondoMgmtComponent = ({ name, profilePicture, unitNumber, parkingSpot, locker }) => {
 
     return (
         <div className="condo-details-container">
             <div className="condo-info">
                 <div className='condo-name-user-tag'>
-                    <h2>{name}</h2>
+                    <h2>{name} + {unitNumber}</h2>
                 </div>
                 
                 {profilePicture && <img src={profilePicture} alt="Profile" className="profile-picture" />}
-                <p>{address}</p>
                 <p>Unit Number: {unitNumber}</p>
                 <div className='parking-send-key'> 
                     {parkingSpot && <p>Parking Spot: {parkingSpot}</p>}
@@ -27,13 +26,12 @@ const CondoComponent = ({ name, profilePicture, address, unitNumber, parkingSpot
     );
 };
 
-CondoComponent.propTypes = {
+CondoMgmtComponent.propTypes = {
     name: PropTypes.string.isRequired,
     profilePicture: PropTypes.string,
-    address: PropTypes.string.isRequired,
     unitNumber: PropTypes.string.isRequired,
     parkingSpot: PropTypes.string,
     locker: PropTypes.string
 };
 
-export default CondoComponent;
+export default CondoMgmtComponent;

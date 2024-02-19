@@ -34,7 +34,7 @@ const [hasCondos, setHasCondos] = useState(false);
 
     // Hardcoded condo details for testing
     const condoDetails = {
-        name: 'Sample Condo',
+        name: 'Property Name',
         profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
         address: '123 Main St, City',
         unitNumber: '101',
@@ -44,7 +44,7 @@ const [hasCondos, setHasCondos] = useState(false);
     };
 
     const condoDetails1 = {
-        name: 'My Condo',
+        name: 'Property Name',
         profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
         address: '123 Main St, City',
         unitNumber: '102',
