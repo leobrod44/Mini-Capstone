@@ -80,9 +80,8 @@ select
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
-  width: 48%;
-  margin-top: 20px;
-  margin-right: 2%;
+  flex: 2;
+  margin-right: 10px /* Use flex property to distribute available space equally */
 }
 .submit-condo-button{
     background-color: #382fb8;
@@ -191,5 +190,11 @@ select
     width: 10%;
    height: auto; 
     display: flex;
+  }
+  .button-container {
+    display: flex;
+    justify-content: space-between; 
+    
+  
   }
   
