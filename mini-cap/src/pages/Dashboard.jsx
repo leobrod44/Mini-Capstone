@@ -62,10 +62,9 @@ const [hasCondos, setHasCondos] = useState(false);
 				<h3 className="DB_title"> Welcome to your Condo Dashboard ! </h3>
 			  </div>
 		
-	  		<div className="content_container">
 
 			  {hasCondos ? (
-            <div className="condo_list">
+            <div >
               {/* Logic to render condos goes here */}
             
                <CondoComponent {...condoDetails} />
@@ -73,7 +72,7 @@ const [hasCondos, setHasCondos] = useState(false);
               
             </div>
           ) : (
-            // Render registration section if the user has no condos
+            <div className="content_container">
             <div className="white_card">
               <p className="card_title">You have not registered a condo yet.</p>
               <button
@@ -83,8 +82,9 @@ const [hasCondos, setHasCondos] = useState(false);
                 Register my first condo
               </button>
             </div>
+            </div>
           )}
-			</div>
+			
 			
 	  		{showPopup && <Popup handleClose={handlePopupToggle} />}
 			
