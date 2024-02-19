@@ -43,15 +43,12 @@ const UserProfile =() => {
   useEffect(()=>{
     //temporary til backend is done and we can actully receive users and their roless
     //roles, condoOwner, renter , or mgmt
-
-    //console.log(store("loggedUser"));
-
     async function fetchUserData() {
-      setTheRole(await getRole());
-
       let tempData;
       let profilePicURL;
-
+      let role = store("role");
+      var user = store("user");
+      tempData = await getCompanyData(user);
       if (role === "mgmt") {
         tempData = await getCompanyData(store("loggedCompany"));
         profilePicURL = await getProfilePicture(store("loggedCompany"));
@@ -100,7 +97,7 @@ const UserProfile =() => {
       phoneNumber,
     };
 
-    await updateUserInfo(store("loggedUser"), formData);
+    await updateUserInfo(store("user"), formData);
 
     toast.success("User info updated successfully");
     setIsEditMode(false);
@@ -120,7 +117,7 @@ const UserProfile =() => {
     if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
 
     setProfilePicUrl(photo);
-    updatePicture(store("loggedUser"), photo);
+    updatePicture(store("user"), photo);
     const fileReader = new FileReader();
     fileReader.onload = () => {
       setPreviewUrl(fileReader.result);
@@ -205,7 +202,7 @@ const UserProfile =() => {
       newPassword,
     };
 
-    const data = await changePassword(store("loggedUser"), dataForm);
+    const data = await changePassword(store("user"), dataForm);
 
     //setIsLoading(false);
 

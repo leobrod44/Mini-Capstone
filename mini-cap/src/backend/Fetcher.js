@@ -131,7 +131,7 @@ export async function addUser(data) {
         setPicture(data, profilePictureRef);
         await storeData("Users",data,data['email']);
 
-        store("loggedUser", data["email"]);
+        store("user", data["email"]);
         window.location.href = '/';
     } catch (e) {
         throw new Error(e);
@@ -161,22 +161,19 @@ export async function loginUser(data) {
     try{
         const userDoc = await getDoc(doc(db, "Users", data['email']));
         const companyDoc = await getDoc(doc(db, "Company", data['email']));
+        store("user", data["email"]);
 
         if (userDoc.exists()) {
             if(data['password'] != userDoc.data().password){
                 throw new Error("Incorrect password.");
             }
-
-            store("loggedUser", data["email"]);
-            await setRole("Renter/owner");
+            store("role", "Renter/owner")
         }
         else if (companyDoc.exists()) {
             if(data['password'] != companyDoc.data().password){
                 throw new Error("Incorrect password.");
             }
-
-            store("loggedCompany", data["email"]);
-            await setRole("mgmt");
+            store("role", "mgmt")
         }
         else
             throw new Error("User does not exist.");
@@ -186,16 +183,6 @@ export async function loginUser(data) {
     catch(e){
         throw new Error(e);
     }
-}
-
-async function setRole(r) {
-    role = r;
-    console.log("+++++++++++" + role);
-}
-
-export async function getRole() {
-    console.log("------lllllll------" + role);
-    return role;
 }
 
 async function setPicture(data, path){

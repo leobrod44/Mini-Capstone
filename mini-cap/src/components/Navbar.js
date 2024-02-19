@@ -55,7 +55,8 @@ const Navbar = () => {
 
   const logout = async (e) => {
     e.preventDefault();
-    store.remove("loggedUser");
+    store.remove("user");
+    store.remove("role");
     navigate("/login");
   };
 
