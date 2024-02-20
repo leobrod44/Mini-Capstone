@@ -24,9 +24,6 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app);
 const storage = getStorage();
 const profilePictureRef = 'profilePictures/';
-var role = "";
-// const [role, setRole] = useState(null);
-
 export async function getUserData(email) {
 
     try {
@@ -127,7 +124,6 @@ export async function addUser(data) {
         if (userDoc.exists()) {
             throw new Error("User already exists.");
         }
-        //console.log(data);
         setPicture(data, profilePictureRef);
         await storeData("Users",data,data['email']);
 
