@@ -8,7 +8,7 @@ const CondoMgmtComponent = ({ name, profilePicture, unitNumber, parkingSpot, loc
         <div className="condo-details-container">
             <div className="condo-info">
                 <div className='condo-name-user-tag'>
-                    <h2>{name} + {unitNumber}</h2>
+                    <h2>{name}  {unitNumber}</h2>
                 </div>
                 
                 {profilePicture && <img src={profilePicture} alt="Profile" className="profile-picture" />}

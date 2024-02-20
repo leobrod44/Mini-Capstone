@@ -6,6 +6,7 @@ import AddCondoBtn from "../components/AddCondoBtn";
 import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn component
 import "../index.css";
 import "../styling/PropertyPage.css";
+import CondoMgmtComponent from "../components/CondoMGMTComponent";
 
 const PropertyPage = () => {
     // State to represent whether the user has registered condos or not, since i dont have backend right now
@@ -18,13 +19,32 @@ const PropertyPage = () => {
         setHasProperties(prevHasProperties => !prevHasProperties);
     };
 
+  // Hardcoded condo details for testing
+  const MgmtcondoDetails = {
+    name: 'Property Name',
+    profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
+    unitNumber: '102',
+    parkingSpot: 'P102',
+    locker: 'L102',
+    userType: 'Renter'
+};
+  // Hardcoded condo details for testing
+  const MgmtcondoDetails2 = {
+    name: 'Property Name',
+    profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
+    unitNumber: '103',
+    parkingSpot: 'P103',
+    locker: 'L103',
+    userType: 'Renter'
+};
+
     return (
         <div>
             <Header />
             <BackArrowBtn /> {/* Include BackArrowBtn here */}
             <div className="center-page" >
                 <div className="title_container">
-                    <h3 className="DB_title"> My Property 2 </h3>
+                    <h3 className="DB_title"> Property Name </h3>
                 </div>
 
                 <div className="content_container">
@@ -33,7 +53,10 @@ const PropertyPage = () => {
                         <div className="condo_list">
                             {/* Logic to render condos goes here */}
 
-                            <p>You have registered properties:</p>
+                            
+              <CondoMgmtComponent {... MgmtcondoDetails}/>
+              
+              <CondoMgmtComponent {... MgmtcondoDetails2}/>
 
                         </div>
                     ) : (
@@ -49,11 +72,11 @@ const PropertyPage = () => {
 
 
                 {/* TODO: This button toggles the state of whether the user has properties or not. Should be deleted once we have backend connected  */}
-                {/*<button
+               *<button
                     onClick={toggleHasProperties}
                     data-testid="toggle">
                     Toggle Has Properties
-                    </button>*/}
+                </button>
             </div>
             <Footer />
 
