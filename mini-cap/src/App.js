@@ -9,7 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MGMTDashboard from "./pages/MGMTDashboard";
-import PropertyPage from "./pages/PropertyPage";
+import PropertyDetailsPage from "./pages/PropertyDetailsPage";
 import AddCondoForm from './pages/AddCondoForm';
 
 
@@ -25,7 +25,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mgmtdashboard" element={<MGMTDashboard />} />
-        <Route path="/propertypage" element={<PropertyPage />} />
+        <Route path="/propertydetailspage" element={<PropertyDetailsPage />} />
        <Route path="/add-property" element={<PropertyForm />} />
        <Route path="/add-condo" element={<AddCondoForm />} />
     </Routes>
