@@ -5,10 +5,24 @@ import "../styling/SignupPage.css"; // Ensure your CSS file path is correct
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import user from "../assets/user.png"; // Adjust the path accordingly
+import { db, auth, storage } from "../config/firebase";
+
+import {
+  getDocs,
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
+import { getUserData, addUser, addCompany } from "../backend/Fetcher";
+
 
 const SignupPage = () => {
+
   const [previewUrl, setPreviewUrl] = useState(user);
   const [profilePicUrl, setProfilePicUrl] = useState(null);
+  const usersCollectionRef = collection(db, "users");
 
   const [formData, setFormData] = useState({
     role: "renter/owner", // "Renter/Owner" as the default role
@@ -19,6 +33,7 @@ const SignupPage = () => {
     companyName: "",
     password: "",
     confirmPassword: "",
+    picture: ""
   });
   SignupPage.getFormData = () => {
     return formData;
@@ -31,9 +46,9 @@ const SignupPage = () => {
     });
   };
 
-  const handleSignup = (e) => {
+const handleSignup = async (e) => {
     e.preventDefault();
-
+   
     // Validation checks
     if (
       (formData.role === "renter/owner" &&
@@ -73,9 +88,27 @@ const SignupPage = () => {
       toast.error("Password must contain both letters and numbers.");
       return;
     }
+    if(profilePicUrl){
+      formData.picture = profilePicUrl;
+    }
 
-    // Add your signup logic here
-    console.log("Signup Form Data:", formData);
+    if(formData.role === "renter/owner"){
+      try {
+        const newUser = await addUser(formData);
+      } catch (err) {
+        toast.error(err.message);
+      }
+    }
+    
+    else if (formData.role === "managementCompany"){
+      try {
+        const newUser = await addCompany(formData);
+      } catch (err) {
+        toast.error(err.message);
+      }
+    }
+    //TODO login user and navigate to home page
+  
   };
 
   const handlePhotoChange = (event) => {
@@ -94,7 +127,8 @@ const SignupPage = () => {
     fileReader.onload = () => {
       setPreviewUrl(fileReader.result);
     };
-    fileReader.readAsDataURL(photo);
+    //TODO profilePic preview dosent seem to be working anymore
+    
   };
 
   return (
