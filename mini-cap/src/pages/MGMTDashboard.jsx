@@ -39,7 +39,6 @@ const [hasProperties, setHasProperties] = useState(false);
     parkingCount: '25',
     lockerCount: '100'
   };
-=======
   // Hardcoded condo details for testing
   const MgmtcondoDetails = {
     name: 'Property Name',
