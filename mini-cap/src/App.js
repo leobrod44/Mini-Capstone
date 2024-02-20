@@ -4,11 +4,14 @@ import UserProfile from "./pages/UserProfile";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import PropertyForm from "./pages/PropertyForm";
 import Dashboard from "./pages/Dashboard";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MGMTDashboard from "./pages/MGMTDashboard";
 import PropertyPage from "./pages/PropertyPage";
+import AddCondoForm from './pages/AddCondoForm';
+
 
 function App() {
   return (
@@ -23,7 +26,10 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mgmtdashboard" element={<MGMTDashboard />} />
         <Route path="/propertypage" element={<PropertyPage />} />
-      </Routes>
+       <Route path="/add-property" element={<PropertyForm />} />
+       <Route path="/add-condo" element={<AddCondoForm />} />
+    </Routes>
+
     </BrowserRouter>
   );
 }
