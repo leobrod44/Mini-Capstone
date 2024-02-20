@@ -47,24 +47,21 @@ const PropertyPage = () => {
                     <h3 className="DB_title"> Property Name </h3>
                 </div>
 
-                <div className="content_container">
-
+                <div >
                     {hasProperties ? (
                         <div className="condo_list">
                             {/* Logic to render condos goes here */}
+                             <CondoMgmtComponent {... MgmtcondoDetails}/>
+                             <CondoMgmtComponent {... MgmtcondoDetails2}/>
 
-                            
-              <CondoMgmtComponent {... MgmtcondoDetails}/>
-              
-              <CondoMgmtComponent {... MgmtcondoDetails2}/>
-
-                        </div>
+                      </div>
                     ) : (
-                        // Render registration section if the user has no properties
-                        <div className="white_card">
-                            <p className="card_title">You have not added any condos yet.</p>
-                            {/*<p className="button"> Add a condo</p>*/}
-                            <Link to="/add-condo" className="button"> Add a condo</Link>
+                        <div className="content_container">
+                            <div className="white_card">
+                                <p className="card_title">You have not added any condos yet.</p>
+                                {/*<p className="button"> Add a condo</p>*/}
+                                <Link to="/add-condo" className="button"> Add a condo</Link>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -72,7 +69,7 @@ const PropertyPage = () => {
 
 
                 {/* TODO: This button toggles the state of whether the user has properties or not. Should be deleted once we have backend connected  */}
-               *<button
+               <button
                     onClick={toggleHasProperties}
                     data-testid="toggle">
                     Toggle Has Properties
