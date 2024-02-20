@@ -3,7 +3,7 @@ import Footer from "../components/Footer";
 import CondoComponent from "../components/CondoComponent.jsx";
 import "../index.css";
 import "../styling/Dashboard.css";
-import React, { useState,useEffect  } from "react";
+import React, { useState} from "react";
 import Popup from "../components/Popup";
 import AddCondoBtn from "../components/AddCondoBtn";
 
