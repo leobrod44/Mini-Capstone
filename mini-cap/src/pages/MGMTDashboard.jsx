@@ -1,90 +1,85 @@
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { getProperties } from "../backend/Fetcher";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../index.css";
 import "../styling/MGMTDashboard.css";
-import React, { useState } from "react";
 import AddCondoBtn from "../components/AddCondoBtn";
 import Property from "../components/PropertyComponent";
-import { Link, useNavigate } from "react-router-dom";
+import store from "storejs";
 
-const MGMTDashboard =() => {
-// State to represent whether the user has registered condos or not, since i dont have backend right now
-const [hasProperties, setHasProperties] = useState(false);
- const navigate = useNavigate();
+const MGMTDashboard = () => {
+  const [hasProperties, setHasProperties] = useState(false);
+  const [propertyDetails, setPropertyDetails] = useState([]);
+  const navigate = useNavigate();
 
-   
-   // TODO: This function simulates having properties or not. Used to decide what should be displayed on the dashboard
-   const toggleHasProperties = () => {
-    setHasProperties(prevHasProperties => !prevHasProperties);
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const properties = await getProperties(store("loggedUser"));
+        if (properties.length > 0) {
+          setHasProperties(true);
+          setPropertyDetails(properties);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchProperties();
+
+  }, []); 
+
+  // Function to toggle the hasProperties state
+  const toggleHasProperties = () => {
+    setHasProperties((prevHasProperties) => !prevHasProperties);
   };
 
+  return (
+    <div>
+      <Header />
+      <div className="center-page">
+        <div className="title_container">
+          <h3 className="DB_title"> Welcome to your Properties Dashboard ! </h3>
+        </div>
 
-  // TODO: Hardcoded property details for testing
-  const propertyDetails = {
-    name: 'Downtown Property',
-    profilePicture: 'https://cdn.pixabay.com/photo/2021/02/02/18/46/city-5974876_640.jpg',
-    address: '123 Main St, Mtl',
-    unitCount: '10',
-    parkingCount: '5',
-    lockerCount: '2'
-};
-
-// TODO: Hardcoded property details for testing
-  const propertyDetails1 = {
-    name: 'CSL Property',
-    profilePicture: 'https://images.pexels.com/photos/783745/pexels-photo-783745.jpeg?auto=compress&cs=tinysrgb&w=800',
-    address: '863 csl road, cote saint luc',
-    unitCount: '25',
-    parkingCount: '25',
-    lockerCount: '100'
-  };
-
-	return(
-		<div>
-			<Header/>
-			<div className="center-page" >
-			  <div className="title_container">
-				<h3 className="DB_title"> Welcome to your Properties Dashboard ! </h3>
-			  </div>
-		
-	  		<div className="content_container">
-
-			  {hasProperties ? (
+        <div className="content_container">
+          {hasProperties ? (
             <div className="condo_list">
-              {/* Logic to render condos goes here */}
-
-
-              {/* TODO: Inserting Property deatils */}
-              <Property {...propertyDetails} />
-              <Property {...propertyDetails1} />
-
+              {/* Render properties */}
+              {propertyDetails.map((p, index) => (
+                <Property key={index} property={{
+                  propertyID: p.propertyID,
+                  propertyName: p.property,
+                  address: p.address,
+                  unitCount: p.unitCount,
+                  parkingCount: p.parkingCount,
+                  lockerCount: p.lockerCount
+              } } />
+              ))}
             </div>
           ) : (
             // Render registration section if the user has no properties
             <div className="white_card">
               <p className="card_title">You have not created a property yet.</p>
-              <Link to="/add-property" className="button"> Create my first Property</Link>
-              
+              <Link to="/add-property" className="button">
+                {" "}
+                Create my first Property
+              </Link>
             </div>
           )}
-			</div>
-	  		
-			{ hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-property')} /> }
-		 
-     
-     {/* TODO: This button toggles the state of whether the user has properties or not. Should be deleted once we have backend connected  */}
-     <button 
-     onClick={toggleHasProperties} 
-     data-testid="toggle">
-                Toggle Has Properties
-      </button>
+        </div>
+
+        {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate("/add-property")} />}
+
+        {/* Button to toggle hasProperties state (for testing purposes) */}
+        <button onClick={toggleHasProperties} data-testid="toggle">
+          Toggle Has Properties
+        </button>
+      </div>
+      <Footer />
     </div>
-			<Footer/>
-    
-		</div>
-	);
-
-
+  );
 };
 
 export default MGMTDashboard;
