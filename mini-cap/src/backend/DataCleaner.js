@@ -12,6 +12,23 @@ const structure = {
         "phoneNumber": "",
         "email": "",
         "password": "",
+    },
+    "Property": {
+        "companyOwner": "",
+        "propertyName": "",
+        "address": "",
+        "unitCount": "",
+        "parkingCount": "",
+        "lockerCount": "",
+    },
+    "Condo":{
+        "property": "",
+        "unitNumber": "",
+        "squareFeet": "",
+        "unitPrice": "",
+        "unitSize": "",
+        "parkingNumber": "",
+        "lockerNumber": "",
     }
 }
 
@@ -33,3 +50,4 @@ export function cleanData(type, data) {
 
     return newData;
 }
+
