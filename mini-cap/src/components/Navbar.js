@@ -50,7 +50,6 @@ const Navbar = () => {
       let role = store("role");
       let tempData;
       setTheRole(role);
-      console.log(role);
       if (role === "mgmt") {
         tempData = await getCompanyData(store("loggedCompany"));
         setCompanyName(tempData.companyName);
