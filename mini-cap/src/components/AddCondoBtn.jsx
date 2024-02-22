@@ -1,11 +1,11 @@
 
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../styling/AddCondoBtn.css";
 
 
-const AddCondoBtn = ({ onClick}) => {
-    
-    
+const AddCondoBtn = ({ onClick }) => {
+
+
   return (
     <div className="floating_button" role="button" onClick={onClick} >
       <div className="button_circle">
