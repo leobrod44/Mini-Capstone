@@ -97,7 +97,7 @@ useEffect(()=>{
       if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
   
       setProfilePicUrl(photo);
-      updatePicture(store("loggedUser"), photo);
+      updateUserPicture(store("loggedUser"), photo);
       const fileReader = new FileReader();
       fileReader.onload = () => {
         setPreviewUrl(fileReader.result);
