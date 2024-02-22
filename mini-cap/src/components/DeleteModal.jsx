@@ -13,7 +13,7 @@ const DeleteModal = ({ show, handleClose, handleDeleteItem, message }) => {
           onClick={handleClose}
         ></button>
       </Modal.Header>
-      <Modal.Body>{message}</Modal.Body>
+        <Modal.Body><p> {message} </p></Modal.Body>
       <Modal.Footer>
         <Button variant="danger" onClick={handleDeleteItem}>
           Delete Permanently

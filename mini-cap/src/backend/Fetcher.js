@@ -1,4 +1,4 @@
-import {getFirestore} from "firebase/firestore";
+import {deleteDoc, getFirestore} from "firebase/firestore";
 import {initializeApp,storageRef} from "firebase/app";
 import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import {cleanData} from "./DataCleaner";
@@ -218,7 +218,7 @@ export async function updatePicture(email, path){
     try{
         const storage = getStorage();
         const desertRef = ref(storage, 'profilePictures/'+ email);
-        await deleteObject(desertRef);;
+        await deleteObject(desertRef);
         var pic = await uploadBytes(ref(storage,profilePictureRef + email), path);
 
     }
@@ -238,9 +238,21 @@ async function storeData(collection, data, key){
 }
 
 
+export async function deleteAccount(email) {
+    try {
+        const userDoc = await getDoc(doc(db, "Users", email));
+        const companyDoc = await getDoc(doc(db, "Company", email));
+
+        if (userDoc.exists())
+            await deleteDoc(doc(db, "Users", email));
+        else if (companyDoc.exists())
+            await deleteDoc(doc(db, "Company", email));
+        else
+            throw new Error("User does not exist.");
 
 
-
-
-
-
+        window.location.href = '/login';
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}

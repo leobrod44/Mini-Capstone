@@ -14,7 +14,8 @@ import {
   changePassword,
   getProfilePicture,
   updatePicture,
-  updateCompanyInfo
+  updateCompanyInfo,
+  deleteAccount
 } from "../backend/Fetcher";
 import store from "storejs";
 
@@ -42,10 +43,6 @@ const UserProfile =() => {
 
 
 useEffect(()=>{
- //temporary til backend is done and we can actully receive users and their roless
-  //roles, condoOwner, renter , or mgmt
-
-  //console.log(store("loggedUser"));
 
   async function fetchUserData() {
     let tempData;
@@ -81,14 +78,11 @@ useEffect(()=>{
   fetchUserData();
 
 }, [])
- 
 
-  //edit button
   const handleEditClick = () => {
     setIsEditMode(true);
   };
 
-  //save button
   const handleSaveClick = async (ev) => {
     ev.preventDefault();
 
@@ -167,12 +161,12 @@ useEffect(()=>{
   const handleClose = () => {
     setShow(false);
   };
-  
+
   //delete function
-  const deleteAccount = () => {
-   // dispatch(deleteUser);
+  const deleteAccountAttempt = () => {
+    deleteAccount(email);
     toast.success("Account deleted successfully");
-    navigate("/"); //link to registration page instead 
+    //navigate("/"); //link to registration page instead
     setShow(false);
   };
   
@@ -204,6 +198,7 @@ useEffect(()=>{
   const handleConfirmPasswordChange = (ev) => {
     setConfirmPassword(ev.target.value);
   };
+
   const handleChangePassword = async (ev) => {
     ev.preventDefault();
 
@@ -388,13 +383,14 @@ useEffect(()=>{
                 >
                   Delete Account
                 </button>
-            
+
+                {/*EVENTUALLY IMPLEMENT PASSWORD CONFIRMATION*/}
                 <DeleteModal
                   show={show}
                   handleClose={handleClose}
-                  handleDeleteItem={deleteAccount}
+                  handleDeleteItem={deleteAccountAttempt}
                   message={
-                    "All information will be deleted, are you sure you want to proceed?"
+                    "Please enter your password to delete the account."
                   }
                 />
 
