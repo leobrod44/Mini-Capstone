@@ -4,6 +4,7 @@ import "../styling/PropertyComponent.css";
 import {  useNavigate } from "react-router-dom";
 
 const PropertyComponent = ({ name, profilePicture, address, unitCount, parkingCount, lockerCount }) => {
+    
     const navigate = useNavigate();
 
     return (
