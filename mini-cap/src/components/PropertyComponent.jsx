@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import "../styling/PropertyComponent.css";
+import {  useNavigate } from "react-router-dom";
 
 const PropertyComponent = ({ name, profilePicture, address, unitCount, parkingCount, lockerCount }) => {
+    const navigate = useNavigate();
 
     return (
         <div className="property-details-container">
@@ -16,7 +18,8 @@ const PropertyComponent = ({ name, profilePicture, address, unitCount, parkingCo
                 {parkingCount && <p>Parking Count: {parkingCount}</p>}
                 <div className='locker-details'>
                     {lockerCount && <p>Locker Count: {lockerCount}</p>}
-                    <button className="details-button">Details</button>
+                    {/*@TODO actually navigate to the corresponding details page */}
+                    <button className="details-button" onClick={() => navigate('/propertydetailspage')}>Details</button>
                 </div>
             </div>
         </div>
