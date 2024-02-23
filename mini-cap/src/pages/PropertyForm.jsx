@@ -125,14 +125,15 @@ const PropertyForm = () => {
 
 
   const handleInputChange = (e) => {
-    const { name, value} = e.target;
+    const { name, value, type } = e.target;
 
-    setProperty({
-      ...property,
-      [name]: value,
+  // Parse the value as an integer for number input fields
+  const parsedValue = type === 'number' ? parseInt(value, 10) : value;
+  setProperty({
+    ...property,
+    [name]: parsedValue,
     });
   };
-
   
   const handleSubmit = (e) => {
     e.preventDefault();
