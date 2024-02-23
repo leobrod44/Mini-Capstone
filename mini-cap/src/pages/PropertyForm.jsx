@@ -119,6 +119,7 @@ const PropertyForm = () => {
     };
 
     reader.readAsDataURL(file);
+    
   };
 
 
