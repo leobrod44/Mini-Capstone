@@ -126,12 +126,19 @@ const PropertyForm = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
-    
-  // Parse the value as an integer for number input fields
-  const parsedValue = type === 'number' ? parseInt(value, 10) : value;
-  setProperty({
-    ...property,
-    [name]: parsedValue,
+  
+    // Parse the value as an integer for number input fields
+    const parsedValue = type === 'number' ? parseInt(value, 10) : value;
+  
+    // Check for minimum value validation
+    if (type === 'number' && parsedValue < 0) {
+      toast.error(`Count must be greater than or equal to 0`);
+      return;
+    }
+  
+    setProperty({
+      ...property,
+      [name]: parsedValue,
     });
   };
   
