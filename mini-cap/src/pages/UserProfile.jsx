@@ -8,14 +8,14 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import user from "../assets/user.png";
 import {
-  getUserData,
+  getUserData, 
   getCompanyData,
-  updateUserInfo,
-  changePassword,
-  getProfilePicture,
-  updatePicture,
   updateCompanyInfo,
-  deleteAccount
+  deleteAccount,
+  updateUserInfo, 
+  changePassword, 
+  getProfilePicture, 
+  updateUserPicture
 } from "../backend/Fetcher";
 import store from "storejs";
 
@@ -134,7 +134,9 @@ useEffect(()=>{
       if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
   
       setProfilePicUrl(photo);
-      updatePicture(store("user"), photo);
+
+      updateUserPicture(store("loggedUser"), photo);
+
       const fileReader = new FileReader();
       fileReader.onload = () => {
         setPreviewUrl(fileReader.result);

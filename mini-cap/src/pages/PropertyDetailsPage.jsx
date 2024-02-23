@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import AddCondoBtn from "../components/AddCondoBtn";
@@ -7,36 +7,32 @@ import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn c
 import "../index.css";
 import "../styling/PropertyPage.css";
 import CondoMgmtComponent from "../components/CondoMGMTComponent";
+import { getCondos } from "../backend/Fetcher";
+import PropTypes from 'prop-types';
 
 const PropertyPage = () => {
+    let { propertyID, propertyName } = useParams();
     // State to represent whether the user has registered condos or not, since i dont have backend right now
-    const [hasProperties, setHasProperties] = useState(false);
     const navigate = useNavigate();
+    const [condoDetails, setCondoDetails] = useState([]);
+    const [hasCondos, setHasCondos] = useState(false);
 
+    useEffect(() => {
+        const fetchCondos = async () => {
+          try {
+            const condos = await getCondos(propertyID);
+            if (condos.length > 0) {
+              setHasCondos(true);
+              setCondoDetails(condos);
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        };
+        fetchCondos();
+    
+      }, []); 
 
-    // TODO: This function simulates having properties or not. Used to decide what should be displayed on the dashboard
-    const toggleHasProperties = () => {
-        setHasProperties(prevHasProperties => !prevHasProperties);
-    };
-
-  // Hardcoded condo details for testing
-  const MgmtcondoDetails = {
-    name: 'Property Name',
-    profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
-    unitNumber: '102',
-    parkingSpot: 'P102',
-    locker: 'L102',
-    userType: 'Renter'
-};
-  // Hardcoded condo details for testing
-  const MgmtcondoDetails2 = {
-    name: 'Property Name',
-    profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
-    unitNumber: '103',
-    parkingSpot: 'P103',
-    locker: 'L103',
-    userType: 'Renter'
-};
 
     return (
         <div>
@@ -44,15 +40,15 @@ const PropertyPage = () => {
             <BackArrowBtn /> {/* Include BackArrowBtn here */}
             <div className="center-page" >
                 <div className="title_container">
-                    <h3 className="DB_title"> Property Name </h3>
+                    <h3 className="DB_title"> {propertyName}</h3>
                 </div>
 
                 <div >
-                    {hasProperties ? (
+                    {hasCondos ? (
                         <div className="condo_list">
-                            {/* Logic to render condos goes here */}
-                             <CondoMgmtComponent {... MgmtcondoDetails}/>
-                             <CondoMgmtComponent {... MgmtcondoDetails2}/>
+                        {condoDetails.map((condo, index) => (
+                            <CondoMgmtComponent key={index} {...condo} />
+                        ))}     
 
                       </div>
                     ) : (
@@ -65,15 +61,7 @@ const PropertyPage = () => {
                         </div>
                     )}
                 </div>
-                {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-condo')} />}
-
-
-                {/* TODO: This button toggles the state of whether the user has properties or not. Should be deleted once we have backend connected  */}
-               <button
-                    onClick={toggleHasProperties}
-                    data-testid="toggle">
-                    Toggle Has Properties
-                </button>
+                {hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-condo')} />}
             </div>
             <Footer />
 

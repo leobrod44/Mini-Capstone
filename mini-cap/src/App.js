@@ -25,7 +25,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mgmtdashboard" element={<MGMTDashboard />} />
-        <Route path="/propertydetailspage" element={<PropertyDetailsPage />} />
+        <Route path="/propertydetailspage/:propertyID/:propertyName" element={<PropertyDetailsPage />} />
        <Route path="/add-property" element={<PropertyForm />} />
        <Route path="/add-condo" element={<AddCondoForm />} />
     </Routes>

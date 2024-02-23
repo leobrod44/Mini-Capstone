@@ -7,6 +7,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import DeleteModal from "../components/DeleteModal"; 
 import AddressComponent from "../components/AddressComponent"; 
+import { addProperty } from "../backend/Fetcher";
 
 const PropertyForm = () => {
   const [property, setProperty] = useState({
@@ -133,7 +134,7 @@ const PropertyForm = () => {
   };
 
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
   
     if (
@@ -146,7 +147,13 @@ const PropertyForm = () => {
       toast.error("Missing Property Information");
       return;
     }
-  
+    try{
+      await addProperty(property);
+    }
+    catch(e){
+      toast.error("Error adding property: ", e);
+    }
+    window.location.href = '/MGMTDashboard';
     console.log("Submitted:", property);
   };
 
