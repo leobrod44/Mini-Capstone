@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen, fireEvent,waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
 import { BrowserRouter } from 'react-router-dom';
 import MGMTDashboard from '../pages/MGMTDashboard';
 

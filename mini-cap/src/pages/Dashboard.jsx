@@ -1,10 +1,12 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import CondoComponent from "../components/CondoComponent.jsx";
 import "../index.css";
 import "../styling/Dashboard.css";
-import React, { useState,useEffect  } from "react";
+import React, { useState} from "react";
 import Popup from "../components/Popup";
 import AddCondoBtn from "../components/AddCondoBtn";
+
 
 
 const Dashboard =() => {
@@ -30,6 +32,28 @@ const [hasCondos, setHasCondos] = useState(false);
   };
 
 
+    // Hardcoded condo details for testing
+    const condoDetails = {
+        name: 'Property Name',
+        profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
+        address: '123 Main St, City',
+        unitNumber: '101',
+        parkingSpot: 'P101',
+        locker: 'L101',
+        userType: 'Owner'
+    };
+
+    const condoDetails1 = {
+        name: 'Property Name',
+        profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
+        address: '123 Main St, City',
+        unitNumber: '102',
+        parkingSpot: 'P102',
+        locker: 'L102',
+        userType: 'Renter'
+    };
+
+
 	return(
 		<div>
 			<Header/>
@@ -38,17 +62,17 @@ const [hasCondos, setHasCondos] = useState(false);
 				<h3 className="DB_title"> Welcome to your Condo Dashboard ! </h3>
 			  </div>
 		
-	  		<div className="content_container">
 
 			  {hasCondos ? (
-            <div className="condo_list">
+            <div >
               {/* Logic to render condos goes here */}
             
-              <p>You have registered condos:</p>
+               <CondoComponent {...condoDetails} />
+               <CondoComponent {...condoDetails1} />
               
             </div>
           ) : (
-            // Render registration section if the user has no condos
+            <div className="content_container">
             <div className="white_card">
               <p className="card_title">You have not registered a condo yet.</p>
               <button
@@ -58,8 +82,9 @@ const [hasCondos, setHasCondos] = useState(false);
                 Register my first condo
               </button>
             </div>
+            </div>
           )}
-			</div>
+			
 			
 	  		{showPopup && <Popup handleClose={handlePopupToggle} />}
 			
@@ -73,6 +98,7 @@ const [hasCondos, setHasCondos] = useState(false);
       </button>
 		</div>
 	);
+
 
 
 };

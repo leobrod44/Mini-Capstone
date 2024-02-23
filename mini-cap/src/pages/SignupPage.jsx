@@ -95,6 +95,7 @@ const handleSignup = async (e) => {
     if(formData.role === "renter/owner"){
       try {
         const newUser = await addUser(formData);
+        window.location.href = '/';
       } catch (err) {
         toast.error(err.message);
       }
@@ -103,11 +104,12 @@ const handleSignup = async (e) => {
     else if (formData.role === "managementCompany"){
       try {
         const newUser = await addCompany(formData);
+        window.location.href = '/';
       } catch (err) {
         toast.error(err.message);
       }
     }
-    //TODO login user and navigate to home page
+    
   
   };
 

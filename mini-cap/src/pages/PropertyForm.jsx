@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styling/propertyform.css";
@@ -7,6 +6,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import DeleteModal from "../components/DeleteModal"; 
 import AddressComponent from "../components/AddressComponent"; 
+import { addProperty } from "../backend/Fetcher";
 
 const PropertyForm = () => {
   const [property, setProperty] = useState({
@@ -126,7 +126,7 @@ const PropertyForm = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
-
+    
   // Parse the value as an integer for number input fields
   const parsedValue = type === 'number' ? parseInt(value, 10) : value;
   setProperty({
@@ -135,7 +135,7 @@ const PropertyForm = () => {
     });
   };
   
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
   //validation that all required information is filled in
     if (

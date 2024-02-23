@@ -1,0 +1,77 @@
+/* PropertyComponent.css */
+
+h2{
+    font-family: "Roboto", sans-serif;
+    position: relative;
+    margin-bottom: 3px;
+    color:#2f2c9b;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  /* Overall page styles */
+  .property-details-container {
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 40vh;
+    width: 100%;
+    background-color: #f4f4f4;
+  }
+
+  .property-name {
+    padding-bottom: 10px;
+  }
+  
+  .property-info {
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 13px; /* Increased padding for wider form */
+    width: 100%; /* Full width on large screens */
+    width: 410px;
+  }
+
+  .property-info p{
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    font-weight: lighter;
+    font-size: 20px;
+    margin: 0; /* Remove default margin for paragraph elements */
+  }
+
+  .locker-details {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Profile Picture styles */
+  .profile-picture{
+    height: 76px;
+    width: 91px;
+  } 
+  
+  /* Button styles */
+  
+  .details-button {
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    font-weight: 400;
+    font-size: 20px; /* Chosen font size */
+    background-color: #4540db; /* Chosen background color from signup2 branch */
+    color: #fff; /* Assuming var(--white) is white, replaced with #fff */
+    border: none; /* No border */
+    border-radius: 4px; /* Chosen border-radius */
+    cursor: pointer; /* Hand cursor on hover */
+    transition: all 0.3s ease; /* Example transition */
+    display: flex; /* Display style */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
+    height: 36px;
+    width: 125px;
+  }
+  
+  .details-button:hover {
+    background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
+    color: #ffffff; /* Change text color on hover to white */
+  }

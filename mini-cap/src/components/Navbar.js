@@ -14,14 +14,18 @@ import { IoIosBusiness } from "react-icons/io";
 import { LiaHandsHelpingSolid } from "react-icons/lia";
 import { FaBriefcase } from "react-icons/fa";
 import store from "storejs";
+import {getCompanyData, getProfilePicture, getUserData} from "../backend/Fetcher";
 
 const Navbar = () => {
   const navigate = useNavigate();
   //to display Hello user! message , grab the name and their profile pic
   // const firstName = useSelector(selectName);
   // const photo = useSelector(selectPhoto);
-  const [role, setRole] = useState(""); // <-- State to store user role
+  const [role, setTheRole] = useState(""); // <-- State to store user role
   const [open, setOpen] = useState(false);
+
+  const [firstName, setFirstName] = useState(null);
+  const [companyName, setCompanyName] = useState(null);
   let menuRef = useRef();
 
   const toggleMenu = () => {
@@ -41,11 +45,23 @@ const Navbar = () => {
   };
 
   React.useEffect(() => {
-    //roles, condoOwner, renter , or mgmt
-    //const user = { role: "condoOwner" };
-    //const user = { role: "renter" };
-    const user = { role: "mgmt" };
-    setRole(user.role);
+
+    async function fetchUserData() {
+      let role = store("role");
+      let tempData;
+      setTheRole(role);
+      if (role === "mgmt") {
+        tempData = await getCompanyData(store("loggedCompany"));
+        setCompanyName(tempData.companyName);
+      }
+      else if (role === "Renter/owner"){
+        tempData = await getUserData(store("loggedUser"));
+        setFirstName(tempData.firstName)
+      }
+
+    }
+
+    fetchUserData();
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -55,7 +71,8 @@ const Navbar = () => {
 
   const logout = async (e) => {
     e.preventDefault();
-    store.remove("loggedUser");
+    store.remove("user");
+    store.remove("role");
     navigate("/login");
   };
 
@@ -84,13 +101,13 @@ const Navbar = () => {
           >
             {role === "mgmt" && (
               <h3 className={NavbarCSS.h3}>
-                Hello company! <br />{" "}
+                Hello {companyName} <br />{" "}
               </h3>
             )}
 
             {role !== "mgmt" && (
               <h3 className={NavbarCSS.h3}>
-                Hello first name! <br />{" "}
+                Hello {firstName}<br />{" "}
               </h3>
             )}
 
