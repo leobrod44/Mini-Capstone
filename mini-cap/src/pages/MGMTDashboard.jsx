@@ -8,19 +8,23 @@ import "../styling/MGMTDashboard.css";
 import AddCondoBtn from "../components/AddCondoBtn";
 import Property from "../components/PropertyComponent";
 import store from "storejs";
+import Pagination from "../components/Pagination";
+import "../styling/Pagination.css";
+
 
 const MGMTDashboard = () => {
   const [hasProperties, setHasProperties] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const properties = await getProperties(store("loggedUser"));
-        if (properties.length > 0) {
+        const propertyDetails = await getProperties(store("loggedUser"));
+        if (propertyDetails.length > 0) {
           setHasProperties(true);
-          setPropertyDetails(properties);
+          setPropertyDetails(propertyDetails);
         }
       } catch (err) {
         console.error(err);
@@ -35,6 +39,17 @@ const MGMTDashboard = () => {
     setHasProperties((prevHasProperties) => !prevHasProperties);
   };
 
+
+  const propertiesPerPage = 4;
+  const indexOfLastProperty = currentPage * propertiesPerPage;
+  const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
+
+
+  const propertiesToDisplayPaginated = propertyDetails.slice(
+    indexOfFirstProperty,
+    indexOfLastProperty
+  );
+
   return (
     <div>
       <Header />
@@ -45,9 +60,10 @@ const MGMTDashboard = () => {
 
         <div className="content_container">
           {hasProperties ? (
+            <div>
             <div className="condo_list">
               {/* Render properties */}
-              {propertyDetails.map((p, index) => (
+              {propertiesToDisplayPaginated.map((p, index) => (
                 <Property key={index} property={{
                   propertyID: p.propertyID,
                   propertyName: p.property,
@@ -57,6 +73,15 @@ const MGMTDashboard = () => {
                   lockerCount: p.lockerCount
               } } />
               ))}
+            </div>
+            <div className="pagination-container">
+                <Pagination
+                  itemsPerPage={propertiesPerPage}
+                  totalItems={propertyDetails.length}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              </div>
             </div>
           ) : (
             // Render registration section if the user has no properties
