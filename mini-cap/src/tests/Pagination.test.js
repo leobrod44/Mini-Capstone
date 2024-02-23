@@ -28,5 +28,31 @@ test('Previous button is disabled on the first page', () => {
     expect(nextButton).toBeDisabled();
   });
   
-
+  test('Clicking on page numbers updates the current page', () => {
+    const setCurrentPage = jest.fn();
+    render(<Pagination itemsPerPage={4} totalItems={12} currentPage={1} setCurrentPage={setCurrentPage} />);
+    
+    const page2Button = screen.getByText('2');
+    fireEvent.click(page2Button);
+    expect(setCurrentPage).toHaveBeenCalledWith(2);
+  });
+  
+  test('Clicking on Previous button decrements current page', () => {
+      const setCurrentPage = jest.fn();
+      render(<Pagination itemsPerPage={4} totalItems={8} currentPage={2} setCurrentPage={setCurrentPage} />);
+      
+      const previousButton = screen.getByText('Previous');
+      fireEvent.click(previousButton);
+      expect(setCurrentPage).toHaveBeenCalledWith(1);
+    });
+    
+    test('Clicking on Next button increments current page', () => {
+      const setCurrentPage = jest.fn();
+      render(<Pagination itemsPerPage={4} totalItems={8} currentPage={1} setCurrentPage={setCurrentPage} />);
+      
+      const nextButton = screen.getByText('Next');
+      fireEvent.click(nextButton);
+      expect(setCurrentPage).toHaveBeenCalledWith(2);
+    });
+    
   
