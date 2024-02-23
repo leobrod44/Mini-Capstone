@@ -1,10 +1,10 @@
 import React from "react";
 
 function Pagination(props) {
-  const { propertiesPerPage, totalProperties, currentPage, setCurrentPage } = props;
+  const { itemsPerPage, totalItems, currentPage, setCurrentPage } = props;
 
   const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(totalProperties / propertiesPerPage); i++) {
+  for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
     pageNumbers.push(i);
   }
 
@@ -35,7 +35,7 @@ function Pagination(props) {
 
       <button
         className="next"
-        disabled={currentPage === Math.ceil(totalProperties / propertiesPerPage) ? true : false}
+        disabled={currentPage === Math.ceil(totalItems / itemsPerPage) ? true : false}
         onClick={() => setCurrentPage(currentPage + 1)}
       >
         Next
