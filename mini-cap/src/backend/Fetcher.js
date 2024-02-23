@@ -1,9 +1,10 @@
-import {getFirestore} from "firebase/firestore";
+import {deleteDoc, getFirestore} from "firebase/firestore";
 import {initializeApp,storageRef} from "firebase/app";
 import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import {cleanData} from "./DataCleaner";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import store from "storejs";
+import {useState} from "react";
 
 //npm install firebase
 //npm install storejs --save
@@ -24,10 +25,29 @@ const db = getFirestore(app);
 const storage = getStorage();
 const profilePictureRef = 'profilePictures/';
 
+// returns user data using email
 export async function getUserData(email) {
 
     try {
         const docRef = doc(db, "Users", email);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            return docSnap.data();
+        } else {
+            console.log("No such document!");
+        }
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// returns company data using email
+export async function getCompanyData(email) {
+
+    try {
+        const docRef = doc(db, "Company", email);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
@@ -48,6 +68,21 @@ export async function updateUserInfo(email, data) {
         await updateDoc(docRef, {
             firstName: data.firstName,
             lastName: data.lastName,
+            phoneNumber: data.phoneNumber
+        });
+
+    } catch (err) {
+        console.error(err);
+    }
+
+}
+
+export async function updateCompanyInfo(email, data) {
+
+    try {
+        const docRef = doc(db, "Company", email);
+        await updateDoc(docRef, {
+            companyName: data.companyName,
             phoneNumber: data.phoneNumber
         });
 
@@ -130,11 +165,11 @@ export async function addUser(data) {
         if (userDoc.exists()) {
             throw new Error("User already exists.");
         }
-        //console.log(data);
+
        setPicture(data, profilePictureRef);
        await storeData("Users",data,data['email']);
 
-       store("loggedUser", data["email"]);
+       store("user", data["email"]);
        window.location.href = '/';
     } catch (e) {
         throw new Error(e);
@@ -145,10 +180,11 @@ export async function addCompany(data) {
 
     try {
 
-        const userDoc = await getDoc(doc(db, "Company", data['email']));
-        if (userDoc.exists()) {
+        const companyDoc = await getDoc(doc(db, "Company", data['email']));
+        if (companyDoc.exists()) {
             throw new Error("Company already exists.");
         }
+
 
         try{
             setPicture(data, profilePictureRef);
@@ -158,12 +194,12 @@ export async function addCompany(data) {
         
         try{
            var resp = await storeData("Company",data,data['email']);
+           store("user", data["email"]);
+           window.location.href = '/';
            console.log(resp);
         }catch(e){
             throw new Error("Error adding document: ", e);
         }
-        
-
     } catch (e) {
         throw new Error(e);
     }
@@ -172,19 +208,26 @@ export async function addCompany(data) {
 export async function loginUser(data) {
 
     try{
-        
-        const user = await getDoc(doc(db, "Users", data['email']));
-        const company = await getDoc(doc(db, "Company", data['email']));
-        if (!user.exists() && !company.exists()) {
-            throw new Error("User does not exist.");
-        }
-        const userDoc = user.exists() ? user : company;
-        if(data['password'] != userDoc.data().password){
-            throw new Error("Incorrect password.");
-        }
 
-        store("loggedUser", data["email"]);
-        console.log("after login ", store("loggedUser"));
+        const userDoc = await getDoc(doc(db, "Users", data['email']));
+        const companyDoc = await getDoc(doc(db, "Company", data['email']));
+
+        store("user", data["email"]);
+
+        if (userDoc.exists()) {
+            if(data['password'] != userDoc.data().password){
+                throw new Error("Incorrect password.");
+            }
+            store("role", "Renter/owner")
+        }
+        else if (companyDoc.exists()) {
+            if(data['password'] != companyDoc.data().password){
+                throw new Error("Incorrect password.");
+            }
+            store("role", "mgmt")
+        }
+        else
+            throw new Error("User does not exist.");
 
         window.location.href = '/';
     }
@@ -211,7 +254,6 @@ export async function updateUserPicture(email, photo){
         const desertRef = ref(storage, "profilePicture/"+ email);
         await deleteObject(desertRef);;
         var pic = await uploadBytes(ref(storage,profilePictureRef + email), photo);
-
     }
     catch(e){
         throw new Error("Error changing picture: ", e);
@@ -337,9 +379,21 @@ async function storeData(collection, data, key){
 }
 
 
+export async function deleteAccount(email) {
+    try {
+        const userDoc = await getDoc(doc(db, "Users", email));
+        const companyDoc = await getDoc(doc(db, "Company", email));
+
+        if (userDoc.exists())
+            await deleteDoc(doc(db, "Users", email));
+        else if (companyDoc.exists())
+            await deleteDoc(doc(db, "Company", email));
+        else
+            throw new Error("User does not exist.");
 
 
-
-
-
-
+        window.location.href = '/login';
+    } catch (e) {
+        throw new Error(e.message);
+    }
+}

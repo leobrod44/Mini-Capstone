@@ -7,7 +7,16 @@ import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import user from "../assets/user.png";
-import {getUserData, updateUserInfo, changePassword, getProfilePicture, updatePicture} from "../backend/Fetcher";
+import {
+  getUserData,
+  getCompanyData,
+  updateUserInfo,
+  changePassword,
+  getProfilePicture,
+  updatePicture,
+  updateCompanyInfo,
+  deleteAccount
+} from "../backend/Fetcher";
 import store from "storejs";
 
 const UserProfile =() => {
@@ -25,64 +34,92 @@ const UserProfile =() => {
   const [email, setEmail] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [companyName, setCompanyName] = useState(null);
+  const [userType, setUserType] = useState(null);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState(null);
+  const [role, setTheRole] = useState(null);
 
 
 
 useEffect(()=>{
- //temporary til backend is done and we can actully receive users and their roless
-  //roles, condoOwner, renter , or mgmt
-
-  //console.log(store("loggedUser"));
 
   async function fetchUserData() {
-    let tempData = await getUserData(store("loggedUser"));
-    let profilePicURL = await getProfilePicture(store("loggedUser"));
-    setFirstName(tempData.firstName)
-    setLastName(tempData.lastName)
+    let tempData;
+    let profilePicURL;
+    let role = store("role");
+    setTheRole(role);
+    let user = store("user");
+
+    //tempData = await getCompanyData(user);
+
+    if (role === "mgmt") {
+      tempData = await getCompanyData(store("loggedCompany"));
+      profilePicURL = await getProfilePicture(store("loggedCompany"));
+      setCompanyName(tempData.companyName);
+      setUserType("Management Company");
+    }
+    else if (role === "Renter/owner"){
+      tempData = await getUserData(store("loggedUser"));
+      profilePicURL = await getProfilePicture(store("loggedUser"));
+      setFirstName(tempData.firstName)
+      setLastName(tempData.lastName)
+      setUserType("Renter/Owner");
+    }
+    else
+      throw new Error("Role error");
+
+    setEmail(tempData.email);
     setPhoneNumber(tempData.phoneNumber)
-    console.log(profilePicURL);
     setProfilePicUrl(profilePicURL);
     setPreviewUrl(profilePicURL);
-    //set rest of info here
   }
 
   fetchUserData();
 
 }, [])
- 
 
-
-  //edit button
   const handleEditClick = () => {
     setIsEditMode(true);
   };
 
-  //save button
   const handleSaveClick = async (ev) => {
     ev.preventDefault();
-    if (!firstName || !lastName)
-      return toast.error("Please make sure all required fields aren't empty");
-   
 
     if (phoneNumber && !/^\d{10}$/.test(phoneNumber))
       return toast.error("Please make sure the phone number format is correct");
+    else if (!phoneNumber)
+      return toast.error("Please enter a phone number");
 
-    const formData = {
-      firstName,
-      lastName,
-      phoneNumber,
-    };
+    if (role === "mgmt") {
+      if (!companyName)
+        return toast.error("Please make sure \"Company Name\" is not empty");
 
-    await updateUserInfo(store("loggedUser"), formData);
+      const formData = {
+        companyName,
+        phoneNumber
+      };
+
+      await updateCompanyInfo(store("user"), formData);
+    }
+    else {
+      if (!firstName)
+        return toast.error("Please make sure \"First Name\" is not empty");
+      else if (!lastName)
+        return toast.error("Please make sure \"Last Name\" is not empty");
+
+      const formData = {
+        firstName,
+        lastName,
+        phoneNumber
+      };
+
+      await updateUserInfo(store("user"), formData);
+    }
 
     toast.success("User info updated successfully");
     setIsEditMode(false);
   };
-
 
     //photo change
     const handlePhotoChange = (event) => {
@@ -97,7 +134,9 @@ useEffect(()=>{
       if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
   
       setProfilePicUrl(photo);
+
       updateUserPicture(store("loggedUser"), photo);
+
       const fileReader = new FileReader();
       fileReader.onload = () => {
         setPreviewUrl(fileReader.result);
@@ -105,34 +144,31 @@ useEffect(()=>{
       fileReader.readAsDataURL(photo);
     };
 
+  //submitting photo to backend
+  const handleSubmitPhoto = async (event) => {
+    event.preventDefault();
 
-    //submitting photo to backend
-    const handleSubmitPhoto = async (event) => {
-      event.preventDefault();
-  
-      // create a new FormData object to send the file
-      const formData = new FormData();
-      formData.append("image", profilePicUrl);
-      // make a POST request to the backend to upload the image
+    // create a new FormData object to send the file
+    const formData = new FormData();
+    formData.append("image", profilePicUrl);
+    // make a POST request to the backend to upload the image
 
-    };
+  };
  
   const handleClickDelete = (id) => {
     setShow(true);
   };
 
-  
   //delete user
   const handleClose = () => {
     setShow(false);
   };
 
-  
   //delete function
-  const deleteAccount = () => {
-   // dispatch(deleteUser);
+  const deleteAccountAttempt = () => {
+    deleteAccount(email);
     toast.success("Account deleted successfully");
-    navigate("/"); //link to registration page instead 
+    //navigate("/"); //link to registration page instead
     setShow(false);
   };
   
@@ -164,6 +200,7 @@ useEffect(()=>{
   const handleConfirmPasswordChange = (ev) => {
     setConfirmPassword(ev.target.value);
   };
+
   const handleChangePassword = async (ev) => {
     ev.preventDefault();
 
@@ -182,7 +219,7 @@ useEffect(()=>{
       newPassword,
     };
 
-    const data = await changePassword(store("loggedUser"), dataForm);
+    const data = await changePassword(store("user"), dataForm);
 
     //setIsLoading(false);
 
@@ -348,13 +385,14 @@ useEffect(()=>{
                 >
                   Delete Account
                 </button>
-            
+
+                {/*EVENTUALLY IMPLEMENT PASSWORD CONFIRMATION*/}
                 <DeleteModal
                   show={show}
                   handleClose={handleClose}
-                  handleDeleteItem={deleteAccount}
+                  handleDeleteItem={deleteAccountAttempt}
                   message={
-                    "All information will be deleted, are you sure you want to proceed?"
+                    "Please enter your password to delete the account."
                   }
                 />
 
@@ -497,11 +535,11 @@ useEffect(()=>{
                             type="text"
                             className={"form-control text-capitalize"}
                             name="role"
-                            value={role}
+                            value={userType}
                             disabled
                           />
                         ) : (
-                          <span>{role}</span>
+                          <span>{userType}</span>
                         )}
                       </div>
                     </div>
