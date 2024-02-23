@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styling/propertyform.css";
@@ -126,17 +125,26 @@ const PropertyForm = () => {
 
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+  
+    // Parse the value as an integer for number input fields
+    const parsedValue = type === 'number' ? parseInt(value, 10) : value;
+  
+    // Check for minimum value validation
+    if (type === 'number' && parsedValue < 0) {
+      toast.error(`Count must be greater than or equal to 0`);
+      return;
+    }
+  
     setProperty({
       ...property,
-      [name]: value,
+      [name]: parsedValue,
     });
   };
-
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+  //validation that all required information is filled in
     if (
       !property.propertyName ||
       !property.address ||
@@ -147,18 +155,12 @@ const PropertyForm = () => {
       toast.error("Missing Property Information");
       return;
     }
-    try{
-      await addProperty(property);
-    }
-    catch(e){
-      toast.error("Error adding property: ", e);
-    }
-    window.location.href = '/MGMTDashboard';
+    // if all required field are filled , save property
     console.log("Submitted:", property);
   };
 
   const handleAddCondo = () => {
-    // Check if all required fields in the property form are filled
+    // Check if all required fields in the condo  form are filled
     if (
       !property.propertyName ||
       !property.address ||
@@ -181,7 +183,7 @@ const PropertyForm = () => {
 
  
   if (
-    Object.values(submittedCondo).every((value) =>
+    Object.values(submittedCondo).every((value) => //validation that condo form is not submitted empty
       value === null || value === undefined || value === ""
     )
   ) {
@@ -189,7 +191,7 @@ const PropertyForm = () => {
     toast.error("Please fill in at least one field for the condo");
     return;
   }
-
+//if at least one field is added, submit condo
     
     console.log("Condo Submitted:", property.condos[index]);
     setVisibleCondoForms((prevVisibleCondoForms) => [
@@ -302,7 +304,7 @@ const PropertyForm = () => {
               Unit Count:
             </label>
             <input
-              type="number"
+              type="number" min="0"  
               id="unitCount"
               name="unitCount"
               value={property.unitCount}
@@ -315,7 +317,7 @@ const PropertyForm = () => {
               Parking Count:
             </label>
             <input
-              type="number"
+              type="number" min="0"  
               id="parkingCount"
               name="parkingCount"
               value={property.parkingCount}
@@ -328,7 +330,7 @@ const PropertyForm = () => {
               Locker Count:
             </label>
             <input
-              type="number"
+              type="number" min="0" 
               id="lockerCount"
               name="lockerCount"
               value={property.lockerCount}
