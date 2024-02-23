@@ -4,7 +4,7 @@ import "../styling/CondoComponent.css";
 import  { useState} from "react";
 import Popup_SendKey from './Popup_SendKey';
 
-const CondoMgmtComponent = ({ name, profilePicture, unitNumber, parkingSpot, locker }) => {
+const CondoMgmtComponent = ({ name, picture, unitNumber, parkingSpot, locker }) => {
 
     const [showPopup, setShowPopup] = useState(false);
     const handlePopupToggle = () => {
@@ -19,7 +19,7 @@ const CondoMgmtComponent = ({ name, profilePicture, unitNumber, parkingSpot, loc
                     <h2>{name}  {unitNumber}</h2>
                 </div>
                 
-                {profilePicture && <img src={profilePicture} alt="Profile" className="profile-picture" />}
+                {picture && <img src={picture} alt="Profile" className="profile-picture" />}
                 <p>Unit Number: {unitNumber}</p>
                 <div className='parking-send-key'> 
                     {parkingSpot && <p>Parking Spot: {parkingSpot}</p>}

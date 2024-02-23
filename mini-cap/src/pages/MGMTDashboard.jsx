@@ -50,7 +50,7 @@ const MGMTDashboard = () => {
               {propertyDetails.map((p, index) => (
                 <Property key={index} property={{
                   propertyID: p.propertyID,
-                  propertyName: p.property,
+                  propertyName: p.propertyName,
                   address: p.address,
                   unitCount: p.unitCount,
                   parkingCount: p.parkingCount,

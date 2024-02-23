@@ -23,6 +23,9 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app);
 const storage = getStorage();
 const profilePictureRef = 'profilePictures/';
+const condoPictureRef = 'condoPictures/';
+const propertyPictureRef = 'propertyPictures/';
+
 
 // returns user data using email
 export async function getUserData(email) {
@@ -123,7 +126,7 @@ export async function changePassword(email, data) {
 export async function getProfilePicture(email) {
 
     const storage = getStorage();
-    const storageRef = ref(storage, "profilePictures/" + email);
+    const storageRef = ref(storage, profilePictureRef + email);
 
     try {
         const url = await getDownloadURL(storageRef);
@@ -135,7 +138,7 @@ export async function getProfilePicture(email) {
 export async function getPropertyPicture(id) {
 
     const storage = getStorage();
-    const storageRef = ref(storage, "profilePictures/" + id);
+    const storageRef = ref(storage, propertyPictureRef + id);
 
     try {
         const url = await getDownloadURL(storageRef);
@@ -144,16 +147,29 @@ export async function getPropertyPicture(id) {
         console.error(err);
     }
 }
-async function getCondoPicture(id) {
+export async function getCondoPicture(id) {
 
     const storage = getStorage();
-    const storageRef = ref(storage, "profilePictures/" + id);
+    const storageRef = ref(storage, condoPictureRef + id);
 
     try {
         const url = await getDownloadURL(storageRef);
         return url;
     } catch (err) {
         console.error(err);
+    }
+}
+
+export async function updateUserPicture(email, photo){
+    try{
+        const storage = getStorage();
+        const desertRef = ref(storage, profilePictureRef+ email);
+        await deleteObject(desertRef);;
+        var pic = await uploadBytes(ref(storage,profilePictureRef + email), photo);
+
+    }
+    catch(e){
+        throw new Error("Error changing picture: ", e);
     }
 }
 export async function addUser(data) {
@@ -164,8 +180,8 @@ export async function addUser(data) {
         if (userDoc.exists()) {
             throw new Error("User already exists.");
         }
-
-       setPicture(data, profilePictureRef);
+        //console.log(data);
+       await setPicture(data, profilePictureRef);
        await storeData("Users",data,data['email']);
 
        store("user", data["email"]);
@@ -186,7 +202,7 @@ export async function addCompany(data) {
 
 
         try{
-            setPicture(data, profilePictureRef);
+            await setPicture(data, profilePictureRef);
         }catch(e){
             throw new Error("Error adding picture: ", e);
         }
@@ -247,17 +263,23 @@ export async function setPicture(data, path){
     }
 }
 
-export async function updateUserPicture(email, photo){
-    try{
-        const storage = getStorage();
-        const desertRef = ref(storage, "profilePicture/"+ email);
-        await deleteObject(desertRef);;
-        var pic = await uploadBytes(ref(storage,profilePictureRef + email), photo);
+
+export async function getCompanyData(email) {
+    
+        try {
+            const docRef = doc(db, "Company", email);
+            const docSnap = await getDoc(docRef);
+    
+            if (docSnap.exists()) {
+                return docSnap.data();
+            } else {
+                console.log("No such document!");
+            }
+    
+        } catch (err) {
+            console.error(err);
+        }
     }
-    catch(e){
-        throw new Error("Error changing picture: ", e);
-    }
-}
 export async function addCondo(data, propertyID){
     var pictureData = data.picture;
 
@@ -267,7 +289,7 @@ export async function addCondo(data, propertyID){
         const docRef = await addDoc(collection(db, "Condo"), clean);
         if(pictureData){
             try{
-                await setPicture(data, "condoPictures/");
+                await setPicture(data, condoPictureRef);
             }
             catch(e){
                 throw new Error("Error adding picture: ", e);
@@ -287,7 +309,7 @@ export async function addProperty(data){
         const docRef = await addDoc(collection(db, "Property"), clean);
         if(pictureData){
             try{
-                await setPicture(data, "propertyPictures/");
+                await setPicture(data, profilePictureRef);
             }
             catch(e){
                 throw new Error("Error adding picture: ", e);
