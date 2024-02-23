@@ -215,6 +215,7 @@ useEffect(()=>{
     const dataForm = {
       currentPassword,
       newPassword,
+      email
     };
 
     const data = await changePassword(store("user"), dataForm);

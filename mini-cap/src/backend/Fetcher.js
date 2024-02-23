@@ -95,24 +95,37 @@ export async function updateCompanyInfo(email, data) {
 export async function changePassword(email, data) {
 
     try {
-        const docRef = doc(db, "Users", email);
-        const docSnap = await getDoc(docRef);
-        const docData = docSnap.data();
+        const userDoc = await getDoc(doc(db, "Users", data['email']));
+        const companyDoc = await getDoc(doc(db, "Company", data['email']));
+        const userDocData = userDoc.data();
+        const companyDocData = companyDoc.data();
 
-        if (docSnap.exists()) {
-            if(docData.password != data.currentPassword){
+        if (userDoc.exists()) {
+            if(userDocData.password !== data.currentPassword){
                 return {message: "Incorrect current password"};
-            }else if(docData.password === data.newPassword){
+            }else if(userDocData.password === data.newPassword){
                 return {message: "New password cannot be the same as previous password"};
             }
-        } else {
-            console.log("No such document!");
-            return;
-        }
 
-        await updateDoc(docRef, {
-            password: data.newPassword,
-        });
+            await updateDoc(doc(db, "Users", email), {
+                password: data.newPassword,
+            });
+        }
+        else if (companyDoc.exists()) {
+            if(companyDocData.password !== data.currentPassword){
+                return {message: "Incorrect current password"};
+            }else if(companyDocData.password === data.newPassword){
+                return {message: "New password cannot be the same as previous password"};
+            }
+
+            await updateDoc(doc(db, "Company", email), {
+                password: data.newPassword,
+            });
+        }
+        else {
+            console.log("No such document!");
+            return {message: "ERROR"};
+        }
 
         return {message: "Password updated successfully"};
     } catch (err) {
