@@ -5,7 +5,6 @@ import {cleanData} from "./DataCleaner";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import store from "storejs";
 import {useState} from "react";
-
 //npm install firebase
 //npm install storejs --save
 
@@ -259,22 +258,6 @@ export async function updateUserPicture(email, photo){
         throw new Error("Error changing picture: ", e);
     }
 }
-export async function getCompanyData(email) {
-    
-        try {
-            const docRef = doc(db, "Company", email);
-            const docSnap = await getDoc(docRef);
-    
-            if (docSnap.exists()) {
-                return docSnap.data();
-            } else {
-                console.log("No such document!");
-            }
-    
-        } catch (err) {
-            console.error(err);
-        }
-    }
 export async function addCondo(data, propertyID){
     var pictureData = data.picture;
 
