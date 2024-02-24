@@ -118,7 +118,7 @@ const Navbar = () => {
                 text={"My Profile"}
               />
 
-              {role === "condoOwner" && (
+              {role === "Renter/owner" && (
                 <DropdownItem
                   address={"/dashboard"}
                   icon={<IoIosBusiness />}
@@ -126,7 +126,7 @@ const Navbar = () => {
                 />
               )}
 
-              {role === "condoOwner" && (
+              {role === "Renter/owner" && (
                 <DropdownItem
                   address={"/requests"}
                   icon={<LiaHandsHelpingSolid />}
