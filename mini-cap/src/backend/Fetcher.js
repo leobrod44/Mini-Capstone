@@ -263,23 +263,6 @@ export async function setPicture(data, path){
     }
 }
 
-
-export async function getCompanyData(email) {
-    
-        try {
-            const docRef = doc(db, "Company", email);
-            const docSnap = await getDoc(docRef);
-    
-            if (docSnap.exists()) {
-                return docSnap.data();
-            } else {
-                console.log("No such document!");
-            }
-    
-        } catch (err) {
-            console.error(err);
-        }
-    }
 export async function addCondo(data, propertyID){
     var pictureData = data.picture;
 
