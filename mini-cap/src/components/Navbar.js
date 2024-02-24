@@ -51,11 +51,11 @@ const Navbar = () => {
       let tempData;
       setTheRole(role);
       if (role === "mgmt") {
-        tempData = await getCompanyData(store("loggedCompany"));
+        tempData = await getCompanyData(store("user"));
         setCompanyName(tempData.companyName);
       }
       else if (role === "Renter/owner"){
-        tempData = await getUserData(store("loggedUser"));
+        tempData = await getUserData(store("user"));
         setFirstName(tempData.firstName)
       }
 

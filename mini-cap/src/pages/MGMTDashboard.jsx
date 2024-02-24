@@ -17,7 +17,7 @@ const MGMTDashboard = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const properties = await getProperties(store("loggedUser"));
+        const properties = await getProperties(store("user"));
         if (properties.length > 0) {
           setHasProperties(true);
           setPropertyDetails(properties);

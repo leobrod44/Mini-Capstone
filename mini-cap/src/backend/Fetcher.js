@@ -303,7 +303,7 @@ export async function addCondo(data, propertyID){
 }
 export async function addProperty(data){
     var pictureData = data.picture;
-    data["companyOwner"] = store("loggedUser");
+    data["companyOwner"] = store("user");
     try{
         const clean = cleanData("Property",data);
         const docRef = await addDoc(collection(db, "Property"), clean);

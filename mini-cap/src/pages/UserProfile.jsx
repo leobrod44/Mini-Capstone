@@ -54,14 +54,14 @@ useEffect(()=>{
     //tempData = await getCompanyData(user);
 
     if (role === "mgmt") {
-      tempData = await getCompanyData(store("loggedCompany"));
-      profilePicURL = await getProfilePicture(store("loggedCompany"));
+      tempData = await getCompanyData(store("user"));
+      profilePicURL = await getProfilePicture(store("user"));
       setCompanyName(tempData.companyName);
       setUserType("Management Company");
     }
     else if (role === "Renter/owner"){
-      tempData = await getUserData(store("loggedUser"));
-      profilePicURL = await getProfilePicture(store("loggedUser"));
+      tempData = await getUserData(store("user"));
+      profilePicURL = await getProfilePicture(store("user"));
       setFirstName(tempData.firstName)
       setLastName(tempData.lastName)
       setUserType("Renter/Owner");
@@ -135,7 +135,7 @@ useEffect(()=>{
   
       setProfilePicUrl(photo);
 
-      updateUserPicture(store("loggedUser"), photo);
+      updateUserPicture(store("user"), photo);
 
       const fileReader = new FileReader();
       fileReader.onload = () => {
