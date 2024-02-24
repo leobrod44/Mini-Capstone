@@ -18,7 +18,6 @@ const firebaseConfig = {
     measurementId: "G-MQJCJCX0ET"
 };
 
-
 const app = initializeApp(firebaseConfig)
 const db = getFirestore(app);
 const storage = getStorage();
@@ -29,7 +28,6 @@ const propertyPictureRef = 'propertyPictures/';
 
 // returns user data using email
 export async function getUserData(email) {
-
     try {
         const docRef = doc(db, "Users", email);
         const docSnap = await getDoc(docRef);
@@ -47,7 +45,6 @@ export async function getUserData(email) {
 
 // returns company data using email
 export async function getCompanyData(email) {
-
     try {
         const docRef = doc(db, "Company", email);
         const docSnap = await getDoc(docRef);
@@ -76,11 +73,9 @@ export async function updateUserInfo(email, data) {
     } catch (err) {
         console.error(err);
     }
-
 }
 
 export async function updateCompanyInfo(email, data) {
-
     try {
         const docRef = doc(db, "Company", email);
         await updateDoc(docRef, {
@@ -91,11 +86,9 @@ export async function updateCompanyInfo(email, data) {
     } catch (err) {
         console.error(err);
     }
-
 }
 
 export async function changePassword(email, data) {
-
     try {
         const docRef = doc(db, "Users", email);
         const docSnap = await getDoc(docRef);
@@ -120,11 +113,9 @@ export async function changePassword(email, data) {
     } catch (err) {
         console.error(err);
     }
-
 }
 
 export async function getProfilePicture(email) {
-
     const storage = getStorage();
     const storageRef = ref(storage, profilePictureRef + email);
 
@@ -136,7 +127,6 @@ export async function getProfilePicture(email) {
     }
 }
 export async function getPropertyPicture(id) {
-
     const storage = getStorage();
     const storageRef = ref(storage, propertyPictureRef + id);
 
@@ -147,8 +137,8 @@ export async function getPropertyPicture(id) {
         console.error(err);
     }
 }
-export async function getCondoPicture(id) {
 
+export async function getCondoPicture(id) {
     const storage = getStorage();
     const storageRef = ref(storage, condoPictureRef + id);
 
@@ -172,34 +162,46 @@ export async function updateUserPicture(email, photo){
         throw new Error("Error changing picture: ", e);
     }
 }
+
 export async function addUser(data) {
+    //are these 2 lines needed?
     const usersCollection = collection(db, "Users");
     const clean = cleanData("Users",data);
+
     try {
         const userDoc = await getDoc(doc(db, "Users", data['email']));
         if (userDoc.exists()) {
             throw new Error("User already exists.");
         }
-        //console.log(data);
-       await setPicture(data, profilePictureRef);
-       await storeData("Users",data,data['email']);
 
-       store("user", data["email"]);
-       window.location.href = '/';
+        try{
+            await setPicture(data, profilePictureRef);
+        }catch(e){
+            throw new Error("Error adding picture: ", e);
+        }
+
+        try{
+            await storeData("Users",data,data['email']);
+            store("user", data["email"]);
+            window.location.href = '/';
+        }catch(e){
+            throw new Error("Error adding document: ", e);
+        }
     } catch (e) {
         throw new Error(e);
     }
 }
+
 export async function addCompany(data) {
+    //are these 2 lines needed?
     const companyCollection = collection(db, "Company");
+    const clean = cleanData("Users",data);
 
     try {
-
         const companyDoc = await getDoc(doc(db, "Company", data['email']));
         if (companyDoc.exists()) {
             throw new Error("Company already exists.");
         }
-
 
         try{
             await setPicture(data, profilePictureRef);
@@ -208,10 +210,9 @@ export async function addCompany(data) {
         }
         
         try{
-           var resp = await storeData("Company",data,data['email']);
+           await storeData("Company",data,data['email']);
            store("user", data["email"]);
            window.location.href = '/';
-           console.log(resp);
         }catch(e){
             throw new Error("Error adding document: ", e);
         }
@@ -263,23 +264,6 @@ export async function setPicture(data, path){
     }
 }
 
-
-export async function getCompanyData(email) {
-    
-        try {
-            const docRef = doc(db, "Company", email);
-            const docSnap = await getDoc(docRef);
-    
-            if (docSnap.exists()) {
-                return docSnap.data();
-            } else {
-                console.log("No such document!");
-            }
-    
-        } catch (err) {
-            console.error(err);
-        }
-    }
 export async function addCondo(data, propertyID){
     var pictureData = data.picture;
 
@@ -315,7 +299,7 @@ export async function addProperty(data){
                 throw new Error("Error adding picture: ", e);
             }
         }
-        if(data["condos"]!=""){
+        if(data["condos"] != ""){
             try{
                 data["condos"].forEach(async function(condoData){
                     await addCondo(condoData, docRef.id);
@@ -329,8 +313,8 @@ export async function addProperty(data){
     catch(e){
         throw new Error("Error adding document: ", e);
     }
-    
 }
+
 export async function getProperties(company){
     try{
         const propertyCollection = collection(db, "Property");
@@ -350,6 +334,7 @@ export async function getProperties(company){
         throw new Error("Error getting properties: ", e);
     }
 }
+
 export async function getCondos(propertyID){
     try{
         const condoCollection = collection(db, "Condo");
@@ -382,7 +367,6 @@ async function storeData(collection, data, key){
         throw new Error("Error adding document: ", e);
     }
 }
-
 
 export async function deleteAccount(email) {
     try {
