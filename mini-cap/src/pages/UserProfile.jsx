@@ -204,6 +204,12 @@ useEffect(()=>{
   const handleChangePassword = async (ev) => {
     ev.preventDefault();
 
+    const dataForm = {
+      currentPassword,
+      newPassword,
+      email
+    };
+
     if (!currentPassword || !newPassword || !confirmPassword)
       return toast.error("Please make sure all password fields are filled out");
 
@@ -213,23 +219,23 @@ useEffect(()=>{
     if (newPassword.length < 8)
       return toast.error("Password must be at least 8 characters");
 
-   // setIsLoading(true);
-    const dataForm = {
-      currentPassword,
-      newPassword,
-    };
-
-    const data = await changePassword(store("user"), dataForm);
-
-    //setIsLoading(false);
+    let data;
+    try {
+      data = await changePassword(store("user"), dataForm);
+    } catch (err) {
+      toast.error(err.message);
+    }
 
     if (data?.message === "Password updated successfully") {
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      toast.success(data.message);
-    }else{
-      toast.error(data.message);
+      try {
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        toast.success(data.message);
+      }
+      catch (err) {
+        toast.error(err.message);
+      }
     }
   };
 
