@@ -173,6 +173,19 @@ export async function updateUserPicture(email, photo){
     }
 }
 
+export async function checkEmailExists(email) {
+    try {
+        const userDoc = await getDoc(doc(db, "Users", email));
+        if (!userDoc.exists()) {
+            throw new Error("Cannot find any users with this email.");
+        }
+    } catch (e) {
+        throw new Error(e);
+    }
+}
+
+
+
 export async function addUser(data) {
     //are these 2 lines needed?
     const usersCollection = collection(db, "Users");
@@ -394,5 +407,26 @@ export async function deleteAccount(email) {
         window.location.href = '/login';
     } catch (e) {
         throw new Error(e.message);
+    }
+}
+
+export async function addCondoKey(data) {
+    const clean = cleanData("Keys",data);
+
+    try {
+        const keyDoc = await getDoc(doc(db, "Keys", data['key']));
+        if (keyDoc.exists()) {
+            throw new Error("Key already exists.");
+        }
+
+        try{
+            await storeData("Key" ,data,data['email']);
+            store("user", data["email"]);
+            window.location.href = '/';
+        }catch(e){
+            throw new Error("Error adding document: ", e);
+        }
+    } catch (e) {
+        throw new Error(e);
     }
 }
