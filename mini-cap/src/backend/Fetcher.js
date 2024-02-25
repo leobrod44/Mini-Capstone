@@ -287,7 +287,7 @@ export async function loginUser(data) {
             if(data['password'] != userDoc.data().password){
                 throw new Error("Incorrect password.");
             }
-            store("role", "Renter/owner")
+            store("role", "renter/owner")
         }
         else if (companyDoc.exists()) {
             if(data['password'] != companyDoc.data().password){
