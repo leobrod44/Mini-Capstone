@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import "../styling/Popup.css";
 import "../index.css";
 import { toast } from "react-toastify";
-import {addUser, checkEmailExists} from "../backend/Fetcher";
+import {storeCondoKey, checkEmailExists} from "../backend/Fetcher";
 
-const Popup_SendKey = ({ handleClose }) => {
-
+const Popup_SendKey = ({ handleClose, condoId }) => {
+    const [showPopup, setShowPopup] = useState(true);
     const [formData, setFormData] = useState({
-        role: "renter", // "Renter" as the default role
+        role: "Renter", //default for now
         email: "",
+        condo: condoId
       });
       Popup_SendKey.getFormData = () => {
         return formData;
@@ -17,7 +18,6 @@ const Popup_SendKey = ({ handleClose }) => {
 
       const handleSendKey = async (e) => {
           e.preventDefault();
-
           try {
               if (!formData.email ) {
                   toast.error("Please fill in all fields.");
@@ -27,8 +27,10 @@ const Popup_SendKey = ({ handleClose }) => {
               }
 
               await checkEmailExists(formData.email);
+              await storeCondoKey(formData);
 
-
+              toast.success("Key has been sent.")
+              setShowPopup(false);
           } catch (e) {
               toast.error(e.message);
           }

@@ -184,7 +184,39 @@ export async function checkEmailExists(email) {
     }
 }
 
+export async function xaddCondo(data, propertyID){
+    var pictureData = data.picture;
 
+    try{
+        data["property"] = propertyID;
+        const clean = cleanData("Condo",data);
+        const docRef = await addDoc(collection(db, "Condo"), clean);
+        if(pictureData){
+            try{
+                await setPicture(data, condoPictureRef);
+            }
+            catch(e){
+                throw new Error("Error adding picture: ", e);
+            }
+        }
+    }
+    catch(e){
+        throw new Error("Error adding document: ", e);
+    }
+
+}
+
+export async function storeCondoKey(data){
+    const keyCollection = collection(db, "Keys");
+
+    try{
+        //const clean = cleanData(keyCollection, data);
+        const docRef = await addDoc(collection(db, "Keys"), data);
+    }
+    catch(e){
+        throw new Error("Error adding document: ", e);
+    }
+}
 
 export async function addUser(data) {
     //are these 2 lines needed?
@@ -407,26 +439,5 @@ export async function deleteAccount(email) {
         window.location.href = '/login';
     } catch (e) {
         throw new Error(e.message);
-    }
-}
-
-export async function addCondoKey(data) {
-    const clean = cleanData("Keys",data);
-
-    try {
-        const keyDoc = await getDoc(doc(db, "Keys", data['key']));
-        if (keyDoc.exists()) {
-            throw new Error("Key already exists.");
-        }
-
-        try{
-            await storeData("Key" ,data,data['email']);
-            store("user", data["email"]);
-            window.location.href = '/';
-        }catch(e){
-            throw new Error("Error adding document: ", e);
-        }
-    } catch (e) {
-        throw new Error(e);
     }
 }

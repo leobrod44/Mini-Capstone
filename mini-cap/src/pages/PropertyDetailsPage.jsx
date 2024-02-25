@@ -25,7 +25,7 @@ const PropertyPage = () => {
                 condos.map(async (condo) => {
                     //we need to implement setting the condo picture
                     console.log("-----------------------"  +condo.id);
-                    condoPicURL = await getCondoPicture(condo.id );
+                    //condoPicURL = await getCondoPicture(condo.id );
                     setCondoPicURL(condoPicURL);
                     // condo.picture = picture;
                     return { ...condo};
@@ -55,8 +55,8 @@ const PropertyPage = () => {
                     {hasCondos ? (
                         <div className="condo_list">
                         {condoDetails.map((condo, index) => (
-                            <CondoMgmtComponent key={index} {...condo} />
-                        ))}     
+                            <CondoMgmtComponent key={index} {...condo} condoId={condo.id}/>
+                        ))}
 
                       </div>
                     ) : (
