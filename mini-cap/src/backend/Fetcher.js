@@ -4,6 +4,7 @@ import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc } from "fir
 import {cleanData} from "./DataCleaner";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import store from "storejs";
+import { MANAGEMENT_COMPANY, MANGEMENT_COMPANY, RENTER_OWNER } from "./Constants";
 import {useState} from "react";
 //npm install firebase
 //npm install storejs --save
@@ -267,13 +268,13 @@ export async function loginUser(data) {
             if(data['password'] != userDoc.data().password){
                 throw new Error("Incorrect password.");
             }
-            store("role", "renter/owner")
+            store("role", RENTER_OWNER)
         }
         else if (companyDoc.exists()) {
             if(data['password'] != companyDoc.data().password){
                 throw new Error("Incorrect password.");
             }
-            store("role", "mgmt")
+            store("role", MANAGEMENT_COMPANY)
         }
         else
             throw new Error("User does not exist.");

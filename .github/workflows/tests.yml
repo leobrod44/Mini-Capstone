@@ -18,7 +18,7 @@ jobs:
       with:
         node-version: '20'
     - name: Install dependencies
-      run: cd mini-cap/ && npm install
+      run: cd mini-cap/ && npm install --force
 
     - name: Run tests
       run: cd mini-cap/ && npm test

@@ -18,6 +18,7 @@ import {
   updateUserPicture
 } from "../backend/Fetcher";
 import store from "storejs";
+import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
 
 const UserProfile =() => {
 
@@ -53,18 +54,18 @@ useEffect(()=>{
 
     //tempData = await getCompanyData(user);
 
-    if (role === "mgmt") {
+    if (role === MANAGEMENT_COMPANY) {
       tempData = await getCompanyData(store("user"));
       profilePicURL = await getProfilePicture(store("user"));
       setCompanyName(tempData.companyName);
       setUserType("Management Company");
     }
-    else if (role === "renter/owner"){
+    else if (role === RENTER_OWNER){
       tempData = await getUserData(store("user"));
       profilePicURL = await getProfilePicture(store("user"));
       setFirstName(tempData.firstName)
       setLastName(tempData.lastName)
-      setUserType("Renter/Owner");
+      setUserType(RENTER_OWNER);
     }
     else
       throw new Error("Role error");
@@ -91,7 +92,7 @@ useEffect(()=>{
     else if (!phoneNumber)
       return toast.error("Please enter a phone number");
 
-    if (role === "mgmt") {
+    if (role === MANAGEMENT_COMPANY) {
       if (!companyName)
         return toast.error("Please make sure \"Company Name\" is not empty");
 
@@ -306,7 +307,7 @@ useEffect(()=>{
                   </div>
                 </form>
                  
-             {(role === "mgmt") && 
+             {(role === MANAGEMENT_COMPANY) && 
               ( 
              <div className="card mt-3">
                   <ul className="list-group list-group-flush">
@@ -408,7 +409,7 @@ useEffect(()=>{
                   <div className="card-body">
 
 
-                  {(role !== "mgmt") && 
+                  {(role !== MANAGEMENT_COMPANY) && 
                     ( 
                     <div className="row">
                       <div className="col-sm-3">
@@ -434,10 +435,10 @@ useEffect(()=>{
                     )}
 
 
-                    {(role !== "mgmt") &&  (   <hr />)}
+                    {(role !== MANAGEMENT_COMPANY) &&  (   <hr />)}
 
 
-                    {(role !== "mgmt") && 
+                    {(role !== MANAGEMENT_COMPANY) && 
                     (  
                     <div className="row">
                       <div className="col-sm-3">
@@ -462,7 +463,7 @@ useEffect(()=>{
                     </div>
                   )}
 
-                {(role === "mgmt") && 
+                {(role === MANAGEMENT_COMPANY) && 
                     (  
                     <div className="row">
                       <div className="col-sm-3">
