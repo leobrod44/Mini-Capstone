@@ -1,12 +1,12 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import PropertyPage from "./PropertyPage";
+import PropertyDetailsPage from "./PropertyDetailsPage";
 
-test("renders PropertyPage component with no registered properties", () => {
+test("renders PropertyDetailsPage component with no registered properties", () => {
   render(
     <MemoryRouter>
-      <PropertyPage />
+      <PropertyDetailsPage />
     </MemoryRouter>
   );
 
@@ -22,10 +22,10 @@ test("renders PropertyPage component with no registered properties", () => {
   expect(screen.getByText("Add a condo")).toBeInTheDocument();
 });
 
-test("renders PropertyPage component with registered properties", () => {
+test("renders PropertyDetailsPage component with registered properties", () => {
   render(
     <MemoryRouter>
-      <PropertyPage />
+      <PropertyDetailsPage />
     </MemoryRouter>
   );
 
