@@ -135,14 +135,6 @@ const Navbar = () => {
                     />
                 )}
 
-                {store("role") === "renter/owner" && (
-                    <DropdownItem
-                        address={"/myproperty"}
-                        icon={<AiOutlineHome />}
-                        text={"My rental"}
-                    />
-                )}
-
                 {store("role") !== "renter/owner" && (
                     <DropdownItem
                         address={"/propertyprofile"}
