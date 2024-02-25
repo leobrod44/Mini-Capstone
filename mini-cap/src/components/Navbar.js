@@ -54,7 +54,7 @@ const Navbar = () => {
         tempData = await getCompanyData(store("user"));
         setCompanyName(tempData.companyName);
       }
-      else if (role === "Renter/owner"){
+      else if (role === "renter/owner"){
         tempData = await getUserData(store("user"));
         setFirstName(tempData.firstName)
       }
@@ -86,95 +86,98 @@ const Navbar = () => {
             onClick={toggleMenu}
           />
         )} */}
-        <div ref={menuRef}>
-          <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu}>
-            {/* if there is no profile pic, we should default to using the hamburger menu */}
-           {/*  {role !== "mgmt" && ( */}
-              <img src={tempProfilePic} alt="User profile picture" />
-          {/*  )} */}
+        {store.get('?user') && (
+          <div ref={menuRef}>
+            <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu}>
+              {/* if there is no profile pic, we should default to using the hamburger menu */}
+             {/*  {role !== "mgmt" && ( */}
+                <img src={tempProfilePic} alt="User profile picture" />
+            {/*  )} */}
+            </div>
+
+            <div
+              className={`${NavbarCSS.myDropdownMenu} ${
+                open ? NavbarCSS.active : NavbarCSS.inactive
+              }`}
+            >
+              {store("role") !== "renter/owner" && (
+                  <h3 className={NavbarCSS.h3}>
+                    Hello company! <br />{" "}
+                  </h3>
+              )}
+
+              {store("role") === "renter/owner" && (
+                  <h3 className={NavbarCSS.h3}>
+                    Hello first name! <br />{" "}
+                  </h3>
+              )}
+
+              <ul className={NavbarCSS.ul}>
+                <DropdownItem
+                  address={"/user-profile"}
+                  icon={<CgProfile />}
+                  text={"My Profile"}
+                />
+
+                {store("role") === "renter/owner" && (
+                    <DropdownItem
+                        address={"/dashboard"}
+                        icon={<IoIosBusiness />}
+                        text={"Dashboard"}
+                    />
+                )}
+
+                {store("role") === "renter/owner" && (
+                    <DropdownItem
+                        address={"/requests"}
+                        icon={<LiaHandsHelpingSolid />}
+                        text={"My Requests"}
+                    />
+                )}
+
+                {store("role") === "renter/owner" && (
+                    <DropdownItem
+                        address={"/myproperty"}
+                        icon={<AiOutlineHome />}
+                        text={"My rental"}
+                    />
+                )}
+
+                {store("role") !== "renter/owner" && (
+                    <DropdownItem
+                        address={"/propertyprofile"}
+                        icon={<IoIosBusiness />}
+                        text={"My properties "}
+                    />
+                )}
+
+                {store("role") !== "renter/owner" && (
+                    <DropdownItem
+                        address={"/myemployees"}
+                        icon={<FaBriefcase />}
+                        text={"My employees"}
+                    />
+                )}
+
+                {store("role") !== "renter/owner" && (
+                    <DropdownItem
+                        address={"/myrequests"}
+                        icon={<LiaHandsHelpingSolid />}
+                        text={"My requests"}
+                    />
+                )}
+                {store("role") === "renter/owner" && (
+                  <DropdownItem
+                    address={"/reservations"}
+                    icon={<FaCalendarAlt />}
+                    text={"Reservations"}
+                  />
+                )}
+                <LogoutBtn img={logoutt} />
+              </ul>
+            </div>
           </div>
-
-          <div
-            className={`${NavbarCSS.myDropdownMenu} ${
-              open ? NavbarCSS.active : NavbarCSS.inactive
-            }`}
-          >
-            {role === "mgmt" && (
-              <h3 className={NavbarCSS.h3}>
-                Hello {companyName} <br />{" "}
-              </h3>
-            )}
-
-            {role !== "mgmt" && (
-              <h3 className={NavbarCSS.h3}>
-                Hello {firstName}<br />{" "}
-              </h3>
-            )}
-
-            <ul className={NavbarCSS.ul}>
-              <DropdownItem
-                address={"/user-profile"}
-                icon={<CgProfile />}
-                text={"My Profile"}
-              />
-
-              {role === "Renter/owner" && (
-                <DropdownItem
-                  address={"/dashboard"}
-                  icon={<IoIosBusiness />}
-                  text={"Dashboard"}
-                />
-              )}
-
-              {role === "Renter/owner" && (
-                <DropdownItem
-                  address={"/requests"}
-                  icon={<LiaHandsHelpingSolid />}
-                  text={"My Requests"}
-                />
-              )}
-
-              {role === "renter" && (
-                <DropdownItem
-                  address={"/myproperty"}
-                  icon={<AiOutlineHome />}
-                  text={"My rental"}
-                />
-              )}
-
-              {role === "mgmt" && (
-                <DropdownItem
-                  address={"/MGMTDashboard"}
-                  icon={<IoIosBusiness />}
-                  text={"My properties "}
-                />
-              )}
-
-              {role === "mgmt" && (
-                <DropdownItem
-                  address={"/myemployees"}
-                  icon={<FaBriefcase />}
-                  text={"My employees"}
-                />
-              )}
-
-              {role === "mgmt" && (
-                <DropdownItem
-                  address={"/myrequests"}
-                  icon={<LiaHandsHelpingSolid />}
-                  text={"My requests"}
-                />
-              )}
-              <DropdownItem
-                address={"/reservations"}
-                icon={<FaCalendarAlt />}
-                text={"Reservations"}
-              />
-
-              <LogoutBtn img={logoutt} />
-            </ul>
-          </div>
-        </div>
+        )}
       </nav>
     </>
   );
