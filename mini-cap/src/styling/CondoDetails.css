@@ -1,0 +1,203 @@
+/* PropertyComponent.css */
+
+h2{
+    font-family: "Roboto", sans-serif;
+    position: relative;
+    margin-bottom: 3px;
+    color:#2f2c9b;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  h5{
+    font-family: "Roboto", sans-serif;
+    position: relative;
+    align-items: right;
+    margin-bottom: 0px;
+    color:#2f2c9b;
+    font-size: 18px;
+    font-weight: 500;
+  }
+  /* Overall page styles */
+  .condo-details-container {
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+    height: 40vh;
+    width: 100%;
+    background-color: #f4f4f4;
+  }
+.name-and-number{
+    display: flex;
+    justify-content: space-between;
+}
+
+.pic-and-num{
+  text-align: left;
+}
+.pic-and-tag{
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
+}
+
+.other-info1{
+    text-align: left;
+}
+.other-info2{
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.other-info{
+    text-align: left;
+    margin-left: 10px;
+}
+  .condo-name {
+    padding-bottom: 10px;
+  }
+  
+  .condo-info {
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 13px; /* Increased padding for wider form */
+    width: 100%; /* Full width on large screens */
+    width: 410px;
+  }
+
+  .condo-info p{
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    font-weight: lighter;
+    font-size: 20px;
+    margin: 0; /* Remove default margin for paragraph elements */
+  }
+
+  .locker-details {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .overlay{
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    position: fixed;
+    background: rgba(49,49,49,0.8);
+    z-index: -1;
+  }
+
+.details{
+    z-index: 1;
+}
+  /* Profile Picture styles */
+  .profile-picture{
+    height: 170px;
+    width: 256px;
+    margin-left: 10px;
+    margin-top: 10px;
+  } 
+  
+  /* Button styles */
+  
+  .edit-button {
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    font-weight: 400;
+    font-size: 20px; /* Chosen font size */
+    background-color: #4540db; /* Chosen background color from signup2 branch */
+    color: #fff; /* Assuming var(--white) is white, replaced with #fff */
+    border: none; /* No border */
+    border-radius: 4px; /* Chosen border-radius */
+    cursor: pointer; /* Hand cursor on hover */
+    transition: all 0.3s ease; /* Example transition */
+    display: flex; /* Display style */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
+    height: 36px;
+    width: 125px;
+    margin-top: 10px;
+    margin-right: 10px;
+    float: right;
+  }
+  .sendkey-button {
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    font-weight: 400;
+    font-size: 15px; /* Chosen font size */
+    background-color: #4540db; /* Chosen background color from signup2 branch */
+    color: #fff; /* Assuming var(--white) is white, replaced with #fff */
+    border: none; /* No border */
+    border-radius: 4px; /* Chosen border-radius */
+    cursor: pointer; /* Hand cursor on hover */
+    transition: all 0.3s ease; /* Example transition */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
+    height: 28px;
+    width: 74px;
+    margin-top: 10px;
+    margin-right: 10px;
+    float: right;
+    display: block;
+  }
+
+  .delete-button{
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    font-weight: 400;
+    font-size: 20px; /* Chosen font size */
+    background-color: red; /* Chosen background color from signup2 branch */
+    color: #fff; /* Assuming var(--white) is white, replaced with #fff */
+    border: none; /* No border */
+    border-radius: 4px; /* Chosen border-radius */
+    cursor: pointer; /* Hand cursor on hover */
+    transition: all 0.3s ease; /* Example transition */
+    display: flex; /* Display style */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
+    height: 36px;
+    width: 125px;
+    margin-top: 10px;
+    margin-right: 10px;
+    float: left;
+  }
+  
+  .details-button:hover {
+    background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
+    color: #ffffff; /* Change text color on hover to white */
+  }
+
+  .button_circle{
+    margin: 0;
+    float: left;
+  }
+
+  .user-tag {
+    /* Shared styles for both renter and owner */
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 8px;
+    height: 28px;
+    width: 74px;
+    font-size: 20px;
+    font-family: "Roboto", sans-serif;
+    font-weight: lighter;
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
+.rented {
+    background-color: #BFF877;
+    color: black;
+}
+
+.vacant {
+    background-color: #808080;
+    color: black;
+}
