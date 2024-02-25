@@ -16,27 +16,29 @@ const PropertyPage = () => {
     const navigate = useNavigate();
     const [condoDetails, setCondoDetails] = useState([]);
     const [hasCondos, setHasCondos] = useState(false);
+    let [condoPicURL, setCondoPicURL] = useState(null);
 
     useEffect(() => {
         const fetchCondos = async () => {
-          try {
-            const condos = await getCondos(propertyID);
-            condos.map(async (condo) => {
-              const picture = await getCondoPicture(condo.condoID);
-              condo.picture = picture;
-              return { ...condo};
-          });
-            if (condos.length > 0) {
-              setHasCondos(true);
-              
-              setCondoDetails(condos);
-            }
+            try {
+                const condos = await getCondos(propertyID);
+                condos.map(async (condo) => {
+                    //we need to implement setting the condo picture
+                    console.log("-----------------------"  +condo.id);
+                    condoPicURL = await getCondoPicture(condo.id );
+                    setCondoPicURL(condoPicURL);
+                    // condo.picture = picture;
+                    return { ...condo};
+                });
+                if (condos.length > 0) {
+                  setHasCondos(true);
+                  setCondoDetails(condos);
+                }
           } catch (err) {
             console.error(err);
           }
         };
         fetchCondos();
-    
       }, []); 
 
 
@@ -53,8 +55,8 @@ const PropertyPage = () => {
                     {hasCondos ? (
                         <div className="condo_list">
                         {condoDetails.map((condo, index) => (
-                            <CondoMgmtComponent key={index} {...condo} />
-                        ))}     
+                            <CondoMgmtComponent key={index} {...condo} condoId={condo.id}/>
+                        ))}
 
                       </div>
                     ) : (
