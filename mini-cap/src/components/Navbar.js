@@ -137,7 +137,7 @@ const Navbar = () => {
 
                 {store("role") !== "renter/owner" && (
                     <DropdownItem
-                        address={"/propertyprofile"}
+                        address={"/MGMTDashboard"}
                         icon={<IoIosBusiness />}
                         text={"My properties "}
                     />
