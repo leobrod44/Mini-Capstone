@@ -173,6 +173,29 @@ export async function updateUserPicture(email, photo){
     }
 }
 
+export async function checkEmailExists(email) {
+    try {
+        const userDoc = await getDoc(doc(db, "Users", email));
+        if (!userDoc.exists()) {
+            throw new Error("Cannot find any users with this email.");
+        }
+    } catch (e) {
+        throw new Error(e);
+    }
+}
+
+export async function storeCondoKey(data){
+    const keyCollection = collection(db, "Keys");
+
+    try{
+        //const clean = cleanData(keyCollection, data);
+        const docRef = await addDoc(collection(db, "Keys"), data);
+    }
+    catch(e){
+        throw new Error("Error adding document: ", e);
+    }
+}
+
 export async function addUser(data) {
     //are these 2 lines needed?
     const usersCollection = collection(db, "Users");

@@ -4,7 +4,7 @@ import "../styling/CondoComponent.css";
 import  { useState} from "react";
 import Popup_SendKey from './Popup_SendKey';
 
-const CondoMgmtComponent = ({ name, picture, unitNumber, parkingSpot, locker }) => {
+const CondoMgmtComponent = ({ name, picture, unitNumber, parkingSpot, locker, condoId }) => {
 
     const [showPopup, setShowPopup] = useState(false);
     const handlePopupToggle = () => {
@@ -31,18 +31,19 @@ const CondoMgmtComponent = ({ name, picture, unitNumber, parkingSpot, locker }) 
                     <button className="details-button">Details</button>
                 </div>
             </div>
-            {showPopup && <Popup_SendKey handleClose={handlePopupToggle} />}
+            {showPopup && <Popup_SendKey handleClose={handlePopupToggle} condoId={condoId}/>}
         </div>
         
     );
 };
 
 CondoMgmtComponent.propTypes = {
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
     profilePicture: PropTypes.string,
     unitNumber: PropTypes.string.isRequired,
     parkingSpot: PropTypes.string,
-    locker: PropTypes.string
+    locker: PropTypes.string,
+    condoId: PropTypes.string.isRequired
 };
 
 export default CondoMgmtComponent;
