@@ -4,11 +4,16 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styling/AddCondoForm.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import {addCondo} from "../backend/Fetcher";
+import {useLocation, useParams} from "react-router-dom";
 
 
 
 
 const AddCondoForm = () => {
+
+    const { state } = useLocation();
+
     const [condo, setCondo] = useState({
       unitNumber: "",
       squareFeet: "",
@@ -66,7 +71,7 @@ const AddCondoForm = () => {
   
    
   
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
     
       // Check if any field is empty
@@ -77,8 +82,12 @@ const AddCondoForm = () => {
         }
       }
     
-      // Additional validation logic if needed
-    
+      try{
+          await addCondo(condo, state.property);
+      }catch(e){
+          toast.error("Error adding condo");
+      }
+
       // If all validation passes, submit the condo
       console.log("Condo Submitted:", condo);
     
