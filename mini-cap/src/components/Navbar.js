@@ -102,13 +102,13 @@ const Navbar = () => {
             >
               {store("role") !== "renter/owner" && (
                   <h3 className={NavbarCSS.h3}>
-                    Hello company! <br />{" "}
+                    Hello {companyName}! <br />{" "}
                   </h3>
               )}
 
               {store("role") === "renter/owner" && (
                   <h3 className={NavbarCSS.h3}>
-                    Hello first name! <br />{" "}
+                    Hello {firstName}! <br />{" "}
                   </h3>
               )}
 
