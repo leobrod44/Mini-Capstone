@@ -59,7 +59,7 @@ useEffect(()=>{
       setCompanyName(tempData.companyName);
       setUserType("Management Company");
     }
-    else if (role === "Renter/owner"){
+    else if (role === "renter/owner"){
       tempData = await getUserData(store("user"));
       profilePicURL = await getProfilePicture(store("user"));
       setFirstName(tempData.firstName)
