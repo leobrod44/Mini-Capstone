@@ -69,7 +69,7 @@ const PropertyPage = () => {
                         </div>
                     )}
                 </div>
-                {hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-condo')} />}
+                {hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-condo/', {state: {property: propertyID}})} />}
             </div>
             <Footer />
 

@@ -304,6 +304,13 @@ export async function addCondo(data, propertyID){
         data["property"] = propertyID;
         const clean = cleanData("Condo",data);
         const docRef = await addDoc(collection(db, "Condo"), clean);
+        console.log("added");
+        const docID = docRef.id;
+
+        await updateDoc(docRef, {
+            id: docID
+        });
+
         if(pictureData){
             try{
                 await setPicture(data, condoPictureRef);
