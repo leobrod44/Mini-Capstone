@@ -7,7 +7,7 @@ import {storeCondoKey, checkEmailExists} from "../backend/Fetcher";
 const Popup_SendKey = ({ handleClose, condoId }) => {
     const [showPopup, setShowPopup] = useState(true);
     const [formData, setFormData] = useState({
-        role: "Renter", //default for now
+        role: "renter", //default for now
         email: "",
         condo: condoId
       });

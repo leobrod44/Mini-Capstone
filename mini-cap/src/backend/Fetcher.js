@@ -184,28 +184,6 @@ export async function checkEmailExists(email) {
     }
 }
 
-export async function xaddCondo(data, propertyID){
-    var pictureData = data.picture;
-
-    try{
-        data["property"] = propertyID;
-        const clean = cleanData("Condo",data);
-        const docRef = await addDoc(collection(db, "Condo"), clean);
-        if(pictureData){
-            try{
-                await setPicture(data, condoPictureRef);
-            }
-            catch(e){
-                throw new Error("Error adding picture: ", e);
-            }
-        }
-    }
-    catch(e){
-        throw new Error("Error adding document: ", e);
-    }
-
-}
-
 export async function storeCondoKey(data){
     const keyCollection = collection(db, "Keys");
 
