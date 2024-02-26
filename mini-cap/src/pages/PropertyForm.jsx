@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styling/propertyform.css";
@@ -27,7 +28,7 @@ const PropertyForm = () => {
 
   const [visibleCondoForms, setVisibleCondoForms] = useState([]);
 
-
+  const navigate = useNavigate();
 
 
   const handleFileChange = (e) => {
@@ -52,7 +53,7 @@ const PropertyForm = () => {
 
     setProperty({
       ...property,
-      propertyPicture: file,
+      picture: file,
     });
 
     const reader = new FileReader();
@@ -157,6 +158,14 @@ const PropertyForm = () => {
       return;
     }
     // if all required field are filled , save property
+    try{
+      await addProperty(property);
+      navigate("/MGMTDashboard");
+    }catch(err){
+      console.error(err);
+    }
+
+    
     console.log("Submitted:", property);
   };
 
