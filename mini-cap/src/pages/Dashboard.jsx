@@ -10,8 +10,6 @@ import {getCondoData, linkCondoToUser} from "../backend/Fetcher";
 import store from "storejs";
 import {toast} from "react-toastify";
 
-
-
 const Dashboard =() => {
 // State to represent whether the user has registered condos or not, since i dont have backend right now
 const [hasCondos, setHasCondos] = useState(false);

@@ -454,6 +454,44 @@ export async function getProperties(company){
     }
 }
 
+export async function getUserCondos(email){
+    try{
+        const userCollection = collection(db, "Users");
+        const userSnapshot = await getDocs(userCollection);
+
+        var condos = [];
+
+        userSnapshot.forEach((userDoc) => {
+            const userData = userDoc.data();
+            if (userData.email === email && (userData.rents || userData.owns)) {
+
+                // check owns array
+                userData.owns.forEach(async (condoId) => {
+                    const condoDocRef = doc(db, "Condo", condoId);
+                    const condoDoc = await getDoc(condoDocRef);
+
+                    if (condoDoc.exists())
+                        condos.push(condoDoc.data());
+                });
+
+                // check rents array
+                userData.rents.forEach(async (condoId) => {
+                    const condoDocRef = doc(db, "Condo", condoId);
+                    const condoDoc = await getDoc(condoDocRef);
+
+                    if (condoDoc.exists())
+                        condos.push(condoDoc.data());
+                });
+            }
+        });
+
+        return condos;
+    }
+    catch(e){
+        throw new Error("Error getting condos: ", e);
+    }
+}
+
 export async function getCondos(propertyID){
     try{
         const condoCollection = collection(db, "Condo");
