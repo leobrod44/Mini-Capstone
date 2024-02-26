@@ -435,7 +435,7 @@ export async function addProperty(data){
 }
 
 export async function getProperties(company){
-    try{
+    try {
         const propertyCollection = collection(db, "Property");
         const propertySnapshot = await getDocs(propertyCollection);
         var properties = [];
@@ -453,6 +453,88 @@ export async function getProperties(company){
         throw new Error("Error getting properties: ", e);
     }
 }
+
+export async function getUserCondos(email) {
+    try {
+        const userCollection = collection(db, "Users");
+        const userSnapshot = await getDocs(userCollection);
+
+        const condos = [];
+
+        await Promise.all(userSnapshot.docs.map(async (userDoc) => {
+            const userData = userDoc.data();
+            if (userData.email === email) {
+
+                if (userData.owns && userData.owns.length > 0) {
+                    // check owns array
+                    const ownedCondoPromises = userData.owns.map(async (condoId) => {
+                        const condoDocRef = doc(db, "Condo", condoId);
+                        const condoDoc = await getDoc(condoDocRef);
+
+                        if (condoDoc.exists()) {
+                            const condoData = condoDoc.data();
+                            const propertyDocRef = doc(db, "Property", condoData.property);
+                            const propertyDoc = await getDoc(propertyDocRef);
+
+                            if (propertyDoc.exists()) {
+                                // Replace the property ID with the property address
+                                condoData.property = propertyDoc.data().address;
+                                condoData.propertyName = propertyDoc.data().propertyName;
+                                return condoData;
+                            } else {
+                                // Handle case when property document is not found
+                                return null;
+                            }
+                        } else {
+                            // Handle case when condo document is not found
+                            return null;
+                        }
+                    });
+
+                    const userOwnedCondos = await Promise.all(ownedCondoPromises);
+                    condos.push(...userOwnedCondos);
+                }
+
+                if (userData.rents && userData.rents.length > 0) {
+                    // check rents array
+                    const rentedCondoPromises = userData.rents.map(async (condoId) => {
+                        const condoDocRef = doc(db, "Condo", condoId);
+                        const condoDoc = await getDoc(condoDocRef);
+
+                        if (condoDoc.exists()) {
+                            const condoData = condoDoc.data();
+                            const propertyDocRef = doc(db, "Property", condoData.property);
+                            const propertyDoc = await getDoc(propertyDocRef);
+
+                            if (propertyDoc.exists()) {
+                                // Replace the property ID with the property address
+                                condoData.property = propertyDoc.data().address;
+                                condoData.propertyName = propertyDoc.data().propertyName;
+                                return condoData;
+                            } else {
+                                // Handle case when property document is not found
+                                return null;
+                            }
+                        } else {
+                            // Handle case when condo document is not found
+                            return null;
+                        }
+                    });
+
+                    const userRentedCondos = await Promise.all(rentedCondoPromises);
+                    condos.push(...userRentedCondos);
+                }
+            }
+        }));
+
+        return condos;
+    } catch (e) {
+        throw new Error("Error getting condos: " + e);
+    }
+}
+
+
+
 
 export async function getCondos(propertyID){
     try{
