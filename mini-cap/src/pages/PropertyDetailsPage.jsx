@@ -23,12 +23,9 @@ const PropertyPage = () => {
             try {
                 const condos = await getCondos(propertyID);
                 await Promise.all(condos.map(async (condo) => {
-                    //we need to implement setting the condo picture
-                    console.log("-----------------------"  +condo.id);
                     condoPicURL = await getCondoPicture(propertyName+"/"+condo.unitNumber);
                     setCondoPicURL(condoPicURL);
                     condo.picture = condoPicURL;
-                    // condo.picture = picture;
                     return { ...condo};
                 }));
                 if (condos.length > 0) {
