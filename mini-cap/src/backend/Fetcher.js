@@ -1,6 +1,6 @@
 import {deleteDoc, getFirestore} from "firebase/firestore";
 import {initializeApp,storageRef} from "firebase/app";
-import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import {cleanData} from "./DataCleaner";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import store from "storejs";
@@ -193,6 +193,9 @@ export async function storeCondoKey(data){
     try{
         //const clean = cleanData(keyCollection, data);
         const docRef = await addDoc(collection(db, "Keys"), data);
+        await updateDoc(docRef, {
+            used: false
+        })
         return docRef.id;
     }
     catch(e){
@@ -214,6 +217,62 @@ export async function sendCondoKey(email, key){
                 console.log('Failed to send key: ', error.text);
             },
         );
+}
+
+export async function linkCondoToUser(email, key){
+    try {
+        const docRef = doc(db, "Keys", key);
+        const docSnap = await getDoc(docRef);
+        let data;
+
+        if (docSnap.exists()) {
+            data = docSnap.data();
+        } else {
+            return "Key is not valid!";
+        }
+
+        if(data.email !== email){
+            return "This key is not associated to your account";
+        }
+        if(data.used){
+            return "This key has already been used";
+        }
+
+        const userRef = doc(db, "Users", email);
+        const userSnap = await getDoc(docRef);
+
+        if(data.role === "renter"){
+            if(userSnap.data().hasOwnProperty('rents')){
+                await updateDoc(userRef, {
+                    rents: [data.condo]
+                });
+            }else{
+                await updateDoc(userRef, {
+                    rents: arrayUnion(data.condo)
+                });
+            }
+        }
+        if(data.role === "owner"){
+            if(userSnap.data().hasOwnProperty('owns')){
+                await updateDoc(userRef, {
+                    owns: [data.condo]
+                });
+            }else{
+                await updateDoc(userRef, {
+                    owns: arrayUnion(data.condo)
+                });
+            }
+        }
+
+        //set key to used
+        await updateDoc(docRef, {
+            used: true
+        })
+
+    } catch (err) {
+        console.error(err);
+    }
+    return "Condo added!";
 }
 
 export async function addUser(data) {
