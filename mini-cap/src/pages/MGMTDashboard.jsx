@@ -49,6 +49,7 @@ const MGMTDashboard = () => {
               {/* Render properties */}
               {propertyDetails.map((p, index) => (
                 <Property key={index} property={{
+                  picture: p.picture,
                   propertyID: p.propertyID,
                   propertyName: p.propertyName,
                   address: p.address,

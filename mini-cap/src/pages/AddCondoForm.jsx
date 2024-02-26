@@ -4,24 +4,25 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styling/AddCondoForm.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import {addCondo} from "../backend/Fetcher";
-import {useLocation, useParams} from "react-router-dom";
 
+import { addCondo } from "../backend/Fetcher";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 
 
 const AddCondoForm = () => {
-
+  let { propertyID, propertyName } = useParams();
+  const navigate = useNavigate();
     const { state } = useLocation();
-
     const [condo, setCondo] = useState({
       unitNumber: "",
+      propertyID: propertyID,
       squareFeet: "",
       unitPrice: "",
       unitSize: "",
       parkingNumber: "",
       lockerNumber: "",
-      condoPicture: null,
+      picture: null,
     });
     const [previewCondoImage, setPreviewCondoImage] = useState(null);
     const handleFileChange = (e) => {
@@ -46,7 +47,7 @@ const AddCondoForm = () => {
   
       setCondo({
         ...condo,
-        condoPicture: file,
+        picture: file,
       });
   
       const reader = new FileReader();
@@ -81,13 +82,6 @@ const AddCondoForm = () => {
           return;
         }
       }
-    
-      try{
-          await addCondo(condo, state.property);
-      }catch(e){
-          toast.error("Error adding condo");
-      }
-
       // If all validation passes, submit the condo
       console.log("Condo Submitted:", condo);
     
@@ -99,8 +93,15 @@ const AddCondoForm = () => {
         unitSize: "",
         parkingNumber: "",
         lockerNumber: "",
-        condoPicture: null,
+        picture: null,
       });
+      try{
+          await addCondo(condo,propertyID,propertyName);
+      }
+      catch(e){
+        toast.error("Error adding condo");
+      }
+      navigate(`/propertydetailspage/${propertyID}/${propertyName}`);
     };
   
     return (
