@@ -22,7 +22,7 @@ const PropertyPage = () => {
         const fetchCondos = async () => {
             try {
                 const condos = await getCondos(propertyID);
-                condos.map(async (condo) => {
+                await Promise.all(condos.map(async (condo) => {
                     //we need to implement setting the condo picture
                     console.log("-----------------------"  +condo.id);
                     condoPicURL = await getCondoPicture(propertyName+"/"+condo.unitNumber);
@@ -30,7 +30,7 @@ const PropertyPage = () => {
                     condo.picture = condoPicURL;
                     // condo.picture = picture;
                     return { ...condo};
-                });
+                }));
                 if (condos.length > 0) {
                   setHasCondos(true);
                   setCondoDetails(condos);
