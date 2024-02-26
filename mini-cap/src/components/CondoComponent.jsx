@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import "../styling/CondoComponent.css";
 
-const CondoComponent = ({ name, profilePicture, address, unitNumber, parkingSpot, locker, userType }) => {
+const CondoComponent = ({ condo }) => {
+    const { name, profilePicture, address, unitNumber, parkingSpot, locker, userType } = condo;
     
     const userTypeClass = userType === 'Owner' ? 'owner' : 'renter';
 
@@ -28,14 +29,24 @@ const CondoComponent = ({ name, profilePicture, address, unitNumber, parkingSpot
     );
 };
 
+// CondoComponent.propTypes = {
+//     name: PropTypes.string.isRequired,
+//     profilePicture: PropTypes.string,
+//     address: PropTypes.string.isRequired,
+//     unitNumber: PropTypes.string.isRequired,
+//     parkingSpot: PropTypes.string,
+//     locker: PropTypes.string,
+//     userType: PropTypes.string.isRequired
+// };
+
 CondoComponent.propTypes = {
-    name: PropTypes.string.isRequired,
+    // name: PropTypes.string,
     profilePicture: PropTypes.string,
-    address: PropTypes.string.isRequired,
-    unitNumber: PropTypes.string.isRequired,
+    address: PropTypes.string,
+    unitNumber: PropTypes.string,
     parkingSpot: PropTypes.string,
     locker: PropTypes.string,
-    userType: PropTypes.string.isRequired
+    userType: PropTypes.string
 };
 
 export default CondoComponent;
