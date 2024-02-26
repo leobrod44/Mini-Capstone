@@ -13,7 +13,7 @@ const CondoComponent = ({ condo }) => {
         <div className="condo-details-container">
             <div className="condo-info">
                 <div className='condo-name-user-tag'>
-                    <h2>Name: {property}</h2>
+                    <h2>{property}</h2>
                     <div className={`user-tag ${userTypeClass}`}>{userType}</div>
                 </div>
                 

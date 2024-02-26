@@ -99,7 +99,7 @@ const Dashboard =() => {
                                     unitNumber: c.unitNumber,
                                     parkingSpot: c.parkingNumber,
                                     locker: c.lockerNumber,
-                                    userType: "not implemented"
+                                    userType: c.userType
                                 } } />
                             ))}
                         </div>

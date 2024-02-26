@@ -504,6 +504,7 @@ export async function getUserCondos(email) {
                                 // Replace the property ID with the property address
                                 condoData.property = propertyDoc.data().address;
                                 condoData.propertyName = propertyDoc.data().propertyName;
+                                condoData.userType = "Owner";
                                 return condoData;
                             } else {
                                 // Handle case when property document is not found
@@ -534,6 +535,7 @@ export async function getUserCondos(email) {
                                 // Replace the property ID with the property address
                                 condoData.property = propertyDoc.data().address;
                                 condoData.propertyName = propertyDoc.data().propertyName;
+                                condoData.userType = "Renter";
                                 return condoData;
                             } else {
                                 // Handle case when property document is not found
