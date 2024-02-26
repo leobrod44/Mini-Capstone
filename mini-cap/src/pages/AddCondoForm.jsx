@@ -4,19 +4,23 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styling/AddCondoForm.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
+import { addCondo } from "../backend/Fetcher";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 
 const AddCondoForm = () => {
+  let { propertyID, propertyName } = useParams();
+  const navigate = useNavigate();
     const [condo, setCondo] = useState({
       unitNumber: "",
+      propertyID: propertyID,
       squareFeet: "",
       unitPrice: "",
       unitSize: "",
       parkingNumber: "",
       lockerNumber: "",
-      condoPicture: null,
+      picture: null,
     });
     const [previewCondoImage, setPreviewCondoImage] = useState(null);
     const handleFileChange = (e) => {
@@ -41,7 +45,7 @@ const AddCondoForm = () => {
   
       setCondo({
         ...condo,
-        condoPicture: file,
+        picture: file,
       });
   
       const reader = new FileReader();
@@ -66,7 +70,7 @@ const AddCondoForm = () => {
   
    
   
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
     
       // Check if any field is empty
@@ -90,8 +94,15 @@ const AddCondoForm = () => {
         unitSize: "",
         parkingNumber: "",
         lockerNumber: "",
-        condoPicture: null,
+        picture: null,
       });
+      try{
+          await addCondo(condo,propertyID,propertyName);
+      }
+      catch(err){
+        console.error(err);
+      }
+      navigate(`/propertydetailspage/${propertyID}/${propertyName}`);
     };
   
     return (
