@@ -482,7 +482,6 @@ export async function getUserCondos(email) {
     try {
         const userCollection = collection(db, "Users");
         const userSnapshot = await getDocs(userCollection);
-
         const condos = [];
 
         await Promise.all(userSnapshot.docs.map(async (userDoc) => {
@@ -501,19 +500,15 @@ export async function getUserCondos(email) {
                             const propertyDoc = await getDoc(propertyDocRef);
 
                             if (propertyDoc.exists()) {
-                                // Replace the property ID with the property address
                                 condoData.property = propertyDoc.data().address;
                                 condoData.propertyName = propertyDoc.data().propertyName;
                                 condoData.userType = "Owner";
                                 return condoData;
-                            } else {
-                                // Handle case when property document is not found
+                            } else
                                 return null;
-                            }
-                        } else {
-                            // Handle case when condo document is not found
-                            return null;
                         }
+                        else
+                            return null;
                     });
 
                     const userOwnedCondos = await Promise.all(ownedCondoPromises);
@@ -532,19 +527,15 @@ export async function getUserCondos(email) {
                             const propertyDoc = await getDoc(propertyDocRef);
 
                             if (propertyDoc.exists()) {
-                                // Replace the property ID with the property address
                                 condoData.property = propertyDoc.data().address;
                                 condoData.propertyName = propertyDoc.data().propertyName;
                                 condoData.userType = "Renter";
                                 return condoData;
-                            } else {
-                                // Handle case when property document is not found
+                            } else
                                 return null;
-                            }
-                        } else {
-                            // Handle case when condo document is not found
-                            return null;
                         }
+                        else
+                            return null;
                     });
 
                     const userRentedCondos = await Promise.all(rentedCondoPromises);
@@ -558,9 +549,6 @@ export async function getUserCondos(email) {
         throw new Error("Error getting condos: " + e);
     }
 }
-
-
-
 
 export async function getCondos(propertyID){
     try{
