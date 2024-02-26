@@ -315,6 +315,7 @@ export async function addUser(data) {
         try{
             await storeData("Users",data,data['email']);
             store("user", data["email"]);
+            store("role", RENTER_OWNER);
             window.location.href = '/';
         }catch(e){
             throw new Error("Error adding document: ", e);
@@ -344,6 +345,7 @@ export async function addCompany(data) {
         try{
            await storeData("Company",data,data['email']);
            store("user", data["email"]);
+           store("role", MANAGEMENT_COMPANY);
            window.location.href = '/';
         }catch(e){
             throw new Error("Error adding document: ", e);
