@@ -1,153 +1,159 @@
 * {
-    user-select: none;
-    font-family: Arial, Helvetica, sans-serif;
-  }
+  user-select: none;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
-  .ul {
-    list-style: none;
-    padding: 0px !important;
-  }
-  
-  .atag {
-    text-decoration: none !important;
-    color: #4540db;
-  }
-  
-  .myLogout {
-    background: transparent;
-    border: transparent;
-    color: #842029;
-    font-size: 16px;
-    max-width: 100px;
-    margin-left: 4px;
-    transition: var(--speed);
-    cursor: pointer;
-    letter-spacing: var(--letterSpacing);
-  }
-  .myLogout:hover {
-    color: #f8d7da;
-  }
-  .myMenuTrigger img {
-    margin: 0.5rem;
-    position: absolute;
-    top: 30px;
-    right: 35px;
-    height: 60px;
-    width: 60px;
-    border-radius: 50%;
-    overflow: hidden;
-    cursor: pointer;
-    background-color: #fff;
-    user-select: none;
-    box-sizing: border-box;
-    overflow-clip-margin: content-box;
-  }
-  
-  .myBurger {
-   
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: left;
-    margin: 0.5rem;
-    color:  #4540db;
-  }
-  
-  .myDropdownMenu {
-    position: absolute;
-    top: 115px;
-    right: 25px;
-    background-color: #fff;
-    border-radius: var(--border-radius);
-    padding: 10px 20px;
-    width: 210px;
-  }
-  
-  .myDropdownMenu::before {
-    content: "";
-    position: absolute;
-    top: -5px;
-    right: 20px;
-    height: 20px;
-    width: 20px;
-    background: var(--secondary-bg);
-    transform: rotate(45deg);
-  }
-  
-  .myDropdownMenu.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    transition: var(--speed) ease;
-    position: absolute;
-    z-index: 9999;
-  }
-  
-  .myDropdownMenu.inactive {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-20px);
-    transition: var(--speed) ease;
-  }
-  
-  .h3 {
-    width: 100%;
-    text-align: center !important;
-    padding: 20px 0;
-    font-weight: 500;
-    font-size: 18px;
-    color: var(--primary-text-color);
-    line-height: 1.2rem;
-  }
-  
-  h3 span {
-    font-size: 14px;
-    color: var(--secondary-text-color);
-    font-weight: 400;
-    text-align: right;
-  }
-  
-  .myDropdownMenu ul li {
-    padding: 10px 0 !important;
-    border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
-  }
-  
-  .myDropdownMenu ul li:hover a {
-    color: red;
-    cursor: pointer;
-  }
-  
-  .myDropdownMenu ul li:hover img {
-    opacity: 1 !important;
-    cursor: pointer !important;
-  }
-  
-  .myDropdownItem {
-    text-align: center !important;
-  }
-  
-  .myNavbar {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-   
-    padding: 10px !important;
-    user-select: none !important;
-    box-sizing: border-box !important;
-    font-family: var(--bodyFont) !important;
-    font-weight: 400 !important;
-    line-height: 1.75 !important;
-    color: var(--textColor) !important;
-    height: 125px !important;
-  }
-  
-  .myDropdownItem a {
-    max-width: 200px !important;
-    margin-left: 10px !important;
-    transition: var(--speed) !important;
-  }
-  
-  .myCursorPointer {
-    cursor: pointer !important;
-  }
-  
+.ul {
+  list-style: none;
+  padding: 0px !important;
+}
+
+.atag {
+  text-decoration: none !important;
+  color: #4540db;
+}
+
+.myLogout {
+  background: transparent;
+  border: transparent;
+  color: #842029;
+  font-size: 16px;
+  max-width: 100px;
+  margin-left: 4px;
+  transition: var(--speed);
+  cursor: pointer;
+  letter-spacing: var(--letterSpacing);
+}
+.myLogout:hover {
+  color: #f8d7da;
+}
+.myMenuTrigger img {
+  margin: 0.5rem;
+  position: absolute;
+  top: 30px;
+  right: 35px;
+  height: 60px;
+  width: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #fff;
+  user-select: none;
+  box-sizing: border-box;
+  overflow-clip-margin: content-box;
+}
+
+.myBurger {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: left;
+  margin: 0.5rem;
+  color: #4540db;
+}
+
+.myDropdownMenu {
+  position: absolute;
+  top: 115px;
+  right: 25px;
+  background-color: #fff;
+  border-radius: var(--border-radius);
+  padding: 10px 20px;
+  width: 210px;
+}
+
+.myDropdownMenu::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  right: 20px;
+  height: 20px;
+  width: 20px;
+  background: var(--secondary-bg);
+  transform: rotate(45deg);
+}
+
+.myDropdownMenu.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition: var(--speed) ease;
+  position: absolute;
+  z-index: 9999;
+}
+
+.myDropdownMenu.inactive {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  transition: var(--speed) ease;
+}
+
+.h3 {
+  width: 100%;
+  text-align: center !important;
+  padding: 20px 0;
+  font-weight: 500;
+  font-size: 18px;
+  color: var(--primary-text-color);
+  line-height: 1.2rem;
+}
+
+h3 span {
+  font-size: 14px;
+  color: var(--secondary-text-color);
+  font-weight: 400;
+  text-align: right;
+}
+
+.myDropdownMenu ul li {
+  padding: 10px 0 !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+.myDropdownMenu ul li:hover a {
+  color: red;
+  cursor: pointer;
+}
+
+.myDropdownMenu ul li:hover img {
+  opacity: 1 !important;
+  cursor: pointer !important;
+}
+
+.myDropdownItem {
+  text-align: center !important;
+}
+
+.myNavbar {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+
+  padding: 10px !important;
+  user-select: none !important;
+  box-sizing: border-box !important;
+  font-family: var(--bodyFont) !important;
+  font-weight: 400 !important;
+  line-height: 1.75 !important;
+  color: var(--textColor) !important;
+  height: 125px !important;
+}
+
+.myDropdownItem a {
+  max-width: 200px !important;
+  margin-left: 10px !important;
+  transition: var(--speed) !important;
+}
+
+.myCursorPointer {
+  cursor: pointer !important;
+}
+
+.profilePic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+}
