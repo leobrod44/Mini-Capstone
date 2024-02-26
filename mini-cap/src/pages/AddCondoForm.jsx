@@ -82,13 +82,6 @@ const AddCondoForm = () => {
           return;
         }
       }
-    
-      try{
-          await addCondo(condo, state.property);
-      }catch(e){
-          toast.error("Error adding condo");
-      }
-
       // If all validation passes, submit the condo
       console.log("Condo Submitted:", condo);
     
@@ -105,8 +98,8 @@ const AddCondoForm = () => {
       try{
           await addCondo(condo,propertyID,propertyName);
       }
-      catch(err){
-        console.error(err);
+      catch(e){
+        toast.error("Error adding condo");
       }
       navigate(`/propertydetailspage/${propertyID}/${propertyName}`);
     };
