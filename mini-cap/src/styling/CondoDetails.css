@@ -25,9 +25,13 @@ h2{
     flex-direction: column;
     justify-content: left;
     align-items: center;
-    height: 40vh;
     width: 100%;
-    background-color: #f4f4f4;
+    height:auto;
+    background-color: #f0f4f8;
+  }
+
+  .pageContainer{
+    background-color: #f0f4f8;
   }
 .name-and-number{
     display: flex;

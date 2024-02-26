@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import MGMTDashboard from "./pages/MGMTDashboard";
 import PropertyDetailsPage from "./pages/PropertyDetailsPage";
 import AddCondoForm from './pages/AddCondoForm';
-import CondoDetail from "./pages/CondoDetail";
+import CondoDetails from "./pages/CondoDetails";
 
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
         <Route path="/propertydetailspage/:propertyID/:propertyName" element={<PropertyDetailsPage />} />
        <Route path="/add-property" element={<PropertyForm />} />
        <Route path="/add-condo" element={<AddCondoForm />} />
-       <Route path="/condo-details" element={<CondoDetail />} />
+       <Route path="/condo-details" element={<CondoDetails />} />
     </Routes>
 
     </BrowserRouter>
