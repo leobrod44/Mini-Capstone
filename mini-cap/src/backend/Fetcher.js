@@ -164,16 +164,33 @@ export async function getCondoPicture(id) {
     }
 }
 
+
+export async function uploadUserPicture(email, photo) {
+    try {
+        const storage = getStorage();
+        const pictureRef = ref(storage, profilePictureRef + email);
+
+        // Upload the photo to the specified storage path
+        await uploadBytes(pictureRef, photo);
+
+        console.log("Picture uploaded successfully!");
+    } catch (error) {
+        console.error("Error uploading picture: ", error);
+        throw new Error("Error uploading picture: " + error.message);
+    }
+}
+
 export async function updateUserPicture(email, photo){
     try{
         const storage = getStorage();
-        const desertRef = ref(storage, profilePictureRef+ email);
-        var pic = await getDownloadURL(desertRef);
-        // If the getDownloadURL call succeeds, the file exists, so we can proceed with deleting and uploading
-        await deleteObject(desertRef);
-        var resp = await deleteObject(desertRef);
-        var pic = await uploadBytes(ref(storage,profilePictureRef + email), photo);
-
+        const desertRef = ref(storage, profilePictureRef + email);
+        try {
+            await getDownloadURL(desertRef);
+            await deleteObject(desertRef);
+            await uploadBytes(desertRef, photo);
+        } catch (e) {
+            console.error("Error getting download URL or uploading picture: ", e);
+        }
     }
     catch(e){
         throw new Error("Error changing picture: ", e);
@@ -195,7 +212,6 @@ export async function storeCondoKey(data){
     const keyCollection = collection(db, "Keys");
 
     try{
-        //const clean = cleanData(keyCollection, data);
         const docRef = await addDoc(collection(db, "Keys"), data);
         await updateDoc(docRef, {
             used: false
@@ -299,6 +315,7 @@ export async function addUser(data) {
         try{
             await storeData("Users",data,data['email']);
             store("user", data["email"]);
+            store("role", RENTER_OWNER);
             window.location.href = '/';
         }catch(e){
             throw new Error("Error adding document: ", e);
@@ -328,6 +345,7 @@ export async function addCompany(data) {
         try{
            await storeData("Company",data,data['email']);
            store("user", data["email"]);
+           store("role", MANAGEMENT_COMPANY);
            window.location.href = '/';
         }catch(e){
             throw new Error("Error adding document: ", e);
@@ -483,7 +501,6 @@ export async function getUserCondos(email) {
     try {
         const userCollection = collection(db, "Users");
         const userSnapshot = await getDocs(userCollection);
-
         const condos = [];
 
         await Promise.all(userSnapshot.docs.map(async (userDoc) => {
@@ -502,18 +519,15 @@ export async function getUserCondos(email) {
                             const propertyDoc = await getDoc(propertyDocRef);
 
                             if (propertyDoc.exists()) {
-                                // Replace the property ID with the property address
                                 condoData.property = propertyDoc.data().address;
                                 condoData.propertyName = propertyDoc.data().propertyName;
+                                condoData.userType = "Owner";
                                 return condoData;
-                            } else {
-                                // Handle case when property document is not found
+                            } else
                                 return null;
-                            }
-                        } else {
-                            // Handle case when condo document is not found
-                            return null;
                         }
+                        else
+                            return null;
                     });
 
                     const userOwnedCondos = await Promise.all(ownedCondoPromises);
@@ -532,18 +546,15 @@ export async function getUserCondos(email) {
                             const propertyDoc = await getDoc(propertyDocRef);
 
                             if (propertyDoc.exists()) {
-                                // Replace the property ID with the property address
                                 condoData.property = propertyDoc.data().address;
                                 condoData.propertyName = propertyDoc.data().propertyName;
+                                condoData.userType = "Renter";
                                 return condoData;
-                            } else {
-                                // Handle case when property document is not found
+                            } else
                                 return null;
-                            }
-                        } else {
-                            // Handle case when condo document is not found
-                            return null;
                         }
+                        else
+                            return null;
                     });
 
                     const userRentedCondos = await Promise.all(rentedCondoPromises);
@@ -557,9 +568,6 @@ export async function getUserCondos(email) {
         throw new Error("Error getting condos: " + e);
     }
 }
-
-
-
 
 export async function getCondos(propertyID){
     try{

@@ -8,7 +8,7 @@ import { RENTER_OWNER } from "../backend/Constants";
 const Popup_SendKey = ({ handleClose, condoId }) => {
     const [showPopup, setShowPopup] = useState(true);
     const [formData, setFormData] = useState({
-        role: RENTER_OWNER, //default for now
+        role: "renter",
         email: "",
         condo: condoId
       });

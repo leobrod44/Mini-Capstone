@@ -6,7 +6,7 @@ import "../styling/Dashboard.css";
 import React, {useEffect, useState} from "react";
 import Popup from "../components/Popup";
 import AddCondoBtn from "../components/AddCondoBtn";
-import {getCondoData, getProperties, getUserCondos, linkCondoToUser} from "../backend/Fetcher";
+import {getCondoData, getCondoPicture, getProperties, getUserCondos, linkCondoToUser} from "../backend/Fetcher";
 import store from "storejs";
 import {toast} from "react-toastify";
 import Property from "../components/PropertyComponent";
@@ -17,11 +17,20 @@ const Dashboard =() => {
     const [hasCondos, setHasCondos] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     const [condoDetails, setCondoDetails] = useState([]);
+    let [condoPicURL, setCondoPicURL] = useState(null);
 
     useEffect(() => {
         const fetchCondos = async () => {
             try {
                 const condos = await getUserCondos(store("user"));
+
+                await Promise.all(condos.map(async (condo) => {
+                    condoPicURL = await getCondoPicture(condo.propertyName+"/"+condo.unitNumber);
+                    setCondoPicURL(condoPicURL);
+                    condo.picture = condoPicURL;
+                    return { ...condo};
+                }));
+
                 if (condos.length > 0) {
                     setHasCondos(true);
                     setCondoDetails(condos);
@@ -91,15 +100,15 @@ const Dashboard =() => {
                     {hasCondos ? (
                         <div className="condo_list">
                             {/* Render properties */}
-                            {condoDetails.map((c, index) => (
+                            {condoDetails.map((condo, index) => (
                                 <CondoComponent key={index} condo={{
-                                    property : c.propertyName,
-                                    profilePicture: "not implemented",
-                                    address: c.property,
-                                    unitNumber: c.unitNumber,
-                                    parkingSpot: c.parkingNumber,
-                                    locker: c.lockerNumber,
-                                    userType: "not implemented"
+                                    property : condo.propertyName,
+                                    picture: condo.picture,
+                                    address: condo.property,
+                                    unitNumber: condo.unitNumber,
+                                    parkingNumber: condo.parkingNumber,
+                                    lockerNumber: condo.lockerNumber,
+                                    userType: condo.userType
                                 } } />
                             ))}
                         </div>

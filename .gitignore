@@ -2,3 +2,5 @@
 /node_modules
 firebaseAuth.json
 .DS_Store
+*.xml
+*.iml
