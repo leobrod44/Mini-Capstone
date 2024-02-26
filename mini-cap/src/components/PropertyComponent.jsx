@@ -5,7 +5,7 @@ import {  useNavigate } from "react-router-dom";
 
 
     const PropertyComponent = ({ property }) => {
-    const { propertyID, propertyName, profilePicture, address, unitCount, parkingCount, lockerCount } = property;
+    const {picture, propertyID, propertyName, profilePicture, address, unitCount, parkingCount, lockerCount } = property;
     const navigate = useNavigate();
 
 
@@ -15,7 +15,7 @@ import {  useNavigate } from "react-router-dom";
                     <div className='property-name'>
                         <h2>{propertyName}</h2>
                     </div>
-                    {profilePicture && <img src={profilePicture} alt="Profile" className="profile-picture" />}
+                    {picture && <img src={picture} alt="Profile" className="profile-picture" />}
                     <p>{address}</p>
                     <p>Unit Count: {unitCount}</p>
                     {parkingCount && <p>Parking Count: {parkingCount}</p>}
@@ -32,6 +32,7 @@ import {  useNavigate } from "react-router-dom";
 
 PropertyComponent.propTypes = {
     property: PropTypes.shape({
+        picture: PropTypes.string,
         propertyID: PropTypes.string.isRequired,
         propertyName: PropTypes.string.isRequired,
         address: PropTypes.string.isRequired,
