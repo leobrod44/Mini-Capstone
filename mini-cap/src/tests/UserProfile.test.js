@@ -3,6 +3,7 @@ import { render, fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import UserProfile from "../pages/UserProfile.jsx"; // Adjust the path as necessary
 import { BrowserRouter } from "react-router-dom";
+import { MANAGEMENT_COMPANY } from "../backend/Constants.js";
 
 // Mock react-toastify
 jest.mock("react-toastify", () => ({
@@ -251,7 +252,7 @@ describe("UserProfile Component", () => {
   it("renders role-specific fields correctly", () => {
     setup(); // Ensure the setup initializes the component with different roles in different tests
     const companyNameField = screen.queryByPlaceholderText(/company name/i);
-    if (role === "mgmt") {
+    if (role === MANAGEMENT_COMPANY) {
       expect(companyNameField).toBeInTheDocument();
     } else {
       expect(companyNameField).toBeNull();

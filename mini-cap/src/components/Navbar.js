@@ -15,6 +15,8 @@ import { LiaHandsHelpingSolid } from "react-icons/lia";
 import { FaBriefcase } from "react-icons/fa";
 import store from "storejs";
 import {getCompanyData, getProfilePicture, getUserData} from "../backend/Fetcher";
+import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
+
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -50,11 +52,11 @@ const Navbar = () => {
       let role = store("role");
       let tempData;
       setTheRole(role);
-      if (role === "mgmt") {
+      if (role === MANAGEMENT_COMPANY) {
         tempData = await getCompanyData(store("user"));
         setCompanyName(tempData.companyName);
       }
-      else if (role === "renter/owner"){
+      else if (role === RENTER_OWNER){
         tempData = await getUserData(store("user"));
         setFirstName(tempData.firstName)
       }
@@ -100,13 +102,13 @@ const Navbar = () => {
                 open ? NavbarCSS.active : NavbarCSS.inactive
               }`}
             >
-              {store("role") !== "renter/owner" && (
+              {store("role") === MANAGEMENT_COMPANY && (
                   <h3 className={NavbarCSS.h3}>
                     Hello {companyName}! <br />{" "}
                   </h3>
               )}
 
-              {store("role") === "renter/owner" && (
+              {store("role") === RENTER_OWNER && (
                   <h3 className={NavbarCSS.h3}>
                     Hello {firstName}! <br />{" "}
                   </h3>
@@ -119,7 +121,7 @@ const Navbar = () => {
                   text={"My Profile"}
                 />
 
-                {store("role") === "renter/owner" && (
+                {store("role") === RENTER_OWNER && (
                     <DropdownItem
                         address={"/dashboard"}
                         icon={<IoIosBusiness />}
@@ -127,7 +129,7 @@ const Navbar = () => {
                     />
                 )}
 
-                {store("role") === "renter/owner" && (
+                {store("role") === RENTER_OWNER && (
                     <DropdownItem
                         address={"/requests"}
                         icon={<LiaHandsHelpingSolid />}
@@ -143,7 +145,7 @@ const Navbar = () => {
                     />
                 )}
 
-                {store("role") !== "renter/owner" && (
+                {store("role") === MANAGEMENT_COMPANY && (
                     <DropdownItem
                         address={"/myemployees"}
                         icon={<FaBriefcase />}
@@ -151,14 +153,14 @@ const Navbar = () => {
                     />
                 )}
 
-                {store("role") !== "renter/owner" && (
+                {store("role") === MANAGEMENT_COMPANY && (
                     <DropdownItem
                         address={"/myrequests"}
                         icon={<LiaHandsHelpingSolid />}
                         text={"My requests"}
                     />
                 )}
-                {store("role") === "renter/owner" && (
+                {store("role") === RENTER_OWNER && (
                   <DropdownItem
                     address={"/reservations"}
                     icon={<FaCalendarAlt />}
