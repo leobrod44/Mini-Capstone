@@ -195,7 +195,6 @@ export async function storeCondoKey(data){
     const keyCollection = collection(db, "Keys");
 
     try{
-        //const clean = cleanData(keyCollection, data);
         const docRef = await addDoc(collection(db, "Keys"), data);
         await updateDoc(docRef, {
             used: false
