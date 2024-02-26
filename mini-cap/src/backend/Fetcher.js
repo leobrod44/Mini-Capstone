@@ -613,9 +613,6 @@ export async function deleteAccount(email) {
             await deleteDoc(doc(db, "Company", email));
         else
             throw new Error("User does not exist.");
-
-
-        window.location.href = '/login';
     } catch (e) {
         throw new Error(e.message);
     }
