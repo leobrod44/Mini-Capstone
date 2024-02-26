@@ -1,9 +1,10 @@
 import {deleteDoc, getFirestore} from "firebase/firestore";
 import {initializeApp,storageRef} from "firebase/app";
-import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 import {cleanData} from "./DataCleaner";
 import { getStorage, uploadBytes, getDownloadURL, deleteObject, ref } from "firebase/storage";
 import store from "storejs";
+import emailjs from '@emailjs/browser';
 import { MANAGEMENT_COMPANY, MANGEMENT_COMPANY, RENTER_OWNER } from "./Constants";
 import {useState} from "react";
 //npm install firebase
@@ -19,13 +20,15 @@ const firebaseConfig = {
     measurementId: "G-MQJCJCX0ET"
 };
 
-const app = initializeApp(firebaseConfig)
+const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage();
 const profilePictureRef = 'profilePictures/';
 const condoPictureRef = 'condoPictures/';
 const propertyPictureRef = 'propertyPictures/';
-
+emailjs.init({
+    publicKey: "Gw4N_w4eDx939VEBl",
+});
 
 // returns user data using email
 export async function getUserData(email) {
@@ -194,10 +197,86 @@ export async function storeCondoKey(data){
     try{
         //const clean = cleanData(keyCollection, data);
         const docRef = await addDoc(collection(db, "Keys"), data);
+        await updateDoc(docRef, {
+            used: false
+        })
+        return docRef.id;
     }
     catch(e){
         throw new Error("Error adding document: ", e);
     }
+}
+
+export async function sendCondoKey(email, key){
+    console.log(email);
+    emailjs
+        .send('service_htocwjs', 'template_h1oyvhl', {to_recipient: email, message: key}, {
+            publicKey: 'Gw4N_w4eDx939VEBl',
+        })
+        .then(
+            () => {
+                console.log('Successfully sent key!');
+            },
+            (error) => {
+                console.log('Failed to send key: ', error.text);
+            },
+        );
+}
+
+export async function linkCondoToUser(email, key){
+    try {
+        const docRef = doc(db, "Keys", key);
+        const docSnap = await getDoc(docRef);
+        let data;
+
+        if (docSnap.exists()) {
+            data = docSnap.data();
+        } else {
+            return "Key is not valid!";
+        }
+
+        if(data.email !== email){
+            return "This key is not associated to your account";
+        }
+        if(data.used){
+            return "This key has already been used";
+        }
+
+        const userRef = doc(db, "Users", email);
+        const userSnap = await getDoc(docRef);
+
+        if(data.role === "renter"){
+            if(userSnap.data().hasOwnProperty('rents')){
+                await updateDoc(userRef, {
+                    rents: [data.condo]
+                });
+            }else{
+                await updateDoc(userRef, {
+                    rents: arrayUnion(data.condo)
+                });
+            }
+        }
+        if(data.role === "owner"){
+            if(userSnap.data().hasOwnProperty('owns')){
+                await updateDoc(userRef, {
+                    owns: [data.condo]
+                });
+            }else{
+                await updateDoc(userRef, {
+                    owns: arrayUnion(data.condo)
+                });
+            }
+        }
+
+        //set key to used
+        await updateDoc(docRef, {
+            used: true
+        })
+
+    } catch (err) {
+        console.error(err);
+    }
+    return "Condo added!";
 }
 
 export async function addUser(data) {
@@ -323,6 +402,12 @@ export async function addCondo(data, propertyID, propertyName){
         data["property"] = propertyID;
         const clean = cleanData("Condo",data);
         const docRef = await addDoc(collection(db, "Condo"), clean);
+        const docID = docRef.id;
+
+        await updateDoc(docRef, {
+            id: docID
+        });
+
         if(pictureData){
             try{
                 await setPictureWithID(data, condoPictureRef,propertyName+"/"+ data['unitNumber']);
@@ -367,7 +452,9 @@ export async function addProperty(data){
     }
 }
 
+
 export async function getProperties(company) {
+
     try {
         const propertyCollection = collection(db, "Property");
         const propertySnapshot = await getDocs(propertyCollection);
@@ -391,6 +478,88 @@ export async function getProperties(company) {
         throw new Error("Error getting properties: " + error);
     }
 }
+
+export async function getUserCondos(email) {
+    try {
+        const userCollection = collection(db, "Users");
+        const userSnapshot = await getDocs(userCollection);
+
+        const condos = [];
+
+        await Promise.all(userSnapshot.docs.map(async (userDoc) => {
+            const userData = userDoc.data();
+            if (userData.email === email) {
+
+                if (userData.owns && userData.owns.length > 0) {
+                    // check owns array
+                    const ownedCondoPromises = userData.owns.map(async (condoId) => {
+                        const condoDocRef = doc(db, "Condo", condoId);
+                        const condoDoc = await getDoc(condoDocRef);
+
+                        if (condoDoc.exists()) {
+                            const condoData = condoDoc.data();
+                            const propertyDocRef = doc(db, "Property", condoData.property);
+                            const propertyDoc = await getDoc(propertyDocRef);
+
+                            if (propertyDoc.exists()) {
+                                // Replace the property ID with the property address
+                                condoData.property = propertyDoc.data().address;
+                                condoData.propertyName = propertyDoc.data().propertyName;
+                                return condoData;
+                            } else {
+                                // Handle case when property document is not found
+                                return null;
+                            }
+                        } else {
+                            // Handle case when condo document is not found
+                            return null;
+                        }
+                    });
+
+                    const userOwnedCondos = await Promise.all(ownedCondoPromises);
+                    condos.push(...userOwnedCondos);
+                }
+
+                if (userData.rents && userData.rents.length > 0) {
+                    // check rents array
+                    const rentedCondoPromises = userData.rents.map(async (condoId) => {
+                        const condoDocRef = doc(db, "Condo", condoId);
+                        const condoDoc = await getDoc(condoDocRef);
+
+                        if (condoDoc.exists()) {
+                            const condoData = condoDoc.data();
+                            const propertyDocRef = doc(db, "Property", condoData.property);
+                            const propertyDoc = await getDoc(propertyDocRef);
+
+                            if (propertyDoc.exists()) {
+                                // Replace the property ID with the property address
+                                condoData.property = propertyDoc.data().address;
+                                condoData.propertyName = propertyDoc.data().propertyName;
+                                return condoData;
+                            } else {
+                                // Handle case when property document is not found
+                                return null;
+                            }
+                        } else {
+                            // Handle case when condo document is not found
+                            return null;
+                        }
+                    });
+
+                    const userRentedCondos = await Promise.all(rentedCondoPromises);
+                    condos.push(...userRentedCondos);
+                }
+            }
+        }));
+
+        return condos;
+    } catch (e) {
+        throw new Error("Error getting condos: " + e);
+    }
+}
+
+
+
 
 export async function getCondos(propertyID){
     try{
