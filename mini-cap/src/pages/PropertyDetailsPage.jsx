@@ -8,7 +8,7 @@ import "../index.css";
 import "../styling/PropertyDetailsPage.css";
 import CondoMgmtComponent from "../components/CondoMGMTComponent";
 import { getCondos, getCondoPicture } from "../backend/Fetcher";
-import PropTypes from 'prop-types';
+//import PropTypes from 'prop-types';
 
 const PropertyDetailsPage = () => {
   let { propertyID, propertyName } = useParams();
@@ -16,30 +16,29 @@ const PropertyDetailsPage = () => {
   const navigate = useNavigate();
   const [condoDetails, setCondoDetails] = useState([]);
   const [hasCondos, setHasCondos] = useState(false);
-  let [condoPicURL, setCondoPicURL] = useState(null);
+  //let [condoPicURL, setCondoPicURL] = useState(null);
 
   useEffect(() => {
     const fetchCondos = async () => {
       try {
         const condos = await getCondos(propertyID);
-        condos.map(async (condo) => {
-          //we need to implement setting the condo picture
-          console.log("-----------------------" + condo.id);
-          condoPicURL = await getCondoPicture(condo.id);
-          setCondoPicURL(condoPicURL);
-          // condo.picture = picture;
-          return { ...condo };
-        });
+        const condosWithPictures = await Promise.all(condos.map(async (condo) => {
+          const pictureURL = await getCondoPicture(condo.id);
+          return { ...condo, picture: pictureURL };
+        }));
+
         if (condos.length > 0) {
           setHasCondos(true);
-          setCondoDetails(condos);
+          setCondoDetails(condosWithPictures);
         }
       } catch (err) {
         console.error(err);
       }
     };
+
     fetchCondos();
-  }, []);
+  }, [propertyID]);
+
 
 
   return (
