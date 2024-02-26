@@ -2,7 +2,7 @@ import {deleteDoc, getFirestore} from "firebase/firestore";
 import {initializeApp,storageRef} from "firebase/app";
 import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import {cleanData} from "./DataCleaner";
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { getStorage, uploadBytes, getDownloadURL, deleteObject, ref } from "firebase/storage";
 import store from "storejs";
 import { MANAGEMENT_COMPANY, MANGEMENT_COMPANY, RENTER_OWNER } from "./Constants";
 import {useState} from "react";
@@ -137,9 +137,9 @@ export async function getProfilePicture(email) {
         console.error(err);
     }
 }
-export async function getPropertyPicture(id) {
+export async function getPropertyPicture(name) {
     const storage = getStorage();
-    const storageRef = ref(storage, propertyPictureRef + id);
+    const storageRef = ref(storage, propertyPictureRef + name);
 
     try {
         const url = await getDownloadURL(storageRef);
@@ -165,7 +165,10 @@ export async function updateUserPicture(email, photo){
     try{
         const storage = getStorage();
         const desertRef = ref(storage, profilePictureRef+ email);
-        await deleteObject(desertRef);;
+        var pic = await getDownloadURL(desertRef);
+        // If the getDownloadURL call succeeds, the file exists, so we can proceed with deleting and uploading
+        await deleteObject(desertRef);
+        var resp = await deleteObject(desertRef);
         var pic = await uploadBytes(ref(storage,profilePictureRef + email), photo);
 
     }
@@ -297,8 +300,23 @@ export async function setPicture(data, path){
         throw new Error("Error adding picture: ", e);
     }
 }
+export async function setPictureWithID(data, path, id){
+    try{
 
-export async function addCondo(data, propertyID){
+        var pictureData = data.picture;
+        if(pictureData){
+            var r = ref(storage,path + id);
+            var pic = await uploadBytes(r, pictureData);
+            var bucketData = await getDownloadURL(r);
+            console.log("pic: ", pic);
+        }
+    }
+    catch(e){
+        throw new Error("Error adding picture: ", e);
+    }
+}
+
+export async function addCondo(data, propertyID, propertyName){
     var pictureData = data.picture;
 
     try{
@@ -307,7 +325,7 @@ export async function addCondo(data, propertyID){
         const docRef = await addDoc(collection(db, "Condo"), clean);
         if(pictureData){
             try{
-                await setPicture(data, condoPictureRef);
+                await setPictureWithID(data, condoPictureRef,propertyName+"/"+ data['unitNumber']);
             }
             catch(e){
                 throw new Error("Error adding picture: ", e);
@@ -327,7 +345,7 @@ export async function addProperty(data){
         const docRef = await addDoc(collection(db, "Property"), clean);
         if(pictureData){
             try{
-                await setPicture(data, profilePictureRef);
+                await setPictureWithID(data, propertyPictureRef, data['propertyName']);
             }
             catch(e){
                 throw new Error("Error adding picture: ", e);
@@ -336,7 +354,7 @@ export async function addProperty(data){
         if(data["condos"] != ""){
             try{
                 data["condos"].forEach(async function(condoData){
-                    await addCondo(condoData, docRef.id);
+                    await addCondo(condoData,docRef.id, data["propertyName"]);
                 });
             }
             catch(e){
@@ -349,23 +367,28 @@ export async function addProperty(data){
     }
 }
 
-export async function getProperties(company){
-    try{
+export async function getProperties(company) {
+    try {
         const propertyCollection = collection(db, "Property");
         const propertySnapshot = await getDocs(propertyCollection);
         var properties = [];
 
-        propertySnapshot.forEach((doc) => {
-            if(doc.data().companyOwner == company){
+        await Promise.all(propertySnapshot.docs.map(async (doc) => {
+            if (doc.data().companyOwner == company) {
                 var data = doc.data();
                 data["propertyID"] = doc.id;
+                try {
+                    data["picture"] = await getPropertyPicture(data['propertyName']);
+                } catch (e) {
+                    throw new Error("Error getting picture: " + e);
+                }
+
                 properties.push(data);
             }
-        });
+        }));
         return properties;
-    }
-    catch(e){
-        throw new Error("Error getting properties: ", e);
+    } catch (error) {
+        throw new Error("Error getting properties: " + error);
     }
 }
 
