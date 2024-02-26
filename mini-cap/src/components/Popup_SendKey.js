@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../styling/Popup.css";
 import "../index.css";
 import { toast } from "react-toastify";
-import {storeCondoKey, checkEmailExists} from "../backend/Fetcher";
+import {storeCondoKey, checkEmailExists, sendCondoKey} from "../backend/Fetcher";
 import { RENTER_OWNER } from "../backend/Constants";
 
 const Popup_SendKey = ({ handleClose, condoId }) => {
@@ -28,7 +28,8 @@ const Popup_SendKey = ({ handleClose, condoId }) => {
               }
 
               await checkEmailExists(formData.email);
-              await storeCondoKey(formData);
+              const key = await storeCondoKey(formData);
+              await sendCondoKey(formData.email, key);
 
               toast.success("Key has been sent.")
               setShowPopup(false);

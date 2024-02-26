@@ -6,6 +6,9 @@ import "../styling/Dashboard.css";
 import React, { useState} from "react";
 import Popup from "../components/Popup";
 import AddCondoBtn from "../components/AddCondoBtn";
+import {getCondoData, linkCondoToUser} from "../backend/Fetcher";
+import store from "storejs";
+import {toast} from "react-toastify";
 
 
 
@@ -19,12 +22,21 @@ const [hasCondos, setHasCondos] = useState(false);
 	setShowPopup(!showPopup);
   };
 
-  //TODO: implement the registering condo
-/*   const handleRegisterCondo = () => {
-	console.log("Condo registered!");
-	setShowPopup(false); 
-	setHasCondos(true);
-  }; */
+  const handleRegisterCondo = async (key) => {
+      let msg = "";
+      try{
+          msg = await linkCondoToUser(store('user'), key);
+      }catch (e) {
+          console.log("Error adding condo: ", e);
+      }
+      if(msg === "Condo added!"){
+          toast.success(msg);
+      }else{
+          toast.error(msg);
+      }
+      setShowPopup(false);
+      //setHasCondos(true);
+  }
    
    // Function to simulate having condos or not
    const toggleHasCondos = () => {
@@ -86,7 +98,7 @@ const [hasCondos, setHasCondos] = useState(false);
           )}
 			
 			
-	  		{showPopup && <Popup handleClose={handlePopupToggle} />}
+	  		{showPopup && <Popup handleClose={handlePopupToggle} handleRegisterCondo={handleRegisterCondo} />}
 			
 			
 			{!showPopup && hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={handlePopupToggle}/> }
