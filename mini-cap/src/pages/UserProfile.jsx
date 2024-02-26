@@ -136,7 +136,13 @@ useEffect(()=>{
   
       setProfilePicUrl(photo);
 
-      updateUserPicture(store("user"), photo);
+      try {
+        updateUserPicture(store("user"), photo);
+      } catch (e) {
+        toast.error(e);
+      }
+      toast.success("Profile picture updated successfully.")
+
 
       const fileReader = new FileReader();
       fileReader.onload = () => {

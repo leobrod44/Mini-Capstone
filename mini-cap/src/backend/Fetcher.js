@@ -164,16 +164,33 @@ export async function getCondoPicture(id) {
     }
 }
 
+
+export async function uploadUserPicture(email, photo) {
+    try {
+        const storage = getStorage();
+        const pictureRef = ref(storage, profilePictureRef + email);
+
+        // Upload the photo to the specified storage path
+        await uploadBytes(pictureRef, photo);
+
+        console.log("Picture uploaded successfully!");
+    } catch (error) {
+        console.error("Error uploading picture: ", error);
+        throw new Error("Error uploading picture: " + error.message);
+    }
+}
+
 export async function updateUserPicture(email, photo){
     try{
         const storage = getStorage();
-        const desertRef = ref(storage, profilePictureRef+ email);
-        var pic = await getDownloadURL(desertRef);
-        // If the getDownloadURL call succeeds, the file exists, so we can proceed with deleting and uploading
-        await deleteObject(desertRef);
-        var resp = await deleteObject(desertRef);
-        var pic = await uploadBytes(ref(storage,profilePictureRef + email), photo);
-
+        const desertRef = ref(storage, profilePictureRef + email);
+        try {
+            await getDownloadURL(desertRef);
+            await deleteObject(desertRef);
+            await uploadBytes(desertRef, photo);
+        } catch (e) {
+            console.error("Error getting download URL or uploading picture: ", e);
+        }
     }
     catch(e){
         throw new Error("Error changing picture: ", e);
