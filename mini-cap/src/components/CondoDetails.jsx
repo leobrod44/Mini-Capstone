@@ -5,15 +5,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import the 
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
 import DeleteModal from './DeleteModal.jsx';
+import Popup_SendKey from './Popup_SendKey.js';
 
 const CondoDetails = ({ name, profilePicture, address, parkingCount, lockerCount, unitNumber, price, size, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }) => {
 
-    const [isModalVisible, setModalVisibility] = useState(false);
-    const handleDeleteButtonClick = () => {
-      setModalVisibility(true);
+    const [showPopup, setShowPopup] = useState(false);
+    const handlePopupToggle = () => {
+        setShowPopup(!showPopup);
+    }
+    const [showDelete, setShowDelete] = useState(false);
+    const handleDeleteToggle = () => {
+        setShowDelete(!showDelete);
+    }
+
+    const [show, setShow] = useState(false);
+    const handleClickDelete = (id) => {
+        setShow(true);
     };
-    const handleModalClose = () => {
-      setModalVisibility(false);
+    const handleClose = () => {
+        setShow(false);
     };
 
     CondoDetails.propTypes = {
@@ -38,7 +48,12 @@ const CondoDetails = ({ name, profilePicture, address, parkingCount, lockerCount
   
     return (
         <div className="title_container">
-				{/* <h3 className="DB_title"> {"[Condo Name]"} </h3> */}
+				<link
+                    rel="stylesheet"
+                    href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+                    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+                    crossOrigin="anonymous"
+                />
                 <div className="condo-details-container">
                     <div className="condo-info">
                         <div className='name-and-number'>
@@ -52,8 +67,7 @@ const CondoDetails = ({ name, profilePicture, address, parkingCount, lockerCount
                                         <div className={`user-tag vacant`}>{"Vacant"}{status}</div>
                                         {role === "company" && ( 
                                         <>
-                                            {/* <button className="sendkey-button">Send Key</button> */}
-                                            
+                                            <button className="sendkey-button" onClick={handlePopupToggle}>Send Key</button>
                                         </>)}
                                     </div>
                                     </>)}
@@ -63,12 +77,8 @@ const CondoDetails = ({ name, profilePicture, address, parkingCount, lockerCount
                                         
                                     </>)}
                             </div>
-                            {/* <div className='condo-name pic-and-num'>
-                                <h2>{"[Condo Name]"}{name}</h2>
-                                <h2>{"Unit Number:"}{" [text]"}{unitNumber}</h2>
-                            </div> */}
+
                         </div>
-                        
                             <div className='other-info'>
                             <h2 className="DB_title"> {"[Condo Name]"} {name} <br /><br /></h2>
 
@@ -91,7 +101,6 @@ const CondoDetails = ({ name, profilePicture, address, parkingCount, lockerCount
                                 <div className='other-info2'><h5>Unit size: </h5></div> 
                                 <div className= 'other-info2'>{"[text]"}{size} sq ft</div>
                             </div> 
-
                             <div className='other-info1'>
                                 <div className='other-info2'><h5>Parking spot number: </h5></div> 
                                 <div className= 'other-info2'>{"[text]"}{parkingCount}</div>
@@ -159,15 +168,21 @@ const CondoDetails = ({ name, profilePicture, address, parkingCount, lockerCount
                                 {role === "company" && ( 
                                     <>
                                         <button className="edit-button"> Edit</button>
-                                        <button className="delete-button" onClick={handleDeleteButtonClick}>Delete</button>
-                                        {isModalVisible && <DeleteModal onClose={handleModalClose} />}
+                                        <button className="delete-button" onClick={() => handleClickDelete()}>Delete</button>
                                     </>)}
                             </div>
-                        
-                        
                     </div>
                 </div>
+                {showPopup && <Popup_SendKey handleClose={handlePopupToggle}/>}
+                <DeleteModal
+                show={show}
+                handleClose={handleClose}
+                message={
+                "Are you sure you want to delete this Condo?"
+                }
+                />
 		</div>
+        
 
         
     );

@@ -6,6 +6,7 @@ import "../styling/CondoDetails.css";
 import React, { useState } from "react";
 import AddCondoBtn from "../components/AddCondoBtn";
 import { Link, useNavigate } from "react-router-dom";
+import BackArrowBtn from "../components/BackArrowBtn";
 
 
 
@@ -21,6 +22,8 @@ export default function CondoDetail(){
 				<Header/>
 				
 					<div className="details"><CondoDetails/></div>
+
+				<BackArrowBtn/>
 				
 				<Footer/>
 		
