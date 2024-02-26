@@ -365,7 +365,7 @@ export async function loginUser(data) {
     }
 }
 
-export async function setPicture(data, path, condoID){
+export async function setPicture(data, path){
     try{
         var pictureData = data.picture;
         if(pictureData){
@@ -392,7 +392,7 @@ export async function addCondo(data, propertyID){
 
         if(pictureData){
             try{
-                await setPicture(data, condoPictureRef, docID);
+                await setPicture(data, condoPictureRef);
             }
             catch(e){
                 throw new Error("Error adding picture: ", e);
@@ -479,6 +479,7 @@ export async function getUserCondos(email) {
                             if (propertyDoc.exists()) {
                                 // Replace the property ID with the property address
                                 condoData.property = propertyDoc.data().address;
+                                condoData.propertyName = propertyDoc.data().propertyName;
                                 return condoData;
                             } else {
                                 // Handle case when property document is not found
@@ -508,6 +509,7 @@ export async function getUserCondos(email) {
                             if (propertyDoc.exists()) {
                                 // Replace the property ID with the property address
                                 condoData.property = propertyDoc.data().address;
+                                condoData.propertyName = propertyDoc.data().propertyName;
                                 return condoData;
                             } else {
                                 // Handle case when property document is not found

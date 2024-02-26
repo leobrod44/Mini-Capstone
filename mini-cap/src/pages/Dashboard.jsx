@@ -93,10 +93,13 @@ const Dashboard =() => {
                             {/* Render properties */}
                             {condoDetails.map((c, index) => (
                                 <CondoComponent key={index} condo={{
-                                    name : "Hello",
+                                    property : c.propertyName,
+                                    profilePicture: "not implemented",
                                     address: c.property,
+                                    unitNumber: c.unitNumber,
+                                    parkingSpot: c.parkingNumber,
                                     locker: c.lockerNumber,
-                                    parkingSpot: c.parkingNumber
+                                    userType: "not implemented"
                                 } } />
                             ))}
                         </div>
