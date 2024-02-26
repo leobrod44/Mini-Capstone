@@ -102,7 +102,7 @@ const PropertyForm = () => {
     const updatedCondos = [...property.condos];
     updatedCondos[index] = {
       ...updatedCondos[index],
-      condoPicture: file,
+      picture: file,
     };
 
     setProperty({
@@ -363,9 +363,9 @@ const PropertyForm = () => {
         <p> Locker Number: {condo.lockerNumber}</p>
 
         
-        {condo.condoPicture && (
+        {condo.picture && (
           <img
-            src={URL.createObjectURL(condo.condoPicture)}
+            src={URL.createObjectURL(condo.picture)}
             alt={`Condo ${condo.unitNumber} Preview`}
           />
         )}
