@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import "../styling/CondoComponent.css";
+import { Link } from "react-router-dom";
 
 const CondoComponent = ({ name, profilePicture, address, unitNumber, parkingSpot, locker, userType }) => {
     
@@ -21,7 +22,8 @@ const CondoComponent = ({ name, profilePicture, address, unitNumber, parkingSpot
                 
                 <div className='locker-details'>
                     {locker && <p>Locker: {locker}</p>}
-                    <button className="details-button">Details</button>
+                    {/* <button className="details-button">Details</button> */}
+                    <Link to="/condo-details" className="details-button">Details</Link>
                 </div>
             </div>
         </div>

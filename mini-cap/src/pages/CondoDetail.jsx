@@ -7,6 +7,8 @@ import React, { useState } from "react";
 import AddCondoBtn from "../components/AddCondoBtn";
 import { Link, useNavigate } from "react-router-dom";
 
+
+
 export default function CondoDetail(){
 	const [modal, setModal] = useState(false);
 
@@ -17,19 +19,13 @@ export default function CondoDetail(){
 		return(
 			<>
 				<Header/>
-			
-				<button onClick={toggleModal}className="btn">Toggle Details</button>
 				
-				{modal && (
-				<div className="modal">
 					<div className="details"><CondoDetails/></div>
-				</div>)}
 				
 				<Footer/>
 		
 			</>
 		);
-
 
 	};
 

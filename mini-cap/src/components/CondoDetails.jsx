@@ -1,17 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import "../styling/CondoDetails.css"
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import the FontAwesome library
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { Link } from "react-router-dom";
+import DeleteModal from './DeleteModal.jsx';
 
 const CondoDetails = ({ name, profilePicture, address, parkingCount, lockerCount, unitNumber, price, size, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }) => {
+
+    const [isModalVisible, setModalVisibility] = useState(false);
+    const handleDeleteButtonClick = () => {
+      setModalVisibility(true);
+    };
+    const handleModalClose = () => {
+      setModalVisibility(false);
+    };
 
     CondoDetails.propTypes = {
         name: PropTypes.string.isRequired,
         profilePicture: PropTypes.string,
         address: PropTypes.string.isRequired,
-        unitCount: PropTypes.string.isRequired,
         parkingCount: PropTypes.string,
         lockerCount: PropTypes.string,
         unitNumber: PropTypes.string,
@@ -27,11 +35,10 @@ const CondoDetails = ({ name, profilePicture, address, parkingCount, lockerCount
 
     const condoStatus = 'vacant';
     const role = 'company';
-    
+  
     return (
         <div className="title_container">
 				{/* <h3 className="DB_title"> {"[Condo Name]"} </h3> */}
-                
                 <div className="condo-details-container">
                     <div className="condo-info">
                         <div className='name-and-number'>
@@ -45,7 +52,8 @@ const CondoDetails = ({ name, profilePicture, address, parkingCount, lockerCount
                                         <div className={`user-tag vacant`}>{"Vacant"}{status}</div>
                                         {role === "company" && ( 
                                         <>
-                                            <button className="sendkey-button">Send Key</button>
+                                            {/* <button className="sendkey-button">Send Key</button> */}
+                                            
                                         </>)}
                                     </div>
                                     </>)}
@@ -150,8 +158,9 @@ const CondoDetails = ({ name, profilePicture, address, parkingCount, lockerCount
                             <div>
                                 {role === "company" && ( 
                                     <>
-                                        <button className="edit-button">Edit</button>
-                                        <button className="delete-button">Delete</button>
+                                        <button className="edit-button"> Edit</button>
+                                        <button className="delete-button" onClick={handleDeleteButtonClick}>Delete</button>
+                                        {isModalVisible && <DeleteModal onClose={handleModalClose} />}
                                     </>)}
                             </div>
                         
@@ -164,8 +173,4 @@ const CondoDetails = ({ name, profilePicture, address, parkingCount, lockerCount
     );
     
   };
-
-
-  
-  
-  export default CondoDetails;
+export default CondoDetails;

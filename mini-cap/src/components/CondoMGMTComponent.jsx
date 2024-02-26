@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import "../styling/CondoComponent.css";
 import  { useState} from "react";
 import Popup_SendKey from './Popup_SendKey';
+import { Link } from "react-router-dom";
 
 const CondoMgmtComponent = ({ name, picture, unitNumber, parkingSpot, locker }) => {
 
@@ -28,7 +29,8 @@ const CondoMgmtComponent = ({ name, picture, unitNumber, parkingSpot, locker }) 
                 </div>
                 <div className='locker-details'>
                     {locker && <p>Locker: {locker}</p>}
-                    <button className="details-button">Details</button>
+                    {/* <button className="details-button">Details</button> */}
+                    <Link to="/condo-details" className="details-button">Details</Link>
                 </div>
             </div>
             {showPopup && <Popup_SendKey handleClose={handlePopupToggle} />}
