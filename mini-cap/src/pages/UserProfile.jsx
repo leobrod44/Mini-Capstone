@@ -1,20 +1,20 @@
 import "../styling/profile.css"
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useRef} from "react";
 import DeleteModal from "../components/DeleteModal";
 import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import user from "../assets/user.png";
 import {
-  getUserData, 
+  getUserData,
   getCompanyData,
   updateCompanyInfo,
   deleteAccount,
-  updateUserInfo, 
-  changePassword, 
-  getProfilePicture, 
+  updateUserInfo,
+  changePassword,
+  getProfilePicture,
   updateUserPicture
 } from "../backend/Fetcher";
 import store from "storejs";
@@ -42,7 +42,6 @@ const UserProfile =() => {
   const [role, setTheRole] = useState(null);
 
 
-
 useEffect(()=>{
 
   async function fetchUserData() {
@@ -50,9 +49,7 @@ useEffect(()=>{
     let profilePicURL;
     let role = store("role");
     setTheRole(role);
-    let user = store("user");
-
-    //tempData = await getCompanyData(user);
+    store("user");
 
     if (role === MANAGEMENT_COMPANY) {
       tempData = await getCompanyData(store("user"));
@@ -77,7 +74,6 @@ useEffect(()=>{
   }
 
   fetchUserData();
-
 }, [])
 
   const handleEditClick = () => {
@@ -133,7 +129,7 @@ useEffect(()=>{
         return toast.error("File not supported");
       }
       if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
-  
+
       setProfilePicUrl(photo);
 
       try {
@@ -161,7 +157,7 @@ useEffect(()=>{
     // make a POST request to the backend to upload the image
 
   };
- 
+
   const handleClickDelete = (id) => {
     setShow(true);
   };
@@ -172,13 +168,18 @@ useEffect(()=>{
   };
 
   //delete function
-  const deleteAccountAttempt = () => {
-    deleteAccount(email);
-    toast.success("Account deleted successfully");
-    //navigate("/"); //link to registration page instead
+  const deleteAccountAttempt = async () => {
+    try {
+      await deleteAccount(email);
+    } catch (error) {
+      toast.error("Error deleting account");
+    }
     setShow(false);
+    store.remove("user");
+    store.remove("role");
+    navigate("/login");
   };
-  
+
   //cancel button
   const handleCancelClick = () => {
     setIsEditMode(false);
@@ -262,11 +263,11 @@ useEffect(()=>{
             <div className="row gutters-sm">
               <div className="col-md-4 mb-3">
 
-            
+
                 <div className="card">
                   <div className="card-body">
                     <div className="d-flex flex-column align-items-center text-center">
-                    
+
                     {previewUrl ? (
                         <img
                           src={previewUrl}
@@ -290,7 +291,7 @@ useEffect(()=>{
                     </div>
                   </div>
                 </div>
-               
+
                 <form onSubmit={handleSubmitPhoto}>
                   <label className="form-label mt-3" htmlFor="customFile">
                     Choose an image:
@@ -312,9 +313,9 @@ useEffect(()=>{
                     </div>
                   </div>
                 </form>
-                 
-             {(role === MANAGEMENT_COMPANY) && 
-              ( 
+
+             {(role === MANAGEMENT_COMPANY) &&
+              (
              <div className="card mt-3">
                   <ul className="list-group list-group-flush">
                     <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
@@ -339,7 +340,7 @@ useEffect(()=>{
                       </h6>
                       <span className="text-secondary"></span>
                     </li>
-                   
+
                     <li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                       <h6 className="mb-0">
                         <svg
@@ -415,8 +416,8 @@ useEffect(()=>{
                   <div className="card-body">
 
 
-                  {(role !== MANAGEMENT_COMPANY) && 
-                    ( 
+                  {(role !== MANAGEMENT_COMPANY) &&
+                    (
                     <div className="row">
                       <div className="col-sm-3">
                         <h6 className="mb-0">First Name</h6>
@@ -444,8 +445,8 @@ useEffect(()=>{
                     {(role !== MANAGEMENT_COMPANY) &&  (   <hr />)}
 
 
-                    {(role !== MANAGEMENT_COMPANY) && 
-                    (  
+                    {(role !== MANAGEMENT_COMPANY) &&
+                    (
                     <div className="row">
                       <div className="col-sm-3">
                         <h6 className="mb-0">Last Name</h6>
@@ -469,8 +470,8 @@ useEffect(()=>{
                     </div>
                   )}
 
-                {(role === MANAGEMENT_COMPANY) && 
-                    (  
+                {(role === MANAGEMENT_COMPANY) &&
+                    (
                     <div className="row">
                       <div className="col-sm-3">
                         <h6 className="mb-0">Company Name</h6>
@@ -494,8 +495,8 @@ useEffect(()=>{
                     </div>
                   )}
                     <hr />
-                   
-                   
+
+
                     <div className="row">
                       <div className="col-sm-3">
                         <h6 className="mb-0">Email</h6>
@@ -586,7 +587,7 @@ useEffect(()=>{
                             Edit Profile
                           </button>
                        )}
-                
+
                       </div>
                     </div>
                   </div>
@@ -609,9 +610,9 @@ useEffect(()=>{
                               type="password"
                               className="form-control"
                               name="currentPassword"
-                              placeholder="**********"  
+                              placeholder="**********"
                               value={currentPassword}
-                              onChange={handleCurrentPasswordChange}                       
+                              onChange={handleCurrentPasswordChange}
                             />
                           </div>
                         </div>
@@ -656,8 +657,8 @@ useEffect(()=>{
                     </div>
                   </div>
                 </form>
-                
-                
+
+
               </div>
             </div>
           </div>
@@ -665,7 +666,7 @@ useEffect(()=>{
       </div>
     </div>
     <Footer/>
-       </div> 
+       </div>
     );
 };
 
