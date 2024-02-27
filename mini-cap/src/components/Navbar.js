@@ -77,11 +77,12 @@ const Navbar = () => {
         {/* Render only if user is logged in */}
         {store.get("user") && (
           <div ref={menuRef}>
-            <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu} > 
+            <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu} data-testid="user-pfp-container"> 
               {/* Display user profile picture or default image */}
               <img
                 src={profilePicUrl}
                 alt="User profile"
+               data-testid="user-pfp"
                 className={NavbarCSS.profilePic}
               />
             </div>
@@ -91,6 +92,7 @@ const Navbar = () => {
               className={`${NavbarCSS.myDropdownMenu} ${
                 open ? NavbarCSS.active : NavbarCSS.inactive
               }`}
+              data-testid="dropdown"
             >
               {/* Greeting based on role */}
               {role === MANAGEMENT_COMPANY && (
