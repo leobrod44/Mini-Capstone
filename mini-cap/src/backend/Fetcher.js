@@ -192,7 +192,6 @@ export async function checkEmailExists(email) {
 }
 
 export async function storeCondoKey(data){
-    const keyCollection = collection(db, "Keys");
 
     try{
         //const clean = cleanData(keyCollection, data);
@@ -208,19 +207,15 @@ export async function storeCondoKey(data){
 }
 
 export async function sendCondoKey(email, key){
-    console.log(email);
-    emailjs
-        .send('service_htocwjs', 'template_h1oyvhl', {to_recipient: email, message: key}, {
-            publicKey: 'Gw4N_w4eDx939VEBl',
-        })
-        .then(
-            () => {
-                console.log('Successfully sent key!');
-            },
-            (error) => {
-                console.log('Failed to send key: ', error.text);
-            },
-        );
+
+    try{
+        await emailjs
+            .send('service_htocwjs', 'template_h1oyvhl', {to_recipient: email, message: key}, {
+                publicKey: 'Gw4N_w4eDx939VEBl',
+            })
+    }catch(e){
+        console.log(e);
+    }
 }
 
 export async function linkCondoToUser(email, key){
