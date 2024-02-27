@@ -4,7 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styling/LoginPage.css"; // Make sure your CSS file path is correct
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { loginUser } from "../backend/Fetcher";
+import { loginUser } from "../backend/UserHandler";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {

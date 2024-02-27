@@ -15,11 +15,10 @@ import { IoIosBusiness } from "react-icons/io";
 import { LiaHandsHelpingSolid } from "react-icons/lia";
 
 import store from "storejs"; // For local storage management
-import {
-  getCompanyData,
-  getProfilePicture,
-  getUserData,
-} from "../backend/Fetcher"; // Backend fetcher functions
+
+import { getProfilePicture } from "../backend/ImageHandler"; 
+import { getUserData } from "../backend/UserHandler";
+import { getCompanyData } from "../backend/PropertyHandler";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants"; // Role constants
 
 const Navbar = () => {
