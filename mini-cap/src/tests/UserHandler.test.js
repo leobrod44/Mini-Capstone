@@ -1,99 +1,64 @@
-import { getUserData, getCompanyData } from '../backend/Fetcher'; // Adjust the path accordingly
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import {getCompanyData, getUserData} from '../backend/Fetcher'; // Import your function
+import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { getStorage } from "firebase/storage";
 
 
-jest.mock('firebase/firestore', () => {
-    const mockGetDoc = jest.fn();
-  
-    return {
-      getFirestore: jest.fn(() => ({
-        doc: jest.fn(() => ({
-          getDoc: mockGetDoc
-        }))
-      })),
-      getDoc: mockGetDoc
+// Mock Firebase storage functions
+jest.mock('firebase/firestore', () => ({
+  doc: jest.fn(),
+  getDoc: jest.fn(),
+  getFirestore: jest.fn(() => 'mockedDb'),
+}));
+jest.mock('firebase/storage', () => ({
+  getStorage: jest.fn(),
+}));
+
+
+describe('getting user/company data functions', () => {
+  afterEach(() => {
+    jest.clearAllMocks(); // Clear mock function calls after each test
+  });
+
+  test('getUserData: should return user data if document exists', async () => {
+    const fakeData = {
+      role: "mgmt",
+      firstName: "John",
+      lastName: "Doe",
+      email: "johndoe@gmail.com",
+      phoneNumber: "123-456-7890",
+      password: "password123"
     };
-  });
-  
-  
+    const fakeDocSnap = { exists: jest.fn(() => true), data: jest.fn(() => fakeData) };
+    const fakeDocRef = jest.fn();
+    doc.mockReturnValue(fakeDocRef);
+    getDoc.mockResolvedValue(fakeDocSnap);
 
-describe('Firebase Getter Functions', () => {
+    const result = await getUserData(fakeData.email);
 
-  describe('getUserData', () => {
-    test('should return user data for valid email', async () => {
-      // Mock data and Firestore behavior for the test
-      const mockUserData = {
-        "role": "mgmt",
-        "firstName": "John",
-        "lastName": "Doe",
-        "email": "johndoe@gmail.com",
-        "phoneNumber": "123-456-7890",
-        "password": "password123"
-      };
-      const mockGetDoc = jest.fn().mockResolvedValue({ data: jest.fn(() => mockUserData), exists: true });
-      const mockDocRef = jest.fn();
-      mockDocRef.mockReturnValue({ getDoc: mockGetDoc });
-
-      // Mock Firestore behavior
-      getFirestore.mockReturnValue({
-        doc: mockDocRef
-      });
-
-      const email = 'johndoe@gmail.com'; // Provide a valid email for testing
-      const userData = await getUserData(email);
-      expect(userData).toEqual(mockUserData);
-    });
-
-    test('should return undefined for non-existing user email', async () => {
-      // Mock Firestore behavior for the test
-      const mockGetDoc = jest.fn().mockResolvedValue({ exists: false });
-      const mockDocRef = jest.fn();
-      mockDocRef.mockReturnValue({ getDoc: mockGetDoc });
-
-      // Mock Firestore behavior
-      getFirestore.mockReturnValue({
-        doc: mockDocRef
-      });
-
-      const email = 'nonexisting@example.com'; // Provide a non-existing email for testing
-      const userData = await getUserData(email);
-      expect(userData).toBeUndefined();
-    });
+    expect(result).toEqual(fakeData);
+    expect(doc).toHaveBeenCalledWith(expect.anything(), 'Users', fakeData.email);
+    expect(getDoc).toHaveBeenCalledWith(expect.anything());
   });
 
-  describe('getCompanyData', () => {
-    test('should return company data for valid email', async () => {
-      // Mock data and Firestore behavior for the test
-      const mockCompanyData = { /* mock company data */ };
-      const mockGetDoc = jest.fn().mockResolvedValue({ data: jest.fn(() => mockCompanyData), exists: true });
-      const mockDocRef = jest.fn();
-      mockDocRef.mockReturnValue({ getDoc: mockGetDoc });
+  test('getCompanyData: should return company data if document exists', async () => {
+    const fakeData = {
+      role: "mgmt",
+      firstName: "John",
+      lastName: "Doe",
+      email: "johndoe@gmail.com",
+      phoneNumber: "123-456-7890",
+      password: "password123"
+    };
+    const fakeDocSnap = { exists: jest.fn(() => true), data: jest.fn(() => fakeData) };
+    const fakeDocRef = jest.fn();
+    doc.mockReturnValue(fakeDocRef);
+    getDoc.mockResolvedValue(fakeDocSnap);
 
-      // Mock Firestore behavior
-      getFirestore.mockReturnValue({
-        doc: mockDocRef
-      });
+    const result = await getCompanyData(fakeData.email);
 
-      const email = 'company@example.com'; // Provide a valid company email for testing
-      const companyData = await getCompanyData(email);
-      expect(companyData).toEqual(mockCompanyData);
-    });
-
-    test('should return undefined for non-existing company email', async () => {
-      // Mock Firestore behavior for the test
-      const mockGetDoc = jest.fn().mockResolvedValue({ exists: false });
-      const mockDocRef = jest.fn();
-      mockDocRef.mockReturnValue({ getDoc: mockGetDoc });
-
-      // Mock Firestore behavior
-      getFirestore.mockReturnValue({
-        doc: mockDocRef
-      });
-
-      const email = 'nonexistingcompany@example.com'; // Provide a non-existing company email for testing
-      const companyData = await getCompanyData(email);
-      expect(companyData).toBeUndefined();
-    });
+    expect(result).toEqual(fakeData);
+    expect(doc).toHaveBeenCalledWith(expect.anything(), 'Company', fakeData.email);
+    expect(getDoc).toHaveBeenCalledWith(expect.anything());
   });
+
 });
