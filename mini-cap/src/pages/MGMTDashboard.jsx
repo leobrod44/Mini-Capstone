@@ -72,11 +72,6 @@ const MGMTDashboard = () => {
         </div>
 
         {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate("/add-property")} />}
-
-        {/* Button to toggle hasProperties state (for testing purposes) */}
-        <button onClick={toggleHasProperties} data-testid="toggle">
-          Toggle Has Properties
-        </button>
       </div>
       <Footer />
     </div>
