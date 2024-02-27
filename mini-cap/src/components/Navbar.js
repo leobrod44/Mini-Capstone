@@ -1,44 +1,45 @@
 import NavbarCSS from "../styling/Navbar.module.css";
 import React, { useState, useEffect, useRef } from "react";
-//import { useDispatch, useSelector } from "react-redux";
-import tempProfilePic from "../assets/user.png";
+//import { useDispatch, useSelector } from "react-redux"; // Redux hooks, if needed in the future
+import tempProfilePic from "../assets/user.png"; // Default profile picture
 import { useNavigate } from "react-router-dom";
-import logoutt from "../assets/log-out.png";
+import logoutt from "../assets/log-out.png"; // Logout icon
 
-import { FaCalendarAlt } from "react-icons/fa";
+// Importing icons
+import { FaCalendarAlt, FaBriefcase } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { AiOutlineHome } from "react-icons/ai";
 import { CiLogout } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { IoIosBusiness } from "react-icons/io";
 import { LiaHandsHelpingSolid } from "react-icons/lia";
-import { FaBriefcase } from "react-icons/fa";
-import store from "storejs";
-import {getCompanyData, getProfilePicture, getUserData} from "../backend/Fetcher";
-import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
 
+import store from "storejs"; // For local storage management
+import {
+  getCompanyData,
+  getProfilePicture,
+  getUserData,
+} from "../backend/Fetcher"; // Backend fetcher functions
+import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants"; // Role constants
 
 const Navbar = () => {
   const navigate = useNavigate();
-  //to display Hello user! message , grab the name and their profile pic
-  // const firstName = useSelector(selectName);
-  // const photo = useSelector(selectPhoto);
-  const [role, setTheRole] = useState(""); // <-- State to store user role
-  const [open, setOpen] = useState(false);
+  //to display Hello user! message, grab the name and their profile pic
+  // const firstName = useSelector(selectName); // Redux state, if used
+  // const photo = useSelector(selectPhoto); // Redux state, for user photo
+  const [role, setTheRole] = useState(""); // State to store user role
+  const [open, setOpen] = useState(false); // State for managing dropdown menu visibility
+  const [firstName, setFirstName] = useState(null); // State for user's first name
+  const [companyName, setCompanyName] = useState(null); // State for company name
+  const [profilePicUrl, setProfilePicUrl] = useState(tempProfilePic); // State for profile picture URL
+  let menuRef = useRef(); // Ref for the menu for handling click outside to close the menu
 
-  const [firstName, setFirstName] = useState(null);
-  const [companyName, setCompanyName] = useState(null);
-  let menuRef = useRef();
-
-  const toggleMenu = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
+  const toggleMenu = () => setOpen(!open); // Toggle the dropdown menu
 
   const handleClickOutside = (e) => {
-    const isHamburgerMenuClicked = e.target.closest(`.${NavbarCSS.myBurger}`);
-
+    // Close the dropdown menu if clicked outside
     if (
-      !isHamburgerMenuClicked &&
+      !e.target.closest(`.${NavbarCSS.myBurger}`) &&
       menuRef.current &&
       !menuRef.current.contains(e.target)
     ) {
@@ -46,121 +47,102 @@ const Navbar = () => {
     }
   };
 
-  React.useEffect(() => {
-
-    async function fetchUserData() {
-      let role = store("role");
-      let tempData;
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const role = store("role");
       setTheRole(role);
-      if (role === MANAGEMENT_COMPANY) {
-        tempData = await getCompanyData(store("user"));
-        setCompanyName(tempData.companyName);
-      }
-      else if (role === RENTER_OWNER){
-        tempData = await getUserData(store("user"));
-        setFirstName(tempData.firstName)
-      }
 
-    }
+      // Fetch and set the user's profile picture URL
+      const profilePicURL = await getProfilePicture(store("user"));
+      setProfilePicUrl(profilePicURL || tempProfilePic); // Use fetched URL or default if not available
+
+      if (role === MANAGEMENT_COMPANY) {
+        const tempData = await getCompanyData(store("user"));
+        setCompanyName(tempData.companyName);
+      } else if (role === RENTER_OWNER) {
+        const tempData = await getUserData(store("user"));
+        setFirstName(tempData.firstName);
+      }
+    };
 
     fetchUserData();
-
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const logout = async (e) => {
     e.preventDefault();
     store.remove("user");
     store.remove("role");
-    navigate("/login");
+    navigate("/");
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   return (
     <>
       <nav className={NavbarCSS.myNavbar}>
-       {/*  {role === "mgmt" && (
-          <GiHamburgerMenu
-            size={24}
-            className={`${NavbarCSS.myBurger} ${NavbarCSS.myCursorPointer}`}
-            onClick={toggleMenu}
-          />
-        )} */}
-        {store.get('?user') && (
+        {/* Render only if user is logged in */}
+        {store.get("user") && (
           <div ref={menuRef}>
             <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu}>
-              {/* if there is no profile pic, we should default to using the hamburger menu */}
-             {/*  {role !== "mgmt" && ( */}
-                <img src={tempProfilePic} alt="User profile picture" />
-            {/*  )} */}
+              {/* Display user profile picture or default image */}
+              <img
+                src={profilePicUrl}
+                alt="User profile"
+                className={NavbarCSS.profilePic}
+              />
             </div>
 
+            {/* Dropdown Menu */}
             <div
               className={`${NavbarCSS.myDropdownMenu} ${
                 open ? NavbarCSS.active : NavbarCSS.inactive
               }`}
             >
-              {store("role") === MANAGEMENT_COMPANY && (
-                  <h3 className={NavbarCSS.h3}>
-                    Hello {companyName}! <br />{" "}
-                  </h3>
+              {/* Greeting based on role */}
+              {role === MANAGEMENT_COMPANY && (
+                <h3 className={NavbarCSS.h3}>
+                  Hello {companyName}! <br />
+                </h3>
+              )}
+              {role === RENTER_OWNER && (
+                <h3 className={NavbarCSS.h3}>
+                  Hello {firstName}! <br />
+                </h3>
               )}
 
-              {store("role") === RENTER_OWNER && (
-                  <h3 className={NavbarCSS.h3}>
-                    Hello {firstName}! <br />{" "}
-                  </h3>
-              )}
-
+              {/* Dropdown Items */}
               <ul className={NavbarCSS.ul}>
                 <DropdownItem
                   address={"/user-profile"}
                   icon={<CgProfile />}
                   text={"My Profile"}
                 />
-
-                {store("role") === RENTER_OWNER && (
-                    <DropdownItem
-                        address={"/dashboard"}
-                        icon={<IoIosBusiness />}
-                        text={"Dashboard"}
-                    />
+                {/* Conditional rendering based on role */}
+                {role === RENTER_OWNER && (
+                  <DropdownItem
+                    address={"/dashboard"}
+                    icon={<IoIosBusiness />}
+                    text={"Dashboard"}
+                  />
                 )}
-
-                {store("role") === RENTER_OWNER && (
-                    <DropdownItem
-                        address={"/requests"}
-                        icon={<LiaHandsHelpingSolid />}
-                        text={"My Requests"}
-                    />
+                {role !== RENTER_OWNER && (
+                  <DropdownItem
+                    address={"/MGMTDashboard"}
+                    icon={<IoIosBusiness />}
+                    text={"My properties"}
+                  />
                 )}
-
-                {store("role") !== "renter/owner" && (
-                    <DropdownItem
-                        address={"/MGMTDashboard"}
-                        icon={<IoIosBusiness />}
-                        text={"My properties "}
-                    />
+                {role === MANAGEMENT_COMPANY && (
+                  <DropdownItem
+                    address={"/myemployees"}
+                    icon={<FaBriefcase />}
+                    text={"My employees"}
+                  />
                 )}
-
-                {store("role") === MANAGEMENT_COMPANY && (
-                    <DropdownItem
-                        address={"/myemployees"}
-                        icon={<FaBriefcase />}
-                        text={"My employees"}
-                    />
-                )}
-
-                {store("role") === MANAGEMENT_COMPANY && (
-                    <DropdownItem
-                        address={"/myrequests"}
-                        icon={<LiaHandsHelpingSolid />}
-                        text={"My requests"}
-                    />
-                )}
-                {store("role") === RENTER_OWNER && (
+                {role === RENTER_OWNER && (
                   <DropdownItem
                     address={"/reservations"}
                     icon={<FaCalendarAlt />}
@@ -175,6 +157,7 @@ const Navbar = () => {
       </nav>
     </>
   );
+
   function LogoutBtn() {
     return (
       <li className={NavbarCSS.myDropdownItem}>
@@ -184,17 +167,16 @@ const Navbar = () => {
       </li>
     );
   }
-};
 
-function DropdownItem(props) {
-  return (
-    <li className={NavbarCSS.myDropdownItem}>
-      <a className={NavbarCSS.atag} href={props.address}>
-        {" "}
-        {props.icon} {props.text}
-      </a>
-    </li>
-  );
-}
+  function DropdownItem(props) {
+    return (
+      <li className={NavbarCSS.myDropdownItem}>
+        <a className={NavbarCSS.atag} href={props.address}>
+          {props.icon} {props.text}
+        </a>
+      </li>
+    );
+  }
+};
 
 export default Navbar;

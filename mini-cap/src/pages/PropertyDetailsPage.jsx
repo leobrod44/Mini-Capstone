@@ -22,14 +22,12 @@ const PropertyPage = () => {
         const fetchCondos = async () => {
             try {
                 const condos = await getCondos(propertyID);
-                condos.map(async (condo) => {
-                    //we need to implement setting the condo picture
-                    console.log("-----------------------"  +condo.id);
-                    condoPicURL = await getCondoPicture(condo.id );
+                await Promise.all(condos.map(async (condo) => {
+                    condoPicURL = await getCondoPicture(propertyName+"/"+condo.unitNumber);
                     setCondoPicURL(condoPicURL);
-                    // condo.picture = picture;
+                    condo.picture = condoPicURL;
                     return { ...condo};
-                });
+                }));
                 if (condos.length > 0) {
                   setHasCondos(true);
                   setCondoDetails(condos);
@@ -64,14 +62,13 @@ const PropertyPage = () => {
                             <div className="white_card">
                                 <p className="card_title">You have not added any condos yet.</p>
                                 {/*<p className="button"> Add a condo</p>*/}
-                                <Link to="/add-condo" className="button"> Add a condo</Link>
+                                <Link className="button" to={`/add-condo/${propertyID}/${propertyName}`}>Add a condo</Link>
                             </div>
                         </div>
                     )}
                 </div>
-                {hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-condo')} />}
+                {hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={()=> navigate(`/add-condo/${propertyID}/${propertyName}`)}/>}
             </div>
-            <Footer />
 
         </div>
     );
