@@ -74,7 +74,10 @@ const Navbar = () => {
     e.preventDefault();
     store.remove("user");
     store.remove("role");
-    navigate("/login");
+    navigate("/");
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
   };
 
   return (
