@@ -177,7 +177,7 @@ useEffect(()=>{
     setShow(false);
     store.remove("user");
     store.remove("role");
-    navigate("/login");
+    window.location.href = '/';
   };
 
   //cancel button

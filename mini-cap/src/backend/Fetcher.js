@@ -302,8 +302,12 @@ export async function addUser(data) {
 
     try {
         const userDoc = await getDoc(doc(db, "Users", data['email']));
+        const companyDoc = await getDoc(doc(db, "Company", data['email']));
         if (userDoc.exists()) {
             throw new Error("User already exists.");
+        }
+        else if (companyDoc.exists()) {
+            throw new Error("Company already exists.");
         }
 
         try{
@@ -331,8 +335,12 @@ export async function addCompany(data) {
     const clean = cleanData("Users",data);
 
     try {
+        const userDoc = await getDoc(doc(db, "Users", data['email']));
         const companyDoc = await getDoc(doc(db, "Company", data['email']));
-        if (companyDoc.exists()) {
+        if (userDoc.exists()) {
+            throw new Error("User already exists.");
+        }
+        else if (companyDoc.exists()) {
             throw new Error("Company already exists.");
         }
 
