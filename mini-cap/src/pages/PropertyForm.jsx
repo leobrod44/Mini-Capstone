@@ -7,7 +7,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import DeleteModal from "../components/DeleteModal"; 
 import AddressComponent from "../components/AddressComponent"; 
-import { addProperty } from "../backend/Fetcher";
+import { addProperty } from "../backend/PropertyHandler";
 
 const PropertyForm = () => {
   const [property, setProperty] = useState({
