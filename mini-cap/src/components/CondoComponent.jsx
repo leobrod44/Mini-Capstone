@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import "../styling/CondoComponent.css";
-import {useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 
 const CondoComponent = ({ condo }) => {
     const { property, picture, address, unitNumber, parkingNumber, lockerNumber, userType } = condo;
@@ -23,8 +24,11 @@ const CondoComponent = ({ condo }) => {
                 {parkingNumber && <p>Parking #: {parkingNumber}</p>}
                 
                 <div className='locker-details'>
+
                     {lockerNumber && <p>Locker #: {lockerNumber}</p>}
-                    <button className="details-button">Details</button>
+                    {/*<button className="details-button">Details</button> */}
+                    <Link to="/condo-details" className="details-button">Details</Link>
+                    
                 </div>
             </div>
         </div>
