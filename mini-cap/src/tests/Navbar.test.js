@@ -79,15 +79,6 @@ describe("Navbar Component", () => {
     });
   });
 
-  /* it("renders greeting message based on user's role", () => {
-    // You may need to mock localStorage values for role
-    render(<Navbar />);
-    expect(screen.getByText("Hello !")).toBeInTheDocument(); // Initial greeting
-    // Mock localStorage value for role
-    localStorage.setItem("role", "management_company");
-    render(<Navbar />);
-    expect(screen.getByText("Hello !")).toBeInTheDocument(); // Greeting for management company
-  }); */
 
   it("displays common menu items for all users", async () => {
     render(
