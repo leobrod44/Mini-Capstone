@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "../styling/Popup.css";
 import "../index.css";
 import { toast } from "react-toastify";
-import {storeCondoKey, checkEmailExists, sendCondoKey} from "../backend/Fetcher";
 import { storeCondoKey } from "../backend/PropertyHandler";
 import { checkEmailExists } from "../backend/UserHandler";
 import { sendCondoKey } from "../backend/PropertyHandler";
