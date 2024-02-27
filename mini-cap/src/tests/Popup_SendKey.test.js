@@ -5,12 +5,13 @@ import { BrowserRouter } from 'react-router-dom';
 import { toast } from "react-toastify";
 
 // Mocking asynchronous functions
-jest.mock('../backend/Fetcher', () => ({
+jest.mock('../backend/UserHandler', () => ({
   checkEmailExists: jest.fn(),
+}));
+jest.mock('../backend/PropertyHandler', () => ({
   storeCondoKey: jest.fn(),
   sendCondoKey: jest.fn(),
 }));
-
 
 afterEach(cleanup);
 
