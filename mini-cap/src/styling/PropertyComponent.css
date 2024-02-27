@@ -15,9 +15,10 @@ h2{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 40vh;
+    height: auto;
     width: 100%;
-    background-color: #f4f4f4;
+    background-color: #f0f4f8;
+    margin-bottom:12%;
   }
 
   .property-name {

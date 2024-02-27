@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import "../styling/Popup.css";
 import "../index.css";
 import { toast } from "react-toastify";
+import {storeCondoKey, checkEmailExists, sendCondoKey} from "../backend/Fetcher";
+import { RENTER_OWNER } from "../backend/Constants";
 
-const Popup_SendKey = ({ handleClose }) => {
-
+const Popup_SendKey = ({ handleClose, condoId }) => {
+    const [showPopup, setShowPopup] = useState(true);
     const [formData, setFormData] = useState({
-        role: "renter", // "Renter" as the default role
+        role: "renter",
         email: "",
+        condo: condoId
       });
       Popup_SendKey.getFormData = () => {
         return formData;
@@ -15,17 +18,24 @@ const Popup_SendKey = ({ handleClose }) => {
 
 
       const handleSendKey = async (e) => {
-        e.preventDefault();
-         if (!formData.email ) {
-            toast.error("Please fill in all fields.");
-            return;
-      }
-        if (!formData.email.includes("@") || !formData.email.includes(".")) {
-          toast.error(
-            "Invalid email format. Please include '@' and '.' in your email address."
-          );
-          return;
-        }
+          e.preventDefault();
+          try {
+              if (!formData.email ) {
+                  toast.error("Please fill in all fields.");
+              }
+              if (!formData.email.includes("@") || !formData.email.includes(".")) {
+                  toast.error("Invalid email format. Please include '@' and '.' in your email address.");
+              }
+
+              await checkEmailExists(formData.email);
+              const key = await storeCondoKey(formData);
+              await sendCondoKey(formData.email, key);
+
+              toast.success("Key has been sent.")
+              setShowPopup(false);
+          } catch (e) {
+              toast.error(e.message);
+          }
       };
 
       

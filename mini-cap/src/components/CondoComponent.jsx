@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import "../styling/CondoComponent.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const CondoComponent = ({ name, profilePicture, address, unitNumber, parkingSpot, locker, userType }) => {
+
+const CondoComponent = ({ condo }) => {
+    const { property, picture, address, unitNumber, parkingNumber, lockerNumber, userType } = condo;
+    const navigate = useNavigate();
     
     const userTypeClass = userType === 'Owner' ? 'owner' : 'renter';
 
@@ -11,19 +14,21 @@ const CondoComponent = ({ name, profilePicture, address, unitNumber, parkingSpot
         <div className="condo-details-container">
             <div className="condo-info">
                 <div className='condo-name-user-tag'>
-                    <h2>{name}</h2>
+                    <h2>{property}</h2>
                     <div className={`user-tag ${userTypeClass}`}>{userType}</div>
                 </div>
                 
-                {profilePicture && <img src={profilePicture} alt="Profile" className="profile-picture" />}
+                {picture && <img src={picture} alt="Profile" className="profile-picture" />}
                 <p>{address}</p>
-                <p>Unit Number: {unitNumber}</p>
-                {parkingSpot && <p>Parking Spot: {parkingSpot}</p>}
+                <p>Unit #: {unitNumber}</p>
+                {parkingNumber && <p>Parking #: {parkingNumber}</p>}
                 
                 <div className='locker-details'>
-                    {locker && <p>Locker: {locker}</p>}
-                    {/* <button className="details-button">Details</button> */}
+
+                    {lockerNumber && <p>Locker #: {lockerNumber}</p>}
+                    {/*<button className="details-button">Details</button> */}
                     <Link to="/condo-details" className="details-button">Details</Link>
+                    
                 </div>
             </div>
         </div>
@@ -31,13 +36,13 @@ const CondoComponent = ({ name, profilePicture, address, unitNumber, parkingSpot
 };
 
 CondoComponent.propTypes = {
-    name: PropTypes.string.isRequired,
+    property: PropTypes.string,
     profilePicture: PropTypes.string,
-    address: PropTypes.string.isRequired,
-    unitNumber: PropTypes.string.isRequired,
+    address: PropTypes.string,
+    unitNumber: PropTypes.string,
     parkingSpot: PropTypes.string,
     locker: PropTypes.string,
-    userType: PropTypes.string.isRequired
+    userType: PropTypes.string
 };
 
 export default CondoComponent;

@@ -16,27 +16,27 @@ const PropertyPage = () => {
     const navigate = useNavigate();
     const [condoDetails, setCondoDetails] = useState([]);
     const [hasCondos, setHasCondos] = useState(false);
+    let [condoPicURL, setCondoPicURL] = useState(null);
 
     useEffect(() => {
         const fetchCondos = async () => {
-          try {
-            const condos = await getCondos(propertyID);
-            condos.map(async (condo) => {
-              const picture = await getCondoPicture(condo.condoID);
-              condo.picture = picture;
-              return { ...condo};
-          });
-            if (condos.length > 0) {
-              setHasCondos(true);
-              
-              setCondoDetails(condos);
-            }
+            try {
+                const condos = await getCondos(propertyID);
+                await Promise.all(condos.map(async (condo) => {
+                    condoPicURL = await getCondoPicture(propertyName+"/"+condo.unitNumber);
+                    setCondoPicURL(condoPicURL);
+                    condo.picture = condoPicURL;
+                    return { ...condo};
+                }));
+                if (condos.length > 0) {
+                  setHasCondos(true);
+                  setCondoDetails(condos);
+                }
           } catch (err) {
             console.error(err);
           }
         };
         fetchCondos();
-    
       }, []); 
 
 
@@ -53,8 +53,8 @@ const PropertyPage = () => {
                     {hasCondos ? (
                         <div className="condo_list">
                         {condoDetails.map((condo, index) => (
-                            <CondoMgmtComponent key={index} {...condo} />
-                        ))}     
+                            <CondoMgmtComponent key={index} {...condo} condoId={condo.id}/>
+                        ))}
 
                       </div>
                     ) : (
@@ -62,14 +62,13 @@ const PropertyPage = () => {
                             <div className="white_card">
                                 <p className="card_title">You have not added any condos yet.</p>
                                 {/*<p className="button"> Add a condo</p>*/}
-                                <Link to="/add-condo" className="button"> Add a condo</Link>
+                                <Link className="button" to={`/add-condo/${propertyID}/${propertyName}`}>Add a condo</Link>
                             </div>
                         </div>
                     )}
                 </div>
-                {hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-condo')} />}
+                {hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={()=> navigate(`/add-condo/${propertyID}/${propertyName}`)}/>}
             </div>
-            <Footer />
 
         </div>
     );

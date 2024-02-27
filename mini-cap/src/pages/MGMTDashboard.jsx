@@ -49,6 +49,7 @@ const MGMTDashboard = () => {
               {/* Render properties */}
               {propertyDetails.map((p, index) => (
                 <Property key={index} property={{
+                  picture: p.picture,
                   propertyID: p.propertyID,
                   propertyName: p.propertyName,
                   address: p.address,
@@ -71,11 +72,6 @@ const MGMTDashboard = () => {
         </div>
 
         {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate("/add-property")} />}
-
-        {/* Button to toggle hasProperties state (for testing purposes) */}
-        <button onClick={toggleHasProperties} data-testid="toggle">
-          Toggle Has Properties
-        </button>
       </div>
       <Footer />
     </div>
