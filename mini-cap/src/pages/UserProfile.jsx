@@ -9,7 +9,7 @@ import Header from "../components/Header";
 import user from "../assets/user.png";
 
 import {getUserData,getCompanyData,updateCompanyInfo,deleteAccount,updateUserInfo,changePassword} from "../backend/UserHandler";
-import { updateUserPicture } from "../backend/ImageHandler";
+import { updateUserPicture, getProfilePicture } from "../backend/ImageHandler";
 import store from "storejs";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
 
