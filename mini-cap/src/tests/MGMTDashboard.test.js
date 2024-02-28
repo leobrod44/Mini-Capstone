@@ -2,16 +2,35 @@ import React from 'react';
 import { render, screen, fireEvent,waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import MGMTDashboard from '../pages/MGMTDashboard';
+import { getProperties } from '../backend/Fetcher';
+
 
 jest.mock("../components/Header", () => () => <div>Header Mock</div>);
 jest.mock("../components/Footer", () => () => <div>Footer Mock</div>);
-
-
+jest.mock('../backend/Fetcher');
 
 
 describe('MGMTDashboard Component', () => {
   
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+
   it('renders without crashing and contains all properties (if any)', () => {
+    const propertyDetails = [
+      {
+        picture: 'property1.jpg',
+        propertyID: '123',
+        propertyName: 'Property 1',
+        address: '123 Main St',
+        unitCount: 10,
+        parkingCount: 5,
+        lockerCount: 2
+      },
+    ];
+    getProperties.mockResolvedValue(propertyDetails);
+
     render(
     <BrowserRouter>
     <MGMTDashboard />
@@ -67,61 +86,6 @@ describe('MGMTDashboard Component', () => {
     expect(window.location.pathname).toBe('/add-property');
   });
 
-  it('renders the AddCondoBtn when the user has properties', () => {
-    const propertyDetails = [
-      {
-        picture: 'property1.jpg',
-        propertyID: '123',
-        propertyName: 'Property 1',
-        address: '123 Main St',
-        unitCount: 10,
-        parkingCount: 5,
-        lockerCount: 2
-      },
-    ];
-
-    render(
-      <BrowserRouter>
-        <MGMTDashboard propertyDetails={propertyDetails} />
-      </BrowserRouter>
-    );
-
-    // Assert that the AddCondoBtn is rendered
-    expect(screen.getByTestId('add-condo-btn')).toBeInTheDocument();
-  });
-
-  it('navigates to the "/add-property" page when clicking the AddCondoBtn', () => {
-    const propertyDetails = [
-      {
-        picture: 'property1.jpg',
-        propertyID: '123',
-        propertyName: 'Property 1',
-        address: '123 Main St',
-        unitCount: 10,
-        parkingCount: 5,
-        lockerCount: 2
-      },
-    ];
-
-    // Mocking the useNavigate function
-    const mockNavigate = jest.fn();
-    jest.mock('react-router-dom', () => ({
-      ...jest.requireActual('react-router-dom'),
-      useNavigate: () => mockNavigate
-    }));
-
-    render(
-      <BrowserRouter>
-        <MGMTDashboard />
-      </BrowserRouter>
-    );
-
-    // Click the AddCondoBtn
-    fireEvent.click(screen.getByTestId('add-condo-btn'));
-
-    // Assert that navigate function is called with the correct path
-    expect(mockNavigate).toHaveBeenCalledWith('/add-property');
-  });
  
 
 });
