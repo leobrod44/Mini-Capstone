@@ -17,7 +17,7 @@ const Popup = ({ handleClose, handleRegisterCondo }) => {
     handleRegisterCondo(key)
       .then(() => {
         handleClose();
-        window.location.reload();
+       // window.location.reload();
         
       })
       .catch((error) => {
