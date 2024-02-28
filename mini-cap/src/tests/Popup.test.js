@@ -3,6 +3,15 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import Popup from "../components/Popup";
 import { BrowserRouter } from "react-router-dom";
 
+
+jest.mock("react-toastify", () => ({
+  toast: {
+    error: jest.fn(),
+  },
+}));
+
+
+
 describe("Popup Component", () => {
   it("renders the popup content correctly", () => {
     render(
@@ -75,4 +84,21 @@ describe("Popup Component", () => {
     );
     consoleErrorSpy.mockRestore();
   });
+
+  it("displays error toast for invalid key format", () => {
+    render(
+      <BrowserRouter>
+        <Popup handleClose={() => {}} handleRegisterCondo={() => {}} />
+      </BrowserRouter>
+    );
+
+    const input = screen.getByLabelText("Key:");
+    const submitButton = screen.getByText("Submit Key");
+
+    fireEvent.change(input, { target: { value: "invalid_key" } });
+    fireEvent.click(submitButton);
+
+    expect(toast.error).toHaveBeenCalledWith("Invalid key format");
+  });
+  
 });
