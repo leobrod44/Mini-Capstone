@@ -10,6 +10,7 @@ import "@testing-library/jest-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import { toast } from "react-toastify";
 import SignupPage from "../pages/SignupPage";
+import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
 
 // Mocking toast
 afterEach(cleanup);
@@ -35,7 +36,7 @@ describe("SignupPage Component", () => {
 
     // Fill out the form
     const roleDropdown = screen.getByLabelText("Select Role");
-    fireEvent.change(roleDropdown, { target: { value: "renter/owner" } });
+    fireEvent.change(roleDropdown, { target: { value: RENTER_OWNER } });
 
     fireEvent.change(getByLabelText("First Name"), {
       target: { value: "John" },
@@ -64,7 +65,7 @@ describe("SignupPage Component", () => {
     const formData = SignupPage.getFormData();
 
     // Assert form data
-    expect(formData.role).toBe("renter/owner");
+    expect(formData.role).toBe(RENTER_OWNER);
     expect(formData.firstName).toBe("John");
     expect(formData.lastName).toBe("Doe");
     expect(formData.email).toBe("john.doe@example.com");
@@ -81,7 +82,7 @@ describe("SignupPage Component", () => {
 
     // Fill out the form
     const roleDropdown = screen.getByLabelText("Select Role");
-    fireEvent.change(roleDropdown, { target: { value: "renter/owner" } });
+    fireEvent.change(roleDropdown, { target: { value: RENTER_OWNER } });
 
     fireEvent.change(getByLabelText("First Name"), {
       target: { value: "John" },
@@ -117,7 +118,7 @@ describe("SignupPage Component", () => {
 
     // Fill out the form
     const roleDropdown = screen.getByLabelText("Select Role");
-    fireEvent.change(roleDropdown, { target: { value: "renter/owner" } });
+    fireEvent.change(roleDropdown, { target: { value: RENTER_OWNER } });
     fireEvent.change(getByLabelText("First Name"), {
       target: { value: "John" },
     });
@@ -163,7 +164,7 @@ describe("SignupPage Component", () => {
 
     // Fill out the form
     const roleDropdown = screen.getByLabelText("Select Role");
-    fireEvent.change(roleDropdown, { target: { value: "renter/owner" } });
+    fireEvent.change(roleDropdown, { target: { value: RENTER_OWNER } });
     fireEvent.change(getByLabelText("First Name"), { target: { value: "" } });
     fireEvent.change(getByLabelText("Last Name"), { target: { value: "" } });
     fireEvent.change(getByLabelText("Phone Number (optional)"), {
@@ -194,7 +195,7 @@ describe("SignupPage Component", () => {
 
     // Fill out the form
     const roleDropdown = screen.getByLabelText("Select Role");
-    fireEvent.change(roleDropdown, { target: { value: "renter/owner" } });
+    fireEvent.change(roleDropdown, { target: { value: RENTER_OWNER} });
     fireEvent.change(getByLabelText("First Name"), {
       target: { value: "John" },
     });
@@ -230,7 +231,7 @@ describe("SignupPage Component", () => {
 
     // Fill out the form
     const roleDropdown = screen.getByLabelText("Select Role");
-    fireEvent.change(roleDropdown, { target: { value: "managementCompany" } });
+    fireEvent.change(roleDropdown, { target: { value: MANAGEMENT_COMPANY} });
 
     fireEvent.change(getByLabelText("Company Name"), {
       target: { value: "Condo" },
@@ -258,7 +259,7 @@ describe("SignupPage Component", () => {
     const formData = SignupPage.getFormData();
 
     // Assert form data
-    expect(formData.role).toBe("managementCompany");
+    expect(formData.role).toBe(MANAGEMENT_COMPANY);
     expect(formData.companyName).toBe("Condo");
     expect(formData.email).toBe("condo@gmail.com");
     expect(formData.password).toBe("helloiamcompany123");
@@ -332,7 +333,7 @@ describe("SignupPage Component", () => {
       </Router>
     );
     fireEvent.change(getByLabelText("Select Role"), {
-      target: { value: "managementCompany" },
+      target: { value: MANAGEMENT_COMPANY},
     });
 
     expect(queryByLabelText("First Name")).not.toBeInTheDocument();

@@ -7,8 +7,9 @@ import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn c
 import "../index.css";
 import "../styling/PropertyDetailsPage.css";
 import CondoMgmtComponent from "../components/CondoMGMTComponent";
-import { getCondos, getCondoPicture } from "../backend/Fetcher";
-//import PropTypes from 'prop-types';
+import { getCondos } from "../backend/PropertyHandler";
+import { getCondoPicture } from "../backend/ImageHandler";
+import PropTypes from 'prop-types';
 
 const PropertyDetailsPage = () => {
   let { propertyID, propertyName } = useParams();
@@ -22,23 +23,22 @@ const PropertyDetailsPage = () => {
     const fetchCondos = async () => {
       try {
         const condos = await getCondos(propertyID);
-        const condosWithPictures = await Promise.all(condos.map(async (condo) => {
-          const pictureURL = await getCondoPicture(condo.id);
-          return { ...condo, picture: pictureURL };
+        await Promise.all(condos.map(async (condo) => {
+          condoPicURL = await getCondoPicture(propertyName + "/" + condo.unitNumber);
+          setCondoPicURL(condoPicURL);
+          condo.picture = condoPicURL;
+          return { ...condo };
         }));
-
         if (condos.length > 0) {
           setHasCondos(true);
-          setCondoDetails(condosWithPictures);
+          setCondoDetails(condos);
         }
       } catch (err) {
         console.error(err);
       }
     };
-
     fetchCondos();
-  }, [propertyID]);
-
+  }, []);
 
 
   return (
@@ -63,14 +63,13 @@ const PropertyDetailsPage = () => {
               <div className="white_card">
                 <p className="card_title">You have not added any condos yet.</p>
                 {/*<p className="button"> Add a condo</p>*/}
-                <Link to="/add-condo" className="button"> Add a condo</Link>
+                <Link className="button" to={`/add-condo/${propertyID}/${propertyName}`}>Add a condo</Link>
               </div>
             </div>
           )}
         </div>
-        {hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate('/add-condo')} />}
+        {hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate(`/add-condo/${propertyID}/${propertyName}`)} />}
       </div>
-      <Footer />
 
     </div>
   );

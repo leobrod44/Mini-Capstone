@@ -5,18 +5,24 @@ import "../styling/AddCondoForm.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
+import { addCondo } from "../backend/PropertyHandler";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 
 
 const AddCondoForm = () => {
+  let { propertyID, propertyName } = useParams();
+  const navigate = useNavigate();
+    const { state } = useLocation();
     const [condo, setCondo] = useState({
       unitNumber: "",
+      propertyID: propertyID,
       squareFeet: "",
       unitPrice: "",
       unitSize: "",
       parkingNumber: "",
       lockerNumber: "",
-      condoPicture: null,
+      picture: null,
     });
     const [previewCondoImage, setPreviewCondoImage] = useState(null);
     const handleFileChange = (e) => {
@@ -41,7 +47,7 @@ const AddCondoForm = () => {
   
       setCondo({
         ...condo,
-        condoPicture: file,
+        picture: file,
       });
   
       const reader = new FileReader();
@@ -66,7 +72,7 @@ const AddCondoForm = () => {
   
    
   
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
       e.preventDefault();
     
       // Check if any field is empty
@@ -76,9 +82,6 @@ const AddCondoForm = () => {
           return;
         }
       }
-    
-      // Additional validation logic if needed
-    
       // If all validation passes, submit the condo
       console.log("Condo Submitted:", condo);
     
@@ -90,8 +93,15 @@ const AddCondoForm = () => {
         unitSize: "",
         parkingNumber: "",
         lockerNumber: "",
-        condoPicture: null,
+        picture: null,
       });
+      try{
+          await addCondo(condo,propertyID,propertyName);
+      }
+      catch(e){
+        toast.error("Error adding condo");
+      }
+      navigate(`/propertydetailspage/${propertyID}/${propertyName}`);
     };
   
     return (
@@ -113,6 +123,7 @@ const AddCondoForm = () => {
              </label> </label>
 
               <input
+              
                 type="file"
                 className="form-control"
                 id="customFile"
@@ -129,10 +140,11 @@ const AddCondoForm = () => {
           <div className="input-group mt-3"></div>
           <div className="input-group">
             <label className="input-label" htmlFor="unitNumber">
-        
-          Unit Number:
+         
+               Unit Number:
           </label>
           <input
+            id="unitNumber"
             type="text"
             name="unitNumber"
             value={condo.unitNumber}
@@ -148,6 +160,7 @@ const AddCondoForm = () => {
           Square Feet:
           </label>
           <input
+            id="squareFeet"
             type="text"
             name="squareFeet"
             value={condo.squareFeet}
@@ -163,6 +176,7 @@ const AddCondoForm = () => {
           Unit Size:
           </label>
           <select
+            id="unitSize"
             name="unitSize"
             value={condo.unitSize}
             onChange={handleInputChange}
@@ -182,6 +196,7 @@ const AddCondoForm = () => {
           Parking Spot:
           </label>
           <input
+            id="parkingNumber"
             type="text"
             name="parkingNumber"
             value={condo.parkingNumber}
@@ -195,6 +210,7 @@ const AddCondoForm = () => {
           Locker:
           </label>
           <input
+            id="lockerNumber"
             type="text"
             name="lockerNumber"
             value={condo.lockerNumber}
@@ -216,6 +232,7 @@ const AddCondoForm = () => {
       <option value="Euro">Euro €</option>
     </select>
     <input
+      id="unitPrice"
       type="text"
       value={condo.unitPrice}
       onChange={(e) => handleInputChange(e)}

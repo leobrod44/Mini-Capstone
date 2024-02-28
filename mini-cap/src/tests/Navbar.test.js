@@ -3,6 +3,7 @@ import { render, fireEvent, screen, cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Navbar from "../components/Navbar"; // Adjust the import path as necessary
 import { BrowserRouter } from "react-router-dom";
+import { MANAGEMENT_COMPANY } from "../backend/Constants";
 
 // Mocks
 jest.mock("react-router-dom", () => ({
@@ -28,7 +29,7 @@ describe("Navbar Component", () => {
 
   it("comprehensively tests the Navbar component", async () => {
     // Render Navbar with a role that triggers the hamburger menu
-    renderNavbar("mgmt");
+    renderNavbar(MANAGEMENT_COMPANY);
 
     // Toggle the dropdown menu
     const hamburgerMenu = screen.getByRole("button");

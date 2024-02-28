@@ -3,37 +3,75 @@ import Footer from "../components/Footer";
 import CondoComponent from "../components/CondoComponent.jsx";
 import "../index.css";
 import "../styling/Dashboard.css";
-import React, { useState} from "react";
+import React, {useEffect, useState} from "react";
 import Popup from "../components/Popup";
 import AddCondoBtn from "../components/AddCondoBtn";
+import { getCondoPicture } from "../backend/ImageHandler.js";
+import { getUserCondos, linkCondoToUser } from "../backend/PropertyHandler.js";
 
-
+import store from "storejs";
+import {toast} from "react-toastify";
+import Property from "../components/PropertyComponent";
+import {Link} from "react-router-dom";
 
 const Dashboard =() => {
-// State to represent whether the user has registered condos or not, since i dont have backend right now
-const [hasCondos, setHasCondos] = useState(false);
- const [showPopup, setShowPopup] = useState(false);
+    // State to represent whether the user has registered condos or not, since i dont have backend right now
+    const [hasCondos, setHasCondos] = useState(false);
+    const [showPopup, setShowPopup] = useState(false);
+    const [condoDetails, setCondoDetails] = useState([]);
+    let [condoPicURL, setCondoPicURL] = useState(null);
 
+    useEffect(() => {
+        const fetchCondos = async () => {
+            try {
+                const condos = await getUserCondos(store("user"));
 
-  const handlePopupToggle = () => {
+                await Promise.all(condos.map(async (condo) => {
+                    condoPicURL = await getCondoPicture(condo.propertyName+"/"+condo.unitNumber);
+                    setCondoPicURL(condoPicURL);
+                    condo.picture = condoPicURL;
+                    return { ...condo};
+                }));
+
+                if (condos.length > 0) {
+                    setHasCondos(true);
+                    setCondoDetails(condos);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchCondos();
+
+    }, []);
+
+    // Function to simulate having condos or not
+    const toggleHasCondos = () => {
+        setHasCondos(prevHasCondos => !prevHasCondos);
+    };
+
+    const handlePopupToggle = () => {
 	setShowPopup(!showPopup);
   };
 
-  //TODO: implement the registering condo
-/*   const handleRegisterCondo = () => {
-	console.log("Condo registered!");
-	setShowPopup(false); 
-	setHasCondos(true);
-  }; */
-   
-   // Function to simulate having condos or not
-   const toggleHasCondos = () => {
-    setHasCondos(prevHasCondos => !prevHasCondos);
-  };
-
+  const handleRegisterCondo = async (key) => {
+      let msg = "";
+      try{
+          msg = await linkCondoToUser(store('user'), key);
+      }catch (e) {
+          console.log("Error adding condo: ", e);
+      }
+      if(msg === "Condo added!"){
+          toast.success(msg);
+      }else{
+          toast.error(msg);
+      }
+      setShowPopup(false);
+      //setHasCondos(true);
+  }
 
     // Hardcoded condo details for testing
-    const condoDetails = {
+    const condoDetails1 = {
         name: 'Property Name',
         profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
         address: '123 Main St, City',
@@ -43,7 +81,7 @@ const [hasCondos, setHasCondos] = useState(false);
         userType: 'Owner'
     };
 
-    const condoDetails1 = {
+    const condoDetails2 = {
         name: 'Property Name',
         profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
         address: '123 Main St, City',
@@ -53,40 +91,44 @@ const [hasCondos, setHasCondos] = useState(false);
         userType: 'Renter'
     };
 
-
 	return(
 		<div>
 			<Header/>
 			<div className="center-page" >
-			  <div className="title_container">
-				<h3 className="DB_title"> Welcome to your Condo Dashboard ! </h3>
-			  </div>
-		
+                <div className="title_container">
+                    <h3 className="DB_title"> Welcome to your Condo Dashboard ! </h3>
+                </div>
+                <div className="content_container">
+                    {hasCondos ? (
+                        <div className="condo_list">
+                            {/* Render properties */}
+                            {condoDetails.map((condo, index) => (
+                                <CondoComponent key={index} condo={{
+                                    property : condo.propertyName,
+                                    picture: condo.picture,
+                                    address: condo.property,
+                                    unitNumber: condo.unitNumber,
+                                    parkingNumber: condo.parkingNumber,
+                                    lockerNumber: condo.lockerNumber,
+                                    userType: condo.userType
+                                } } />
+                            ))}
+                        </div>
+                    ) : (
+                        // Render registration section if the user has no properties
+                        <div className="white_card">
+                            <p className="card_title">You have not registered a condo yet.</p>
+                            <button
+                                className="button"
+                                onClick={handlePopupToggle}
+                            >
+                                Register my first condo
+                            </button>
+                        </div>
+                    )}
+                </div>
 
-			  {hasCondos ? (
-            <div >
-              {/* Logic to render condos goes here */}
-            
-               <CondoComponent {...condoDetails} />
-               <CondoComponent {...condoDetails1} />
-              
-            </div>
-          ) : (
-            <div className="content_container">
-            <div className="white_card">
-              <p className="card_title">You have not registered a condo yet.</p>
-              <button
-                className="button"
-                onClick={handlePopupToggle}
-              >
-                Register my first condo
-              </button>
-            </div>
-            </div>
-          )}
-			
-			
-	  		{showPopup && <Popup handleClose={handlePopupToggle} />}
+	  		{showPopup && <Popup handleClose={handlePopupToggle} handleRegisterCondo={handleRegisterCondo} />}
 			
 			
 			{!showPopup && hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={handlePopupToggle}/> }
