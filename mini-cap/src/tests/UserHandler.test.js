@@ -191,6 +191,24 @@ describe('logging in', () => {
     await expect(loginUser(mockCompanyData)).resolves.not.toThrow();
   });
 
+  test('loginUser: should fail user login', async () => {
+    const mockUserData = {
+      email: 'johndoe@gmail.com',
+      password: 'password12'
+    };
+    const fakeUserDocSnap = { exists: jest.fn(() => false) };
+    const fakeUserDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeUserDocRef);
+    getDoc.mockResolvedValueOnce(fakeUserDocSnap);
+
+    const fakeCompanyDocSnap = { exists: jest.fn(() => false) };
+    const fakeCompanyDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeCompanyDocRef);
+    getDoc.mockResolvedValueOnce(fakeCompanyDocSnap);
+
+    await expect(loginUser(mockUserData)).rejects.toThrow('User does not exist.');
+  });
+
 
 
 
