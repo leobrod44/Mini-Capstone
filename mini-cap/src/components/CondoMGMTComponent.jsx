@@ -30,7 +30,6 @@ const CondoMgmtComponent = ({picture, unitNumber, parkingNumber, lockerNumber, p
                 <div className='locker-details'>
 
                     {lockerNumber && <p>Locker: {lockerNumber}</p>}
-                    <button className="details-button">Details</button>
                      {/* <button className="details-button">Details</button> */}
                     <Link to="/condo-details" className="details-button">Details</Link>
 
