@@ -68,26 +68,6 @@ const Dashboard =() => {
       //setHasCondos(true);
   }
 
-    // Hardcoded condo details for testing
-    const condoDetails1 = {
-        name: 'Property Name',
-        profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
-        address: '123 Main St, City',
-        unitNumber: '101',
-        parkingSpot: 'P101',
-        locker: 'L101',
-        userType: 'Owner'
-    };
-
-    const condoDetails2 = {
-        name: 'Property Name',
-        profilePicture: 'https://t4.ftcdn.net/jpg/01/69/69/21/360_F_169692156_L1aGrmJaHsZxF1sWQGuRKn3mR60bBqhN.jpg',
-        address: '123 Main St, City',
-        unitNumber: '102',
-        parkingSpot: 'P102',
-        locker: 'L102',
-        userType: 'Renter'
-    };
 
 	return(
 		<div>
@@ -109,7 +89,7 @@ const Dashboard =() => {
                                     parkingNumber: condo.parkingNumber,
                                     lockerNumber: condo.lockerNumber,
                                     userType: condo.userType
-                                } } />
+                                } } data-testid="condo-component" />
                             ))}
                         </div>
                     ) : (

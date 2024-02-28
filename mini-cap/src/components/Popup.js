@@ -32,7 +32,7 @@ const Popup = ({ handleClose, handleRegisterCondo }) => {
           <label className="key_label" htmlFor="key">
             Key:
           </label>
-          <input type="text" id="key" />
+          <input type="text" id="key" data-testid="condo-key-input" />
           <button className="btn-reg" type="submit">
             Submit Key
           </button>
