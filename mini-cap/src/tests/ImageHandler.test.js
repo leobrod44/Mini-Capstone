@@ -1,4 +1,4 @@
-import { updateUserPicture,getCondoPicture,getProfilePicture,getPropertyPicture, setPicture, setPictureWithID } from '../backend/Fetcher'; // Import your function
+import {uploadUserPicture, updateUserPicture,getCondoPicture,getProfilePicture,getPropertyPicture, setPicture, setPictureWithID } from '../backend/ImageHandler'; // Import your function
 import { storage, getStorage, ref, getDownloadURL, deleteObject, uploadBytes } from 'firebase/storage';
 
 
@@ -39,6 +39,29 @@ describe('update image functions', () => {
     expect(deleteObject).toHaveBeenCalledWith(mockDesertRef);
     expect(uploadBytes).toHaveBeenCalledWith(ref(mockStorage, 'profilePictures/test@example.com'), photo);
   });
+  test('uploadUserPicture: should upload user picture to storage', async () => {
+    const fakeEmail = 'johndoe@example.com';
+    const fakePhoto = 'fakePhotoData'; // Assuming you have some fake photo data
+
+    // Mock storage reference and uploadBytes function
+    const fakeStorage = {};
+    const fakePictureRef = {};
+    const fakeUploadBytesResult = {}; // This can be anything, since we are just mocking the upload function
+
+    getStorage.mockReturnValue(fakeStorage);
+    ref.mockReturnValue(fakePictureRef);
+    uploadBytes.mockResolvedValue(fakeUploadBytesResult);
+
+    // Call the function
+    await uploadUserPicture(fakeEmail, fakePhoto);
+
+    // Check if storage functions are called with correct arguments
+    expect(getStorage).toHaveBeenCalledTimes(1);
+    expect(ref).toHaveBeenCalledWith(fakeStorage, 'profilePictures/johndoe@example.com');
+    expect(uploadBytes).toHaveBeenCalledWith(fakePictureRef, fakePhoto);
+
+    // You can also add more assertions based on your specific requirements
+});
   
 });
 
