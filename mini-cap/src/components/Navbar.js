@@ -17,8 +17,7 @@ import { LiaHandsHelpingSolid } from "react-icons/lia";
 import store from "storejs"; // For local storage management
 
 import { getProfilePicture } from "../backend/ImageHandler"; 
-import { getUserData } from "../backend/UserHandler";
-import { getCompanyData } from "../backend/PropertyHandler";
+import { getUserData, getCompanyData } from "../backend/UserHandler";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants"; // Role constants
 
 const Navbar = () => {
