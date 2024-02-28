@@ -1,7 +1,11 @@
 import { getStorage, uploadBytes, getDownloadURL, deleteObject, ref } from "firebase/storage";
 import emailjs from '@emailjs/browser';
+import {initializeApp} from "firebase/app";
+import {getFirestore} from "firebase/firestore";
+import {firebaseConfig} from "./FirebaseConfig";
 
-
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const storage = getStorage();
 const profilePictureRef = 'profilePictures/';
 const condoPictureRef = 'condoPictures/';
