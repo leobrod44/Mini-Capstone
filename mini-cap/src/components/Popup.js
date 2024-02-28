@@ -1,16 +1,24 @@
 import React from "react";
 import "../styling/Popup.css";
 import "../index.css";
+import { toast } from "react-toastify";
 
 const Popup = ({ handleClose, handleRegisterCondo }) => {
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
     const key = document.getElementById("key").value;
 
+
+    if (!/^[a-zA-Z0-9]{20}$/.test(key)) {
+      toast.error("Invalid key format");
+      return;
+    }
+
     handleRegisterCondo(key)
       .then(() => {
         handleClose();
         window.location.reload();
+        
       })
       .catch((error) => {
         console.error("Registration failed", error);
