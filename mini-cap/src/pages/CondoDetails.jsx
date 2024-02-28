@@ -21,13 +21,9 @@ export default function CondoDetails({ name, profilePicture, address, parkingCou
     const handlePopupToggle = () => {
         setShowPopup(!showPopup);
     }
-    const [showDelete, setShowDelete] = useState(false);
-    const handleDeleteToggle = () => {
-        setShowDelete(!showDelete);
-    }
 
     const [show, setShow] = useState(false);
-    const handleClickDelete = (id) => {
+    const handleClickDelete = () => {
         setShow(true);
     };
     const handleClose = () => {
@@ -181,19 +177,21 @@ export default function CondoDetails({ name, profilePicture, address, parkingCou
 									{role === "company" && ( 
 										<>
 											<button className="edit-button"> Edit</button>
-											<button className="delete-button" onClick={() => handleClickDelete()}>Delete</button>
+											<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
 										</>)}
 								</div>
 						</div>
 					</div>
 					{showPopup && <Popup_SendKey handleClose={handlePopupToggle}/>}
+					<div data-testid="popup-delete-test">
 					<DeleteModal
 					show={show}
 					handleClose={handleClose}
 					message={
 					"Are you sure you want to delete this Condo?"
 					}
-					/>
+					/></div>
+					
 				</div>
 				</div>
 
