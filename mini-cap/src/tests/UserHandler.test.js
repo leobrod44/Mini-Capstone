@@ -7,6 +7,7 @@ import {
   addUser,
   addCompany,
   checkEmailExists,
+  loginUser
 } from "../backend/UserHandler"; // Import your function
 import {
   doc,
@@ -197,5 +198,82 @@ describe("checkEmailExists function", () => {
     await expect(checkEmailExists(email)).rejects.toThrow(
       "Error: Unexpected Firestore error"
     );
+  });
+});
+describe('logging in', () => {
+  afterEach(() => {
+    jest.clearAllMocks(); // Clear mock function calls after each test
+  });
+
+  test('loginUser: should login the user', async () => {
+    const mockUserData = {
+      email: 'johndoe@gmail.com',
+      password: 'password12'
+    };
+    const fakeUserDocSnap = { exists: jest.fn(() => true), data: jest.fn(() => mockUserData) };
+    const fakeUserDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeUserDocRef);
+    getDoc.mockResolvedValueOnce(fakeUserDocSnap);
+
+    const fakeCompanyDocSnap = { exists: jest.fn(() => false) };
+    const fakeCompanyDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeCompanyDocRef);
+    getDoc.mockResolvedValueOnce(fakeCompanyDocSnap);
+
+    await expect(loginUser(mockUserData)).resolves.not.toThrow();
+  });
+
+  test('loginUser: should login the company', async () => {
+    const mockCompanyData = {
+      email: 'chad@gmail.com',
+      password: 'password123'
+    };
+    const fakeUserDocSnap = { exists: jest.fn(() => false) };
+    const fakeUserDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeUserDocRef);
+    getDoc.mockResolvedValueOnce(fakeUserDocSnap);
+
+    const fakeCompanyDocSnap = { exists: jest.fn(() => true), data: jest.fn(() => mockCompanyData) };
+    const fakeCompanyDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeCompanyDocRef);
+    getDoc.mockResolvedValueOnce(fakeCompanyDocSnap);
+
+    await expect(loginUser(mockCompanyData)).resolves.not.toThrow();
+  });
+
+  test('loginUser: should fail user login', async () => {
+    const mockUserData = {
+      email: 'johndoe@gmail.com',
+      password: 'password12'
+    };
+    const fakeUserDocSnap = { exists: jest.fn(() => false) };
+    const fakeUserDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeUserDocRef);
+    getDoc.mockResolvedValueOnce(fakeUserDocSnap);
+
+    const fakeCompanyDocSnap = { exists: jest.fn(() => false) };
+    const fakeCompanyDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeCompanyDocRef);
+    getDoc.mockResolvedValueOnce(fakeCompanyDocSnap);
+
+    await expect(loginUser(mockUserData)).rejects.toThrow('User does not exist.');
+  });
+
+  test('loginUser: should fail company login', async () => {
+    const mockCompanyData = {
+      email: 'chad@gmail.com',
+      password: 'password123'
+    };
+    const fakeUserDocSnap = { exists: jest.fn(() => false) };
+    const fakeUserDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeUserDocRef);
+    getDoc.mockResolvedValueOnce(fakeUserDocSnap);
+
+    const fakeCompanyDocSnap = { exists: jest.fn(() => false) };
+    const fakeCompanyDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeCompanyDocRef);
+    getDoc.mockResolvedValueOnce(fakeCompanyDocSnap);
+
+    await expect(loginUser(mockCompanyData)).rejects.toThrow('User does not exist.');
   });
 });

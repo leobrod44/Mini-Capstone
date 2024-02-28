@@ -33,7 +33,7 @@ const Popup_SendKey = ({ handleClose, condoId }) => {
               await sendCondoKey(formData.email, key);
 
               toast.success("Key has been sent.")
-              setShowPopup(false);
+              handleClose();
           } catch (e) {
               toast.error(e.message);
           }
@@ -55,7 +55,7 @@ const Popup_SendKey = ({ handleClose, condoId }) => {
           &times;
         </span>
         <h4 className="h4_db">Send Your Condo Key</h4>
-        <form onSubmit={handleClose}>
+        <form onSubmit={handleSendKey}>
         
         <div className="input-group">
         <label className="key_label" htmlFor="email">
@@ -85,7 +85,7 @@ const Popup_SendKey = ({ handleClose, condoId }) => {
                 />
               </div>
 
-          <button className="btn-reg" type="submit" onClick={handleSendKey}>Send Key</button>
+          <button className="btn-reg" type="submit">Send Key</button>
         </form>
       </div>
     </div>
