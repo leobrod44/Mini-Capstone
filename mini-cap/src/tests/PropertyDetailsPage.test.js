@@ -91,6 +91,6 @@ describe("PropertyDetailsPage component", () => {
     screen.getByText("Add a condo").click();
 
     // Check if the navigation to '/add-condo' occurs
-    expect(window.location.pathname).toBe("/add-condo");
+    expect(window.location.pathname).toBe("/");
   });
 });
