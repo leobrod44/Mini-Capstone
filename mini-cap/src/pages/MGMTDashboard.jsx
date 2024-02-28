@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getProperties } from "../backend/Fetcher";
+import { getProperties } from "../backend/PropertyHandler";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../index.css";

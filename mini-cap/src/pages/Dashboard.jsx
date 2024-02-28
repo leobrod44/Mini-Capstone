@@ -6,7 +6,9 @@ import "../styling/Dashboard.css";
 import React, {useEffect, useState} from "react";
 import Popup from "../components/Popup";
 import AddCondoBtn from "../components/AddCondoBtn";
-import {getCondoPicture, getUserCondos, linkCondoToUser} from "../backend/Fetcher";
+import { getCondoPicture } from "../backend/ImageHandler.js";
+import { getUserCondos, linkCondoToUser } from "../backend/PropertyHandler.js";
+
 import store from "storejs";
 import {toast} from "react-toastify";
 

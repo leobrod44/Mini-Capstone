@@ -5,7 +5,7 @@ import "../styling/AddCondoForm.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-import { addCondo } from "../backend/Fetcher";
+import { addCondo } from "../backend/PropertyHandler";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 

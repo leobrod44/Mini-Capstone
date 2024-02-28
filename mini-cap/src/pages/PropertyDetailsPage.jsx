@@ -7,7 +7,8 @@ import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn c
 import "../index.css";
 import "../styling/PropertyPage.css";
 import CondoMgmtComponent from "../components/CondoMGMTComponent";
-import { getCondos, getCondoPicture } from "../backend/Fetcher";
+import { getCondos} from "../backend/PropertyHandler";
+import { getCondoPicture } from "../backend/ImageHandler";
 import PropTypes from 'prop-types';
 
 const PropertyPage = () => {
