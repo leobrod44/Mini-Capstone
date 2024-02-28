@@ -173,6 +173,24 @@ describe('logging in', () => {
     await expect(loginUser(mockUserData)).resolves.not.toThrow();
   });
 
+  test('loginUser: should login the company', async () => {
+    const mockCompanyData = {
+      email: 'chad@gmail.com',
+      password: 'password123'
+    };
+    const fakeUserDocSnap = { exists: jest.fn(() => false) };
+    const fakeUserDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeUserDocRef);
+    getDoc.mockResolvedValueOnce(fakeUserDocSnap);
+
+    const fakeCompanyDocSnap = { exists: jest.fn(() => true), data: jest.fn(() => mockCompanyData) };
+    const fakeCompanyDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeCompanyDocRef);
+    getDoc.mockResolvedValueOnce(fakeCompanyDocSnap);
+
+    await expect(loginUser(mockCompanyData)).resolves.not.toThrow();
+  });
+
 
 
 
