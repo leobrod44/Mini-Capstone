@@ -10,13 +10,13 @@ import store from "storejs";
 
 const Header = () => {
   return (
-    <header className="header">
+    <header className="header" data-testid="header-id">
       <div className="header-left">
-        <Logo/>
+        <Logo />
       </div>
       <div className="header-right">
           {store.get('?user') && (
-              <div className='notification-wrapper'>
+              <div data-testid="notification-wrapper" className='notification-wrapper' >
                   <Notification/>
               </div>
           )}
