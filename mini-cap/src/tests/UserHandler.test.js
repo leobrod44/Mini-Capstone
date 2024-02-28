@@ -117,3 +117,34 @@ describe("update user/company info functions", () => {
     expect(updateDoc).toHaveBeenCalledWith(fakeDocRef, fakeData);
   });
 });
+
+describe("changePassword function", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("should change user password if current password matches and new password is different", async () => {
+    // Mock user document exists
+    const fakeUserDoc = {
+      exists: jest.fn(() => true),
+      data: jest.fn(() => ({ password: "oldPassword" })),
+    };
+    doc.mockReturnValue(fakeUserDoc);
+    getDoc.mockResolvedValue(fakeUserDoc);
+
+    // Mock updateDoc function
+    updateDoc.mockResolvedValue();
+
+    const email = "test@example.com";
+    const data = {
+      email,
+      currentPassword: "oldPassword",
+      newPassword: "newPassword",
+    };
+
+    await expect(changePassword(email, data)).resolves.toEqual({
+      message: "Password updated successfully",
+    });
+    expect(updateDoc).toHaveBeenCalledWith(doc(), { password: "newPassword" });
+  });
+});
