@@ -3,14 +3,14 @@ import { render, screen, fireEvent,waitFor } from '@testing-library/react';
 import Dashboard from '../pages/Dashboard';
 import { BrowserRouter } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import * as PropertyHandler from '../backend/PropertyHandler';
 
 // Mock the Header and Footer components
 jest.mock("../components/Header", () => () => <div>Header Mock</div>);
 jest.mock("../components/Footer", () => () => <div>Footer Mock</div>);
 
-// Mock the backend functions
-import { getUserCondos, linkCondoToUser } from '../backend/Fetcher';
-jest.mock("../backend/Fetcher");
+
+jest.mock("../backend/PropertyHandler");
 
 
 
@@ -51,6 +51,7 @@ describe('Dashboard Component', () => {
 
 
   it('renders without crashing and contains no condos (if none)', () => {
+    jest.spyOn(PropertyHandler, 'getUserCondos').mockResolvedValue([]);
 
     render(
     <BrowserRouter>
@@ -76,7 +77,8 @@ describe('Dashboard Component', () => {
 
   it('renders without crashing and contains all condos (if any)', async () => {
     // Mock getUserCondos to return condos
-    getUserCondos.mockResolvedValue(mockCondos);
+    jest.spyOn(PropertyHandler, 'getUserCondos').mockResolvedValue(mockCondos);
+
 
     render(
       <BrowserRouter>
@@ -85,7 +87,7 @@ describe('Dashboard Component', () => {
     );
 
     // Wait for condos to be loaded
-    await waitFor(() => {
+    await waitFor( () => {
       expect(screen.getByText('Property 1')).toBeInTheDocument();
       expect(screen.getByText('Property 2')).toBeInTheDocument();
     });
