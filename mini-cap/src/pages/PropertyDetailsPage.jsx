@@ -17,7 +17,7 @@ const PropertyDetailsPage = () => {
   const navigate = useNavigate();
   const [condoDetails, setCondoDetails] = useState([]);
   const [hasCondos, setHasCondos] = useState(false);
-  //let [condoPicURL, setCondoPicURL] = useState(null);
+  let [condoPicURL, setCondoPicURL] = useState(null);
 
   useEffect(() => {
     const fetchCondos = async () => {
