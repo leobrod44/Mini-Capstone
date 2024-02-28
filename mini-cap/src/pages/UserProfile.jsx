@@ -76,7 +76,6 @@ const UserProfile = () => {
 
     if (phoneNumber && !/^\d{10}$/.test(phoneNumber))
       return toast.error("Please make sure the phone number format is correct");
-    else if (!phoneNumber) return toast.error("Please enter a phone number");
 
     if (role === MANAGEMENT_COMPANY) {
       if (!companyName)
