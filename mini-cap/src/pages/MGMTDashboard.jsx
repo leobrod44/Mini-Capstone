@@ -30,10 +30,6 @@ const MGMTDashboard = () => {
 
   }, []); 
 
-  // Function to toggle the hasProperties state
-  const toggleHasProperties = () => {
-    setHasProperties((prevHasProperties) => !prevHasProperties);
-  };
 
   return (
     <div>
@@ -45,7 +41,7 @@ const MGMTDashboard = () => {
 
         <div className="content_container">
           {hasProperties ? (
-            <div className="condo_list">
+            <div className="condo_list" data-testid="condo-list">
               {/* Render properties */}
               {propertyDetails.map((p, index) => (
                 <Property key={index} property={{
@@ -56,7 +52,7 @@ const MGMTDashboard = () => {
                   unitCount: p.unitCount,
                   parkingCount: p.parkingCount,
                   lockerCount: p.lockerCount
-              } } />
+              } } data-testid="property-component" />
               ))}
             </div>
           ) : (
