@@ -138,19 +138,16 @@ describe("Dashboard Component", () => {
       </BrowserRouter>
     );
 
-    // Wait for the promises to resolve
     await waitFor(() => {
       expect(screen.getByText("Property 1")).toBeInTheDocument();
-      // Add further assertions as needed to ensure the state is updated correctly
     });
   });
 
 
 
   it('registers a new condo successfully', async () => {
-    const mockCondos = []; // User has no condos initially
+    const mockCondos = []; 
 
-    // Mocking getUserCondos and linkCondoToUser functions
     jest.spyOn(PropertyHandler, 'getUserCondos').mockResolvedValue(mockCondos);
     jest.spyOn(Backend, 'linkCondoToUser').mockResolvedValue("Condo added!"); // Mock the linkCondoToUser function
 
@@ -160,22 +157,17 @@ describe("Dashboard Component", () => {
       </BrowserRouter>
     );
 
-    // Click the button to register a condo
     const registerButton = screen.getByText('Register my first condo');
     fireEvent.click(registerButton);
 
-    // Ensure the registration popup is displayed
     expect(screen.getByText('Register your condo')).toBeInTheDocument();
 
-    // Assuming you have some way to simulate a condo key, for instance, a text input
     const condoKeyInput = screen.getByTestId('condo-key-input');
     fireEvent.change(condoKeyInput, { target: { value: 'mocked-condo-key' } });
 
-    // Simulate clicking the submit button
     const submitButton = screen.getByText('Submit Key');
     fireEvent.click(submitButton);
 
-    // Wait for asynchronous operations to complete
     await waitFor(() => {
       expect(toast.success).toHaveBeenCalledWith('Condo added!');
       expect(screen.queryByText('Register your condo')).not.toBeInTheDocument();
