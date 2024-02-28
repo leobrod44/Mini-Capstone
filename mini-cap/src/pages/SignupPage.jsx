@@ -15,7 +15,7 @@ import {
   updateDoc,
   doc,
 } from "firebase/firestore";
-import { getUserData, addUser, addCompany } from "../backend/Fetcher";
+import { getUserData, addUser, addCompany } from "../backend/UserHandler";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
 
 

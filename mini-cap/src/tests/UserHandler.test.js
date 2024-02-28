@@ -7,7 +7,7 @@ import {
   addUser,
   addCompany,
   checkEmailExists,
-} from "../backend/Fetcher"; // Import your function
+} from "../backend/UserHandler"; // Import your function
 import {
   doc,
   getDoc,

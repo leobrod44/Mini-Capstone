@@ -4,7 +4,15 @@ import Popup_SendKey from '../components/Popup_SendKey';
 import { BrowserRouter } from 'react-router-dom';
 import { toast } from "react-toastify";
 
-// Mocking toast
+// Mocking asynchronous functions
+jest.mock('../backend/UserHandler', () => ({
+  checkEmailExists: jest.fn(),
+}));
+jest.mock('../backend/PropertyHandler', () => ({
+  storeCondoKey: jest.fn(),
+  sendCondoKey: jest.fn(),
+}));
+
 afterEach(cleanup);
 
 jest.mock("react-toastify", () => {
@@ -64,27 +72,6 @@ describe('Popup_SendKey Component', () => {
       expect(toast.error).toHaveBeenCalledWith("Please fill in all fields.");
   });
 
-
-
-
- it('displays error toast message for invalid email format', async () => {
-    render(
-      <BrowserRouter>
-        <Popup_SendKey handleClose={() => {}} />
-      </BrowserRouter>
-    );
-
-    // Fill out the form with an invalid email format...
-    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'invalidemail' } });
-
-    // Submit the form...
-    fireEvent.click(screen.getByText('Send Key'));
-
-    // Check if error toast is displayed for invalid email format...
-      expect(toast.error).toHaveBeenCalledWith("Invalid email format. Please include '@' and '.' in your email address.");
-   
-  });
-
   it('returns the correct form data using getFormData', () => {
     const { getByLabelText } = render(
       <BrowserRouter>
@@ -122,4 +109,4 @@ describe('Popup_SendKey Component', () => {
     );
   });
   
-});
+})

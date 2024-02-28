@@ -7,7 +7,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import DeleteModal from "../components/DeleteModal"; 
 import AddressComponent from "../components/AddressComponent"; 
-import { addProperty } from "../backend/Fetcher";
+import { addProperty } from "../backend/PropertyHandler";
 
 const PropertyForm = () => {
   const [property, setProperty] = useState({
@@ -102,7 +102,7 @@ const PropertyForm = () => {
     const updatedCondos = [...property.condos];
     updatedCondos[index] = {
       ...updatedCondos[index],
-      condoPicture: file,
+      picture: file,
     };
 
     setProperty({
@@ -363,9 +363,9 @@ const PropertyForm = () => {
         <p> Locker Number: {condo.lockerNumber}</p>
 
         
-        {condo.condoPicture && (
+        {condo.picture && (
           <img
-            src={URL.createObjectURL(condo.condoPicture)}
+            src={URL.createObjectURL(condo.picture)}
             alt={`Condo ${condo.unitNumber} Preview`}
           />
         )}

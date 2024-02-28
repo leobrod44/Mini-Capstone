@@ -5,7 +5,7 @@ import "../styling/AddCondoForm.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
-import { addCondo } from "../backend/Fetcher";
+import { addCondo } from "../backend/PropertyHandler";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 
@@ -123,6 +123,7 @@ const AddCondoForm = () => {
              </label> </label>
 
               <input
+              
                 type="file"
                 className="form-control"
                 id="customFile"
@@ -139,10 +140,11 @@ const AddCondoForm = () => {
           <div className="input-group mt-3"></div>
           <div className="input-group">
             <label className="input-label" htmlFor="unitNumber">
-        
-          Unit Number:
+         
+               Unit Number:
           </label>
           <input
+            id="unitNumber"
             type="text"
             name="unitNumber"
             value={condo.unitNumber}
@@ -158,6 +160,7 @@ const AddCondoForm = () => {
           Square Feet:
           </label>
           <input
+            id="squareFeet"
             type="text"
             name="squareFeet"
             value={condo.squareFeet}
@@ -173,6 +176,7 @@ const AddCondoForm = () => {
           Unit Size:
           </label>
           <select
+            id="unitSize"
             name="unitSize"
             value={condo.unitSize}
             onChange={handleInputChange}
@@ -192,6 +196,7 @@ const AddCondoForm = () => {
           Parking Spot:
           </label>
           <input
+            id="parkingNumber"
             type="text"
             name="parkingNumber"
             value={condo.parkingNumber}
@@ -205,6 +210,7 @@ const AddCondoForm = () => {
           Locker:
           </label>
           <input
+            id="lockerNumber"
             type="text"
             name="lockerNumber"
             value={condo.lockerNumber}
@@ -226,6 +232,7 @@ const AddCondoForm = () => {
       <option value="Euro">Euro €</option>
     </select>
     <input
+      id="unitPrice"
       type="text"
       value={condo.unitPrice}
       onChange={(e) => handleInputChange(e)}

@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import "../styling/Popup.css";
 import "../index.css";
 import { toast } from "react-toastify";
-import {storeCondoKey, checkEmailExists, sendCondoKey} from "../backend/Fetcher";
+import { storeCondoKey, sendCondoKey } from "../backend/PropertyHandler";
+import { checkEmailExists } from "../backend/UserHandler";
 import { RENTER_OWNER } from "../backend/Constants";
 
 const Popup_SendKey = ({ handleClose, condoId }) => {
     const [showPopup, setShowPopup] = useState(true);
     const [formData, setFormData] = useState({
-        role: RENTER_OWNER, //default for now
+        role: "renter",
         email: "",
         condo: condoId
       });
