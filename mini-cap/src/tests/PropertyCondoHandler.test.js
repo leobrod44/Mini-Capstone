@@ -1,4 +1,4 @@
-import {getCompanyData, getUserData, sendCondoKey, storeCondoKey} from '../backend/Fetcher'; // Import your function
+import {getCompanyData, getUserData, sendCondoKey, storeCondoKey} from '../backend/PropertyHandler'; // Import your function
 import { doc, getDoc, getFirestore, collection, addDoc, updateDoc } from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
 import { getStorage } from "firebase/storage";
