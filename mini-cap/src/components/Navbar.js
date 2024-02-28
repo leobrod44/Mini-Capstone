@@ -1,31 +1,21 @@
 import NavbarCSS from "../styling/Navbar.module.css";
 import React, { useState, useEffect, useRef } from "react";
-//import { useDispatch, useSelector } from "react-redux"; // Redux hooks, if needed in the future
 import tempProfilePic from "../assets/user.png"; // Default profile picture
 import { useNavigate } from "react-router-dom";
 import logoutt from "../assets/log-out.png"; // Logout icon
-
-// Importing icons
 import { FaCalendarAlt, FaBriefcase } from "react-icons/fa";
-import { GiHamburgerMenu } from "react-icons/gi";
-import { AiOutlineHome } from "react-icons/ai";
 import { CiLogout } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { IoIosBusiness } from "react-icons/io";
-import { LiaHandsHelpingSolid } from "react-icons/lia";
 
 import store from "storejs"; // For local storage management
 
 import { getProfilePicture } from "../backend/ImageHandler"; 
-import { getUserData } from "../backend/UserHandler";
-import { getCompanyData } from "../backend/PropertyHandler";
+import { getUserData, getCompanyData } from "../backend/UserHandler";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants"; // Role constants
 
 const Navbar = () => {
   const navigate = useNavigate();
-  //to display Hello user! message, grab the name and their profile pic
-  // const firstName = useSelector(selectName); // Redux state, if used
-  // const photo = useSelector(selectPhoto); // Redux state, for user photo
   const [role, setTheRole] = useState(""); // State to store user role
   const [open, setOpen] = useState(false); // State for managing dropdown menu visibility
   const [firstName, setFirstName] = useState(null); // State for user's first name
@@ -85,11 +75,12 @@ const Navbar = () => {
         {/* Render only if user is logged in */}
         {store.get("user") && (
           <div ref={menuRef}>
-            <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu}>
+            <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu} data-testid="user-pfp-container"> 
               {/* Display user profile picture or default image */}
               <img
                 src={profilePicUrl}
                 alt="User profile"
+               data-testid="user-pfp"
                 className={NavbarCSS.profilePic}
               />
             </div>
@@ -99,6 +90,7 @@ const Navbar = () => {
               className={`${NavbarCSS.myDropdownMenu} ${
                 open ? NavbarCSS.active : NavbarCSS.inactive
               }`}
+              data-testid="dropdown"
             >
               {/* Greeting based on role */}
               {role === MANAGEMENT_COMPANY && (

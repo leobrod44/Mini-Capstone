@@ -6,6 +6,7 @@ import store from "storejs";
 import emailjs from '@emailjs/browser';
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "./Constants";
 import { firebaseConfig } from "./FirebaseConfig";
+import { setPictureWithID, getPropertyPicture } from "./ImageHandler";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -159,38 +160,6 @@ export async function addProperty(data){
     }
     catch(e){
         throw new Error("Error adding document: ", e);
-    }
-}
-
-// returns user data using email
-export async function loginUser(data) {
-
-    try{
-
-        const userDoc = await getDoc(doc(db, "Users", data['email']));
-        const companyDoc = await getDoc(doc(db, "Company", data['email']));
-
-        store("user", data["email"]);
-
-        if (userDoc.exists()) {
-            if(data['password'] != userDoc.data().password){
-                throw new Error("Incorrect password.");
-            }
-            store("role", RENTER_OWNER)
-        }
-        else if (companyDoc.exists()) {
-            if(data['password'] != companyDoc.data().password){
-                throw new Error("Incorrect password.");
-            }
-            store("role", MANAGEMENT_COMPANY)
-        }
-        else
-            throw new Error("User does not exist.");
-
-        window.location.href = '/';
-    }
-    catch(e){
-        throw new Error(e);
     }
 }
 

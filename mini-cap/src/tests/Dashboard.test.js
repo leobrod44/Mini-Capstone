@@ -2,15 +2,57 @@ import React from 'react';
 import { render, screen, fireEvent,waitFor } from '@testing-library/react';
 import Dashboard from '../pages/Dashboard';
 import { BrowserRouter } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import * as PropertyHandler from '../backend/PropertyHandler';
 
 // Mock the Header and Footer components
 jest.mock("../components/Header", () => () => <div>Header Mock</div>);
 jest.mock("../components/Footer", () => () => <div>Footer Mock</div>);
 
 
+jest.mock("../backend/PropertyHandler");
+
+
+
+// Mock React toast
+jest.mock("react-toastify", () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn()
+  }
+}));
+
+
 describe('Dashboard Component', () => {
   
-  it('renders without crashing and contains all condos (if any)', () => {
+
+  const mockCondos = [
+    {
+      propertyName: 'Property 1',
+      unitNumber: '101',
+      parkingNumber: 'P101',
+      lockerNumber: 'L101',
+      userType: 'Owner',
+    },
+    {
+      propertyName: 'Property 2',
+      unitNumber: '102',
+      parkingNumber: 'P102',
+      lockerNumber: 'L102',
+      userType: 'Renter',
+    },
+  ];
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.spyOn(toast, 'success').mockImplementation();
+    jest.spyOn(toast, 'error').mockImplementation();
+  });
+
+
+  it('renders without crashing and contains no condos (if none)', () => {
+    jest.spyOn(PropertyHandler, 'getUserCondos').mockResolvedValue([]);
+
     render(
     <BrowserRouter>
     <Dashboard />
@@ -20,15 +62,11 @@ describe('Dashboard Component', () => {
     expect(screen.getByText("Header Mock")).toBeInTheDocument();
     expect(screen.getByText("Footer Mock")).toBeInTheDocument();
 
-    const toggleButton = screen.getByTestId('toggle');
-    fireEvent.click(toggleButton);
-
-    // Wait for the state update to complete
+    
     waitFor(() => {
       expect(screen.getByText('You have not created a property yet.')).toBeInTheDocument();
     });
 
-    fireEvent.click(toggleButton);
 
     // Wait for the state update to complete
     waitFor(() => {
@@ -37,6 +75,23 @@ describe('Dashboard Component', () => {
 
   });
 
+  it('renders without crashing and contains all condos (if any)', async () => {
+    // Mock getUserCondos to return condos
+    jest.spyOn(PropertyHandler, 'getUserCondos').mockResolvedValue(mockCondos);
+
+
+    render(
+      <BrowserRouter>
+        <Dashboard />
+      </BrowserRouter>
+    );
+
+    // Wait for condos to be loaded
+    await waitFor( () => {
+      expect(screen.getByText('Property 1')).toBeInTheDocument();
+      expect(screen.getByText('Property 2')).toBeInTheDocument();
+    });
+  });
   
 
   it('renders the welcome message correctly', () => {
@@ -73,15 +128,6 @@ describe('Dashboard Component', () => {
     expect(screen.queryByText('Register your condo')).not.toBeInTheDocument(); 
   });
 
-
-
-
-//when hascondos is true check that the addcondobtn is rendered
-
-//when hascondos is true check that the register my first condo is not rendered
-
-// WHEN HAS condos is true condos should be rendered
-
 it('renders AddCondoBtn when hasCondos is true and does not render it when hasCondos is false', () => {
   render(
     <BrowserRouter>
@@ -103,5 +149,6 @@ fireEvent.click(toggleButton); // Set hasProperties to false
 });
 
 });
+
 
 });

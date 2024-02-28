@@ -2,11 +2,8 @@ import React, { useState } from "react";
 import "../styling/Popup.css";
 import "../index.css";
 import { toast } from "react-toastify";
-import {storeCondoKey, sendCondoKey} from "../backend/PropertyHandler";
-import { checkEmailExists } from "../backend/Fetcher";}
-import { storeCondoKey } from "../backend/PropertyHandler";
+import { storeCondoKey, sendCondoKey } from "../backend/PropertyHandler";
 import { checkEmailExists } from "../backend/UserHandler";
-import { sendCondoKey } from "../backend/PropertyHandler";
 import { RENTER_OWNER } from "../backend/Constants";
 
 const Popup_SendKey = ({ handleClose, condoId }) => {
