@@ -19,7 +19,6 @@ const UserProfile = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(user);
   const [file, setFile] = useState(null);
-  const [profilePicUrl, setProfilePicUrl] = useState(null);
   const [show, setShow] = useState(false);
 
   const [firstName, setFirstName] = useState(null);
@@ -56,12 +55,7 @@ const UserProfile = () => {
 
       setEmail(tempData.email);
       setPhoneNumber(tempData.phoneNumber);
-
-      // Fetch the profile picture URL once regardless of the user role
-      // This removes redundancy and simplifies the logic
-      let profilePicURL = await getProfilePicture(store("user"));
-      // Set the image source to the fetched URL if it exists, otherwise use the default image
-      setImageSrc(profilePicURL || user);
+      setImageSrc((await getProfilePicture(store("user"))) || user);
     }
 
     fetchUserData();
@@ -76,7 +70,6 @@ const UserProfile = () => {
 
     if (phoneNumber && !/^\d{10}$/.test(phoneNumber))
       return toast.error("Please make sure the phone number format is correct");
-    else if (!phoneNumber) return toast.error("Please enter a phone number");
 
     if (role === MANAGEMENT_COMPANY) {
       if (!companyName)
@@ -109,40 +102,37 @@ const UserProfile = () => {
 
   //photo change
   const handlePhotoChange = (event) => {
-    const photo = event.target.files[0];
-    if (
-      photo.type !== "image/png" &&
-      photo.type !== "image/jpeg" &&
-      photo.type !== "image/jpg"
-    ) {
-      return toast.error("File not supported");
-    }
-    if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
-
-    setProfilePicUrl(photo);
-
+    let fileInput;
+    let photo;
     try {
-      updateUserPicture(store("user"), photo);
+      fileInput = document.getElementById('customFile');
+      photo = fileInput.files[0];
+
+      if (
+          photo.type !== "image/png" &&
+          photo.type !== "image/jpeg" &&
+          photo.type !== "image/jpg"
+      ) {
+        return toast.error("File not supported");
+      }
+      if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
+
+      try {
+        updateUserPicture(store("user"), photo);
+      } catch (e) {
+        toast.error(e);
+      }
+      toast.success("Profile picture updated successfully.");
+
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        setPreviewUrl(fileReader.result);
+      };
+      fileReader.readAsDataURL(photo);
+
     } catch (e) {
       toast.error(e);
     }
-    toast.success("Profile picture updated successfully.");
-
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      setPreviewUrl(fileReader.result);
-    };
-    fileReader.readAsDataURL(photo);
-  };
-
-  //submitting photo to backend
-  const handleSubmitPhoto = async (event) => {
-    event.preventDefault();
-
-    // create a new FormData object to send the file
-    const formData = new FormData();
-    formData.append("image", profilePicUrl);
-    // make a POST request to the backend to upload the image
   };
 
   const handleClickDelete = (id) => {
@@ -264,7 +254,7 @@ const UserProfile = () => {
                           />
                         ) : (
                           <img
-                            src={profilePicUrl}
+                            src={imageSrc}
                             alt="profile.jpg"
                             className="rounded-circle"
                             width={150}
@@ -274,7 +264,7 @@ const UserProfile = () => {
                     </div>
                   </div>
 
-                  <form onSubmit={handleSubmitPhoto}>
+                  <form>
                     <label className="form-label mt-3" htmlFor="customFile">
                       Choose an image:
                     </label>
@@ -285,11 +275,10 @@ const UserProfile = () => {
                           type="file"
                           className="form-control"
                           id="customFile"
-                          onChange={handlePhotoChange}
                         />
                       </div>
                       <div className="col-sm-4">
-                        <button type="submit" className="form-control">
+                        <button type="button" className="form-control" onClick={handlePhotoChange}>
                           Upload
                         </button>
                       </div>
