@@ -3,11 +3,13 @@ import { render, screen, fireEvent,waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import MGMTDashboard from '../pages/MGMTDashboard';
 import { getProperties } from '../backend/Fetcher';
+import * as PropertyHandler from '../backend/PropertyHandler';
+
 
 
 jest.mock("../components/Header", () => () => <div>Header Mock</div>);
 jest.mock("../components/Footer", () => () => <div>Footer Mock</div>);
-jest.mock('../backend/Fetcher');
+jest.mock('../backend/PropertyHandler');
 
 
 describe('MGMTDashboard Component', () => {
@@ -29,7 +31,7 @@ describe('MGMTDashboard Component', () => {
         lockerCount: 2
       },
     ];
-    getProperties.mockResolvedValue(propertyDetails);
+    jest.spyOn(PropertyHandler, 'getProperties').mockResolvedValue(propertyDetails);
 
     render(
     <BrowserRouter>
