@@ -6,11 +6,9 @@ import "../styling/Dashboard.css";
 import React, {useEffect, useState} from "react";
 import Popup from "../components/Popup";
 import AddCondoBtn from "../components/AddCondoBtn";
-import {getCondoData, getCondoPicture, getProperties, getUserCondos, linkCondoToUser} from "../backend/Fetcher";
+import {getCondoPicture, getUserCondos, linkCondoToUser} from "../backend/Fetcher";
 import store from "storejs";
 import {toast} from "react-toastify";
-import Property from "../components/PropertyComponent";
-import {Link} from "react-router-dom";
 
 const Dashboard =() => {
     // State to represent whether the user has registered condos or not, since i dont have backend right now
