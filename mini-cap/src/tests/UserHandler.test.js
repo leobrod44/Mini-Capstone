@@ -4,9 +4,18 @@ import {
   updateUserInfo,
   updateCompanyInfo,
   changePassword,
-    loginUser
+  addUser,
+  addCompany,
+  checkEmailExists,
+  loginUser
 } from "../backend/UserHandler"; // Import your function
-import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+  getFirestore,
+} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 // Mock Firebase storage functions
@@ -14,6 +23,7 @@ jest.mock("firebase/firestore", () => ({
   doc: jest.fn(),
   getDoc: jest.fn(),
   updateDoc: jest.fn(),
+  setDoc: jest.fn(),
   getFirestore: jest.fn(() => "mockedDb"),
 }));
 jest.mock("firebase/storage", () => ({
@@ -150,6 +160,46 @@ describe("changePassword function", () => {
   });
 });
 
+describe("checkEmailExists function", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("should not throw an error if user exists", async () => {
+    // Setup
+    const email = "existing@example.com";
+    const fakeDocSnap = { exists: jest.fn(() => true) }; // Mock document snapshot that exists
+    getDoc.mockResolvedValue(fakeDocSnap);
+
+    // Action & Assertion
+    await expect(checkEmailExists(email)).resolves.not.toThrow();
+  });
+
+  test("should throw an error if user does not exist", async () => {
+    // Setup
+    const email = "nonexistent@example.com";
+    const fakeDocSnap = { exists: jest.fn(() => false) }; // Mock document snapshot that does not exist
+    getDoc.mockResolvedValue(fakeDocSnap);
+
+    // Action & Assertion
+    await expect(checkEmailExists(email)).rejects.toThrow(
+      "Cannot find any users with this email."
+    );
+  });
+
+  // Optional: Test error handling for unexpected Firestore errors
+  test("should handle Firestore errors", async () => {
+    // Setup
+    const email = "error@example.com";
+    const errorMessage = "Unexpected Firestore error";
+    getDoc.mockRejectedValue(new Error(errorMessage));
+
+    // Action & Assertion
+    await expect(checkEmailExists(email)).rejects.toThrow(
+      "Error: Unexpected Firestore error"
+    );
+  });
+});
 describe('logging in', () => {
   afterEach(() => {
     jest.clearAllMocks(); // Clear mock function calls after each test
