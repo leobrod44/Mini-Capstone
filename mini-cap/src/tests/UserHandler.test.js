@@ -4,6 +4,7 @@ import {
   updateUserInfo,
   updateCompanyInfo,
   changePassword,
+    loginUser
 } from "../backend/UserHandler"; // Import your function
 import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
@@ -147,4 +148,32 @@ describe("changePassword function", () => {
     });
     expect(updateDoc).toHaveBeenCalledWith(doc(), { password: "newPassword" });
   });
+});
+
+describe('logging in', () => {
+  afterEach(() => {
+    jest.clearAllMocks(); // Clear mock function calls after each test
+  });
+
+  test('loginUser: should login the user', async () => {
+    const mockUserData = {
+      email: 'johndoe@gmail.com',
+      password: 'password12'
+    };
+    const fakeUserDocSnap = { exists: jest.fn(() => true), data: jest.fn(() => mockUserData) };
+    const fakeUserDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeUserDocRef);
+    getDoc.mockResolvedValueOnce(fakeUserDocSnap);
+
+    const fakeCompanyDocSnap = { exists: jest.fn(() => false) };
+    const fakeCompanyDocRef = jest.fn();
+    doc.mockReturnValueOnce(fakeCompanyDocRef);
+    getDoc.mockResolvedValueOnce(fakeCompanyDocSnap);
+
+    await expect(loginUser(mockUserData)).resolves.not.toThrow();
+  });
+
+
+
+
 });
