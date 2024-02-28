@@ -71,7 +71,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={NavbarCSS.myNavbar}>
+      <nav className={NavbarCSS.myNavbar} data-testid="navbar">
         {/* Render only if user is logged in */}
         {store.get("user") && (
           <div ref={menuRef}>

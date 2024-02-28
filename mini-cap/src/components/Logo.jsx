@@ -17,6 +17,7 @@ const Logo = () => {
       alt="CondoConnect"
       className="logo"
       style={logoStyle}
+      data-testid="logo"
     />
   );
 };
