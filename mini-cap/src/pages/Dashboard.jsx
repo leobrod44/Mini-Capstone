@@ -11,8 +11,6 @@ import { getUserCondos, linkCondoToUser } from "../backend/PropertyHandler.js";
 
 import store from "storejs";
 import {toast} from "react-toastify";
-import Property from "../components/PropertyComponent";
-import {Link} from "react-router-dom";
 
 const Dashboard =() => {
     // State to represent whether the user has registered condos or not, since i dont have backend right now
