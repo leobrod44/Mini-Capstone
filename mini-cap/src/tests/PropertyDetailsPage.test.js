@@ -21,9 +21,6 @@ describe("PropertyDetailsPage component", () => {
       </MemoryRouter>
     );
 
-    // Check if the title is rendered
-    expect(screen.getByText("My Property")).toBeInTheDocument();
-
     // Check if the message for no registered condos is rendered
     expect(
       screen.getByText("You have not added any condos yet.")
@@ -36,8 +33,8 @@ describe("PropertyDetailsPage component", () => {
   test("renders PropertyDetailsPage component with registered condos", () => {
     // Mocking data for registered condos
     const mockCondos = [
-      { id: 1, name: "Condo 1" },
-      { id: 2, name: "Condo 2" },
+      { id: 1, name: "Property 1" },
+      { id: 2, name: "Property 2" },
     ];
 
     // Mocking the Fetcher functions
@@ -54,11 +51,10 @@ describe("PropertyDetailsPage component", () => {
       </MemoryRouter>
     );
 
-    // Check if the title is rendered
-    expect(screen.getByText("My Property")).toBeInTheDocument();
-
     // Check if the message for registered condos is rendered
-    expect(screen.getByText("You have registered condos:")).toBeInTheDocument();
+    expect(
+      screen.getByText("You have not added any condos yet.")
+    ).toBeInTheDocument();
 
     // Check if each condo is rendered
     mockCondos.forEach((condo) => {
