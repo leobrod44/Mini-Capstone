@@ -1,3 +1,4 @@
+import React from "react";
 import logo from "../assets/Logo_BiggerWriting.png";
 
 
