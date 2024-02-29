@@ -1,6 +1,5 @@
-import {deleteDoc, getFirestore} from "firebase/firestore";
 import {initializeApp,storageRef} from "firebase/app";
-import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc, arrayUnion, deleteDoc, getFirestore } from "firebase/firestore";
 import {cleanData} from "./DataCleaner";
 import { getStorage, uploadBytes, getDownloadURL, deleteObject, ref } from "firebase/storage";
 import store from "storejs";
@@ -198,7 +197,7 @@ export async function addCompany(data) {
 }
 
 
-async function storeData(collection, data, key){
+export async function storeData(collection, data, key){
     try{
      const clean = cleanData(collection,data);
      const docRef = await setDoc(doc(db, collection, key), clean).then((res) => {
