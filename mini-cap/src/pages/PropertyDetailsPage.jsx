@@ -70,7 +70,7 @@ const PropertyDetailsPage = () => {
         </div>
         {hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate(`/add-condo/${propertyID}/${propertyName}`)} />}
       </div>
-
+      <Footer />
     </div>
   );
 };
