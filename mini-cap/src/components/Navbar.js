@@ -7,6 +7,7 @@ import { FaCalendarAlt, FaBriefcase } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { IoIosBusiness } from "react-icons/io";
+import PropTypes from 'prop-types';
 
 import store from "storejs"; // For local storage management
 
@@ -170,4 +171,11 @@ const Navbar = () => {
   }
 };
 
+
+
+Navbar.propTypes = {
+  address: PropTypes.string,
+  icon: PropTypes.string,
+  text: PropTypes.string,
+};
 export default Navbar;
