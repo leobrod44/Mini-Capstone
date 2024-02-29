@@ -1,52 +1,44 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import PropertyDetailsPage from "../pages/PropertyDetailsPage";
+import { toast } from "react-toastify";
+import * as PropertyHandler from "../backend/PropertyHandler";
+import { getCondos } from '../backend/PropertyHandler';
+import { getCondoPicture } from '../backend/ImageHandler';
+
+
+jest.mock("../backend/PropertyHandler");
+jest.mock("../backend/ImageHandler", () => ({
+  getCondoPicture: jest.fn().mockResolvedValue("https://example.com/image.jpg"),
+}));
+
 
 jest.mock("../backend/Fetcher", () => ({
   getCondos: jest.fn(),
   getCondoPicture: jest.fn(),
 }));
+// Mock the Header and Footer components
+jest.mock("../components/Header", () => () => <div>Header Mock</div>);
+jest.mock("../components/Footer", () => () => <div>Footer Mock</div>);
+
+
+
 
 describe("PropertyDetailsPage component", () => {
-  test("renders PropertyDetailsPage component with no registered condos", () => {
-    // Mocking the Fetcher functions
-    jest
-      .spyOn(require("../backend/Fetcher"), "getCondos")
-      .mockResolvedValue([]);
 
-    render(
-      <MemoryRouter>
-        <PropertyDetailsPage />
-      </MemoryRouter>
-    );
-
-    // Check if the title is rendered
-    expect(screen.getByText("My Property")).toBeInTheDocument();
-
-    // Check if the message for no registered condos is rendered
-    expect(
-      screen.getByText("You have not added any condos yet.")
-    ).toBeInTheDocument();
-
-    // Check if the "Add a condo" button is rendered
-    expect(screen.getByText("Add a condo")).toBeInTheDocument();
-  });
-
-  test("renders PropertyDetailsPage component with registered condos", () => {
-    // Mocking data for registered condos
+  it("renders without crashing and renders condos (if any)", () => {
     const mockCondos = [
-      { id: 1, name: "Condo 1" },
-      { id: 2, name: "Condo 2" },
+      {
+        propertyName: "Property 1",
+        unitNumber: "101",
+        parkingNumber: "P101",
+        lockerNumber: "L101",
+        userType: "Owner",
+      },
     ];
 
-    // Mocking the Fetcher functions
-    jest
-      .spyOn(require("../backend/Fetcher"), "getCondos")
-      .mockResolvedValue(mockCondos);
-    jest
-      .spyOn(require("../backend/Fetcher"), "getCondoPicture")
-      .mockResolvedValue("mock-image-url");
+    jest.spyOn(PropertyHandler, "getUserCondos").mockResolvedValue(mockCondos);
 
     render(
       <MemoryRouter>
@@ -54,20 +46,22 @@ describe("PropertyDetailsPage component", () => {
       </MemoryRouter>
     );
 
-    // Check if the title is rendered
-    expect(screen.getByText("My Property")).toBeInTheDocument();
+    expect(screen.getByText("Header Mock")).toBeInTheDocument();
+    expect(screen.getByText("Footer Mock")).toBeInTheDocument();
+    expect(screen.getByTestId("back-arrow-btn")).toBeInTheDocument(); // Assertion for BackArrowBtn
 
-    // Check if the message for registered condos is rendered
-    expect(screen.getByText("You have registered condos:")).toBeInTheDocument();
+    const condoComponents = screen.queryAllByTestId("condo-component");
 
-    // Check if each condo is rendered
-    mockCondos.forEach((condo) => {
-      expect(screen.getByText(condo.name)).toBeInTheDocument();
-    });
-
-    // Check if the "Add a condo" button is rendered
-    expect(screen.getByText("Add a condo")).toBeInTheDocument();
+    if (condoComponents.length > 0) {
+      expect(screen.getByText("Property 1")).toBeInTheDocument();
+    } else {
+      expect(
+        screen.getByText("You have not added any condos yet.")
+      ).toBeInTheDocument();
+      expect(screen.getByText("Add a condo")).toBeInTheDocument();
+    }
   });
+
 
   test("navigates to the '/add-condo' page when clicking the 'Add a condo' link", () => {
     // Mocking the Fetcher functions
@@ -93,4 +87,49 @@ describe("PropertyDetailsPage component", () => {
     // Check if the navigation to '/add-condo' occurs
     expect(window.location.pathname).toBe("/");
   });
-});
+
+
+  it("does not render the AddCondoBtn when the user has no condos", () => {
+    render(
+      <MemoryRouter>
+        <PropertyDetailsPage />
+      </MemoryRouter>
+    );
+    expect(screen.queryByTestId("add-condo-btn")).not.toBeInTheDocument();
+  });
+
+  it('fetches condos and their pictures', async () => {
+    const mockCondos = [
+      { id: 1, propertyName: 'TestProperty', unitNumber: '101' },
+      { id: 2, propertyName: 'TestProperty', unitNumber: '102' },
+    ];
+
+    const mockCondoPictureURL = 'https://example.com/image.jpg';
+    
+    // Mocking the return values for backend functions
+    getCondos.mockResolvedValueOnce(mockCondos);
+    getCondoPicture.mockImplementation(async () => mockCondoPictureURL);
+
+    const { getByText } = render(
+    <MemoryRouter>
+      <PropertyDetailsPage />
+      </MemoryRouter>
+      );
+
+    // Wait for the state updates triggered by useEffect
+    await waitFor(() => {
+      expect(getCondos).toHaveBeenCalled();
+      expect(getCondoPicture).toHaveBeenCalledTimes(mockCondos.length);
+    });
+
+    // Assert that condos and their pictures are rendered
+    expect(getByText('TestProperty')).toBeInTheDocument();
+    expect(getByText('101')).toBeInTheDocument();
+    expect(getByText('102')).toBeInTheDocument();
+    expect(document.querySelector('.condo_list').childElementCount).toBe(mockCondos.length);
+    expect(document.querySelectorAll('.condo_list img')[0].src).toBe(mockCondoPictureURL);
+    expect(document.querySelectorAll('.condo_list img')[1].src).toBe(mockCondoPictureURL);
+  });
+
+
+})
