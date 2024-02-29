@@ -17,7 +17,7 @@ const CondoMgmtComponent = ({picture, unitNumber, parkingNumber, lockerNumber, p
         <div className="condo-details-container">
             <div className="condo-info">
                 <div className='condo-name-user-tag'>
-                    <h2>  {unitNumber}</h2>
+                    <h2>{unitNumber}</h2>
                 </div>
                 
                 {picture && <img src={picture} alt="Profile" className="profile-picture" />}
@@ -30,7 +30,6 @@ const CondoMgmtComponent = ({picture, unitNumber, parkingNumber, lockerNumber, p
                 <div className='locker-details'>
 
                     {lockerNumber && <p>Locker: {lockerNumber}</p>}
-                    <button className="details-button">Details</button>
                      {/* <button className="details-button">Details</button> */}
                     <Link to="/condo-details" className="details-button">Details</Link>
 
