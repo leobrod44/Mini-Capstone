@@ -198,7 +198,7 @@ export async function addCompany(data) {
 }
 
 
-async function storeData(collection, data, key){
+export async function storeData(collection, data, key){
     try{
      const clean = cleanData(collection,data);
      const docRef = await setDoc(doc(db, collection, key), clean).then((res) => {
