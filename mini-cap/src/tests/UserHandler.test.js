@@ -7,7 +7,8 @@ import {
   addUser,
   addCompany,
   checkEmailExists,
-  loginUser
+  loginUser,
+  storeData
 } from "../backend/UserHandler"; // Import your function
 import {
   doc,
@@ -200,6 +201,9 @@ describe("checkEmailExists function", () => {
     );
   });
 });
+
+
+//loginUser
 describe('logging in', () => {
   afterEach(() => {
     jest.clearAllMocks(); // Clear mock function calls after each test
@@ -276,4 +280,61 @@ describe('logging in', () => {
 
     await expect(loginUser(mockCompanyData)).rejects.toThrow('User does not exist.');
   });
+});
+
+
+//storeData
+describe('storeData function', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('should store data in Firestore and return document reference', async () => {
+    const mockCollection = 'Users';
+    const mockData = {
+      firstName: 'Store',
+      lastName: 'Data',
+      email: 'storeDataTest@gmail.com',
+      phoneNumber: '123-456-7890',
+      password: 'store123',
+    };
+    const mockKey = mockData["email"];
+
+    const fakeDocRef = jest.fn();
+    doc.mockReturnValue(fakeDocRef);
+
+    setDoc.mockImplementation(() => Promise.resolve());
+
+    const result = storeData(mockCollection, mockData, mockKey);
+    await result;
+
+    expect(doc).toHaveBeenCalledWith(expect.anything(), mockCollection, mockKey);
+    expect(setDoc).toHaveBeenCalledWith(fakeDocRef, mockData);
+    expect(setDoc).toHaveBeenCalledTimes(1);
+    expect(doc).toHaveBeenCalledTimes(1);
+  });
+
+  test('should throw an error if an invalid collection is provided', async () => {
+    const mockData = {
+      firstName: 'Store',
+      lastName: 'Data',
+      email: 'storeDataTest@gmail.com',
+      phoneNumber: '123-456-7890',
+      password: 'store123',
+    };
+    const mockKey = mockData["email"];
+
+    // Mock doc function to throw an error when called
+    doc.mockImplementation((...args) => {
+      throw new Error(`Unexpected call to doc with arguments: ${args}`);
+    });
+
+    // Expect the function to throw an error for an undefined collection
+    await expect(storeData(undefined, mockData, mockKey)).rejects.toThrowError('Error adding document: ');
+
+    // Verify that doc and setDoc were not called
+    expect(doc).toHaveBeenCalledWith("mockedDb", undefined, 'storeDataTest@gmail.com');
+  });
+
+
 });
