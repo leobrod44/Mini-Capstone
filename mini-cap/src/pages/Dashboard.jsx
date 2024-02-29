@@ -60,6 +60,9 @@ const Dashboard =() => {
           console.log("Error adding condo: ", e);
       }
       if(msg === "Condo added!"){
+          setTimeout(function(){
+            window.location.reload();
+          }, 1700);
           toast.success(msg);
       }else{
           toast.error(msg);
@@ -112,10 +115,6 @@ const Dashboard =() => {
 			{!showPopup && hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={handlePopupToggle}/> }
 		</div>
 			<Footer/>
-      {/* TODO: This button toggles the state of whether the user has properties or not. Should be deleted once we have backend connected  */}
-			<button onClick={toggleHasCondos} data-testid="toggle">
-        Toggle Has Condos
-      </button>
 		</div>
 	);
 
