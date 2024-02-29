@@ -1,6 +1,5 @@
-import {deleteDoc, getFirestore} from "firebase/firestore";
 import {initializeApp,storageRef} from "firebase/app";
-import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc, arrayUnion, deleteDoc, getFirestore } from "firebase/firestore";
 import {cleanData} from "./DataCleaner";
 import { getStorage, uploadBytes, getDownloadURL, deleteObject, ref } from "firebase/storage";
 import store from "storejs";
