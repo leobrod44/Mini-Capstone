@@ -50,6 +50,7 @@ CondoMgmtComponent.propTypes = {
     unitNumber: PropTypes.string.isRequired,
     unitPrice: PropTypes.string,
     unitSize: PropTypes.string,
+    condoId:PropTypes.string,
 };
 
 
