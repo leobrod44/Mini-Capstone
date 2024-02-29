@@ -10,7 +10,7 @@ const BackArrowBtn = () => {
     };
 
     return (
-        <div className="floating_button1" role="button" onClick={goBack}>
+        <div className="floating_button1" role="button" onClick={goBack} data-testid="back-arrow-btn" >
             <div className="button_circle1">
                 <span className="back_arrow1">&larr; </span>
             </div>
