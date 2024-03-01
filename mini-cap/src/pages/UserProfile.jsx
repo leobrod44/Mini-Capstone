@@ -1,9 +1,8 @@
 import "../styling/profile.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect} from "react";
 import DeleteModal from "../components/DeleteModal";
-import { Link, useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import user from "../assets/user.png";
@@ -14,13 +13,9 @@ import store from "storejs";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
 
 const UserProfile = () => {
-  const navigate = useNavigate();
-
   const [isEditMode, setIsEditMode] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(user);
-  const [file, setFile] = useState(null);
   const [show, setShow] = useState(false);
-
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
   const [email, setEmail] = useState(null);
@@ -101,7 +96,7 @@ const UserProfile = () => {
   };
 
   //photo change
-  const handlePhotoChange = (event) => {
+  const handlePhotoChange = () => {
     let fileInput;
     let photo;
     try {
@@ -135,7 +130,7 @@ const UserProfile = () => {
     }
   };
 
-  const handleClickDelete = (id) => {
+  const handleClickDelete = () => {
     setShow(true);
   };
 
