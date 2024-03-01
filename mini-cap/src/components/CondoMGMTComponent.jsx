@@ -5,7 +5,7 @@ import  { useState} from "react";
 import Popup_SendKey from './Popup_SendKey';
 import { Link } from "react-router-dom";
 
-const CondoMgmtComponent = ({picture, unitNumber, parkingNumber, lockerNumber, property, squareFeet, unitPrice, unitSize, condoId}) => {
+const CondoMgmtComponent = ({picture, unitNumber, parkingNumber, lockerNumber, condoId}) => {
 
     const [showPopup, setShowPopup] = useState(false);
     const handlePopupToggle = () => {
@@ -50,6 +50,7 @@ CondoMgmtComponent.propTypes = {
     unitNumber: PropTypes.string.isRequired,
     unitPrice: PropTypes.string,
     unitSize: PropTypes.string,
+    condoId:PropTypes.string,
 };
 
 

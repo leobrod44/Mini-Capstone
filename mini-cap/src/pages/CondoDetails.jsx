@@ -3,19 +3,14 @@ import Footer from "../components/Footer.jsx";
 import "../index.css";
 import "../styling/CondoDetails.css";
 import React, { useState } from "react";
-import AddCondoBtn from "../components/AddCondoBtn.jsx";
-import { Link, useNavigate } from "react-router-dom";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
-
 import PropTypes from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import the FontAwesome library
-import { faBars } from '@fortawesome/free-solid-svg-icons';
 import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
 
 
 
-export default function CondoDetails({ name, profilePicture, address, parkingCount, lockerCount, unitNumber, price, size, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
+export default function CondoDetails({ name, address, parkingCount, lockerCount, unitNumber, price, size, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
 	
 	const [showPopup, setShowPopup] = useState(false);
     const handlePopupToggle = () => {
@@ -201,5 +196,5 @@ export default function CondoDetails({ name, profilePicture, address, parkingCou
 			</div>
 		);
 
-	};
+	}
 

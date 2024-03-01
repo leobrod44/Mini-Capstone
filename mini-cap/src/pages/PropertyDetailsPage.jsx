@@ -9,7 +9,7 @@ import "../styling/PropertyDetailsPage.css";
 import CondoMgmtComponent from "../components/CondoMGMTComponent";
 import { getCondos } from "../backend/PropertyHandler";
 import { getCondoPicture } from "../backend/ImageHandler";
-import PropTypes from 'prop-types';
+
 
 const PropertyDetailsPage = () => {
   let { propertyID, propertyName } = useParams();

@@ -4,10 +4,9 @@ import "../index.css";
 import { toast } from "react-toastify";
 import { storeCondoKey, sendCondoKey } from "../backend/PropertyHandler";
 import { checkEmailExists } from "../backend/UserHandler";
-import { RENTER_OWNER } from "../backend/Constants";
+import PropTypes from 'prop-types'
 
 const Popup_SendKey = ({ handleClose, condoId }) => {
-    const [showPopup, setShowPopup] = useState(true);
     const [formData, setFormData] = useState({
         role: "renter",
         email: "",
@@ -90,6 +89,11 @@ const Popup_SendKey = ({ handleClose, condoId }) => {
       </div>
     </div>
   );
+};
+
+Popup_SendKey.propTypes = {
+  handleClose: PropTypes.string,
+ condoId:PropTypes.string,
 };
 
 export default Popup_SendKey;

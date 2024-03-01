@@ -2,6 +2,7 @@ import React from "react";
 import "../styling/Popup.css";
 import "../index.css";
 import { toast } from "react-toastify";
+import PropTypes from 'prop-types';
 
 const Popup = ({ handleClose, handleRegisterCondo }) => {
   const handleSubmit = (event) => {
@@ -50,4 +51,9 @@ const Popup = ({ handleClose, handleRegisterCondo }) => {
   );
 };
 
+
+Popup.propTypes = {
+  handleClose: PropTypes.string,
+  handleRegisterCondo:PropTypes.string
+};
 export default Popup;

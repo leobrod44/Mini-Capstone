@@ -1,10 +1,9 @@
-import {initializeApp,storageRef} from "firebase/app";
-import { getDocs, collection, doc, addDoc, setDoc, getDoc, updateDoc, arrayUnion, deleteDoc, getFirestore } from "firebase/firestore";
+import {initializeApp} from "firebase/app";
+import { doc, setDoc, getDoc, updateDoc,  deleteDoc, getFirestore } from "firebase/firestore";
 import {cleanData} from "./DataCleaner";
-import { getStorage, uploadBytes, getDownloadURL, deleteObject, ref } from "firebase/storage";
 import store from "storejs";
 import emailjs from '@emailjs/browser';
-import { MANAGEMENT_COMPANY, MANGEMENT_COMPANY, RENTER_OWNER } from "./Constants";
+import { MANAGEMENT_COMPANY, RENTER_OWNER } from "./Constants";
 import { firebaseConfig } from "./FirebaseConfig";
 import { setPicture } from "./ImageHandler";
 
@@ -80,7 +79,6 @@ export async function updateCompanyInfo(email, data) {
 
 // sends email to user with link to reset password
 export async function changePassword(email, data) {
-    try {
         const userDoc = await getDoc(doc(db, "Users", data['email']));
         const companyDoc = await getDoc(doc(db, "Company", data['email']));
         const userDocData = userDoc.data();
@@ -111,9 +109,6 @@ export async function changePassword(email, data) {
         }
 
         return {message: "Password updated successfully"};
-    } catch (err) {
-        throw err;
-    }
 }
 
 
@@ -129,10 +124,6 @@ export async function checkEmailExists(email) {
 }
 
 export async function addUser(data) {
-    //are these 2 lines needed?
-    const usersCollection = collection(db, "Users");
-    const clean = cleanData("Users",data);
-
     try {
         const userDoc = await getDoc(doc(db, "Users", data['email']));
         const companyDoc = await getDoc(doc(db, "Company", data['email']));
@@ -163,10 +154,6 @@ export async function addUser(data) {
 }
 
 export async function addCompany(data) {
-    //are these 2 lines needed?
-    const companyCollection = collection(db, "Company");
-    const clean = cleanData("Users",data);
-
     try {
         const userDoc = await getDoc(doc(db, "Users", data['email']));
         const companyDoc = await getDoc(doc(db, "Company", data['email']));
