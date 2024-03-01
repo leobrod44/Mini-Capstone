@@ -1,7 +1,8 @@
+import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styling/LandingPage.css"
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../index.css";
 import store from "storejs";
 
@@ -56,7 +57,7 @@ const LandingPage =() => {
             <div className="card2">
               <h5 className="card-title2">Help When You Need It</h5>
               <p>
-              Leaky sink? No problem! Condo Connect's easy request system will help you submit any and all
+               Leaky sink? No problem! Condo Connect&apos;s easy request system will help you submit any and all
                requests directly to the corresponding management companies account.
               </p>
             </div>
