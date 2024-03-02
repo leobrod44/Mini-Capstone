@@ -20,12 +20,12 @@ const CondoComponent = ({ condo }) => {
                 
                 {picture && <img src={picture} alt="Profile" className="profile-picture" />}
                 <p>{address}</p>
-                <p>Unit #: {unitNumber}</p>
-                {parkingNumber && <p>Parking #: {parkingNumber}</p>}
+                <p>Unit Number: {unitNumber}</p>
+                {parkingNumber && <p>Parking Number: {parkingNumber}</p>}
                 
                 <div className='locker-details'>
 
-                    {lockerNumber && <p>Locker #: {lockerNumber}</p>}
+                    {lockerNumber && <p>Locker Number: {lockerNumber}</p>}
                     {/*<button className="details-button">Details</button> */}
                     <Link to="/condo-details" className="details-button">Details</Link>
                     
