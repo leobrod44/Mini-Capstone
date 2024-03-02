@@ -5,26 +5,13 @@ import "../styling/SignupPage.css"; // Ensure your CSS file path is correct
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import user from "../assets/user.png"; // Adjust the path accordingly
-import { db, auth, storage } from "../config/firebase";
-
-import {
-  getDocs,
-  collection,
-  addDoc,
-  deleteDoc,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
-import { getUserData, addUser, addCompany } from "../backend/UserHandler";
+import { addUser, addCompany } from "../backend/UserHandler";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
-
 
 const SignupPage = () => {
 
   const [previewUrl, setPreviewUrl] = useState(user);
   const [profilePicUrl, setProfilePicUrl] = useState(null);
-  const usersCollectionRef = collection(db, "users");
-
   const [formData, setFormData] = useState({
     role: RENTER_OWNER, // "Renter/Owner" as the default role
     firstName: "",
@@ -95,7 +82,7 @@ const handleSignup = async (e) => {
 
     if(formData.role === RENTER_OWNER){
       try {
-        const newUser = await addUser(formData);
+        await addUser(formData);
         window.location.href = '/';
       } catch (err) {
         toast.error(err.message);
@@ -104,7 +91,7 @@ const handleSignup = async (e) => {
     
     else if (formData.role === MANAGEMENT_COMPANY){
       try {
-        const newUser = await addCompany(formData);
+        await addCompany(formData);
         window.location.href = '/';
       } catch (err) {
         toast.error(err.message);
@@ -125,12 +112,14 @@ const handleSignup = async (e) => {
     }
     if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
 
-    setProfilePicUrl(photo);
+      setProfilePicUrl(photo);
+
     const fileReader = new FileReader();
-    fileReader.onload = () => {
+    fileReader.onloadend = () => {
       setPreviewUrl(fileReader.result);
     };
-    //TODO profilePic preview dosent seem to be working anymore
+
+    fileReader.readAsDataURL(photo);
     
   };
 
