@@ -14,7 +14,6 @@ import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
 
 const UserProfile = () => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(user);
   const [show, setShow] = useState(false);
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
@@ -114,14 +113,15 @@ const UserProfile = () => {
 
       try {
         updateUserPicture(store("user"), photo);
+        setImageSrc(photo);
       } catch (e) {
         toast.error(e);
       }
       toast.success("Profile picture updated successfully.");
 
       const fileReader = new FileReader();
-      fileReader.onload = () => {
-        setPreviewUrl(fileReader.result);
+      fileReader.onloadend = () => {
+        setImageSrc(fileReader.result);
       };
       fileReader.readAsDataURL(photo);
 
@@ -236,7 +236,7 @@ const UserProfile = () => {
                   <div className="card">
                     <div className="card-body">
                       <div className="d-flex flex-column align-items-center text-center">
-                        {previewUrl ? (
+                        {imageSrc ? (
                           <img
                             src={imageSrc}
                             alt="Profile"
@@ -249,7 +249,7 @@ const UserProfile = () => {
                           />
                         ) : (
                           <img
-                            src={imageSrc}
+                            src={user}
                             alt="profile.jpg"
                             className="rounded-circle"
                             width={150}
