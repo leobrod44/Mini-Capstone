@@ -11,7 +11,7 @@ const Popup = ({ handleClose, handleRegisterCondo }) => {
 
 
     if (!/^[a-zA-Z0-9]{20}$/.test(key)) {
-      toast.error("Invalid key format");
+      toast.error("Key is not valid!");
       return;
     }
 
