@@ -372,7 +372,7 @@ const UserProfile = () => {
                     handleClose={handleClose}
                     handleDeleteItem={deleteAccountAttempt}
                     message={
-                      "Please enter your password to delete the account."
+                      "Are you sure you want to permanently delete your account?"
                     }
                   />
                 </div>
