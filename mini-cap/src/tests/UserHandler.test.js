@@ -19,6 +19,8 @@ import {
   deleteDoc,
   getFirestore,
 } from "firebase/firestore";
+import * as UserHandler from "../backend/UserHandler";
+
 import { getStorage } from "firebase/storage";
 
 // Mock Firebase storage functions
@@ -136,6 +138,35 @@ describe("update user/company info functions", () => {
 describe("changePassword function", () => {
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  test("should change company password if current password matches and new password is different", async () => {
+    // Mock company document exists
+    const fakeCompanyDoc = {
+      exists: jest.fn(() => true),
+      data: jest.fn(() => ({ password: "oldCompanyPassword" })),
+    };
+    doc.mockReturnValue(fakeCompanyDoc);
+    getDoc
+      .mockResolvedValueOnce({ exists: jest.fn(() => false), data: jest.fn() }) // Simulate user not found
+      .mockResolvedValueOnce(fakeCompanyDoc); // Simulate company found
+
+    // Mock updateDoc function
+    updateDoc.mockResolvedValue();
+
+    const email = "company@example.com";
+    const data = {
+      email,
+      currentPassword: "oldCompanyPassword",
+      newPassword: "newCompanyPassword",
+    };
+
+    await expect(changePassword(email, data)).resolves.toEqual({
+      message: "Password updated successfully",
+    });
+    expect(updateDoc).toHaveBeenCalledWith(expect.anything(), {
+      password: "newCompanyPassword",
+    });
   });
 
   test("should change user password if current password matches and new password is different", async () => {

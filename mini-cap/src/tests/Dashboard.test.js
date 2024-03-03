@@ -4,8 +4,7 @@ import Dashboard from "../pages/Dashboard";
 import { BrowserRouter } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as PropertyHandler from "../backend/PropertyHandler";
-import * as Backend from '../backend/PropertyHandler'; // Import the backend module
-
+import * as Backend from "../backend/PropertyHandler"; // Import the backend module
 
 // Mock the Header and Footer components
 jest.mock("../components/Header", () => () => <div>Header Mock</div>);
@@ -143,13 +142,11 @@ describe("Dashboard Component", () => {
     });
   });
 
+  it("registers a new condo successfully", async () => {
+    const mockCondos = [];
 
-
-  it('registers a new condo successfully', async () => {
-    const mockCondos = []; 
-
-    jest.spyOn(PropertyHandler, 'getUserCondos').mockResolvedValue(mockCondos);
-    jest.spyOn(Backend, 'linkCondoToUser').mockResolvedValue("Condo added!"); // Mock the linkCondoToUser function
+    jest.spyOn(PropertyHandler, "getUserCondos").mockResolvedValue(mockCondos);
+    jest.spyOn(Backend, "linkCondoToUser").mockResolvedValue("Condo added!"); // Mock the linkCondoToUser function
 
     render(
       <BrowserRouter>
@@ -157,24 +154,24 @@ describe("Dashboard Component", () => {
       </BrowserRouter>
     );
 
-    const registerButton = screen.getByText('Register my first condo');
+    const registerButton = screen.getByText("Register my first condo");
     fireEvent.click(registerButton);
 
-    expect(screen.getByText('Register your condo')).toBeInTheDocument();
+    expect(screen.getByText("Register your condo")).toBeInTheDocument();
 
-    const condoKeyInput = screen.getByTestId('condo-key-input');
-    fireEvent.change(condoKeyInput, { target: { value: 'mocked-condo-key' } });
+    const condoKeyInput = screen.getByTestId("condo-key-input");
+    fireEvent.change(condoKeyInput, { target: { value: "mocked-condo-key" } });
 
-    const submitButton = screen.getByText('Submit Key');
+    const submitButton = screen.getByText("Submit Key");
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(toast.success).toHaveBeenCalledWith('Condo added!');
-      expect(screen.queryByText('Register your condo')).not.toBeInTheDocument();
+      expect(toast.success).toHaveBeenCalledWith("Condo added!");
+      expect(screen.queryByText("Register your condo")).not.toBeInTheDocument();
     });
   });
 
- /*  it('displays error message if condo registration fails', async () => {
+  /*  it('displays error message if condo registration fails', async () => {
     const mockCondos = []; 
     jest.spyOn(PropertyHandler, 'getUserCondos').mockResolvedValue(mockCondos);
     jest.spyOn(Backend, 'linkCondoToUser').mockRejectedValue("Error adding condo!"); 
@@ -207,5 +204,4 @@ describe("Dashboard Component", () => {
     });
   });
  */
-
 });

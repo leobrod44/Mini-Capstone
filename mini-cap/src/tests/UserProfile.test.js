@@ -192,5 +192,140 @@ describe("UserProfile Component", () => {
     });
   });
 
+  it("fetches and displays company data for a management company user", async () => {
+    // Mock the store for a management company user
+    store.mockImplementation((key) => {
+      if (key === "role") {
+        return Constants.MANAGEMENT_COMPANY;
+      }
+      // Return some user ID for 'user' key or other data as needed
+      return "management-user-id";
+    });
+
+    // Mock getCompanyData for a management company user
+    UserHandler.getCompanyData.mockResolvedValue({
+      companyName: "Acme Corp",
+      email: "info@acmecorp.com",
+      phoneNumber: "1234567890",
+    });
+
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Acme Corp")).toBeInTheDocument();
+      expect(screen.getByText("info@acmecorp.com")).toBeInTheDocument();
+    });
+  });
+
+  it("fetches and displays user data for a renter/owner user", async () => {
+    // Mock the store for a renter/owner user
+    store.mockImplementation((key) => {
+      if (key === "role") {
+        return Constants.RENTER_OWNER;
+      }
+      // Return some user ID for 'user' key or other data as needed
+      return "renter-owner-user-id";
+    });
+
+    // Mock getUserData for a renter/owner user
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
+
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("John")).toBeInTheDocument();
+      expect(screen.getByText("Doe")).toBeInTheDocument();
+    });
+  });
+
+  it("displays error for unsupported file type on photo upload", async () => {
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+    // Find the file input and simulate a user selecting a file
+    const fileInput = screen.getByLabelText(/choose an image/i);
+    const file = new File(["(⌐□_□)"], "cool.txt", { type: "text/plain" });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    // Find the upload button and click it to trigger the handlePhotoChange function
+    const uploadButton = screen.getByText(/upload/i);
+    fireEvent.click(uploadButton);
+
+    // Now we wait for the error message to show up
+    await waitFor(() => {
+      expect(screen.getByText("File not supported")).toBeInTheDocument();
+    });
+  });
+
+  it("displays error for file size greater than 2 MB on photo upload", async () => {
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+    // Create a mock file with size greater than 2 MB
+    const largeFile = new File(["a".repeat(2097153)], "large-image.jpg", {
+      type: "image/jpeg",
+    });
+
+    // Get the file input and simulate a user selecting a large file
+    const fileInput = screen.getByLabelText(/choose an image/i);
+    fireEvent.change(fileInput, { target: { files: [largeFile] } });
+
+    // Since the Upload button triggers the handlePhotoChange, we click it
+    const uploadButton = screen.getByText(/upload/i);
+    fireEvent.click(uploadButton);
+
+    // Now we wait for the error message to show up
+    await waitFor(() => {
+      expect(
+        screen.getByText("File must be less than 2 MB")
+      ).toBeInTheDocument();
+    });
+  });
+
+  it("displays error if updateUserPicture fails", async () => {
+    // Mock the updateUserPicture to throw an error
+    const mockUpdateUserPicture = jest.spyOn(ImageHandler, "updateUserPicture");
+    const errorMessage = "Upload failed";
+    mockUpdateUserPicture.mockRejectedValueOnce(new Error(errorMessage));
+
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+    // ...rest of your test setup, including simulating the file upload
+
+    const uploadButton = screen.getByText(/upload/i);
+    fireEvent.click(uploadButton);
+
+    // Now we wait for the error message to show up after the upload attempt
+    await waitFor(() => {
+      expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    });
+
+    // Clean up the mock to not interfere with other tests
+    mockUpdateUserPicture.mockRestore();
+  });
+
   // Add more tests as needed to cover other scenarios and functionalities
 });

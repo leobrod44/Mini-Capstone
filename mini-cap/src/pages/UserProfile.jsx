@@ -38,7 +38,7 @@ const UserProfile = () => {
   useEffect(() => {
     async function fetchUserData() {
       let tempData;
-      let role = store("role");
+      let role = store("role") || RENTER_OWNER;
       setTheRole(role);
       // Assume store("user") is being used correctly to fetch user-specific data
 
