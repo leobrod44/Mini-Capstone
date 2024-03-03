@@ -16,7 +16,7 @@ const DeleteModal = ({ show, handleClose, handleDeleteItem, message }) => {
             </Modal.Header>
             <Modal.Body><p>{message}</p></Modal.Body>
             <Modal.Footer>
-                <Button variant="danger" onClick={handleDeleteItem}>
+                <Button variant="danger" onClick={handleDeleteItem} data-testid="delete-account">
                     Delete Account
                 </Button>
                 <Button

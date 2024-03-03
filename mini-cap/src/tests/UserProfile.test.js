@@ -1,12 +1,12 @@
 import React from "react";
-import { render, fireEvent, screen, waitFor, cleanup } from "@testing-library/react";
+import { render, fireEvent, screen, waitFor, cleanup, getByTestId } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import UserProfile from "../pages/UserProfile";
 import { BrowserRouter } from "react-router-dom";
 import * as UserHandler from "../backend/UserHandler";
 import * as ImageHandler from "../backend/ImageHandler";
 import { toast } from "react-toastify";
-
+import DeleteModal from '../components/DeleteModal';
 
 jest.mock("../backend/UserHandler", () => ({
   ...jest.requireActual("../backend/UserHandler"),
@@ -17,6 +17,7 @@ jest.mock("../backend/UserHandler", () => ({
     phoneNumber: "1234567890",
   }),
   updateUserInfo: jest.fn().mockResolvedValue({ status: "success" }), // Add the mock for updateUserInfo
+  deleteAccount: jest.fn().mockResolvedValue({ status: 'success' }),
 }));
 
 
@@ -153,24 +154,22 @@ describe("UserProfile Component", () => {
   });
 
   it("deletes user account", async () => {
+     // Mock getUserData
+     UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
     render(
       <BrowserRouter>
         <UserProfile />
       </BrowserRouter>
     );
-
-    fireEvent.click(screen.getByText(/delete account/i));
-    await waitFor(() => {
-      expect(
-        screen.getByText(/please enter your password/i)
-      ).toBeInTheDocument();
-    });
-
-    fireEvent.change(screen.getByPlaceholderText(/password/i), {
-      target: { value: "password" },
-    });
-    fireEvent.click(screen.getByText(/confirm/i));
-
+      // Mock the deleteAccount function
+      UserHandler.deleteAccount.mockResolvedValueOnce({ status: 'success' });
+     fireEvent.click(screen.getByText(/delete account/i));
+    
     await waitFor(() => {
       expect(UserHandler.deleteAccount).toHaveBeenCalledWith(
         "john.doe@example.com"
@@ -178,6 +177,62 @@ describe("UserProfile Component", () => {
       expect(
         screen.queryByText(/john.doe@example.com/)
       ).not.toBeInTheDocument();
+    });
+  });
+
+  it('opens delete modal when delete account button is clicked', async () => {
+      // Mock getUserData
+      UserHandler.getUserData.mockResolvedValue({
+        firstName: "John",
+        lastName: "Doe",
+        email: "john.doe@example.com",
+        phoneNumber: "1234567890",
+      });
+
+    const { getByText } = render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+    fireEvent.click(getByText(/delete account/i));
+
+    // Expect the delete modal to be displayed
+    expect(getByText(/confirm delete/i)).toBeInTheDocument();
+  });
+
+  it('redirects to landing page after confirming deletion', async () => {
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
+
+    const { getByText, getByTestId, queryByText } = render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+    // Mock the confirmation of deletion
+    UserHandler.deleteAccount.mockResolvedValueOnce({ status: 'success' });
+
+    fireEvent.click(getByText(/delete account/i));
+    await waitFor(() => {
+      expect(queryByText(/confirm delete/i)).toBeInTheDocument();
+    });
+  
+   // Click the "Delete Account" button in the modal to confirm deletion
+   fireEvent.click(getByTestId("delete-account"));
+
+  
+    // Expect the user to be redirected to the landing page after deletion confirmation 
+    await waitFor(() => {
+      expect(queryByText(/confirm delete/i)).not.toBeInTheDocument();
+      expect(window.location.pathname).toBe("/");
+      
     });
   });
 
