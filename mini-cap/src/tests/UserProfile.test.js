@@ -368,4 +368,57 @@ describe("UserProfile Component", () => {
       expect(screen.getByText(errorMessage)).toBeInTheDocument();
     });
   });
+
+  it('should display error if any password field is empty', async () => {
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
+
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+    const changePasswordButton = screen.getByText('Change Password');
+    fireEvent.click(changePasswordButton);
+    expect(toast.error).toHaveBeenCalledWith('Please make sure all password fields are filled out');
+  });
+
+
+  it('should display error if phone number format is incorrect', async () => {
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@example.com',
+      phoneNumber: '1234567890',
+    });
+
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+  // Trigger edit mode
+  const editButton = screen.getByText('Edit Profile');
+  fireEvent.click(editButton);
+    // Simulate editing phone number with incorrect format
+    const phoneNumberInput = screen.getByTestId("PHONE");
+    fireEvent.change(phoneNumberInput, { target: { value: '123' } });
+
+    // Click the save button
+    const saveButton = screen.getByText('Save Changes');
+    fireEvent.click(saveButton);
+
+    // Check if error toast is displayed
+    expect(UserHandler.updateUserInfo).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledWith('Please make sure the phone number format is correct');
+    
+  });
+
 });

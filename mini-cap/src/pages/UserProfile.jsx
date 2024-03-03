@@ -499,6 +499,7 @@ const UserProfile = () => {
                               value={phoneNumber || ""}
                               placeholder="Phone Number"
                               onChange={handlePhoneNumberChange}
+                              data-testid="PHONE"
                             />
                           ) : (
                             <span>
