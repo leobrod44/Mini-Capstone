@@ -7,7 +7,7 @@ import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn c
 import "../index.css";
 import "../styling/PropertyDetailsPage.css";
 import CondoMgmtComponent from "../components/CondoMGMTComponent";
-import { getCondos } from "../backend/PropertyHandler";
+import {getCondos, getPropertyData} from "../backend/PropertyHandler";
 import { getCondoPicture } from "../backend/ImageHandler";
 
 
@@ -24,7 +24,8 @@ const PropertyDetailsPage = () => {
       try {
         const condos = await getCondos(propertyID);
         await Promise.all(condos.map(async (condo) => {
-          condoPicURL = await getCondoPicture(condo.propertyName + "/" + condo.unitNumber);
+          const propertyData = await getPropertyData(condo.property);
+          condoPicURL = await getCondoPicture(propertyData["propertyName"] + "/" + condo.unitNumber);
           setCondoPicURL(condoPicURL);
           condo.picture = condoPicURL;
           return { ...condo };

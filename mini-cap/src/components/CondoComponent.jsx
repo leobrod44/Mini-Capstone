@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import "../styling/CondoComponent.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 const CondoComponent = ({ condo }) => {
     const { property, picture, address, unitNumber, parkingNumber, lockerNumber, userType } = condo;
-    const navigate = useNavigate();
     
     const userTypeClass = userType === 'Owner' ? 'owner' : 'renter';
 
@@ -20,12 +19,12 @@ const CondoComponent = ({ condo }) => {
                 
                 {picture && <img src={picture} alt="Profile" className="profile-picture" />}
                 <p>{address}</p>
-                <p>Unit #: {unitNumber}</p>
-                {parkingNumber && <p>Parking #: {parkingNumber}</p>}
+                <p>Unit Number: {unitNumber}</p>
+                {parkingNumber && <p>Parking Spot: {parkingNumber}</p>}
                 
                 <div className='locker-details'>
 
-                    {lockerNumber && <p>Locker #: {lockerNumber}</p>}
+                    {lockerNumber && <p>Locker: {lockerNumber}</p>}
                     {/*<button className="details-button">Details</button> */}
                     <Link to="/condo-details" className="details-button">Details</Link>
                     
@@ -36,13 +35,15 @@ const CondoComponent = ({ condo }) => {
 };
 
 CondoComponent.propTypes = {
-    property: PropTypes.string,
-    profilePicture: PropTypes.string,
-    address: PropTypes.string,
-    unitNumber: PropTypes.string,
-    parkingSpot: PropTypes.string,
-    locker: PropTypes.string,
-    userType: PropTypes.string
+    condo: PropTypes.shape({
+        property: PropTypes.string.isRequired,
+        picture: PropTypes.string.isRequired,
+        address: PropTypes.string.isRequired,
+        unitNumber: PropTypes.string.isRequired,
+        parkingNumber: PropTypes.string.isRequired,
+        lockerNumber: PropTypes.string.isRequired,
+        userType: PropTypes.string.isRequired
+      }).isRequired
 };
 
 export default CondoComponent;

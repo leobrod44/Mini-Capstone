@@ -21,7 +21,6 @@ import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
 
 const UserProfile = () => {
   const [isEditMode, setIsEditMode] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(user);
   const [show, setShow] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -122,14 +121,15 @@ const UserProfile = () => {
 
       try {
         updateUserPicture(store("user"), photo);
+        setImageSrc(photo);
       } catch (e) {
         toast.error(e);
       }
       toast.success("Profile picture updated successfully.");
 
       const fileReader = new FileReader();
-      fileReader.onload = () => {
-        setPreviewUrl(fileReader.result);
+      fileReader.onloadend = () => {
+        setImageSrc(fileReader.result);
       };
       fileReader.readAsDataURL(photo);
     } catch (e) {
@@ -243,7 +243,7 @@ const UserProfile = () => {
                   <div className="card">
                     <div className="card-body">
                       <div className="d-flex flex-column align-items-center text-center">
-                        {previewUrl ? (
+                        {imageSrc ? (
                           <img
                             src={imageSrc}
                             alt="Profile"
@@ -256,7 +256,7 @@ const UserProfile = () => {
                           />
                         ) : (
                           <img
-                            src={imageSrc}
+                            src={user}
                             alt="profile.jpg"
                             className="rounded-circle"
                             width={150}
@@ -383,7 +383,7 @@ const UserProfile = () => {
                     handleClose={handleClose}
                     handleDeleteItem={deleteAccountAttempt}
                     message={
-                      "Please enter your password to delete the account."
+                      "Are you sure you want to permanently delete your account?"
                     }
                   />
                 </div>
