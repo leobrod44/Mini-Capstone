@@ -323,5 +323,41 @@ describe("UserProfile Component", () => {
 
   
 
+  it("displays error for file size greater than 2 MB on photo upload", async () => {
+      // Mock getUserData
+      UserHandler.getUserData.mockResolvedValue({
+        firstName: "John",
+        lastName: "Doe",
+        email: "john.doe@example.com",
+        phoneNumber: "1234567890",
+      });
+
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+
+    // Create a mock file with size greater than 2 MB
+    const largeFile = new File(["a".repeat(2097153)], "large-image.jpg", {
+      type: "image/jpeg",
+    });
+
+
+    // Get the file input and simulate a user selecting a large file
+    const fileInput = screen.getByLabelText(/choose an image/i);
+    fireEvent.change(fileInput, { target: { files: [largeFile] } });
+
+
+     const uploadButton = screen.getByText(/upload/i);
+    fireEvent.click(uploadButton);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith("File must be less than 2 MB");
+    });
+  });
+
+
 
 });
