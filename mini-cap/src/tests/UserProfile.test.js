@@ -163,7 +163,37 @@ describe("UserProfile Component", () => {
       expect(toast.error).toHaveBeenCalledWith("File not supported");
     });
   });
-
+  it("displays success message on successful photo upload", async () => {
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
+  
+    // Mock the updateUserPicture function to resolve successfully
+    const mockUpdateUserPicture = jest.spyOn(ImageHandler, "updateUserPicture");
+    mockUpdateUserPicture.mockResolvedValueOnce();
+  
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+  
+    const fileInput = screen.getByLabelText(/choose an image/i);
+    const file = new File(["(⌐□_□)"], "cool.txt", { type: "image/jpeg" }); // Mock a valid image file
+    fireEvent.change(fileInput, { target: { files: [file] } });
+  
+    const uploadButton = screen.getByText(/upload/i);
+    fireEvent.click(uploadButton);
+  
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("Profile picture updated successfully.");
+    });
+  });
+  
   it("deletes user account", async () => {
     // Mock getUserData
     UserHandler.getUserData.mockResolvedValue({
