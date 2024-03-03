@@ -406,6 +406,7 @@ const UserProfile = () => {
                                 name="firstName"
                                 value={firstName}
                                 onChange={handleFirstNameChange}
+                                data-testid="FirstName"
                               />
                             ) : (
                               <span>{firstName}</span>
