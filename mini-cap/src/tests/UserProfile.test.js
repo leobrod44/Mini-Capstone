@@ -8,7 +8,15 @@ import * as ImageHandler from "../backend/ImageHandler";
 import { toast } from "react-toastify";
 
 
-jest.mock('../backend/UserHandler');
+jest.mock("../backend/UserHandler", () => ({
+  ...jest.requireActual("../backend/UserHandler"),
+  getUserData: jest.fn().mockResolvedValue({
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.doe@example.com",
+    phoneNumber: "1234567890",
+  }),
+}));
 jest.mock('../backend/ImageHandler');
 // Mocking toast
 afterEach(cleanup);
@@ -58,6 +66,13 @@ describe("UserProfile Component", () => {
   });
 
   it("allows user to enter and exit edit mode", async () => {
+     // Mock getUserData
+     UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
     render(
       <BrowserRouter>
         <UserProfile />
