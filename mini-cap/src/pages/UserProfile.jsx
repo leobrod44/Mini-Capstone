@@ -585,6 +585,7 @@ const UserProfile = () => {
                                 placeholder="**********"
                                 value={currentPassword}
                                 onChange={handleCurrentPasswordChange}
+                                data-testid="CurrentPassword"
                               />
                             </div>
                           </div>
@@ -602,6 +603,7 @@ const UserProfile = () => {
                                 placeholder="**********"
                                 value={newPassword}
                                 onChange={handleNewPasswordChange}
+                                data-testid="NewPassword"
                               />
                             </div>
                           </div>
@@ -619,6 +621,7 @@ const UserProfile = () => {
                                 placeholder="**********"
                                 value={confirmPassword}
                                 onChange={handleConfirmPasswordChange}
+                                data-testid="ConfirmPassword"
                               />
                             </div>
                           </div>

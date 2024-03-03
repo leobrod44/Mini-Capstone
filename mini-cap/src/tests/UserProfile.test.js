@@ -16,8 +16,9 @@ jest.mock("../backend/UserHandler", () => ({
     email: "john.doe@example.com",
     phoneNumber: "1234567890",
   }),
-  updateUserInfo: jest.fn().mockResolvedValue({ status: "success" }), // Add the mock for updateUserInfo
+  updateUserInfo: jest.fn().mockResolvedValue({ status: "success" }), 
   deleteAccount: jest.fn().mockResolvedValue({ status: 'success' }),
+  changePassword: jest.fn().mockResolvedValue({ status: 'success' }),
 }));
 
 
@@ -232,10 +233,57 @@ describe("UserProfile Component", () => {
     await waitFor(() => {
       expect(queryByText(/confirm delete/i)).not.toBeInTheDocument();
       expect(window.location.pathname).toBe("/");
-      
+
+    });
+  });
+
+  it("changes user password", async () => {
+     // Mock getUserData
+     UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
+    
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+
+    fireEvent.click(screen.getByText(/change password/i));
+    await waitFor(() => {
+      expect(screen.getByText(/current password/i)).toBeInTheDocument();
+    });
+
+
+    fireEvent.change(screen.getByTestId("CurrentPassword"), {
+      target: { value: "password" },
+    });
+    fireEvent.change(screen.getByTestId("NewPassword"), {
+      target: { value: "newpassword" },
+    });
+    fireEvent.change(screen.getByTestId("ConfirmPassword"), {
+      target: { value: "newpassword" }, 
+    });
+    fireEvent.click(screen.getByText(/change password/i));
+
+
+    await waitFor(() => {
+      expect(UserHandler.changePassword).toHaveBeenCalledWith(
+        {
+          currentPassword: "password",
+          newPassword: "newpassword",
+          email: "john.doe@example.com",
+        }
+      );
+      expect(
+        screen.getByText(/password updated successfully/i)
+      ).toBeInTheDocument();
     });
   });
 
 
-  // Add more tests as needed to cover other scenarios and functionalities
 });
