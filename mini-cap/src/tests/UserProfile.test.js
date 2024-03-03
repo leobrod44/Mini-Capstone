@@ -19,6 +19,13 @@ jest.mock("../backend/UserHandler", () => ({
   updateUserInfo: jest.fn().mockResolvedValue({ status: "success" }), 
   deleteAccount: jest.fn().mockResolvedValue({ status: 'success' }),
   changePassword: jest.fn().mockResolvedValue({ status: 'success' }),
+  
+  getCompanyData: jest.fn().mockResolvedValue({
+    companyName: "Acme Corp",
+    email: "info@acmecorp.com",
+    phoneNumber: "1234567890",
+  }),
+
 }));
 
 
@@ -284,6 +291,37 @@ describe("UserProfile Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+
+
+  
+
+  it("fetches and displays company data on component mount for a management company", async () => {
+    // Mock getCompanyData
+    UserHandler.getCompanyData.mockResolvedValue({
+      companyName: "Acme Corp",
+      email: "info@acmecorp.com",
+      phoneNumber: "1234567890",
+    });
+
+
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+
+    await waitFor(() => {
+      expect(UserHandler.getCompanyData).toHaveBeenCalledTimes(1); 
+      expect(screen.getByText("Acme Corp")).toBeInTheDocument();
+      expect(screen.getByText("info@acmecorp.com")).toBeInTheDocument();
+    });
+  });
+
+
+
+  
 
 
 });
