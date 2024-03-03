@@ -171,10 +171,45 @@ describe("Dashboard Component", () => {
     });
   });
 
-  /*  it('displays error message if condo registration fails', async () => {
+   it('displays error message if condo registration fails', async () => {
     const mockCondos = []; 
     jest.spyOn(PropertyHandler, 'getUserCondos').mockResolvedValue(mockCondos);
-    jest.spyOn(Backend, 'linkCondoToUser').mockRejectedValue("Error adding condo!"); 
+    jest.spyOn(Backend, 'linkCondoToUser').mockRejectedValue("Error adding condo"); 
+
+    render(
+      <BrowserRouter>
+        <Dashboard />
+      </BrowserRouter>
+    );
+
+    // Click the button to register a condo
+    const registerButton = screen.getByText('Register my first condo');
+    fireEvent.click(registerButton);
+
+    // Ensure the registration popup is displayed
+    expect(screen.getByText('Register your condo')).toBeInTheDocument();
+
+    // Assuming you have some way to simulate a condo key, for instance, a text input
+    const condoKeyInput = screen.getByTestId('condo-key-input');
+    fireEvent.change(condoKeyInput, { target: { value: '12345678912345678912' } });
+
+    // Simulate clicking the submit button
+    const submitButton = screen.getByText('Submit Key');
+    fireEvent.click(submitButton);
+
+    // Wait for asynchronous operations to complete
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Error adding condo');
+      expect(screen.getByText('Register your condo')).toBeInTheDocument(); // Popup should still be visible
+    });
+  });
+ 
+
+  
+  it('displays error message if key is not valid', async () => {
+    const mockCondos = []; 
+    jest.spyOn(PropertyHandler, 'getUserCondos').mockResolvedValue(mockCondos);
+    jest.spyOn(Backend, 'linkCondoToUser').mockRejectedValue("Key is not valid!"); 
 
     render(
       <BrowserRouter>
@@ -199,9 +234,9 @@ describe("Dashboard Component", () => {
 
     // Wait for asynchronous operations to complete
     await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith('Error adding condo!');
+      expect(toast.error).toHaveBeenCalledWith('Key is not valid!');
       expect(screen.getByText('Register your condo')).toBeInTheDocument(); // Popup should still be visible
     });
   });
- */
+ 
 });
