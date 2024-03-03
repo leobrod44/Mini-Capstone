@@ -1,12 +1,19 @@
 import React from "react";
-import { render, fireEvent, screen, waitFor, cleanup, getByTestId } from "@testing-library/react";
+import {
+  render,
+  fireEvent,
+  screen,
+  waitFor,
+  cleanup,
+  getByTestId,
+} from "@testing-library/react";
 import "@testing-library/jest-dom";
 import UserProfile from "../pages/UserProfile";
 import { BrowserRouter } from "react-router-dom";
 import * as UserHandler from "../backend/UserHandler";
 import * as ImageHandler from "../backend/ImageHandler";
 import { toast } from "react-toastify";
-import DeleteModal from '../components/DeleteModal';
+import DeleteModal from "../components/DeleteModal";
 
 jest.mock("../backend/UserHandler", () => ({
   ...jest.requireActual("../backend/UserHandler"),
@@ -16,24 +23,20 @@ jest.mock("../backend/UserHandler", () => ({
     email: "john.doe@example.com",
     phoneNumber: "1234567890",
   }),
-  updateUserInfo: jest.fn().mockResolvedValue({ status: "success" }), 
-  deleteAccount: jest.fn().mockResolvedValue({ status: 'success' }),
-  changePassword: jest.fn().mockResolvedValue({ status: 'success' }),
-  
+  updateUserInfo: jest.fn().mockResolvedValue({ status: "success" }),
+  deleteAccount: jest.fn().mockResolvedValue({ status: "success" }),
+  changePassword: jest.fn().mockResolvedValue({ status: "success" }),
+
   getCompanyData: jest.fn().mockResolvedValue({
     companyName: "Acme Corp",
     email: "info@acmecorp.com",
     phoneNumber: "1234567890",
   }),
-
 }));
 
-
-
-jest.mock('../backend/ImageHandler');
+jest.mock("../backend/ImageHandler");
 // Mocking toast
 afterEach(cleanup);
-
 
 jest.mock("react-toastify", () => {
   const originalModule = jest.requireActual("react-toastify");
@@ -79,8 +82,8 @@ describe("UserProfile Component", () => {
   });
 
   it("allows user to enter and exit edit mode", async () => {
-     // Mock getUserData
-     UserHandler.getUserData.mockResolvedValue({
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
       firstName: "John",
       lastName: "Doe",
       email: "john.doe@example.com",
@@ -132,16 +135,14 @@ describe("UserProfile Component", () => {
     expect(screen.getByDisplayValue("Jane")).toBeInTheDocument();
   });
 
-
-
   it("displays error for unsupported file type on photo upload", async () => {
-       // Mock getUserData
-       UserHandler.getUserData.mockResolvedValue({
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        phoneNumber: "1234567890",
-      });
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
 
     render(
       <BrowserRouter>
@@ -162,8 +163,8 @@ describe("UserProfile Component", () => {
   });
 
   it("deletes user account", async () => {
-     // Mock getUserData
-     UserHandler.getUserData.mockResolvedValue({
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
       firstName: "John",
       lastName: "Doe",
       email: "john.doe@example.com",
@@ -174,10 +175,10 @@ describe("UserProfile Component", () => {
         <UserProfile />
       </BrowserRouter>
     );
-      // Mock the deleteAccount function
-      UserHandler.deleteAccount.mockResolvedValueOnce({ status: 'success' });
-     fireEvent.click(screen.getByText(/delete account/i));
-    
+    // Mock the deleteAccount function
+    UserHandler.deleteAccount.mockResolvedValueOnce({ status: "success" });
+    fireEvent.click(screen.getByText(/delete account/i));
+
     await waitFor(() => {
       expect(UserHandler.deleteAccount).toHaveBeenCalledWith(
         "john.doe@example.com"
@@ -188,14 +189,14 @@ describe("UserProfile Component", () => {
     });
   });
 
-  it('opens delete modal when delete account button is clicked', async () => {
-      // Mock getUserData
-      UserHandler.getUserData.mockResolvedValue({
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        phoneNumber: "1234567890",
-      });
+  it("opens delete modal when delete account button is clicked", async () => {
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
 
     const { getByText } = render(
       <BrowserRouter>
@@ -209,7 +210,7 @@ describe("UserProfile Component", () => {
     expect(getByText(/confirm delete/i)).toBeInTheDocument();
   });
 
-  it('redirects to landing page after confirming deletion', async () => {
+  it("redirects to landing page after confirming deletion", async () => {
     // Mock getUserData
     UserHandler.getUserData.mockResolvedValue({
       firstName: "John",
@@ -225,46 +226,42 @@ describe("UserProfile Component", () => {
     );
 
     // Mock the confirmation of deletion
-    UserHandler.deleteAccount.mockResolvedValueOnce({ status: 'success' });
+    UserHandler.deleteAccount.mockResolvedValueOnce({ status: "success" });
 
     fireEvent.click(getByText(/delete account/i));
     await waitFor(() => {
       expect(queryByText(/confirm delete/i)).toBeInTheDocument();
     });
-  
-   // Click the "Delete Account" button in the modal to confirm deletion
-   fireEvent.click(getByTestId("delete-account"));
 
-  
-    // Expect the user to be redirected to the landing page after deletion confirmation 
+    // Click the "Delete Account" button in the modal to confirm deletion
+    fireEvent.click(getByTestId("delete-account"));
+
+    // Expect the user to be redirected to the landing page after deletion confirmation
     await waitFor(() => {
       expect(queryByText(/confirm delete/i)).not.toBeInTheDocument();
       expect(window.location.pathname).toBe("/");
-
     });
   });
 
   it("changes user password", async () => {
-     // Mock getUserData
-     UserHandler.getUserData.mockResolvedValue({
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
       firstName: "John",
       lastName: "Doe",
       email: "john.doe@example.com",
       phoneNumber: "1234567890",
     });
-    
+
     render(
       <BrowserRouter>
         <UserProfile />
       </BrowserRouter>
     );
 
-
     fireEvent.click(screen.getByText(/change password/i));
     await waitFor(() => {
       expect(screen.getByText(/current password/i)).toBeInTheDocument();
     });
-
 
     fireEvent.change(screen.getByTestId("CurrentPassword"), {
       target: { value: "password" },
@@ -273,28 +270,21 @@ describe("UserProfile Component", () => {
       target: { value: "newpassword" },
     });
     fireEvent.change(screen.getByTestId("ConfirmPassword"), {
-      target: { value: "newpassword" }, 
+      target: { value: "newpassword" },
     });
     fireEvent.click(screen.getByText(/change password/i));
 
-
     await waitFor(() => {
-      expect(UserHandler.changePassword).toHaveBeenCalledWith(
-        {
-          currentPassword: "password",
-          newPassword: "newpassword",
-          email: "john.doe@example.com",
-        }
-      );
+      expect(UserHandler.changePassword).toHaveBeenCalledWith({
+        currentPassword: "password",
+        newPassword: "newpassword",
+        email: "john.doe@example.com",
+      });
       expect(
         screen.getByText(/password updated successfully/i)
       ).toBeInTheDocument();
     });
   });
-
-
-
-  
 
   it("fetches and displays company data on component mount for a management company", async () => {
     // Mock getCompanyData
@@ -304,53 +294,44 @@ describe("UserProfile Component", () => {
       phoneNumber: "1234567890",
     });
 
-
     render(
       <BrowserRouter>
         <UserProfile />
       </BrowserRouter>
     );
 
-
     await waitFor(() => {
-      expect(UserHandler.getCompanyData).toHaveBeenCalledTimes(1); 
+      expect(UserHandler.getCompanyData).toHaveBeenCalledTimes(1);
       expect(screen.getByText("Acme Corp")).toBeInTheDocument();
       expect(screen.getByText("info@acmecorp.com")).toBeInTheDocument();
     });
   });
 
-
-
-  
-
   it("displays error for file size greater than 2 MB on photo upload", async () => {
-      // Mock getUserData
-      UserHandler.getUserData.mockResolvedValue({
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        phoneNumber: "1234567890",
-      });
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
 
     render(
       <BrowserRouter>
         <UserProfile />
       </BrowserRouter>
     );
-
 
     // Create a mock file with size greater than 2 MB
     const largeFile = new File(["a".repeat(2097153)], "large-image.jpg", {
       type: "image/jpeg",
     });
 
-
     // Get the file input and simulate a user selecting a large file
     const fileInput = screen.getByLabelText(/choose an image/i);
     fireEvent.change(fileInput, { target: { files: [largeFile] } });
 
-
-     const uploadButton = screen.getByText(/upload/i);
+    const uploadButton = screen.getByText(/upload/i);
     fireEvent.click(uploadButton);
 
     await waitFor(() => {
@@ -358,6 +339,33 @@ describe("UserProfile Component", () => {
     });
   });
 
+  it("displays error if updateUserPicture fails", async () => {
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
 
+    // Mock the updateUserPicture to throw an error
+    const mockUpdateUserPicture = jest.spyOn(ImageHandler, "updateUserPicture");
+    const errorMessage = "Upload failed";
+    mockUpdateUserPicture.mockRejectedValueOnce(new Error(errorMessage));
 
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+
+    // ...rest of your test setup, including simulating the file upload
+
+    const uploadButton = screen.getByText(/upload/i);
+    fireEvent.click(uploadButton);
+    // Now we wait for the error message to show up after the upload attempt
+    await waitFor(() => {
+      expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    });
+  });
 });
