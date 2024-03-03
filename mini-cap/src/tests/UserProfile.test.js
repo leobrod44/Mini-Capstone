@@ -126,6 +126,14 @@ describe("UserProfile Component", () => {
 
 
   it("displays error for unsupported file type on photo upload", async () => {
+       // Mock getUserData
+       UserHandler.getUserData.mockResolvedValue({
+        firstName: "John",
+        lastName: "Doe",
+        email: "john.doe@example.com",
+        phoneNumber: "1234567890",
+      });
+
     render(
       <BrowserRouter>
         <UserProfile />
@@ -136,10 +144,12 @@ describe("UserProfile Component", () => {
     const file = new File(["(⌐□_□)"], "cool.txt", { type: "text/plain" });
     fireEvent.change(fileInput, { target: { files: [file] } });
 
-    expect(toast.error).toHaveBeenCalledWith(
-      "File not supported"
-    );
- 
+    const uploadButton = screen.getByText(/upload/i);
+    fireEvent.click(uploadButton);
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith("File not supported");
+    });
   });
 
   it("deletes user account", async () => {
