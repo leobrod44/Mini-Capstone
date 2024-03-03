@@ -433,6 +433,7 @@ const UserProfile = () => {
                                 name="lastName"
                                 value={lastName}
                                 onChange={handleLastNameChange}
+                                data-testid="LastName"
                               />
                             ) : (
                               <span>{lastName}</span>
@@ -457,6 +458,7 @@ const UserProfile = () => {
                                 name="Company Name"
                                 value={companyName}
                                 onChange={handleCompanyNameChange}
+                                data-testid="CompanyName"
                               />
                             ) : (
                               <span>{companyName}</span>

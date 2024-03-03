@@ -24,6 +24,7 @@ jest.mock("../backend/UserHandler", () => ({
     phoneNumber: "1234567890",
   }),
   updateUserInfo: jest.fn().mockResolvedValue({ status: "success" }),
+  updateCompanyInfo: jest.fn().mockResolvedValue({status: "success"}),
   deleteAccount: jest.fn().mockResolvedValue({ status: "success" }),
   changePassword: jest.fn().mockResolvedValue({ status: "success" }),
 
@@ -131,7 +132,8 @@ describe("UserProfile Component", () => {
     UserHandler.updateUserInfo.mockResolvedValueOnce({ status: "success" });
 
     fireEvent.click(screen.getByText(/save changes/i));
-
+    
+    expect(toast.success).toHaveBeenCalledWith('User info updated successfully');
     expect(screen.getByDisplayValue("Jane")).toBeInTheDocument();
   });
 
@@ -389,6 +391,79 @@ describe("UserProfile Component", () => {
     expect(toast.error).toHaveBeenCalledWith('Please make sure all password fields are filled out');
   });
 
+  it('should display error if new password and confirm password fields are different', async () => {
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: "John",
+      lastName: "Doe",
+      email: "john.doe@example.com",
+      phoneNumber: "1234567890",
+    });
+  
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+  
+    const changePasswordButton = screen.getByText('Change Password');
+    fireEvent.click(changePasswordButton);
+  
+    const currentPasswordInput = screen.getByTestId('CurrentPassword');
+    fireEvent.change(currentPasswordInput, { target: { value: 'currentPassword' } });
+  
+    const newPasswordInput = screen.getByTestId('NewPassword');
+    fireEvent.change(newPasswordInput, { target: { value: 'newPassword' } });
+  
+    const confirmPasswordInput = screen.getByTestId('ConfirmPassword');
+    fireEvent.change(confirmPasswordInput, { target: { value: 'differentPassword' } });
+  
+    fireEvent.click(screen.getByText('Change Password'));
+  
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('New passwords do not match');
+    });
+  });
+  
+  it('should display error if password is less than 8 characters', async () => {
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@example.com',
+      phoneNumber: '1234567890',
+    });
+  
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+  
+    const changePasswordButton = screen.getByText('Change Password');
+    fireEvent.click(changePasswordButton);
+  
+      
+    const currentPasswordInput = screen.getByTestId('CurrentPassword');
+    fireEvent.change(currentPasswordInput, { target: { value: 'currentPassword' } });
+  
+
+    // Enter a password less than 8 characters
+    const newPasswordInput = screen.getByTestId('NewPassword');
+    fireEvent.change(newPasswordInput, { target: { value: 'pass' } });
+
+    const confirmNewPasswordInput = screen.getByTestId('ConfirmPassword');
+    fireEvent.change(confirmNewPasswordInput, { target: { value: 'pass' } });
+
+    const changePasswordSubmitButton = screen.getByText('Change Password');
+    fireEvent.click(changePasswordSubmitButton);
+  
+    // Check if error toast is displayed
+    await waitFor(() => {
+      expect(UserHandler.changePassword).not.toHaveBeenCalled();
+      expect(toast.error).toHaveBeenCalledWith('Password must be at least 8 characters');
+    });
+  });
 
   it('should display error if phone number format is incorrect', async () => {
     // Mock getUserData
@@ -421,4 +496,39 @@ describe("UserProfile Component", () => {
     
   });
 
+  it('should display error if first name is empty', async () => {
+    // Mock getUserData
+    UserHandler.getUserData.mockResolvedValue({
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@example.com',
+      phoneNumber: '1234567890',
+    });
+  
+    render(
+      <BrowserRouter>
+        <UserProfile />
+      </BrowserRouter>
+    );
+  
+    // Trigger edit mode
+    const editButton = screen.getByText('Edit Profile');
+    fireEvent.click(editButton);
+  
+    // Simulate clearing the first name input
+    const firstNameInput = screen.getByTestId('FirstName');
+    fireEvent.change(firstNameInput, { target: { value: '' } });
+  
+    // Click the save button
+    const saveButton = screen.getByText('Save Changes');
+    fireEvent.click(saveButton);
+  
+    // Check if error toast is displayed
+    await waitFor(() => {
+      expect(UserHandler.updateUserInfo).not.toHaveBeenCalled();
+      expect(toast.error).toHaveBeenCalledWith('Please make sure "First Name" is not empty');
+    });
+  });
+
+ 
 });
