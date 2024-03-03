@@ -1,7 +1,8 @@
+import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styling/LandingPage.css"
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../index.css";
 import store from "storejs";
 
@@ -38,38 +39,30 @@ const LandingPage =() => {
 
           <div className="cards2">
             <div className="card2">
-              <h5 className="card-title2">Title 1</h5>
+              <h5 className="card-title2">Manage Your Properties</h5>
               <p>
                 {" "}
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                sed do eiusmod tempor inc Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                sed do eiusmod.
+                Condo Connect provides an easy-to-use and comprehensive platform that simplifies the 
+                condo management process for you! 
               </p>
             </div>
 
             <div className="card2">
-              <h5 className="card-title2">Title 2</h5>
+              <h5 className="card-title2">Easy Registration</h5>
               <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                sed do eiusmod tempor inc{" "}
+              Simply enter the unique condo key provided to you by email and start building your condo empire!
               </p>
             </div>
 
             <div className="card2">
-              <h5 className="card-title2">Title 3</h5>
+              <h5 className="card-title2">Help When You Need It</h5>
               <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                sed do eiusmod tempor incsed do eiusmod tempor inc.{" "}
+               Leaky sink? No problem! Condo Connect&apos;s easy request system will help you submit any and all
+               requests directly to the corresponding management companies account.
               </p>
             </div>
 
-            <div className="card2">
-              <h5 className="card-title2">Title 4</h5>
-              <p>
-               Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                sed do eiusmod tempor incsed do eiusmod tempor incsed do eiusmod tempor inc.
-              </p>
-            </div>
+          
           </div>
         </div>
       </section>
