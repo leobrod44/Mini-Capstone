@@ -9,7 +9,7 @@ import {
   checkEmailExists,
   loginUser,
   storeData,
-  deleteAccount
+  deleteAccount,
 } from "../backend/UserHandler"; // Import your function
 import {
   doc,
@@ -19,6 +19,8 @@ import {
   deleteDoc,
   getFirestore,
 } from "firebase/firestore";
+import * as UserHandler from "../backend/UserHandler";
+
 import { getStorage } from "firebase/storage";
 
 // Mock Firebase storage functions
@@ -138,6 +140,35 @@ describe("changePassword function", () => {
     jest.clearAllMocks();
   });
 
+  test("should change company password if current password matches and new password is different", async () => {
+    // Mock company document exists
+    const fakeCompanyDoc = {
+      exists: jest.fn(() => true),
+      data: jest.fn(() => ({ password: "oldCompanyPassword" })),
+    };
+    doc.mockReturnValue(fakeCompanyDoc);
+    getDoc
+      .mockResolvedValueOnce({ exists: jest.fn(() => false), data: jest.fn() }) // Simulate user not found
+      .mockResolvedValueOnce(fakeCompanyDoc); // Simulate company found
+
+    // Mock updateDoc function
+    updateDoc.mockResolvedValue();
+
+    const email = "company@example.com";
+    const data = {
+      email,
+      currentPassword: "oldCompanyPassword",
+      newPassword: "newCompanyPassword",
+    };
+
+    await expect(changePassword(email, data)).resolves.toEqual({
+      message: "Password updated successfully",
+    });
+    expect(updateDoc).toHaveBeenCalledWith(expect.anything(), {
+      password: "newCompanyPassword",
+    });
+  });
+
   test("should change user password if current password matches and new password is different", async () => {
     // Mock user document exists
     const fakeUserDoc = {
@@ -205,19 +236,21 @@ describe("checkEmailExists function", () => {
   });
 });
 
-
 //loginUser
-describe('logging in', () => {
+describe("logging in", () => {
   afterEach(() => {
     jest.clearAllMocks(); // Clear mock function calls after each test
   });
 
-  test('loginUser: should login the user', async () => {
+  test("loginUser: should login the user", async () => {
     const mockUserData = {
-      email: 'johndoe@gmail.com',
-      password: 'password12'
+      email: "johndoe@gmail.com",
+      password: "password12",
     };
-    const fakeUserDocSnap = { exists: jest.fn(() => true), data: jest.fn(() => mockUserData) };
+    const fakeUserDocSnap = {
+      exists: jest.fn(() => true),
+      data: jest.fn(() => mockUserData),
+    };
     const fakeUserDocRef = jest.fn();
     doc.mockReturnValueOnce(fakeUserDocRef);
     getDoc.mockResolvedValueOnce(fakeUserDocSnap);
@@ -230,17 +263,20 @@ describe('logging in', () => {
     await expect(loginUser(mockUserData)).resolves.not.toThrow();
   });
 
-  test('loginUser: should login the company', async () => {
+  test("loginUser: should login the company", async () => {
     const mockCompanyData = {
-      email: 'chad@gmail.com',
-      password: 'password123'
+      email: "chad@gmail.com",
+      password: "password123",
     };
     const fakeUserDocSnap = { exists: jest.fn(() => false) };
     const fakeUserDocRef = jest.fn();
     doc.mockReturnValueOnce(fakeUserDocRef);
     getDoc.mockResolvedValueOnce(fakeUserDocSnap);
 
-    const fakeCompanyDocSnap = { exists: jest.fn(() => true), data: jest.fn(() => mockCompanyData) };
+    const fakeCompanyDocSnap = {
+      exists: jest.fn(() => true),
+      data: jest.fn(() => mockCompanyData),
+    };
     const fakeCompanyDocRef = jest.fn();
     doc.mockReturnValueOnce(fakeCompanyDocRef);
     getDoc.mockResolvedValueOnce(fakeCompanyDocSnap);
@@ -248,10 +284,10 @@ describe('logging in', () => {
     await expect(loginUser(mockCompanyData)).resolves.not.toThrow();
   });
 
-  test('loginUser: should fail user login', async () => {
+  test("loginUser: should fail user login", async () => {
     const mockUserData = {
-      email: 'johndoe@gmail.com',
-      password: 'password12'
+      email: "johndoe@gmail.com",
+      password: "password12",
     };
     const fakeUserDocSnap = { exists: jest.fn(() => false) };
     const fakeUserDocRef = jest.fn();
@@ -263,13 +299,15 @@ describe('logging in', () => {
     doc.mockReturnValueOnce(fakeCompanyDocRef);
     getDoc.mockResolvedValueOnce(fakeCompanyDocSnap);
 
-    await expect(loginUser(mockUserData)).rejects.toThrow('User does not exist.');
+    await expect(loginUser(mockUserData)).rejects.toThrow(
+      "User does not exist."
+    );
   });
 
-  test('loginUser: should fail company login', async () => {
+  test("loginUser: should fail company login", async () => {
     const mockCompanyData = {
-      email: 'chad@gmail.com',
-      password: 'password123'
+      email: "chad@gmail.com",
+      password: "password123",
     };
     const fakeUserDocSnap = { exists: jest.fn(() => false) };
     const fakeUserDocRef = jest.fn();
@@ -281,25 +319,26 @@ describe('logging in', () => {
     doc.mockReturnValueOnce(fakeCompanyDocRef);
     getDoc.mockResolvedValueOnce(fakeCompanyDocSnap);
 
-    await expect(loginUser(mockCompanyData)).rejects.toThrow('User does not exist.');
+    await expect(loginUser(mockCompanyData)).rejects.toThrow(
+      "User does not exist."
+    );
   });
 });
 
-
 //storeData
-describe('storeData function', () => {
+describe("storeData function", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  test('should store data in Firestore and return document reference', async () => {
-    const mockCollection = 'Users';
+  test("should store data in Firestore and return document reference", async () => {
+    const mockCollection = "Users";
     const mockData = {
-      firstName: 'Store',
-      lastName: 'Data',
-      email: 'storeDataTest@gmail.com',
-      phoneNumber: '123-456-7890',
-      password: 'store123',
+      firstName: "Store",
+      lastName: "Data",
+      email: "storeDataTest@gmail.com",
+      phoneNumber: "123-456-7890",
+      password: "store123",
     };
     const mockKey = mockData["email"];
 
@@ -311,19 +350,23 @@ describe('storeData function', () => {
     const result = storeData(mockCollection, mockData, mockKey);
     await result;
 
-    expect(doc).toHaveBeenCalledWith(expect.anything(), mockCollection, mockKey);
+    expect(doc).toHaveBeenCalledWith(
+      expect.anything(),
+      mockCollection,
+      mockKey
+    );
     expect(setDoc).toHaveBeenCalledWith(fakeDocRef, mockData);
     expect(setDoc).toHaveBeenCalledTimes(1);
     expect(doc).toHaveBeenCalledTimes(1);
   });
 
-  test('should throw an error if an invalid collection is provided', async () => {
+  test("should throw an error if an invalid collection is provided", async () => {
     const mockData = {
-      firstName: 'Store',
-      lastName: 'Data',
-      email: 'storeDataTest@gmail.com',
-      phoneNumber: '123-456-7890',
-      password: 'store123',
+      firstName: "Store",
+      lastName: "Data",
+      email: "storeDataTest@gmail.com",
+      phoneNumber: "123-456-7890",
+      password: "store123",
     };
     const mockKey = mockData["email"];
 
@@ -331,20 +374,26 @@ describe('storeData function', () => {
       throw new Error(`Unexpected call to doc with arguments: ${args}`);
     });
 
-    await expect(storeData(undefined, mockData, mockKey)).rejects.toThrowError('Error adding document: ');
+    await expect(storeData(undefined, mockData, mockKey)).rejects.toThrowError(
+      "Error adding document: "
+    );
 
-    expect(doc).toHaveBeenCalledWith("mockedDb", undefined, 'storeDataTest@gmail.com');
+    expect(doc).toHaveBeenCalledWith(
+      "mockedDb",
+      undefined,
+      "storeDataTest@gmail.com"
+    );
   });
 });
 
 //deleteAccount
-describe('deleteAccount function', () => {
+describe("deleteAccount function", () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  test('should delete user account if exists', async () => {
-    const mockEmail = 'existingUser@gmail.com';
+  test("should delete user account if exists", async () => {
+    const mockEmail = "existingUser@gmail.com";
 
     const fakeUserDoc = { exists: jest.fn(() => true) };
     getDoc.mockResolvedValueOnce(fakeUserDoc);
@@ -355,8 +404,8 @@ describe('deleteAccount function', () => {
     expect(deleteDoc).toHaveBeenCalledTimes(1);
   });
 
-  test('should delete company account if exists', async () => {
-    const mockEmail = 'existingCompany@gmail.com';
+  test("should delete company account if exists", async () => {
+    const mockEmail = "existingCompany@gmail.com";
 
     const fakeCompanyDoc = { exists: jest.fn(() => true) };
     getDoc.mockResolvedValueOnce(fakeCompanyDoc);
@@ -367,28 +416,102 @@ describe('deleteAccount function', () => {
     expect(deleteDoc).toHaveBeenCalledTimes(1);
   });
 
-  test('should throw an error if user does not exist', async () => {
-    const mockEmail = 'nonexistentUser@gmail.com';
+  test("should throw an error if user does not exist", async () => {
+    const mockEmail = "nonexistentUser@gmail.com";
 
     const fakeUserDoc = { exists: jest.fn(() => false) };
     getDoc.mockResolvedValueOnce(fakeUserDoc);
 
-    await expect(deleteAccount(mockEmail)).rejects.toThrowError('Cannot read properties of undefined (reading \'exists\')');
+    await expect(deleteAccount(mockEmail)).rejects.toThrowError(
+      "Cannot read properties of undefined (reading 'exists')"
+    );
 
     expect(getDoc).toHaveBeenCalledTimes(2);
     expect(deleteDoc).not.toHaveBeenCalled();
   });
 
-  test('should throw an error if company does not exist', async () => {
-    const mockEmail = 'nonexistentCompany@gmail.com';
+  test("should throw an error if company does not exist", async () => {
+    const mockEmail = "nonexistentCompany@gmail.com";
 
     const fakeCompanyDoc = { exists: jest.fn(() => false) };
     getDoc.mockResolvedValueOnce(fakeCompanyDoc);
 
-    await expect(deleteAccount(mockEmail)).rejects.toThrowError('Cannot read properties of undefined (reading \'exists\')');
+    await expect(deleteAccount(mockEmail)).rejects.toThrowError(
+      "Cannot read properties of undefined (reading 'exists')"
+    );
 
     expect(getDoc).toHaveBeenCalledTimes(2);
     expect(deleteDoc).not.toHaveBeenCalled();
   });
+});
 
+describe("addUser function", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("should throw an error if the user already exists", async () => {
+    const fakeUserDocSnap = { exists: jest.fn(() => true) };
+    getDoc.mockResolvedValue(fakeUserDocSnap);
+
+    const userData = {
+      email: "existingUser@example.com",
+    };
+
+    await expect(addUser(userData)).rejects.toThrow("User already exists.");
+  });
+
+  test("should throw an error if a company with the same email already exists", async () => {
+    const fakeUserDocSnap = { exists: jest.fn(() => false) };
+    const fakeCompanyDocSnap = { exists: jest.fn(() => true) };
+    getDoc
+      .mockResolvedValueOnce(fakeUserDocSnap)
+      .mockResolvedValueOnce(fakeCompanyDocSnap);
+
+    const userData = {
+      email: "existingCompany@example.com",
+    };
+
+    // Adjust the expected error message to match your function's actual error
+    await expect(addUser(userData)).rejects.toThrow("Company already exists.");
+  });
+});
+
+describe("addCompany function", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("should throw an error if the company already exists", async () => {
+    // Mock Firestore to simulate no existing user but an existing company with the given email
+    const fakeUserDocSnap = { exists: jest.fn(() => false) };
+    const fakeCompanyDocSnap = { exists: jest.fn(() => true) };
+    getDoc
+      .mockResolvedValueOnce(fakeUserDocSnap) // First call for the user, not found
+      .mockResolvedValueOnce(fakeCompanyDocSnap); // Second call for the company, found
+
+    const companyData = {
+      email: "existingCompany@example.com",
+    };
+
+    // Test expects the function to throw an error indicating a company already exists
+    await expect(addCompany(companyData)).rejects.toThrow(
+      new Error("Company already exists.")
+    );
+  });
+
+  test("should throw an error if a user with the same email already exists", async () => {
+    // Mock Firestore to simulate an existing user with the given email
+    const fakeUserDocSnap = { exists: jest.fn(() => true) };
+    getDoc.mockResolvedValueOnce(fakeUserDocSnap);
+
+    const companyData = {
+      email: "existingUser@example.com",
+    };
+
+    // Test expects the function to throw an error indicating a user already exists
+    await expect(addCompany(companyData)).rejects.toThrow(
+      new Error("User already exists.")
+    );
+  });
 });

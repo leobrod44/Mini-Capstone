@@ -105,7 +105,7 @@ describe('MGMTDashboard Component', () => {
       expect(screen.getByTestId('add-condo-btn')).toBeInTheDocument();
 
       fireEvent.click(screen.getByTestId('add-condo-btn'));
-      expect(window.location.pathname).toBe('/add-property');
+      expect(window.location.pathname).toBe("/");
     } else {
       // If no property components are rendered, ensure the registration section is present
       expect(

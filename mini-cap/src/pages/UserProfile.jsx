@@ -1,13 +1,20 @@
 import "../styling/profile.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import DeleteModal from "../components/DeleteModal";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import user from "../assets/user.png";
 
-import {getUserData,getCompanyData,updateCompanyInfo,deleteAccount,updateUserInfo,changePassword} from "../backend/UserHandler";
+import {
+  getUserData,
+  getCompanyData,
+  updateCompanyInfo,
+  deleteAccount,
+  updateUserInfo,
+  changePassword,
+} from "../backend/UserHandler";
 import { updateUserPicture, getProfilePicture } from "../backend/ImageHandler";
 import store from "storejs";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
@@ -15,12 +22,12 @@ import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
 const UserProfile = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [show, setShow] = useState(false);
-  const [firstName, setFirstName] = useState(null);
-  const [lastName, setLastName] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [phoneNumber, setPhoneNumber] = useState(null);
-  const [companyName, setCompanyName] = useState(null);
-  const [userType, setUserType] = useState(null);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [companyName, setCompanyName] = useState("");
+  const [userType, setUserType] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,7 +37,7 @@ const UserProfile = () => {
   useEffect(() => {
     async function fetchUserData() {
       let tempData;
-      let role = store("role");
+      let role = store("role") || RENTER_OWNER;
       setTheRole(role);
       // Assume store("user") is being used correctly to fetch user-specific data
 
@@ -99,17 +106,18 @@ const UserProfile = () => {
     let fileInput;
     let photo;
     try {
-      fileInput = document.getElementById('customFile');
+      fileInput = document.getElementById("customFile");
       photo = fileInput.files[0];
 
       if (
-          photo.type !== "image/png" &&
-          photo.type !== "image/jpeg" &&
-          photo.type !== "image/jpg"
+        photo.type !== "image/png" &&
+        photo.type !== "image/jpeg" &&
+        photo.type !== "image/jpg"
       ) {
         return toast.error("File not supported");
       }
-      if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
+      if (photo.size > 2097152)
+        return toast.error("File must be less than 2 MB");
 
       try {
         updateUserPicture(store("user"), photo);
@@ -124,7 +132,6 @@ const UserProfile = () => {
         setImageSrc(fileReader.result);
       };
       fileReader.readAsDataURL(photo);
-
     } catch (e) {
       toast.error(e);
     }
@@ -273,7 +280,11 @@ const UserProfile = () => {
                         />
                       </div>
                       <div className="col-sm-4">
-                        <button type="button" className="form-control" onClick={handlePhotoChange}>
+                        <button
+                          type="button"
+                          className="form-control"
+                          onClick={handlePhotoChange}
+                        >
                           Upload
                         </button>
                       </div>
@@ -395,6 +406,7 @@ const UserProfile = () => {
                                 name="firstName"
                                 value={firstName}
                                 onChange={handleFirstNameChange}
+                                data-testid="FirstName"
                               />
                             ) : (
                               <span>{firstName}</span>
@@ -421,6 +433,7 @@ const UserProfile = () => {
                                 name="lastName"
                                 value={lastName}
                                 onChange={handleLastNameChange}
+                                data-testid="LastName"
                               />
                             ) : (
                               <span>{lastName}</span>
@@ -445,6 +458,7 @@ const UserProfile = () => {
                                 name="Company Name"
                                 value={companyName}
                                 onChange={handleCompanyNameChange}
+                                data-testid="CompanyName"
                               />
                             ) : (
                               <span>{companyName}</span>
@@ -487,6 +501,7 @@ const UserProfile = () => {
                               value={phoneNumber || ""}
                               placeholder="Phone Number"
                               onChange={handlePhoneNumberChange}
+                              data-testid="PHONE"
                             />
                           ) : (
                             <span>
@@ -573,6 +588,7 @@ const UserProfile = () => {
                                 placeholder="**********"
                                 value={currentPassword}
                                 onChange={handleCurrentPasswordChange}
+                                data-testid="CurrentPassword"
                               />
                             </div>
                           </div>
@@ -590,6 +606,7 @@ const UserProfile = () => {
                                 placeholder="**********"
                                 value={newPassword}
                                 onChange={handleNewPasswordChange}
+                                data-testid="NewPassword"
                               />
                             </div>
                           </div>
@@ -607,6 +624,7 @@ const UserProfile = () => {
                                 placeholder="**********"
                                 value={confirmPassword}
                                 onChange={handleConfirmPasswordChange}
+                                data-testid="ConfirmPassword"
                               />
                             </div>
                           </div>
