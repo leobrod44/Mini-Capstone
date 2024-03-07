@@ -16,6 +16,7 @@ import emailjs from "@emailjs/browser";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "./Constants";
 import { firebaseConfig } from "./FirebaseConfig";
 import { setPictureWithID, getPropertyPicture } from "./ImageHandler";
+import s from "storejs";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -173,8 +174,9 @@ export async function addProperty(data) {
   }
 }
 
-// returns all properties of a company
-export async function getProperties(company) {
+// Provide: company id
+// Returns: array of properties associated with the company
+export async function getProperties(companyID) {
   try {
     const propertyCollection = collection(db, "Property");
     const propertySnapshot = await getDocs(propertyCollection);
@@ -182,7 +184,7 @@ export async function getProperties(company) {
 
     await Promise.all(
       propertySnapshot.docs.map(async (doc) => {
-        if (doc.data().companyOwner == company) {
+        if (doc.data().companyOwner == companyID) {
           var data = doc.data();
           data["propertyID"] = doc.id;
           try {
@@ -299,3 +301,73 @@ export async function getPropertyData(id) {
         console.error(err);
     }
 }
+
+//Sprint 3
+
+const sampleAmenity = {
+  "amenityID": "1",
+  "price": 100,
+  "unitNumber": 1,
+}
+
+
+//Provide: property id
+//Returns: amenity array associated with a property
+export async function getAmenities(propertyID) {
+  return [sampleAmenity, sampleAmenity,sampleAmenity]
+}
+
+//Provide: property id, number of lockers to create, price of a locker
+//Returns: nothing
+export async function addLockers(propertyID, count, price) {
+
+}
+
+//Provide: property id, number of parking spots to create, price of a parking spot
+//Returns: nothing
+export async function addParkings(property, count, price) {
+}
+
+//Provide: condo id to assign a locker
+//Returns: nothing
+export async function assignLocker(condoID) {
+
+}
+
+//Provide: condo id to assign a parking spot
+//Returns: nothing
+export async function assignParking(condo) {
+
+}
+
+//Provide: condo id 
+//Returns: locker amenity associated with the condo
+export async function getAssignedLocker(condo) {
+   return sampleAmenity
+}
+
+//Provide: condo id
+//Returns: parking amenity associated with the condo
+export async function getAssignedParking(condo) {
+  return sampleAmenity
+}
+
+//Provide property id, condo file to upload
+//Returns: nothing
+export async function uploadFile(propertyID, file) {
+
+}
+
+//Provide: property id, updated property JSON
+//Returns: nothing
+export async function updateProperty(propertyID, data) {
+
+}
+
+//Provide: property id
+//Returns: nothing
+export async function deleteProperty(propertyID) {
+
+}
+
+
