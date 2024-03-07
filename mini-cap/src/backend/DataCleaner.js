@@ -29,8 +29,28 @@ const structure = {
         "unitSize": "",
         "parkingNumber": "",
         "lockerNumber": "",
+    },
+    "Request": {
+        "requestID": "", 
+        "condoID":"", 
+        "type": "", //(Financial, Administrative, Operational)
+        "notes": "", 
+        "step": "", 
+        "viewed": "", 
+    },
+    "Amenity": {
+        "amenityID": "", 
+        "price": "", 
+        "unitNumber": "", 
+    },
+    "Notification":{
+        "message": "",
+        "path":""
+
     }
 }
+
+
 
 export function cleanData(type, data) {
     
