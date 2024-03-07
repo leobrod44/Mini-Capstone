@@ -1,11 +1,10 @@
-import { deleteDoc, getFirestore } from "firebase/firestore";
-import { initializeApp, storageRef } from "firebase/app";
+import {getFirestore } from "firebase/firestore";
+import { initializeApp} from "firebase/app";
 import {
   getDocs,
   collection,
   doc,
   addDoc,
-  setDoc,
   getDoc,
   updateDoc,
   arrayUnion,
@@ -13,11 +12,8 @@ import {
 import { cleanData } from "./DataCleaner";
 import store from "storejs";
 import emailjs from "@emailjs/browser";
-import { MANAGEMENT_COMPANY, RENTER_OWNER } from "./Constants";
 import { firebaseConfig } from "./FirebaseConfig";
 import { setPictureWithID, getPropertyPicture } from "./ImageHandler";
-import s from "storejs";
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const condoPictureRef = "condoPictures/";
@@ -27,7 +23,6 @@ emailjs.init({
 });
 // returns user data using email
 export async function storeCondoKey(data) {
-  const keyCollection = collection(db, "Keys");
 
   try {
     const docRef = await addDoc(collection(db, "Keys"), data);
@@ -85,27 +80,30 @@ export async function linkCondoToUser(email, key) {
     const userSnap = await getDoc(docRef);
 
     if (data.role === "renter") {
-      if (userSnap.data().hasOwnProperty("rents")) {
-        await updateDoc(userRef, {
-          rents: [data.condo],
-        });
+      const userData = userSnap.data();
+      if (Object.prototype.hasOwnProperty.call(userData, "rents")) {
+          await updateDoc(userRef, {
+              rents: [data.condo],
+          });
       } else {
-        await updateDoc(userRef, {
-          rents: arrayUnion(data.condo),
-        });
+          await updateDoc(userRef, {
+              rents: arrayUnion(data.condo),
+          });
       }
-    }
-    if (data.role === "owner") {
-      if (userSnap.data().hasOwnProperty("owns")) {
+  }
+  if (data.role === "owner") {
+    const userData = userSnap.data();
+    if (Object.prototype.hasOwnProperty.call(userData, "owns")) {
         await updateDoc(userRef, {
-          owns: [data.condo],
+            owns: [data.condo],
         });
-      } else {
+    } else {
         await updateDoc(userRef, {
-          owns: arrayUnion(data.condo),
+            owns: arrayUnion(data.condo),
         });
-      }
     }
+}
+
 
     //set key to used
     await updateDoc(docRef, {
@@ -314,60 +312,67 @@ const sampleAmenity = {
 //Provide: property id
 //Returns: amenity array associated with a property
 export async function getAmenities(propertyID) {
+  console.log("Getting amenities for property: ", propertyID);
   return [sampleAmenity, sampleAmenity,sampleAmenity]
 }
 
 //Provide: property id, number of lockers to create, price of a locker
 //Returns: nothing
 export async function addLockers(propertyID, count, price) {
+  console.log("Adding lockers to property: ", propertyID, " count: ", count, " price: ", price);
 
 }
 
 //Provide: property id, number of parking spots to create, price of a parking spot
 //Returns: nothing
-export async function addParkings(property, count, price) {
+export async function addParkings(propertyID, count, price) {
+  console.log("Adding parking to property: ", propertyID, " count: ", count, " price: ", price);
 }
 
 //Provide: condo id to assign a locker
 //Returns: nothing
 export async function assignLocker(condoID) {
-
+  console.log("Assigning locker to condo: ", condoID);
 }
 
 //Provide: condo id to assign a parking spot
 //Returns: nothing
-export async function assignParking(condo) {
-
+export async function assignParking(condoID) {
+  console.log("Assigning parking spot to condo: ", condoID);
 }
 
 //Provide: condo id 
 //Returns: locker amenity associated with the condo
-export async function getAssignedLocker(condo) {
+export async function getAssignedLocker(condoID) {
+  console.log("Getting assigned locker for condo: ", condoID);
    return sampleAmenity
 }
 
 //Provide: condo id
 //Returns: parking amenity associated with the condo
-export async function getAssignedParking(condo) {
+export async function getAssignedParking(condoID) {
+  console.log("Getting assigned parking for condo: ", condoID);
   return sampleAmenity
 }
 
 //Provide property id, condo file to upload
 //Returns: nothing
 export async function uploadFile(propertyID, file) {
+  console.log("Uploading file to property: ", propertyID, file);
 
 }
 
 //Provide: property id, updated property JSON
 //Returns: nothing
 export async function updateProperty(propertyID, data) {
+  console.log("Updating property: ", propertyID, data);
 
 }
 
 //Provide: property id
 //Returns: nothing
 export async function deleteProperty(propertyID) {
-
+  console.log("Deleting property: ", propertyID);
 }
 
 

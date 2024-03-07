@@ -61,12 +61,13 @@ export function cleanData(type, data) {
 
     const format = structure[type];
     const newData = {};
-
     Object.keys(format).forEach(key => {
-        if (data.hasOwnProperty(key)) {
+        const dataKeys = Object.keys(data);
+        if (dataKeys.includes(key)) {
             newData[key] = data[key];
         }
     });
+    
 
     return newData;
 }
