@@ -1,3 +1,12 @@
+import { initializeApp } from "firebase/app";
+import {
+  addDoc,
+  getFirestore,
+} from "firebase/firestore";
+import { firebaseConfig } from "./FirebaseConfig";
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 const sampleRequest = {
     "requestID": "1",
     "condoID": "1",
@@ -14,14 +23,15 @@ const sampleRequest = {
 export async function submitRequest(condoID, type, notes) {
     
     try{
+        var property
         try{
             const condo = await getCondo(condoID);
-            
+            const docRef = await addDoc(collection(db, `Condo/${condoID}`), clean);
 
         } catch(e){
             console.log("Error getting condo for request: ", e);
         }
-        const docRef = await addDoc(collection(db, "Property"), clean);
+        
 
     }catch(e){
         console.log("Error submitting request: ", e);
