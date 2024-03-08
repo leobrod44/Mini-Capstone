@@ -27,7 +27,7 @@ import { cleanData } from "./DataCleaner";
 //Sprint 3
 
 //Provide: condo id, request type, notes of request
-//Returns: nothing
+//Returns: request id (for confirmation)
 export async function submitRequest(condoID, type, notes) {
     if (!TYPES.includes(type)) {
         console.error("Invalid request type");
@@ -79,7 +79,7 @@ export async function getRequests(condoID){
 }
 
 //Provide: condo id and request id (all request updates will be done backend)
-//Returns: nothing
+//Returns: the current step in which the request is in. Completed means last step is passed
 export async function updateRequest(condoID, requestID) {
     try {
         const condoRef = doc(db, 'Condo', condoID);
