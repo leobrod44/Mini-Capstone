@@ -207,8 +207,16 @@ export async function deleteAccount(email) {
     const userDoc = await getDoc(doc(db, "Users", email));
     const companyDoc = await getDoc(doc(db, "Company", email));
 
-    if (userDoc.exists()) await deleteDoc(doc(db, "Users", email));
-    else if (companyDoc.exists()) await deleteDoc(doc(db, "Company", email));
+    if (userDoc.exists()){
+      await deleteDoc(doc(db, "Users", email));
+      store.remove("user");
+      store.remove("role");
+    }
+    else if (companyDoc.exists()){
+      await deleteDoc(doc(db, "Company", email));
+      store.remove("user");
+      store.remove("role");
+    }
     else throw new Error("User does not exist.");
   } catch (e) {
     throw new Error(e.message);
