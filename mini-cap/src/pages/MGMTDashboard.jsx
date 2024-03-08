@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getProperties } from "../backend/Fetcher";
+import { getProperties } from "../backend/PropertyHandler";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../index.css";
@@ -21,8 +21,8 @@ const MGMTDashboard = () => {
   useEffect(() => {
     const fetchProperties = async () => {
       try {
-        const propertyDetails = await getProperties(store("loggedUser"));
-        if (propertyDetails.length > 0) {
+        const properties = await getProperties(store("user"));
+        if (properties.length > 0) {
           setHasProperties(true);
           setPropertyDetails(propertyDetails);
         }
@@ -33,12 +33,6 @@ const MGMTDashboard = () => {
     fetchProperties();
 
   }, []); 
-
-  // Function to toggle the hasProperties state
-  const toggleHasProperties = () => {
-    setHasProperties((prevHasProperties) => !prevHasProperties);
-  };
-
 
   const propertiesPerPage = 4;
   const indexOfLastProperty = currentPage * propertiesPerPage;
@@ -60,28 +54,19 @@ const MGMTDashboard = () => {
 
         <div className="content_container">
           {hasProperties ? (
-            <div>
-            <div className="condo_list">
+            <div className="condo_list" data-testid="condo-list">
               {/* Render properties */}
               {propertiesToDisplayPaginated.map((p, index) => (
                 <Property key={index} property={{
+                  picture: p.picture,
                   propertyID: p.propertyID,
-                  propertyName: p.property,
+                  propertyName: p.propertyName,
                   address: p.address,
                   unitCount: p.unitCount,
                   parkingCount: p.parkingCount,
                   lockerCount: p.lockerCount
-              } } />
+              } } data-testid="property-component" />
               ))}
-            </div>
-            <div className="pagination-container">
-                <Pagination
-                  itemsPerPage={propertiesPerPage}
-                  totalItems={propertyDetails.length}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                />
-              </div>
             </div>
           ) : (
             // Render registration section if the user has no properties
@@ -96,11 +81,6 @@ const MGMTDashboard = () => {
         </div>
 
         {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate("/add-property")} />}
-
-        {/* Button to toggle hasProperties state (for testing purposes) */}
-        <button onClick={toggleHasProperties} data-testid="toggle">
-          Toggle Has Properties
-        </button>
       </div>
       <Footer />
     </div>

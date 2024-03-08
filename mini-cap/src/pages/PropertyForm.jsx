@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styling/propertyform.css";
@@ -7,7 +7,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import DeleteModal from "../components/DeleteModal"; 
 import AddressComponent from "../components/AddressComponent"; 
-import { addProperty } from "../backend/Fetcher";
+import { addProperty } from "../backend/PropertyHandler";
 
 const PropertyForm = () => {
   const [property, setProperty] = useState({
@@ -28,7 +28,7 @@ const PropertyForm = () => {
 
   const [visibleCondoForms, setVisibleCondoForms] = useState([]);
 
-
+  const navigate = useNavigate();
 
 
   const handleFileChange = (e) => {
@@ -53,7 +53,7 @@ const PropertyForm = () => {
 
     setProperty({
       ...property,
-      propertyPicture: file,
+      picture: file,
     });
 
     const reader = new FileReader();
@@ -102,7 +102,7 @@ const PropertyForm = () => {
     const updatedCondos = [...property.condos];
     updatedCondos[index] = {
       ...updatedCondos[index],
-      condoPicture: file,
+      picture: file,
     };
 
     setProperty({
@@ -120,23 +120,33 @@ const PropertyForm = () => {
     };
 
     reader.readAsDataURL(file);
+    
   };
 
 
 
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
+  
+    // Parse the value as an integer for number input fields
+    const parsedValue = type === 'number' ? parseInt(value, 10) : value;
+  
+    // Check for minimum value validation
+    if (type === 'number' && parsedValue < 0) {
+      toast.error(`Count must be greater than or equal to 0`);
+      return;
+    }
+  
     setProperty({
       ...property,
-      [name]: value,
+      [name]: parsedValue,
     });
   };
-
   
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+  //validation that all required information is filled in
     if (
       !property.propertyName ||
       !property.address ||
@@ -147,18 +157,20 @@ const PropertyForm = () => {
       toast.error("Missing Property Information");
       return;
     }
+    // if all required field are filled , save property
     try{
       await addProperty(property);
+      navigate("/MGMTDashboard");
+    }catch(err){
+      console.error(err);
     }
-    catch(e){
-      toast.error("Error adding property: ", e);
-    }
-    window.location.href = '/MGMTDashboard';
+
+    
     console.log("Submitted:", property);
   };
 
   const handleAddCondo = () => {
-    // Check if all required fields in the property form are filled
+    // Check if all required fields in the condo  form are filled
     if (
       !property.propertyName ||
       !property.address ||
@@ -181,7 +193,7 @@ const PropertyForm = () => {
 
  
   if (
-    Object.values(submittedCondo).every((value) =>
+    Object.values(submittedCondo).every((value) => //validation that condo form is not submitted empty
       value === null || value === undefined || value === ""
     )
   ) {
@@ -189,7 +201,7 @@ const PropertyForm = () => {
     toast.error("Please fill in at least one field for the condo");
     return;
   }
-
+//if at least one field is added, submit condo
     
     console.log("Condo Submitted:", property.condos[index]);
     setVisibleCondoForms((prevVisibleCondoForms) => [
@@ -302,7 +314,7 @@ const PropertyForm = () => {
               Unit Count:
             </label>
             <input
-              type="number"
+              type="number" min="0"  
               id="unitCount"
               name="unitCount"
               value={property.unitCount}
@@ -315,7 +327,7 @@ const PropertyForm = () => {
               Parking Count:
             </label>
             <input
-              type="number"
+              type="number" min="0"  
               id="parkingCount"
               name="parkingCount"
               value={property.parkingCount}
@@ -328,7 +340,7 @@ const PropertyForm = () => {
               Locker Count:
             </label>
             <input
-              type="number"
+              type="number" min="0" 
               id="lockerCount"
               name="lockerCount"
               value={property.lockerCount}
@@ -351,9 +363,9 @@ const PropertyForm = () => {
         <p> Locker Number: {condo.lockerNumber}</p>
 
         
-        {condo.condoPicture && (
+        {condo.picture && (
           <img
-            src={URL.createObjectURL(condo.condoPicture)}
+            src={URL.createObjectURL(condo.picture)}
             alt={`Condo ${condo.unitNumber} Preview`}
           />
         )}

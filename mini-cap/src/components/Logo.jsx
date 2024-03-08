@@ -1,3 +1,4 @@
+import React from "react";
 import logo from "../assets/Logo_BiggerWriting.png";
 
 
@@ -17,6 +18,7 @@ const Logo = () => {
       alt="CondoConnect"
       className="logo"
       style={logoStyle}
+      data-testid="logo"
     />
   );
 };

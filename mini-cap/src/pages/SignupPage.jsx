@@ -5,27 +5,15 @@ import "../styling/SignupPage.css"; // Ensure your CSS file path is correct
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import user from "../assets/user.png"; // Adjust the path accordingly
-import { db, auth, storage } from "../config/firebase";
-
-import {
-  getDocs,
-  collection,
-  addDoc,
-  deleteDoc,
-  updateDoc,
-  doc,
-} from "firebase/firestore";
-import { getUserData, addUser, addCompany } from "../backend/Fetcher";
-
+import { addUser, addCompany } from "../backend/UserHandler";
+import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
 
 const SignupPage = () => {
 
   const [previewUrl, setPreviewUrl] = useState(user);
   const [profilePicUrl, setProfilePicUrl] = useState(null);
-  const usersCollectionRef = collection(db, "users");
-
   const [formData, setFormData] = useState({
-    role: "renter/owner", // "Renter/Owner" as the default role
+    role: RENTER_OWNER, // "Renter/Owner" as the default role
     firstName: "",
     lastName: "",
     email: "",
@@ -51,13 +39,13 @@ const handleSignup = async (e) => {
    
     // Validation checks
     if (
-      (formData.role === "renter/owner" &&
+      (formData.role === RENTER_OWNER &&
         (!formData.firstName ||
           !formData.lastName ||
           !formData.email ||
           !formData.password ||
           !formData.confirmPassword)) ||
-      (formData.role === "managementCompany" &&
+      (formData.role === MANAGEMENT_COMPANY &&
         (!formData.companyName ||
           !formData.email ||
           !formData.password ||
@@ -92,18 +80,18 @@ const handleSignup = async (e) => {
       formData.picture = profilePicUrl;
     }
 
-    if(formData.role === "renter/owner"){
+    if(formData.role === RENTER_OWNER){
       try {
-        const newUser = await addUser(formData);
+        await addUser(formData);
         window.location.href = '/';
       } catch (err) {
         toast.error(err.message);
       }
     }
     
-    else if (formData.role === "managementCompany"){
+    else if (formData.role === MANAGEMENT_COMPANY){
       try {
-        const newUser = await addCompany(formData);
+        await addCompany(formData);
         window.location.href = '/';
       } catch (err) {
         toast.error(err.message);
@@ -124,12 +112,14 @@ const handleSignup = async (e) => {
     }
     if (photo.size > 2097152) return toast.error("File must be less than 2 MB");
 
-    setProfilePicUrl(photo);
+      setProfilePicUrl(photo);
+
     const fileReader = new FileReader();
-    fileReader.onload = () => {
+    fileReader.onloadend = () => {
       setPreviewUrl(fileReader.result);
     };
-    //TODO profilePic preview dosent seem to be working anymore
+
+    fileReader.readAsDataURL(photo);
     
   };
 
@@ -201,12 +191,12 @@ const handleSignup = async (e) => {
               value={formData.role}
               onChange={handleChange}
             >
-              <option value="renter/owner">Renter/Owner</option>
-              <option value="managementCompany">Management Company</option>
+              <option value= {RENTER_OWNER}>Renter/Owner</option>
+              <option value={MANAGEMENT_COMPANY}>Management Company</option>
             </select>
           </div>
 
-          {formData.role === "renter/owner" && (
+          {formData.role === RENTER_OWNER && (
             <>
               <div className="input-group">
                 <label className="signup" htmlFor="firstName">
@@ -259,7 +249,7 @@ const handleSignup = async (e) => {
             </>
           )}
 
-          {formData.role === "managementCompany" && (
+          {formData.role === MANAGEMENT_COMPANY && (
             <>
               <div className="input-group">
                 <label className="signup" htmlFor="companyName">

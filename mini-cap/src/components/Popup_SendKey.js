@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import "../styling/Popup.css";
 import "../index.css";
 import { toast } from "react-toastify";
+import { storeCondoKey, sendCondoKey } from "../backend/PropertyHandler";
+import { checkEmailExists } from "../backend/UserHandler";
+import PropTypes from 'prop-types'
 
-const Popup_SendKey = ({ handleClose }) => {
-
+const Popup_SendKey = ({ handleClose, condoId }) => {
     const [formData, setFormData] = useState({
-        role: "renter", // "Renter" as the default role
+        role: "renter",
         email: "",
+        condo: condoId
       });
       Popup_SendKey.getFormData = () => {
         return formData;
@@ -15,17 +18,24 @@ const Popup_SendKey = ({ handleClose }) => {
 
 
       const handleSendKey = async (e) => {
-        e.preventDefault();
-         if (!formData.email ) {
-            toast.error("Please fill in all fields.");
-            return;
-      }
-        if (!formData.email.includes("@") || !formData.email.includes(".")) {
-          toast.error(
-            "Invalid email format. Please include '@' and '.' in your email address."
-          );
-          return;
-        }
+          e.preventDefault();
+          try {
+              if (!formData.email ) {
+                  toast.error("Please fill in all fields.");
+              }
+              if (!formData.email.includes("@") || !formData.email.includes(".")) {
+                  toast.error("Invalid email format. Please include '@' and '.' in your email address.");
+              }
+
+              await checkEmailExists(formData.email);
+              const key = await storeCondoKey(formData);
+              await sendCondoKey(formData.email, key);
+
+              toast.success("Key has been sent.")
+              handleClose();
+          } catch (e) {
+              toast.error(e.message);
+          }
       };
 
       
@@ -44,7 +54,7 @@ const Popup_SendKey = ({ handleClose }) => {
           &times;
         </span>
         <h4 className="h4_db">Send Your Condo Key</h4>
-        <form onSubmit={handleClose}>
+        <form onSubmit={handleSendKey}>
         
         <div className="input-group">
         <label className="key_label" htmlFor="email">
@@ -74,11 +84,16 @@ const Popup_SendKey = ({ handleClose }) => {
                 />
               </div>
 
-          <button className="btn-reg" type="submit" onClick={handleSendKey}>Send Key</button>
+          <button className="btn-reg" type="submit">Send Key</button>
         </form>
       </div>
     </div>
   );
+};
+
+Popup_SendKey.propTypes = {
+  handleClose: PropTypes.string,
+ condoId:PropTypes.string,
 };
 
 export default Popup_SendKey;

@@ -16,8 +16,9 @@ h2{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 47vh;
-    background-color: #f4f4f4;
+    height: auto;
+    background-color: #f0f4f8;
+    margin-bottom:5%;
   }
 
   .condo-name-user-tag {

@@ -3,7 +3,7 @@ import { StandaloneSearchBox, LoadScript } from "@react-google-maps/api";
 import "../styling/propertyform.css";
 import "../index.css";
 
-const AddressComponent = ({ name,  value, onChange, setFormData }) => {
+const AddressComponent = ({ name, value, onChange, setFormData }) => {
   const inputRef = useRef();
 
   const handlePlaceChanged = () => {
@@ -39,22 +39,20 @@ const AddressComponent = ({ name,  value, onChange, setFormData }) => {
         onLoad={(ref) => (inputRef.current = ref)}
         onPlacesChanged={handlePlaceChanged}
       >
-           <div className="input-group">
-  <label className="input-label" htmlFor="address">Address:</label>
-            <input
-              type="text"
-              className="input"
-              placeholder=""
-              name={name}
-              value={value} 
-              onChange={onChange}
-            />
-              
-            
-         
+        <div className="input-group">
+          <label className="input-label" htmlFor="address">
+            Address:
+          </label>
+          <input
+            type="text"
+            className="input"
+            placeholder=""
+            name={name}
+            value={value}
+            onChange={onChange}
+          />
         </div>
       </StandaloneSearchBox>
-      
     </LoadScript>
   );
 };
