@@ -45,6 +45,11 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
         rentDueDate: PropTypes.string
     };
 
+	const[showFinancialDetails, setShowFinancialDetails] = useState(false);
+
+	const toggleFinancialDetails = () => {
+		setShowFinancialDetails(!showFinancialDetails);
+	}
 		return(
 			<div className='pageContainer'>
 			<>
@@ -83,7 +88,7 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
 								</div>
 
 							</div>
-								<div className='other-info'>
+							<div className='other-info'>
 								<h2 className="DB_title"> {"[Condo Name]"} {name} <br /><br /></h2>
 
 								<div className='other-info1'>
@@ -168,13 +173,24 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
 										</>)}
 								</div>                       
 							</div>
-								<div>
-									{role === "company" && ( 
-										<>
-											<button className="edit-button"> Edit</button>
-											<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
-										</>)}
-								</div>
+							<div>
+								{role === "company" && ( 
+								<>
+									<button className="edit-button"> Edit</button>
+									<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
+								</>)}
+							</div>
+							<div>
+								<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}>
+									 {showFinancialDetails ? "Close" : "Financial Details"} 
+								</button>
+								{showFinancialDetails && (
+                                    <div id="financialDetailsComponent">
+										{/* TO DO */}
+										{/* Financial Details component */}
+									</div>
+								)}
+							</div>
 						</div>
 					</div>
 					{showPopup && <Popup_SendKey handleClose={handlePopupToggle}/>}
