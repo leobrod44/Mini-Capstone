@@ -20,4 +20,8 @@ export const OPERATIONAL_STEPS = [
     "Request In Progress",
     "Request Completed",
 ]
-
+export const TYPES = [
+    "Financial",
+    "Administrative",
+    "Operational",
+]
