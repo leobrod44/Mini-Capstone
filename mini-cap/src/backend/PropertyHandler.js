@@ -283,6 +283,21 @@ export async function getCondos(propertyID) {
     throw new Error("Error getting condos: ", e);
   }
 }
+export async function getCondo(condoID) {
+  try {
+    const docRef = doc(db, "Condo", condoID);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      console.log("No such document!");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+
+}
 
 export async function getPropertyData(id) {
     try {
