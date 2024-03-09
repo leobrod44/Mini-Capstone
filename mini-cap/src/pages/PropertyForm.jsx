@@ -22,7 +22,7 @@ const PropertyForm = () => {
 
 
   const [previewPropertyImage, setPreviewPropertyImage] = useState(null);
- 
+
 
   const navigate = useNavigate();
 
@@ -106,12 +106,14 @@ const PropertyForm = () => {
     console.log("Submitted:", property);
   };
 
+ 
 
 
 
 
   return (
     <div>
+      
       <Header />
       <link
   rel="stylesheet"
@@ -228,7 +230,8 @@ const PropertyForm = () => {
                           
               Submit Property
             </button>
-           
+            
+       
         
         </form>
       </div>
