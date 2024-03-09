@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -119,8 +119,8 @@ const PropertyForm = () => {
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
   integrity="sha512-Gn5384z6kqr8yn8XekdlLZ5NINkAqF5V07R98ljePtb8iKDIp0cmYEdn7yg9H9n57F9+3gp4nnfW9CaoSmw+z0w=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
+  crossOrigin="anonymous"
+  referrerPolicy="no-referrer"
 />
       <link
         rel="stylesheet"
