@@ -175,6 +175,33 @@ h2{
     color: #ffffff; /* Change text color on hover to white */
   }
 
+  .createRequest{
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    font-weight: 400;
+    font-size: 20px; /* Chosen font size */
+    background-color: #4540db; /* Chosen background color from signup2 branch */
+    color: #fff; /* Assuming var(--white) is white, replaced with #fff */
+    border: none; /* No border */
+    border-radius: 4px; /* Chosen border-radius */
+    cursor: pointer; /* Hand cursor on hover */
+    transition: all 0.3s ease; /* Example transition */
+    display: flex; /* Display style */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
+    height: 36px;
+    width: 175px;
+    margin-top: 10px;
+    margin-right: 10px;
+    float: right;
+    text-decoration: none;
+  }
+
+  .createRequest:hover {
+    background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
+    color: #ffffff; /* Change text color on hover to white */
+  }
+
   .button_circle{
     margin: 0;
     float: left;

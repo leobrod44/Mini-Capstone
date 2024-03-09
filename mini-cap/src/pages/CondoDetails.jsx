@@ -3,6 +3,7 @@ import Footer from "../components/Footer.jsx";
 import "../index.css";
 import "../styling/CondoDetails.css";
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import PropTypes from 'prop-types';
 import DeleteModal from '../components/DeleteModal.jsx';
@@ -174,6 +175,12 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
 											<button className="edit-button"> Edit</button>
 											<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
 										</>)}
+								</div>
+								<div>
+									<Link to="/createRequest" className="createRequest">
+										{" "}
+										Create Request
+									</Link>
 								</div>
 						</div>
 					</div>
