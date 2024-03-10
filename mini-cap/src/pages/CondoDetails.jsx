@@ -10,34 +10,33 @@ import Popup_SendKey from '../components/Popup_SendKey.js';
 import {getCondo} from "../backend/PropertyHandler";
 import {getCondoPicture} from "../backend/ImageHandler";
 import {toast} from "react-toastify";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import store from "storejs";
 //import {getCondoPicture} from "../backend/ImageHandler";
 
 export default function CondoDetails(){
+	let { condoId } = useParams();
 	// export default function CondoDetails({ propertyName, address, parkingNumber, lockerNumber, unitNumber, price, unitSize, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
 	const [condoDetails, setCondoDetails] = useState(false);
 	const [showPopup, setShowPopup] = useState(false);
 	const [show, setShow] = useState(false);
 	let [condoPicURL, setCondoPicURL] = useState(null);
 	const navigate = useNavigate();
+	const [role, setTheRole] = useState("");
 
 	const condoStatus = 'vacant';
-	const role = 'company';
 
 	useEffect(() => {
 		const fetchCondo = async () => {
 			try {
-				const condo = await getCondo("H7bG17pfeajqniUoG9O7");
+				setTheRole(store("role"));
+				const condo = await getCondo(condoId);
 				condoPicURL = await getCondoPicture(
 					condo.propertyName + "/" + condo.unitNumber
 				);
 				setCondoPicURL(condoPicURL);
 				condo.picture = condoPicURL;
 				setCondoDetails(condo);
-
-				console.log("PROPERTY ID: " + propertyID);
-				console.log(propertyName);
-				console.log(address);
 			} catch (err) {
 				console.error(err);
 			}
@@ -104,17 +103,17 @@ export default function CondoDetails(){
 								{picture && <img src={picture} alt="Profile" className="profile-picture" />}
 							</div>
 							<div className='pic-and-tag'>
-							{condoStatus === "vacant" && role === 'company' && (
+							{condoStatus === "vacant" && role === 'mgmt' && (
 									<>
 									<div>
 										<div className={`user-tag vacant`}>{"Vacant"}{"status"}</div>
-										{role === "company" && (
+										{role === "mgmt" && (
 										<>
 											<button className="sendkey-button" onClick={handlePopupToggle}>Send Key</button>
 										</>)}
 									</div>
 									</>)}
-							{condoStatus === "rented" && role === 'company' && (
+							{condoStatus === "rented" && role === 'mgmt' && (
 									<>
 										<div className={`user-tag rented`}>{"Rented"}{"status"}</div>
 
@@ -184,7 +183,7 @@ export default function CondoDetails(){
 							</div>
 
 							<div className='other-info1'>
-							{role === "company" && (
+							{role === "mgmt" && (
 									<>
 										<div className='other-info2'><h5>Contact of Renter/Owner: </h5></div>
 										<div className='other-info2'>{"contact"}</div>
@@ -209,7 +208,7 @@ export default function CondoDetails(){
 							</div>
 						</div>
 							<div>
-								{role === "company" && (
+								{role === "mgmt" && (
 									<>
 										<button className="edit-button"> Edit</button>
 										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
