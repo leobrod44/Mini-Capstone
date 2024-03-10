@@ -9,6 +9,8 @@ import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
 import {getCondo} from "../backend/PropertyHandler";
 import {getCondoPicture} from "../backend/ImageHandler";
+import {toast} from "react-toastify";
+import {useNavigate} from "react-router-dom";
 //import {getCondoPicture} from "../backend/ImageHandler";
 
 export default function CondoDetails(){
@@ -17,6 +19,7 @@ export default function CondoDetails(){
 	const [showPopup, setShowPopup] = useState(false);
 	const [show, setShow] = useState(false);
 	let [condoPicURL, setCondoPicURL] = useState(null);
+	const navigate = useNavigate();
 
 	const condoStatus = 'vacant';
 	const role = 'company';
@@ -32,8 +35,9 @@ export default function CondoDetails(){
 				condo.picture = condoPicURL;
 				setCondoDetails(condo);
 
-				console.log(condoDetails.propertyName);
-				console.log(condoDetails.address);
+				console.log("PROPERTY ID: " + propertyID);
+				console.log(propertyName);
+				console.log(address);
 			} catch (err) {
 				console.error(err);
 			}
@@ -45,6 +49,17 @@ export default function CondoDetails(){
 		// If condoDetails is still null, return a loading state or handle it accordingly
 		return <div>Loading...</div>;
 	}
+
+	//NOT FINISHED
+	const deleteCondoAttempt = async () => {
+		try {
+			//logic to delete condo
+		} catch (error) {
+			toast.error("Error deleting account");
+		}
+		setShow(false);
+		navigate(`/propertydetailspage/${propertyID}/${propertyName}`);
+	};
 
     const handlePopupToggle = () => {
         setShowPopup(!showPopup);
@@ -65,7 +80,8 @@ export default function CondoDetails(){
 		unitSize,
 		parkingNumber,
 		lockerNumber,
-		picture
+		picture,
+		propertyID
 	} = condoDetails;
 
 	return(
@@ -206,6 +222,7 @@ export default function CondoDetails(){
 				<DeleteModal
 				show={show}
 				handleClose={handleClose}
+				handleDeleteItem={deleteCondoAttempt}
 				message={
 				"Are you sure you want to delete this Condo?"
 				}
