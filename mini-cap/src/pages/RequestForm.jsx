@@ -10,8 +10,9 @@ const RequestForm = () => {
         <div>
             <Header/>
             <div className="container">
-                <h2> Condo + UnitNumber</h2>
+                <h3 className="title"> Condo + UnitNumber</h3>
                 <form className="form-box">
+                    <h2 className="titleform">Submit Request</h2>
                     <label className="dropdown" htmlFor="dropdown">Subject:</label>
                     <select id="dropdown">
                         <option value="MovingRequest">Moving Request</option>
@@ -21,18 +22,16 @@ const RequestForm = () => {
                         <option value="RequestMaintenance">Request Maintenance</option>
                         <option value="GeneralQuestion">General Question</option>
                     </select>
-                    <label className="dropdown" htmlFor="description">Description:</label> <br></br>
+                    <label className="dropdown" htmlFor="description">Description:</label>
                     <textarea id="description" name="description" placeholder="Enter request description here..."></textarea>
+                    <Link to="/condo-details" className="cancel-button">
+                        {" "}
+                        Cancel
+                    </Link>
+                    <button className="submit-button">
+                        Submit
+                    </button>
                 </form>
-                <div>
-                        <Link to="/condo-details" className="cancel-button">
-                            {" "}
-                            Cancel
-                        </Link>
-                        <button className="submit-button">
-                            Submit
-                        </button>
-                    </div>
             </div>
             <Footer/>
         </div>
