@@ -49,9 +49,9 @@ const MGMTDashboard = () => {
                   propertyID: p.propertyID,
                   propertyName: p.propertyName,
                   address: p.address,
-                  unitCount: p.unitCount,
-                  parkingCount: p.parkingCount,
-                  lockerCount: p.lockerCount
+                  unitCount: p.unitCount.toString(),
+                  parkingCount: p.parkingCount.toString(),
+                  lockerCount: p.lockerCount.toString()
               } } data-testid="property-component" />
               ))}
             </div>
