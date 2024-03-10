@@ -34,6 +34,9 @@ const CondoMgmtComponent = ({picture, unitNumber, parkingNumber, lockerNumber, c
                     <Link to="/condo-details" className="details-button">Details</Link>
 
                 </div>
+                <div style={{alignSelf: 'flex-end', marginTop: '5px'}}> 
+                    <Link to="/" className="details-button">Edit</Link>
+                </div>
             </div>
             {showPopup && <Popup_SendKey handleClose={handlePopupToggle} condoId={condoId}/>}
         </div>

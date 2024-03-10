@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import AddCondoBtn from "../components/AddCondoBtn";
 import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn component
+import EditPropertyComponent from "../components/EditPropertyComponent";
 import "../index.css";
 import "../styling/PropertyDetailsPage.css";
 import CondoMgmtComponent from "../components/CondoMGMTComponent";
@@ -18,6 +19,7 @@ const PropertyDetailsPage = () => {
   const [condoDetails, setCondoDetails] = useState([]);
   const [hasCondos, setHasCondos] = useState(false);
   let [condoPicURL, setCondoPicURL] = useState(null);
+  const [showEdit, setShowEdit] = useState(true);
 
   useEffect(() => {
     const fetchCondos = async () => {
@@ -41,6 +43,9 @@ const PropertyDetailsPage = () => {
     fetchCondos();
   }, []);
 
+  const toggleEdit = () => {
+    setShowEdit(!showEdit);
+  };
 
   return (
     <div>
@@ -51,27 +56,46 @@ const PropertyDetailsPage = () => {
           <h3 className="DB_title"> {propertyName}</h3>
         </div>
 
-        <div >
-          {hasCondos ? (
-            <div className="condo_list">
-              {condoDetails.map((condo, index) => (
-                <CondoMgmtComponent key={index} {...condo} condoId={condo.id} />
-              ))}
-
+        <div className="buttons_container">
+          {showEdit ? (
+            <div>
+              <button className="details-button" onClick={toggleEdit}>
+                Edit Property
+              </button>
             </div>
           ) : (
-            <div className="content_container">
-              <div className="white_card">
-                <p className="card_title">You have not added any condos yet.</p>
-                {/*<p className="button"> Add a condo</p>*/}
-                <Link className="button" to={`/add-condo/${propertyID}/${propertyName}`}>Add a condo</Link>
+              <div className="edit_container">
+                <EditPropertyComponent />
+                <button className="edit-property-button" onClick={toggleEdit}>
+                  Cancel
+                </button>
               </div>
-            </div>
           )}
         </div>
+
+        {showEdit && (
+          <div>
+            {hasCondos ? (
+              <div className="condo_list">
+                {condoDetails.map((condo, index) => (
+                  <CondoMgmtComponent key={index} {...condo} condoId={condo.id} />
+                ))}
+
+              </div>
+            ) : (
+              <div className="content_container">
+                <div className="white_card">
+                  <p className="card_title">You have not added any condos yet.</p>
+                  {/*<p className="button"> Add a condo</p>*/}
+                  <Link className="button" to={`/add-condo/${propertyID}/${propertyName}`}>Add a condo</Link>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
         {hasCondos && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate(`/add-condo/${propertyID}/${propertyName}`)} />}
       </div>
-      <Footer />
+      <Footer/>
     </div>
   );
 };
