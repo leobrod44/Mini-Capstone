@@ -1,0 +1,64 @@
+/* CondoFilesComponent.css */
+.cfc-container {
+  margin: auto;
+  width: 50%;
+}
+
+.file-input {
+  margin-bottom: 10px;
+}
+
+.drag-and-drop-area {
+  border: 2px dashed #ddd;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.dragging {
+  background-color: #f0f0f0; /* Add a background color when dragging */
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.details-button,
+.cancel-button {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  width: 125px;
+}
+
+.details-button {
+  background-color: #4540db;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.details-button:hover {
+  background-color: #7975d6;
+  color: #ffffff;
+}
+
+.cancel-button {
+  background-color: #ff4d4f;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cancel-button:hover {
+  background-color: #ff7875;
+  color: #ffffff;
+}

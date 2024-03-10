@@ -7,7 +7,7 @@ import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn c
 import "../index.css";
 import "../styling/PropertyDetailsPage.css";
 import CondoMgmtComponent from "../components/CondoMGMTComponent";
-import {getCondos, getPropertyData} from "../backend/PropertyHandler";
+import { getCondos, getPropertyData } from "../backend/PropertyHandler";
 import { getCondoPicture } from "../backend/ImageHandler";
 
 
@@ -52,6 +52,12 @@ const PropertyDetailsPage = () => {
         </div>
 
         <div >
+          <Link
+            className="details-button-condo-files"
+            to={`/condo-files/${propertyID}`}
+          >
+            Condo Files
+          </Link>
           {hasCondos ? (
             <div className="condo_list">
               {condoDetails.map((condo, index) => (
