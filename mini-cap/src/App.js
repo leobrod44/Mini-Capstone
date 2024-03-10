@@ -30,7 +30,7 @@ function App() {
        <Route path="/add-property" element={<PropertyForm />} />
        //<Route path="/add-condo" element={<AddCondoForm />} />
        <Route path="/add-condo/:propertyID/:propertyName" element={<AddCondoForm />} />
-       <Route path="/condo-details" element={<CondoDetails />} />
+       <Route path="/condo-details/:condoId" element={<CondoDetails />} />
 
     </Routes>
 
