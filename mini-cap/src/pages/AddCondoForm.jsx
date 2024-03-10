@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styling/AddCondoForm.css";
 import Header from "../components/Header";
@@ -22,6 +22,8 @@ const AddCondoForm = () => {
       unitSize: "",
       parkingNumber: "",
       lockerNumber: "",
+        occupant: "",
+        status: "",
       picture: null,
     });
     const [previewCondoImage, setPreviewCondoImage] = useState(null);
@@ -93,6 +95,8 @@ const AddCondoForm = () => {
         unitSize: "",
         parkingNumber: "",
         lockerNumber: "",
+          occupant: "",
+          status: "",
         picture: null,
       });
       try{
