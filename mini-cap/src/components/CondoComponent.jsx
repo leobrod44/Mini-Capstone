@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import "../styling/CondoComponent.css";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 
 const CondoComponent = ({ condo }) => {
-    const { property, picture, address, unitNumber, parkingNumber, lockerNumber, userType /*, condoId */} = condo;
-    
+    const { property, picture, address, unitNumber, parkingNumber, lockerNumber, userType, condoId } = condo;
+    const navigate = useNavigate();
     const userTypeClass = userType === 'Owner' ? 'owner' : 'renter';
 
     return (
@@ -23,11 +23,9 @@ const CondoComponent = ({ condo }) => {
                 {parkingNumber && <p>Parking Spot: {parkingNumber}</p>}
                 
                 <div className='locker-details'>
-
                     {lockerNumber && <p>Locker: {lockerNumber}</p>}
-                    {/*<button className="details-button">Details</button> */}
-                    <Link to="/condo-details" className="details-button">Details</Link>
-                    {/*<Link to={`/condo-details/${condoId}`} className="details-button">Details</Link>*/}
+                    <button className="details-button" onClick={() => navigate(`/condo-details/${condoId}`)}>Details</button>
+
                 </div>
             </div>
         </div>
