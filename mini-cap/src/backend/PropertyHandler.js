@@ -283,13 +283,22 @@ export async function getCondos(propertyID) {
     throw new Error("Error getting condos: ", e);
   }
 }
+//returns specific condo doc data with additional property name and address
 export async function getCondo(condoID) {
   try {
     const docRef = doc(db, "Condo", condoID);
     const docSnap = await getDoc(docRef);
+    const condoData = docSnap.data();
 
     if (docSnap.exists()) {
-      return docSnap.data();
+      const propertyDocRef = doc(db, "Property", condoData.property);
+      const propertyDoc = await getDoc(propertyDocRef);
+
+      if (propertyDoc.exists()) {
+        condoData.address = propertyDoc.data().address;
+        condoData.propertyName = propertyDoc.data().propertyName;
+      } else return null;
+      return condoData;
     } else {
       console.log("No such document!");
     }

@@ -2,16 +2,31 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import "../index.css";
 import "../styling/CondoDetails.css";
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import PropTypes from 'prop-types';
 import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
+import {getCondo} from "../backend/PropertyHandler";
+//import {getCondoPicture} from "../backend/ImageHandler";
+
+export default function CondoDetails({ propertyName, address, parkingNumber, lockerNumber, unitNumber, price, unitSize, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
+
+	useEffect(() => {
+		const fetchCondo = async () => {
+			try {
+				const condo = await getCondo("H7bG17pfeajqniUoG9O7");
+
+				console.log(condo.propertyName);
+				console.log(condo.address);
+			} catch (err) {
+				console.error(err);
+			}
+		};
+		fetchCondo();
+	}, []);
 
 
-
-export default function CondoDetails({ name, address, parkingCount, lockerCount, unitNumber, price, size, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
-	
 	const [showPopup, setShowPopup] = useState(false);
     const handlePopupToggle = () => {
         setShowPopup(!showPopup);
@@ -29,14 +44,14 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
     const role = 'company';
 
 	CondoDetails.propTypes = {
-        name: PropTypes.string.isRequired,
+		propertyName: PropTypes.string.isRequired,
         profilePicture: PropTypes.string,
         address: PropTypes.string.isRequired,
-        parkingCount: PropTypes.string,
-        lockerCount: PropTypes.string,
+		parkingNumber: PropTypes.string,
+		lockerNumber: PropTypes.string,
         unitNumber: PropTypes.string,
         price: PropTypes.string,
-        size: PropTypes.string,
+		unitSize: PropTypes.string,
         squareFeet: PropTypes.string,
         pricesf: PropTypes.string,
         status: PropTypes.string,
@@ -82,9 +97,10 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
 										</>)}
 								</div>
 
+
 							</div>
 								<div className='other-info'>
-								<h2 className="DB_title"> {"[Condo Name]"} {name} <br /><br /></h2>
+								<h2 className="DB_title"> {"[Property Name]"} {propertyName} <br /><br /></h2>
 
 								<div className='other-info1'>
 									<div className='other-info2'><h5>Address: </h5></div> 
@@ -103,16 +119,16 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
 
 								<div className='other-info1'>
 									<div className='other-info2'><h5>Unit size: </h5></div> 
-									<div className= 'other-info2'>{"[text]"}{size} sq ft</div>
+									<div className= 'other-info2'>{"[text]"}{unitSize} sq ft</div>
 								</div> 
 								<div className='other-info1'>
 									<div className='other-info2'><h5>Parking spot number: </h5></div> 
-									<div className= 'other-info2'>{"[text]"}{parkingCount}</div>
+									<div className= 'other-info2'>{"[text]"}{parkingNumber}</div>
 								</div>  
 
 								<div className='other-info1'>
 									<div className='other-info2'><h5>Locker number: </h5></div> 
-									<div className= 'other-info2'>{"[text]"}{lockerCount}</div>
+									<div className= 'other-info2'>{"[text]"}{lockerNumber}</div>
 								</div>
 
 								<div className='other-info1'>
