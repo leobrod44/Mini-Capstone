@@ -29,8 +29,28 @@ const structure = {
         "unitSize": "",
         "parkingNumber": "",
         "lockerNumber": "",
+    },
+    "Request": {
+        "requestID": "", 
+        "condoID":"", 
+        "type": "", //(Financial, Administrative, Operational)
+        "notes": "", 
+        "step": "", 
+        "viewed": "", 
+    },
+    "Amenity": {
+        "amenityID": "", 
+        "price": "", 
+        "unitNumber": "", 
+    },
+    "Notification":{
+        "message": "",
+        "path":""
+
     }
 }
+
+
 
 export function cleanData(type, data) {
     
@@ -41,12 +61,13 @@ export function cleanData(type, data) {
 
     const format = structure[type];
     const newData = {};
-
     Object.keys(format).forEach(key => {
-        if (data.hasOwnProperty(key)) {
+        const dataKeys = Object.keys(data);
+        if (dataKeys.includes(key)) {
             newData[key] = data[key];
         }
     });
+    
 
     return newData;
 }
