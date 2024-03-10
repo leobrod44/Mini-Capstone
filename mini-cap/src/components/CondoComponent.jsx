@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 
 const CondoComponent = ({ condo }) => {
-    const { property, picture, address, unitNumber, parkingNumber, lockerNumber, userType } = condo;
+    const { property, picture, address, unitNumber, parkingNumber, lockerNumber, userType /*, condoId */} = condo;
     
     const userTypeClass = userType === 'Owner' ? 'owner' : 'renter';
 
@@ -27,7 +27,7 @@ const CondoComponent = ({ condo }) => {
                     {lockerNumber && <p>Locker: {lockerNumber}</p>}
                     {/*<button className="details-button">Details</button> */}
                     <Link to="/condo-details" className="details-button">Details</Link>
-                    
+                    {/*<Link to={`/condo-details/${condoId}`} className="details-button">Details</Link>*/}
                 </div>
             </div>
         </div>
@@ -42,7 +42,8 @@ CondoComponent.propTypes = {
         unitNumber: PropTypes.string.isRequired,
         parkingNumber: PropTypes.string.isRequired,
         lockerNumber: PropTypes.string.isRequired,
-        userType: PropTypes.string.isRequired
+        userType: PropTypes.string.isRequired,
+        condoId: PropTypes.string.isRequired
       }).isRequired
 };
 
