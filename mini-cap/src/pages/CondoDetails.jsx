@@ -24,8 +24,6 @@ export default function CondoDetails(){
 	const navigate = useNavigate();
 	const [role, setTheRole] = useState("");
 
-	const condoStatus = 'vacant';
-
 	useEffect(() => {
 		const fetchCondo = async () => {
 			try {
@@ -42,6 +40,7 @@ export default function CondoDetails(){
 			}
 		};
 		fetchCondo();
+
 	}, []);
 
 	if (condoDetails === null) {
@@ -80,7 +79,9 @@ export default function CondoDetails(){
 		parkingNumber,
 		lockerNumber,
 		picture,
-		propertyID
+		propertyID,
+		occupant,
+		status
 	} = condoDetails;
 
 	return(
@@ -89,124 +90,127 @@ export default function CondoDetails(){
 			<Header/>
 
 			<div className="details" style={{zIndex: 2, position: 'relative', marginTop: '20px'}}>
-			<div className="title_container">
-				<link
-					rel="stylesheet"
-					href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-					integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-					crossOrigin="anonymous"
-				/>
-				<div className="condo-details-container">
-					<div className="condo-info">
-						<div className='name-and-number'>
-							<div className= 'pic-and-num'>
-								{picture && <img src={picture} alt="Profile" className="profile-picture" />}
-							</div>
-							<div className='pic-and-tag'>
-							{condoStatus === "vacant" && role === 'mgmt' && (
+				<div className="title_container">
+					<link
+						rel="stylesheet"
+						href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+						integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+						crossOrigin="anonymous"
+					/>
+					<div className="condo-details-container">
+						<div className="condo-info">
+							<div className='name-and-number'>
+								<div className= 'pic-and-num'>
+									{picture && <img src={picture} alt="Profile" className="profile-picture" />}
+								</div>
+								<div className='pic-and-tag'>
+								{status === "Vacant" && role === 'mgmt' && (
 									<>
 									<div>
-										<div className={`user-tag vacant`}>{"Vacant"}{"status"}</div>
+										<div className={`user-tag vacant`}>{status}</div>
 										{role === "mgmt" && (
 										<>
 											<button className="sendkey-button" onClick={handlePopupToggle}>Send Key</button>
 										</>)}
 									</div>
-									</>)}
-							{condoStatus === "rented" && role === 'mgmt' && (
+									</>
+								)}
+								{status  === "Rented" && role === 'mgmt' && (
 									<>
-										<div className={`user-tag rented`}>{"Rented"}{"status"}</div>
-
-									</>)}
-							</div>
-
-
-						</div>
-							<div className='other-info'>
-							<h2 className="DB_title"> {propertyName} <br /><br /></h2>
-
-							<div className='other-info1'>
-								<div className='other-info2'><h5>Address: </h5></div>
-								<div className= 'other-info2'>{address}</div>
-							</div>
-
-							<div className='other-info1'>
-								<div className='other-info2'><h5>Unit Number: </h5></div>
-								<div className='other-info2'>{unitNumber}</div>
-							</div>
-
-							<div className='other-info1'>
-								<div className='other-info2'><h5>Square Feet: </h5></div>
-								<div className= 'other-info2'>{squareFeet} sq ft</div>
-							</div>
-
-							<div className='other-info1'>
-								<div className='other-info2'><h5>Unit size: </h5></div>
-								<div className= 'other-info2'>{unitSize} sq ft</div>
-							</div>
-							<div className='other-info1'>
-								<div className='other-info2'><h5>Parking spot number: </h5></div>
-								<div className= 'other-info2'>{parkingNumber}</div>
-							</div>
-
-							<div className='other-info1'>
-								<div className='other-info2'><h5>Locker number: </h5></div>
-								<div className= 'other-info2'>{lockerNumber}</div>
-							</div>
-
-							<div className='other-info1'>
-								<div className='other-info2'><h5>Price/sq ft.: </h5></div>
-								<div className='other-info2'>{"pricesf"}</div>
-							</div>
-
-							<div className='other-info1'>
-								<div className='other-info2'><h5>Unit Price: </h5></div>
-								<div className='other-info2'>{"price"}</div>
-
-							</div>
-
-							<div className='other-info1'>
-							{condoStatus === "rented" && (
+										<div className={`user-tag renter`}>{status}</div>
+									</>
+								)}
+								{status  === "Owned" && role === 'mgmt' && (
 									<>
-										<div className='other-info2'><h5>Current Rent Price: </h5></div>
-										<div className='other-info2'>{"currentPrice"}</div>
-									</>)}
-							</div>
+										<div className={`user-tag owner`}>{status}</div>
+									</>
+								)}
 
-							<div className='other-info1'>
-							{role === "renter" && condoStatus === "rented" && (
-									<>
-										<div className='other-info2'><h5>Next Rent Due Date: </h5></div>
-										<div className='other-info2'>{"rentDueDate"}</div>
+								</div>
 
-									</>)}
-							</div>
 
-							<div className='other-info1'>
-							{role === "mgmt" && (
-									<>
-										<div className='other-info2'><h5>Contact of Renter/Owner: </h5></div>
-										<div className='other-info2'>{"contact"}</div>
-										<br /><br />
-									</>)}
 							</div>
-							<div className='other-info1'>
-							{role === "renter" && (
-									<>
-										<div className='other-info2'><h5>Contact: </h5></div>
-										<div className='other-info2'>{"contact"}</div>
-										<br /><br />
-									</>)}
+								<div className='other-info'>
+								<h2 className="DB_title"> {propertyName} <br /><br /></h2>
+
+								<div className='other-info1'>
+									<div className='other-info2'><h5>Address: </h5></div>
+									<div className= 'other-info2'>{address}</div>
+								</div>
+
+								<div className='other-info1'>
+									<div className='other-info2'><h5>Unit Number: </h5></div>
+									<div className='other-info2'>{unitNumber}</div>
+								</div>
+
+								<div className='other-info1'>
+									<div className='other-info2'><h5>Square Feet: </h5></div>
+									<div className= 'other-info2'>{squareFeet} sq ft</div>
+								</div>
+
+								<div className='other-info1'>
+									<div className='other-info2'><h5>Unit size: </h5></div>
+									<div className= 'other-info2'>{unitSize} sq ft</div>
+								</div>
+								<div className='other-info1'>
+									<div className='other-info2'><h5>Parking spot number: </h5></div>
+									<div className= 'other-info2'>{parkingNumber}</div>
+								</div>
+
+								<div className='other-info1'>
+									<div className='other-info2'><h5>Locker number: </h5></div>
+									<div className= 'other-info2'>{lockerNumber}</div>
+								</div>
+
+									{/*	THIS ALL PRICE LOGIC:*/}
+									{/*------------------------------------------------------------------------------------------*/}
+								{/*<div className='other-info1'>*/}
+								{/*	<div className='other-info2'><h5>Price/sq ft.: </h5></div>*/}
+								{/*	<div className='other-info2'>{"pricesf"}</div>*/}
+								{/*</div>*/}
+
+								{/*<div className='other-info1'>*/}
+								{/*	<div className='other-info2'><h5>Unit Price: </h5></div>*/}
+								{/*	<div className='other-info2'>{"price"}</div>*/}
+
+								{/*</div>*/}
+
+								{/*<div className='other-info1'>*/}
+								{/*{condoStatus === "rented" && (*/}
+								{/*		<>*/}
+								{/*			<div className='other-info2'><h5>Current Rent Price: </h5></div>*/}
+								{/*			<div className='other-info2'>{"currentPrice"}</div>*/}
+								{/*		</>)}*/}
+								{/*</div>*/}
+
+								{/*<div className='other-info1'>*/}
+								{/*{role === "renter" && condoStatus === "rented" && (*/}
+								{/*		<>*/}
+								{/*			<div className='other-info2'><h5>Next Rent Due Date: </h5></div>*/}
+								{/*			<div className='other-info2'>{"rentDueDate"}</div>*/}
+
+								{/*		</>)}*/}
+								{/*</div>*/}
+									{/*------------------------------------------------------------------------------------------*/}
+
+								<div className='other-info1'>
+								{role === "mgmt" && status !== "Vacant" && (
+										<>
+											<div className='other-info2'><h5>Contact Renter/Owner: </h5></div>
+											<div className='other-info2'>{occupant}</div>
+											<br /><br />
+										</>)}
+								</div>
+								<div className='other-info1'>
+								{role !== "mgmt" && (
+										<>
+											<div className='other-info2'><h5>Contact {status}: </h5></div>
+											<div className='other-info2'>{"contact"}</div>
+											<br /><br />
+										</>)}
+								</div>
 							</div>
-							<div className='other-info1'>
-							{role === "owner" && (
-									<>
-										<div className='other-info2'><h5>Contact: </h5></div>
-										<div className='other-info2'>{"contact"}</div>
-										<br /><br />
-									</>)}
-							</div>
-						</div>
+							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
 							<div>
 								{role === "mgmt" && (
 									<>
@@ -214,20 +218,18 @@ export default function CondoDetails(){
 										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
 									</>)}
 							</div>
+						</div>
+					</div>
+					{showPopup && <Popup_SendKey handleClose={handlePopupToggle}/>}
+					<div data-testid="popup-delete-test">
+						<DeleteModal
+							show={show}
+							handleClose={handleClose}
+							handleDeleteItem={deleteCondoAttempt}
+							message={"Are you sure you want to delete this Condo?"}
+						/>
 					</div>
 				</div>
-				{showPopup && <Popup_SendKey handleClose={handlePopupToggle}/>}
-				<div data-testid="popup-delete-test">
-				<DeleteModal
-				show={show}
-				handleClose={handleClose}
-				handleDeleteItem={deleteCondoAttempt}
-				message={
-				"Are you sure you want to delete this Condo?"
-				}
-				/></div>
-
-			</div>
 			</div>
 
 			<BackArrowBtn/>
