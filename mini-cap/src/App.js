@@ -37,7 +37,10 @@ function App() {
           element={<AddCondoForm />}
         />
         <Route path="/condo-details" element={<CondoDetails />} />
-        <Route path="/condo-files/:propertyID" element={<CondoFilesPage />} />
+        <Route
+          path="/condo-files/:propertyID/:propertyName"
+          element={<CondoFilesPage />}
+        />
       </Routes>
     </BrowserRouter>
   );

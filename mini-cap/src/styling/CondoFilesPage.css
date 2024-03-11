@@ -1,6 +1,87 @@
-.condo-files-heading {
+/* CondoFilesPage.css */
+.center-pageF {
   text-align: center;
-  margin-top: 20px; /* Adjust the top margin as needed */
-  margin-bottom: 20px; /* Adjust the bottom margin as needed */
-  /* Add any additional styling here */
+}
+
+.condo-files-heading {
+  margin-top: 2.5%;
+}
+
+.white-container {
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  margin: auto;
+  width: 50%;
+  margin-top: 20px; /* Adjust margin as needed */
+}
+
+.white-container h4 {
+  margin-top: 20px;
+}
+
+.white-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.white-container li {
+  cursor: pointer;
+  margin: 5px 0;
+  color: #4540db;
+  /* Add any other styles as needed */
+}
+
+/* Add modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  cursor: default;
+}
+
+.modal-content h2 {
+  color: #4540db;
+  margin-bottom: 10px;
+}
+
+.modal-content p {
+  margin: 10px 0;
+}
+
+.modal-content button {
+  background-color: #4540db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-content button:hover {
+  background-color: #7975d6;
+}
+.DB_titleF {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: #4540db;
+  display: inline-block;
+  margin-top: 2.5%;
 }

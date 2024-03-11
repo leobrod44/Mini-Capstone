@@ -54,7 +54,7 @@ const PropertyDetailsPage = () => {
         <div >
           <Link
             className="details-button-condo-files"
-            to={`/condo-files/${propertyID}`}
+            to={`/condo-files/${propertyID}/${propertyName}`}
           >
             Condo Files
           </Link>

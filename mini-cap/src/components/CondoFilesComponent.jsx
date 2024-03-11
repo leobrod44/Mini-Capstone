@@ -4,13 +4,25 @@ import PropTypes from "prop-types";
 import "../styling/CondoFilesComponent.css";
 import { uploadFile } from "../backend/PropertyHandler"; // Import the uploadFile function
 
-const CondoFilesComponent = ({ propertyID }) => {
+const CondoFilesComponent = ({ condoID, onFileClick }) => {
     const [files, setFiles] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
 
-    const handleFileUpload = (event) => {
+    const handleFileUpload = async (event) => {
         const uploadedFiles = Array.from(event.target.files);
         setFiles(uploadedFiles);
+
+        // Read content of text files and trigger the onFileClick callback
+        for (const file of uploadedFiles) {
+            if (file.type === "text/plain") {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const content = e.target.result;
+                    onFileClick({ fileName: file.name, content });
+                };
+                reader.readAsText(file);
+            }
+        }
     };
 
     const handleDragEnter = (event) => {
@@ -32,6 +44,18 @@ const CondoFilesComponent = ({ propertyID }) => {
         const droppedFiles = Array.from(event.dataTransfer.files);
         setFiles(droppedFiles);
 
+        // Read content of text files and trigger the onFileClick callback
+        for (const file of droppedFiles) {
+            if (file.type === "text/plain") {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const content = e.target.result;
+                    onFileClick({ fileName: file.name, content });
+                };
+                reader.readAsText(file);
+            }
+        }
+
         setIsDragging(false);
     };
 
@@ -39,7 +63,7 @@ const CondoFilesComponent = ({ propertyID }) => {
         // Upload files using the backend function
         try {
             await Promise.all(files.map(async (file) => {
-                await uploadFile(propertyID, file);
+                await uploadFile(condoID, file);
             }));
             // Reset files after uploading
             setFiles([]);
@@ -55,7 +79,6 @@ const CondoFilesComponent = ({ propertyID }) => {
 
     return (
         <div className={`cfc-container ${isDragging ? "dragging" : ""}`}>
-            {/* <h3>{`Condo Files for Property ID ${propertyID}`}</h3>*/}
             <div
                 className="drag-and-drop-area"
                 onDragEnter={handleDragEnter}
@@ -89,7 +112,9 @@ const CondoFilesComponent = ({ propertyID }) => {
                     <h4>Uploaded Files:</h4>
                     <ul>
                         {files.map((file, index) => (
-                            <li key={index}>{file.name}</li>
+                            <li key={index} onClick={() => onFileClick({ fileName: file.name })}>
+                                {file.name}
+                            </li>
                         ))}
                     </ul>
                 </div>
@@ -99,7 +124,8 @@ const CondoFilesComponent = ({ propertyID }) => {
 };
 
 CondoFilesComponent.propTypes = {
-    propertyID: PropTypes.string.isRequired,
+    condoID: PropTypes.string.isRequired,
+    onFileClick: PropTypes.func.isRequired,
 };
 
 export default CondoFilesComponent;
