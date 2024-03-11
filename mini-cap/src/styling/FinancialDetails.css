@@ -1,0 +1,30 @@
+.Financial-info{
+    background-color: #ffffff;
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    display: block;
+}
+
+h5{
+    font-family: "Roboto", sans-serif;
+    position: relative;
+    align-items: right;
+    margin-bottom: 0px;
+    color:#2f2c9b;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.other-info{
+    text-align: left;
+    margin-left: 10px;
+}
+
+.other-info1{
+    text-align: left;
+}
+
+.other-info2{
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}
