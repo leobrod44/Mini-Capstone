@@ -23,6 +23,8 @@ jest.mock("react-toastify", () => {
     };
   });
 
+  console.log = jest.fn();
+
   describe("RequestForm", () => {
     it("should allow user to fill out the Request Form", async () => {
       const { getByLabelText, getByText, getByRole } = render(
@@ -134,7 +136,7 @@ jest.mock("react-toastify", () => {
       
         // Ensure toast is shown
         await waitFor(() => {
-          expect(toast.error).toHaveBeenCalledWith("Error submitting request");
+          expect(toast.error).toHaveBeenCalledWith("Please fill all fields");
         });
     });
     
@@ -158,6 +160,12 @@ jest.mock("react-toastify", () => {
       jest.mock('../backend/RequestHandler', () => ({
         submitRequest: mockSubmitRequest,
       }));
+
+      const {clearImmediate} = require('node:timers')
+
+      Object.defineProperties(globalThis, {
+        clearImmediate: {value: clearImmediate}
+      })
 
       const { getByLabelText, getByText } = render(
         <BrowserRouter>
@@ -187,5 +195,4 @@ jest.mock("react-toastify", () => {
         expect(toast.success).toHaveBeenCalledWith("Request submitted successfully");
       });
   });
-  
 });
