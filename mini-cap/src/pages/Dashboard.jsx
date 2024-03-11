@@ -106,6 +106,7 @@ const Dashboard = () => {
                     parkingNumber: condo.parkingNumber,
                     lockerNumber: condo.lockerNumber,
                     userType: condo.userType,
+                    condoId: condo.id
                   }}
                   data-testid="condo-component"
                 />

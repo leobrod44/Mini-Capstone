@@ -1,14 +1,11 @@
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styling/AddCondoForm.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-
 import { addCondo } from "../backend/PropertyHandler";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-
-
 
 const AddCondoForm = () => {
   let { propertyID, propertyName } = useParams();
@@ -70,8 +67,6 @@ const AddCondoForm = () => {
       setCondo((prevCondo) => ({ ...prevCondo, [name]: value }));
     };
   
-   
-  
     const handleSubmit = async (e) => {
       e.preventDefault();
     
@@ -93,10 +88,12 @@ const AddCondoForm = () => {
         unitSize: "",
         parkingNumber: "",
         lockerNumber: "",
+          occupant: "",
+          status: "",
         picture: null,
       });
       try{
-          await addCondo(condo,propertyID,propertyName);
+          await addCondo(condo, propertyID, propertyName);
       }
       catch(e){
         toast.error("Error adding condo");

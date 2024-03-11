@@ -23,9 +23,10 @@ emailjs.init({
 });
 // returns user data using email
 export async function storeCondoKey(data) {
-
+  console.log(data);
   try {
     const docRef = await addDoc(collection(db, "Keys"), data);
+    console.log(data.role);
     await updateDoc(docRef, {
       used: false,
     });
@@ -62,9 +63,11 @@ export async function linkCondoToUser(email, key) {
     const docRef = doc(db, "Keys", key);
     const docSnap = await getDoc(docRef);
     let data;
+    const condoDocRef = doc(db, "Condo", docSnap.data().condo);
 
     if (docSnap.exists()) {
       data = docSnap.data();
+
     } else {
       return "Key is not valid!";
     }
@@ -90,6 +93,11 @@ export async function linkCondoToUser(email, key) {
               rents: arrayUnion(data.condo),
           });
       }
+
+      //adding rented to codo status
+      await updateDoc(condoDocRef, {
+        status: "Rented"
+      });
   }
   if (data.role === "owner") {
     const userData = userSnap.data();
@@ -102,13 +110,23 @@ export async function linkCondoToUser(email, key) {
             owns: arrayUnion(data.condo),
         });
     }
-}
 
+    //adding owned to condo status
+    await updateDoc(condoDocRef, {
+      status: "Owned"
+    });
+  }
 
     //set key to used
     await updateDoc(docRef, {
       used: true,
     });
+
+    //updating condo occupant to the user email
+    await updateDoc(condoDocRef, {
+      occupant: data.email
+    });
+
   } catch (err) {
     console.error(err);
   }
@@ -127,6 +145,8 @@ export async function addCondo(data, propertyID, propertyName) {
 
     await updateDoc(docRef, {
       id: docID,
+      occupant: "",
+      status: "Vacant"
     });
 
     if (pictureData) {
@@ -283,13 +303,23 @@ export async function getCondos(propertyID) {
     throw new Error("Error getting condos: ", e);
   }
 }
+//returns specific condo doc data with additional property name and address
 export async function getCondo(condoID) {
   try {
     const docRef = doc(db, "Condo", condoID);
     const docSnap = await getDoc(docRef);
+    const condoData = docSnap.data();
 
     if (docSnap.exists()) {
-      return docSnap.data();
+      const propertyDocRef = doc(db, "Property", condoData.property);
+      const propertyDoc = await getDoc(propertyDocRef);
+
+      if (propertyDoc.exists()) {
+        condoData.address = propertyDoc.data().address;
+        condoData.propertyName = propertyDoc.data().propertyName;
+        condoData.propertyID = propertyDoc.id;
+      } else return null;
+      return condoData;
     } else {
       console.log("No such document!");
     }
@@ -405,5 +435,3 @@ export async function updateProperty(propertyID, data) {
 export async function deleteProperty(propertyID) {
   console.log("Deleting property: ", propertyID);
 }
-
-
