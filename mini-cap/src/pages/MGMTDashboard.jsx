@@ -8,10 +8,13 @@ import "../styling/MGMTDashboard.css";
 import AddCondoBtn from "../components/AddCondoBtn";
 import Property from "../components/PropertyComponent";
 import store from "storejs";
+import Pagination from "../components/Pagination";
+import "../styling/Pagination.css";
 
 const MGMTDashboard = () => {
   const [hasProperties, setHasProperties] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,9 +30,16 @@ const MGMTDashboard = () => {
       }
     };
     fetchProperties();
+  }, []);
 
-  }, []); 
+  const propertiesPerPage = 4;
+  const indexOfLastProperty = currentPage * propertiesPerPage;
+  const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
 
+  const propertiesToDisplayPaginated = propertyDetails.slice(
+    indexOfFirstProperty,
+    indexOfLastProperty
+  );
 
   return (
     <div>
@@ -43,17 +53,29 @@ const MGMTDashboard = () => {
           {hasProperties ? (
             <div className="condo_list" data-testid="condo-list">
               {/* Render properties */}
-              {propertyDetails.map((p, index) => (
-                <Property key={index} property={{
-                  picture: p.picture,
-                  propertyID: p.propertyID,
-                  propertyName: p.propertyName,
-                  address: p.address,
-                  unitCount: p.unitCount.toString(),
-                  parkingCount: p.parkingCount.toString(),
-                  lockerCount: p.lockerCount.toString()
-              } } data-testid="property-component" />
+              {propertiesToDisplayPaginated.map((p, index) => (
+                <Property
+                  key={index}
+                  property={{
+                    picture: p.picture,
+                    propertyID: p.propertyID,
+                    propertyName: p.propertyName,
+                    address: p.address,
+                    unitCount: p.unitCount,
+                    parkingCount: p.parkingCount,
+                    lockerCount: p.lockerCount,
+                  }}
+                  data-testid="property-component"
+                />
               ))}
+              <div className="pagination-container">
+                <Pagination
+                  itemsPerPage={propertiesPerPage}
+                  totalItems={propertyDetails.length}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              </div>
             </div>
           ) : (
             // Render registration section if the user has no properties
@@ -67,7 +89,12 @@ const MGMTDashboard = () => {
           )}
         </div>
 
-        {hasProperties && <AddCondoBtn data-testid="add-condo-btn" onClick={() => navigate("/add-property")} />}
+        {hasProperties && (
+          <AddCondoBtn
+            data-testid="add-condo-btn"
+            onClick={() => navigate("/add-property")}
+          />
+        )}
       </div>
       <Footer />
     </div>
