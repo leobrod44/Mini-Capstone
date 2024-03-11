@@ -23,9 +23,10 @@ emailjs.init({
 });
 // returns user data using email
 export async function storeCondoKey(data) {
-
+  console.log(data);
   try {
     const docRef = await addDoc(collection(db, "Keys"), data);
+    console.log(data.role);
     await updateDoc(docRef, {
       used: false,
     });
@@ -62,9 +63,11 @@ export async function linkCondoToUser(email, key) {
     const docRef = doc(db, "Keys", key);
     const docSnap = await getDoc(docRef);
     let data;
+    const condoDocRef = doc(db, "Condo", docSnap.data().condo);
 
     if (docSnap.exists()) {
       data = docSnap.data();
+
     } else {
       return "Key is not valid!";
     }
@@ -90,6 +93,11 @@ export async function linkCondoToUser(email, key) {
               rents: arrayUnion(data.condo),
           });
       }
+
+      //adding rented to codo status
+      await updateDoc(condoDocRef, {
+        status: "Rented"
+      });
   }
   if (data.role === "owner") {
     const userData = userSnap.data();
@@ -102,13 +110,23 @@ export async function linkCondoToUser(email, key) {
             owns: arrayUnion(data.condo),
         });
     }
-}
 
+    //adding owned to condo status
+    await updateDoc(condoDocRef, {
+      status: "Owned"
+    });
+  }
 
     //set key to used
     await updateDoc(docRef, {
       used: true,
     });
+
+    //updating condo occupant to the user email
+    await updateDoc(condoDocRef, {
+      occupant: data.email
+    });
+
   } catch (err) {
     console.error(err);
   }
