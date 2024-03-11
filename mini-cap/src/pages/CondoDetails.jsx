@@ -7,7 +7,7 @@ import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import PropTypes from 'prop-types';
 import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
-
+import FinancialDetails from "../components/FinancialDetails.jsx";
 
 
 export default function CondoDetails({ name, address, parkingCount, lockerCount, unitNumber, price, size, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
@@ -128,50 +128,51 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
 								<div className='other-info1'>
 									<div className='other-info2'><h5>Unit Price: </h5></div> 
 									<div className='other-info2'>{}{price}</div>
-									
 								</div>
 
 								<div className='other-info1'>
-								{condoStatus === "rented" && ( 
+									{condoStatus === "rented" && ( 
 										<>
 											<div className='other-info2'><h5>Current Rent Price: </h5></div> 
 											<div className='other-info2'>{}{currentPrice}</div>
-										</>)}
+									</>)}
 								</div> 
 
 								<div className='other-info1'>
-								{role === "renter" && condoStatus === "rented" && ( 
+									{role === "renter" && condoStatus === "rented" && ( 
 										<>
 											<div className='other-info2'><h5>Next Rent Due Date: </h5></div> 
 											<div className='other-info2'>{}{rentDueDate}</div>
 
-										</>)}
+									</>)}
 								</div> 
 
 								<div className='other-info1'>
-								{role === "company" && ( 
+									{role === "company" && ( 
 										<>
 											<div className='other-info2'><h5>Contact of Renter/Owner: </h5></div> 
 											<div className='other-info2'>{}{contact}</div>
-											<br /><br />
-										</>)}
+									</>)}
 								</div>   
+
 								<div className='other-info1'>
-								{role === "renter" && ( 
+									{role === "renter" && ( 
 										<>
 											<div className='other-info2'><h5>Contact: </h5></div> 
 											<div className='other-info2'>{}{contact}</div>
-											<br /><br />
-										</>)}
+									</>)}
 								</div>
+
 								<div className='other-info1'>
-								{role === "owner" && ( 
+									{role === "owner" && ( 
 										<>
 											<div className='other-info2'><h5>Contact: </h5></div> 
 											<div className='other-info2'>{}{contact}</div>
-											<br /><br />
-										</>)}
-								</div>                       
+									</>)}
+								</div>    
+								{showFinancialDetails && (
+									<FinancialDetails/>
+								)}               
 							</div>
 							<div>
 								{role === "company" && ( 
@@ -184,12 +185,6 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
 								<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}>
 									 {showFinancialDetails ? "Close" : "Financial Details"} 
 								</button>
-								{showFinancialDetails && (
-                                    <div id="financialDetailsComponent">
-										{/* TO DO */}
-										{/* Financial Details component */}
-									</div>
-								)}
 							</div>
 						</div>
 					</div>
