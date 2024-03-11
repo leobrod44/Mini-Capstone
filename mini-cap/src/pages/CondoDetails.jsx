@@ -4,7 +4,6 @@ import "../index.css";
 import "../styling/CondoDetails.css";
 import React, {useEffect, useState} from "react";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
-// import PropTypes from 'prop-types';
 import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
 import {getCondo} from "../backend/PropertyHandler";
@@ -13,7 +12,7 @@ import {toast} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
 import store from "storejs";
 import {getCompanyEmail} from "../backend/UserHandler";
-//import {getCondoPicture} from "../backend/ImageHandler";
+import {MANAGEMENT_COMPANY, RENTER_OWNER} from "../backend/Constants";
 
 export default function CondoDetails(){
 	let { condoId } = useParams();
@@ -107,7 +106,7 @@ export default function CondoDetails(){
 									{picture && <img src={picture} alt="Profile" className="profile-picture" />}
 								</div>
 								<div className='pic-and-tag'>
-								{status === "Vacant" && role === 'mgmt' && (
+								{status === "Vacant" && role === MANAGEMENT_COMPANY && (
 									<>
 									<div>
 										<div className={`user-tag vacant`}>{status}</div>
@@ -118,12 +117,12 @@ export default function CondoDetails(){
 									</div>
 									</>
 								)}
-								{status  === "Rented" && role === 'mgmt' && (
+								{status  === "Rented" && role === MANAGEMENT_COMPANY && (
 									<>
 										<div className={`user-tag renter`}>{status}</div>
 									</>
 								)}
-								{status  === "Owned" && role === 'mgmt' && (
+								{status  === "Owned" && role === MANAGEMENT_COMPANY && (
 									<>
 										<div className={`user-tag owner`}>{status}</div>
 									</>
@@ -197,7 +196,7 @@ export default function CondoDetails(){
 									{/*------------------------------------------------------------------------------------------*/}
 
 								<div className='other-info1'>
-								{role === "mgmt" && status !== "Vacant" && (
+								{role === MANAGEMENT_COMPANY && status !== "Vacant" && (
 										<>
 											<div className='other-info2'><h5>Renter/Owner Email: </h5></div>
 											<div className='other-info2'>{occupant}</div>
@@ -205,7 +204,7 @@ export default function CondoDetails(){
 										</>)}
 								</div>
 								<div className='other-info1'>
-								{role !== "mgmt" && (
+								{role !== MANAGEMENT_COMPANY && (
 										<>
 											<div className='other-info2'><h5>Property Company Email: </h5></div>
 											<div className='other-info2'>{companyEmail}</div>
@@ -215,7 +214,7 @@ export default function CondoDetails(){
 							</div>
 							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
 							<div>
-								{role === "mgmt" && (
+								{role === MANAGEMENT_COMPANY && (
 									<>
 										<button className="edit-button"> Edit</button>
 										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
