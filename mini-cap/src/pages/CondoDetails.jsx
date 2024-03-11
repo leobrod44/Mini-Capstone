@@ -12,6 +12,7 @@ import {getCondoPicture} from "../backend/ImageHandler";
 import {toast} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
 import store from "storejs";
+import {getCompanyEmail} from "../backend/UserHandler";
 //import {getCondoPicture} from "../backend/ImageHandler";
 
 export default function CondoDetails(){
@@ -23,6 +24,7 @@ export default function CondoDetails(){
 	let [condoPicURL, setCondoPicURL] = useState(null);
 	const navigate = useNavigate();
 	const [role, setTheRole] = useState("");
+	const [companyEmail, setCompanyEmail] = useState(null);
 
 	useEffect(() => {
 		const fetchCondo = async () => {
@@ -35,6 +37,7 @@ export default function CondoDetails(){
 				setCondoPicURL(condoPicURL);
 				condo.picture = condoPicURL;
 				setCondoDetails(condo);
+				setCompanyEmail(await getCompanyEmail(condoId));
 			} catch (err) {
 				console.error(err);
 			}
@@ -196,7 +199,7 @@ export default function CondoDetails(){
 								<div className='other-info1'>
 								{role === "mgmt" && status !== "Vacant" && (
 										<>
-											<div className='other-info2'><h5>Contact Renter/Owner: </h5></div>
+											<div className='other-info2'><h5>Renter/Owner Email: </h5></div>
 											<div className='other-info2'>{occupant}</div>
 											<br /><br />
 										</>)}
@@ -204,8 +207,8 @@ export default function CondoDetails(){
 								<div className='other-info1'>
 								{role !== "mgmt" && (
 										<>
-											<div className='other-info2'><h5>Contact {status}: </h5></div>
-											<div className='other-info2'>{"contact"}</div>
+											<div className='other-info2'><h5>Property Company Email: </h5></div>
+											<div className='other-info2'>{companyEmail}</div>
 											<br /><br />
 										</>)}
 								</div>
