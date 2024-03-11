@@ -92,6 +92,10 @@
     color: #ffffff; /* Change text color on hover to white */
 }
 
+.error{
+    color: red;
+}
+
 textarea {
     font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
     font-size: 16px; /* Chosen font size */
