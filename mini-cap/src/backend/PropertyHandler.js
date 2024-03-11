@@ -145,6 +145,8 @@ export async function addCondo(data, propertyID, propertyName) {
 
     await updateDoc(docRef, {
       id: docID,
+      occupant: "",
+      status: "Vacant"
     });
 
     if (pictureData) {

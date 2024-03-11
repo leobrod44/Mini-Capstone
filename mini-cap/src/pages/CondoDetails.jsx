@@ -12,7 +12,7 @@ import {toast} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
 import store from "storejs";
 import {getCompanyEmail} from "../backend/UserHandler";
-import {MANAGEMENT_COMPANY, RENTER_OWNER} from "../backend/Constants";
+import {MANAGEMENT_COMPANY} from "../backend/Constants";
 
 export default function CondoDetails(){
 	let { condoId } = useParams();
