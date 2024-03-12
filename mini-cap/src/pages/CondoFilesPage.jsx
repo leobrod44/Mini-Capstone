@@ -10,7 +10,7 @@ import "../styling/CondoFilesPage.css";
 
 const CondoFilesPage = () => {
     const navigate = useNavigate();
-    const { condoID, propertyID, propertyName } = useParams();
+    const { propertyID, propertyName } = useParams(); // Replace condoID with propertyID
     const [condo, setCondo] = useState({});
     const [condoFiles, setCondoFiles] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
@@ -18,7 +18,7 @@ const CondoFilesPage = () => {
     useEffect(() => {
         const fetchCondoInfo = async () => {
             try {
-                const condoInfo = await getCondo(condoID);
+                const condoInfo = await getCondo(propertyID); // Replace condoID with propertyID
                 setCondo(condoInfo || {});
             } catch (err) {
                 console.error(err);
@@ -27,7 +27,7 @@ const CondoFilesPage = () => {
 
         const fetchCondoFiles = async () => {
             try {
-                const files = await getPropertyFiles(condoID);
+                const files = await getPropertyFiles(propertyID); // Replace condoID with propertyID
                 setCondoFiles(files);
             } catch (err) {
                 console.error(err);
@@ -36,7 +36,7 @@ const CondoFilesPage = () => {
 
         fetchCondoInfo();
         fetchCondoFiles();
-    }, [condoID]);
+    }, [propertyID]); // Replace condoID with propertyID
 
     // Handler to open modal with file content
     const handleOpenModal = (file) => {
@@ -55,7 +55,7 @@ const CondoFilesPage = () => {
             <div className="center-pageF">
                 <h3 className="condo-files-heading">{`Condo Files for Property ${propertyName}`}</h3>
                 <div className="white-container">
-                    <CondoFilesComponent condoID={condoID} onFileClick={handleOpenModal} />
+                    <CondoFilesComponent condoID={propertyID} onFileClick={handleOpenModal} /> {/* Replace condoID with propertyID */}
                     {condoFiles.length > 0 && (
                         <div>
                             <h4>Files associated with this condo:</h4>
