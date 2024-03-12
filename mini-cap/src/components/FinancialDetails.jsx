@@ -40,7 +40,7 @@ const FinancialDetails = () => {
                 <div className="other-info2"><h5>Total Unit Price:</h5></div>
             </div>
             <br></br>
-            <div className="rent">
+            <div className="other-info1">
                 <span className="FinanceText">Rent Paid:</span>
                 {isRentPaid ? <FaCheck className="green-check" /> : <FaTimes className="red-cross" />}
             </div>

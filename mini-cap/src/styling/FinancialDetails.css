@@ -9,7 +9,7 @@
     position: relative;
     margin-bottom: 0px;
     color:#2f2c9b;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
 }
 
@@ -34,6 +34,7 @@
     display: inline-block;
     position:relative;
     margin-bottom: 5px;
+    justify-self: left;
 }
 
 .red-cross {
@@ -42,4 +43,5 @@
     display: inline-block;
     position:relative;
     margin-bottom: 5px;
+    justify-self: left;
 }

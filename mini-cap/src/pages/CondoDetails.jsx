@@ -156,7 +156,7 @@ export default function CondoDetails(){
 
 
 							</div>
-								<div className='other-info'>
+							<div className='other-info'>
 								<h2 className="DB_title"> {propertyName} <br /><br /></h2>
 
 								<h5 style={{paddingTop:"25px", paddingLeft:"25%", color:"#2f2c9"}}>General Information</h5>
@@ -263,13 +263,15 @@ export default function CondoDetails(){
 								</>
 							)}
 							</div>
-							{role !== MANAGEMENT_COMPANY && (
-								<>
-									{showFinancialDetails && (
-										<FinancialDetails/>
-									)}  
-								</>
-								)}
+							<div className="other-info">
+								{role !== MANAGEMENT_COMPANY && (
+									<>
+										{showFinancialDetails && (
+											<FinancialDetails/>
+										)}  
+									</>
+									)}
+							</div>
 						</div>
 					</div>
 					{showPopup && <Popup_SendKey handleClose={handlePopupToggle}/>}
