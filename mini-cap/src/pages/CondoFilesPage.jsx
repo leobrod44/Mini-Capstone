@@ -58,7 +58,7 @@ const CondoFilesPage = () => {
                     <CondoFilesComponent condoID={propertyID} onFileClick={handleOpenModal} /> {/* Replace condoID with propertyID */}
                     {condoFiles.length > 0 && (
                         <div>
-                            <h4>Files associated with this condo:</h4>
+                            <h4>Files associated with {propertyName}</h4>
                             <ul>
                                 {condoFiles.map((file, index) => (
                                     <li key={index} onClick={() => handleOpenModal(file)}>
