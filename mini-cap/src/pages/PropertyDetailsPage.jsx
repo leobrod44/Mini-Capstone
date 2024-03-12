@@ -56,7 +56,7 @@ const PropertyDetailsPage = () => {
             className="details-button-condo-files"
             to={`/condo-files/${propertyID}/${propertyName}`}
           >
-            Condo Files
+            Add Property Files
           </Link>
           {hasCondos ? (
             <div className="condo_list">
