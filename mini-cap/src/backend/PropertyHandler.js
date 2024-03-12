@@ -447,3 +447,23 @@ export async function getFinanceDetails(condoID) {
 export async function isRentPaid(condoID) {
 
 }
+
+//returns the occupant email or empty string for the condo
+export async function getCondoOccupant(condoId) {
+  try {
+    const condoDocRef = doc(db, "Condo", condoId);
+    const condoDocSnap = await getDoc(condoDocRef);
+
+    if (condoDocSnap.exists) {
+      const { occupant } = condoDocSnap.data();
+      console.log("occupant is: "+occupant);
+      return occupant;
+    } else {
+      console.error('Condo document not found');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error getting condo occupant:', error);
+    throw error;
+  }
+}
