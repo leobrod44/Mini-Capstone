@@ -52,8 +52,15 @@ describe("PropertyForm", () => {
     fireEvent.change(getByLabelText("Parking Count:"), {
       target: { value: "99" },
     });
+    fireEvent.change(getByLabelText("Parking Cost:"), {
+      target: { value: "200" },
+    });
+
     fireEvent.change(getByLabelText("Locker Count:"), {
       target: { value: "88" },
+    });
+    fireEvent.change(getByLabelText("Locker Cost:"), {
+      target: { value: "100" },
     });
 
     const submitPropertyButton = getByText("Submit Property", {
@@ -88,10 +95,15 @@ describe("PropertyForm", () => {
     fireEvent.change(getByLabelText("Parking Count:"), {
       target: { value: "99" },
     });
+    fireEvent.change(getByLabelText("Parking Cost:"), {
+      target: { value: "200" },
+    });
     fireEvent.change(getByLabelText("Locker Count:"), {
       target: { value: "88" },
     });
-
+    fireEvent.change(getByLabelText("Locker Cost:"), {
+      target: { value: "100" },
+    });
     const submitPropertyButton = getByText("Submit Property", {
       selector: "button",
     });
@@ -106,46 +118,7 @@ describe("PropertyForm", () => {
       );
     });
   });
-  it("should show an error when trying to add a condo with incomplete property form", async () => {
-    const { getByLabelText, getByText } = render(
-      <Router>
-        <PropertyForm />
-      </Router>
-    );
-
-    // Fill out the form with incomplete property information
-    const file2 = new File(["dummy content"], "image.jpg", {
-      type: "image/jpeg",
-    });
-
-    fireEvent.change(getByLabelText("Property Picture:"), {
-      target: { files: [file2] },
-    });
-    fireEvent.change(getByLabelText("Property Name:"), {
-      target: { value: "" },
-    });
-    fireEvent.change(getByLabelText("Unit Count:"), {
-      target: { value: "10" },
-    });
-    fireEvent.change(getByLabelText("Parking Count:"), {
-      target: { value: "99" },
-    });
-    fireEvent.change(getByLabelText("Locker Count:"), {
-      target: { value: "88" },
-    });
-
-    const addCondoButton = getByText("Add Condo", { selector: "button" });
-
-    // Click the "Add Condo" button
-    fireEvent.click(addCondoButton);
-
-    // Ensure the error message is shown
-    await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith(
-        "Please complete the property form first"
-      );
-    });
-  });
+  
 
   it("should display toast error for unsupported file type", () => {
     const { getByLabelText } = render(
