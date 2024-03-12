@@ -15,6 +15,8 @@ import store from "storejs";
 import {getCompanyEmail} from "../backend/UserHandler";
 import {MANAGEMENT_COMPANY} from "../backend/Constants";
 import { FaCheck, FaTimes } from 'react-icons/fa'; // Import icons from react-icons library
+import { MdExpandLess } from "react-icons/md";
+import { MdExpandMore } from "react-icons/md";
 
 export default function CondoDetails(){
 	let { condoId } = useParams();
@@ -157,6 +159,8 @@ export default function CondoDetails(){
 								<div className='other-info'>
 								<h2 className="DB_title"> {propertyName} <br /><br /></h2>
 
+								<h5 style={{paddingTop:"25px", paddingLeft:"25%", color:"#2f2c9"}}>General Information</h5>
+           
 								<div className='other-info1'>
 									<div className='other-info2'><h5>Address: </h5></div>
 									<div className= 'other-info2'>{address}</div>
@@ -232,13 +236,7 @@ export default function CondoDetails(){
 											<div className='other-info2'>{companyEmail}</div>
 										</>)}
 								</div>
-								{role !== MANAGEMENT_COMPANY && (
-								<>
-									{showFinancialDetails && (
-										<FinancialDetails/>
-									)}  
-								</>
-								)}
+								
 							</div>
 							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
 							<div>
@@ -251,13 +249,27 @@ export default function CondoDetails(){
 							<div>
 							{role !== MANAGEMENT_COMPANY && (
 								<>
-								<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}>
-									{showFinancialDetails ? "Close" : "Financial Details"} 
-								</button>	
-								<button onClick={toggleRentPaid}>Toggle Rent Paid</button>
+									<div style={{display: "flex" , alignItems: "center"}}>
+            						<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>
+										
+           						 		<div>
+                							<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}> 
+											{showFinancialDetails ? <MdExpandLess/> : <MdExpandMore />} </button>
+            							</div>
+										
+									</div>
+								
+								
 								</>
 							)}
 							</div>
+							{role !== MANAGEMENT_COMPANY && (
+								<>
+									{showFinancialDetails && (
+										<FinancialDetails/>
+									)}  
+								</>
+								)}
 						</div>
 					</div>
 					{showPopup && <Popup_SendKey handleClose={handlePopupToggle}/>}
@@ -271,6 +283,9 @@ export default function CondoDetails(){
 					</div>
 				</div>
 			</div>
+			{role !== MANAGEMENT_COMPANY && (
+								
+			<button onClick={toggleRentPaid}>Toggle Rent Paid</button>)}
 
 			<BackArrowBtn/>
 			<div style={{zIndex: 1, position: 'relative'}}><Footer/></div>

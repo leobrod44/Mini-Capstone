@@ -3,7 +3,7 @@
 h2{
     font-family: "Roboto", sans-serif;
     position: relative;
-    margin-bottom: 3px;
+ 
     color:#2f2c9b;
     font-size: 20px;
     font-weight: 700;
@@ -150,16 +150,21 @@ h2{
     justify-content: center;
     align-items: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
-    height: 36px;
-    width: 175px;
-    margin-top: 10px;
-    margin-right: 10px;
+    height: 40px;
+    width: 40px;
     float: right;
   }
 
   .finance-button:hover {
     background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
     color: #ffffff; /* Change text color on hover to white */
+  }
+  .green-line {
+    width: 90px; 
+    height: 4px; 
+    background-color: #2f2c9b;
+    margin: 10px auto; 
+    margin-bottom: 10%;
   }
 
   .sendkey-button {
