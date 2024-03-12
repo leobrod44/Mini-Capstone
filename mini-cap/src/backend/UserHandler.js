@@ -247,3 +247,31 @@ export async function loginUser(data) {
     throw new Error(e);
   }
 }
+
+//fetching company email using condoId
+export async function getCompanyEmail(condoId) {
+  try {
+    const condoDocRef = doc(db, 'Condo', condoId);
+    const condoDocSnap = await getDoc(condoDocRef);
+
+    if (condoDocSnap.exists()) {
+      const propertyId = condoDocSnap.data().property;
+
+      const propertyDocRef = doc(db, 'Property', propertyId);
+      const propertyDocSnap = await getDoc(propertyDocRef);
+
+      if (propertyDocSnap.exists()) {
+        const companyOwner = propertyDocSnap.data().companyOwner;
+
+        return companyOwner;
+      } else {
+        console.log(`Property with ID ${propertyId} does not exist.`);
+      }
+    } else {
+      console.log(`Condo with ID ${condoId} does not exist.`);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    return null;
+  }
+}
