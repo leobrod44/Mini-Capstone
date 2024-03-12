@@ -10,7 +10,7 @@ const CondoFilesComponent = ({ condoID, onFileClick }) => {
 
     const handleFileUpload = async (event) => {
         const uploadedFiles = Array.from(event.target.files);
-        setFiles(uploadedFiles);
+        setFiles([...files, ...uploadedFiles]); // Append new files to the existing files
 
         // Read content of text files and trigger the onFileClick callback
         for (const file of uploadedFiles) {
@@ -42,7 +42,7 @@ const CondoFilesComponent = ({ condoID, onFileClick }) => {
         event.preventDefault();
 
         const droppedFiles = Array.from(event.dataTransfer.files);
-        setFiles(droppedFiles);
+        setFiles([...files, ...droppedFiles]); // Append new files to the existing files
 
         // Read content of text files and trigger the onFileClick callback
         for (const file of droppedFiles) {
