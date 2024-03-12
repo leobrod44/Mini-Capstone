@@ -242,3 +242,17 @@ h2{
     background-color: #808080;
     color: black;
 }
+
+.CONDOgreen-check {
+    color: green;
+    justify-self: right;
+    margin-right: -60px;
+    margin-top: 10px;
+}
+
+.CONDOred-cross {
+    color: red;
+    justify-self: right;
+    margin-right: -60px;
+    margin-top: 10px;
+}

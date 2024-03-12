@@ -435,3 +435,15 @@ export async function updateProperty(propertyID, data) {
 export async function deleteProperty(propertyID) {
   console.log("Deleting property: ", propertyID);
 }
+
+//Provide: condoID
+//Returns: fees associated to the condo
+export async function getFinanceDetails(condoID) {
+
+}
+
+//Provide: condoID
+//Returns: Boolean
+export async function isRentPaid(condoID) {
+
+}

@@ -14,6 +14,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import store from "storejs";
 import {getCompanyEmail} from "../backend/UserHandler";
 import {MANAGEMENT_COMPANY} from "../backend/Constants";
+import { FaCheck, FaTimes } from 'react-icons/fa'; // Import icons from react-icons library
 
 export default function CondoDetails(){
 	let { condoId } = useParams();
@@ -92,6 +93,14 @@ export default function CondoDetails(){
 	const toggleFinancialDetails = () => {
 		setShowFinancialDetails(!showFinancialDetails);
 	}
+
+	{/* TO DO is RentPaid */}
+    const [isRentPaid, setIsRentPaid] = useState(false); // State to track whether rent is paid
+
+    const toggleRentPaid = () => {
+        setIsRentPaid(!isRentPaid);
+    };
+
 		return(
 			<div className='pageContainer'>
 			<>
@@ -110,6 +119,13 @@ export default function CondoDetails(){
 							<div className='name-and-number'>
 								<div className= 'pic-and-num'>
 									{picture && <img src={picture} alt="Profile" className="profile-picture" />}
+								</div>
+								<div>
+									{role !== MANAGEMENT_COMPANY && (
+										<>
+											{isRentPaid ? <FaCheck className="CONDOgreen-check" /> : <FaTimes className="CONDOred-cross" />}
+										</>
+									)}
 								</div>
 								<div className='pic-and-tag'>
 								{status === "Vacant" && role === MANAGEMENT_COMPANY && (
@@ -216,9 +232,13 @@ export default function CondoDetails(){
 											<div className='other-info2'>{companyEmail}</div>
 										</>)}
 								</div>
-								{showFinancialDetails && (
-									<FinancialDetails/>
-								)}  
+								{role !== MANAGEMENT_COMPANY && (
+								<>
+									{showFinancialDetails && (
+										<FinancialDetails/>
+									)}  
+								</>
+								)}
 							</div>
 							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
 							<div>
@@ -229,9 +249,14 @@ export default function CondoDetails(){
 									</>)}
 							</div>
 							<div>
+							{role !== MANAGEMENT_COMPANY && (
+								<>
 								<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}>
-									 {showFinancialDetails ? "Close" : "Financial Details"} 
-								</button>
+									{showFinancialDetails ? "Close" : "Financial Details"} 
+								</button>	
+								<button onClick={toggleRentPaid}>Toggle Rent Paid</button>
+								</>
+							)}
 							</div>
 						</div>
 					</div>

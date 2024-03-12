@@ -4,10 +4,9 @@
     display: block;
 }
 
-h5{
+.FinanceText{
     font-family: "Roboto", sans-serif;
     position: relative;
-    align-items: right;
     margin-bottom: 0px;
     color:#2f2c9b;
     font-size: 18px;
@@ -27,4 +26,20 @@ h5{
     display: inline-block;
     vertical-align: middle;
     margin-right: 10px;
+}
+
+.green-check {
+    color: green;
+    margin-left: 20px;
+    display: inline-block;
+    position:relative;
+    margin-bottom: 5px;
+}
+
+.red-cross {
+    color: red;
+    margin-left: 20px;
+    display: inline-block;
+    position:relative;
+    margin-bottom: 5px;
 }

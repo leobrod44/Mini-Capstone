@@ -1,25 +1,37 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 import "../styling/FinancialDetails.css";
-import  { useState} from "react";
-import Popup_SendKey from './Popup_SendKey';
-import { Link } from "react-router-dom";
+import { FaCheck, FaTimes } from 'react-icons/fa'; // Import icons from react-icons library
 
-const FinancialDetails = ({picture, unitNumber, parkingNumber, lockerNumber, condoId}) => {
+const FinancialDetails = () => {
+    {/* TO DO is RentPaid */}
+    const [isRentPaid, setIsRentPaid] = useState(false); // State to track whether rent is paid
 
-    const [showCheck, setCheck] = useState(false);
-    const handlePopupToggle = () => {
-        setShowPopup(!showPopup);
-      };
+    const toggleRentPaid = () => {
+        setIsRentPaid(!isRentPaid);
+    };
 
-      
+    {/* TO DO */}
+    useEffect(() => {
+        const getFinanceDetails = async () => {
+            try{
+                const getFinanceDetails = await getFinanceDetails ()
+            }catch (error) {
+                console.error(error);
+            }
+        };
+        getFinanceDetails();
+    })
+
     return (
         <div className="Financial-info">
             <div className="other-info1">
                 <div className="other-info2"><h5>Base Price:</h5></div>
             </div>
             <div className="other-info1">
-                <div className="other-info2"><h5>Utilities:</h5></div>
+                <div className="other-info2"><h5>Parking Price:</h5></div>
+            </div>
+            <div className="other-info1">
+                <div className="other-info2"><h5>Locker Price:</h5></div>
             </div>
             <div className="other-info1">
                 <div className="other-info2"><h5>Additional Fees:</h5></div>
@@ -27,10 +39,13 @@ const FinancialDetails = ({picture, unitNumber, parkingNumber, lockerNumber, con
             <div className="other-info1">
                 <div className="other-info2"><h5>Total Unit Price:</h5></div>
             </div>
-            <div>
-                <br></br>
-                <div className="other-info2"><h5>Rent Paid:</h5></div>
+            <br></br>
+            <div className="rent">
+                <span className="FinanceText">Rent Paid:</span>
+                {isRentPaid ? <FaCheck className="green-check" /> : <FaTimes className="red-cross" />}
             </div>
+            {/* REMOVE ~ Toggle button to switch between rent paid and not paid */}
+            <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
         </div>
     );
 };
