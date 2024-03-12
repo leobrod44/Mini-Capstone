@@ -16,7 +16,9 @@ const PropertyForm = () => {
     address: "",
     unitCount: "",
     parkingCount: "",
+    parkingCost: "",
     lockerCount: "",
+    lockerCost: "",
     condos: [],
   });
 
@@ -89,7 +91,10 @@ const PropertyForm = () => {
       !property.address ||
       !property.unitCount ||
       !property.parkingCount ||
-      !property.lockerCount
+      !property.parkingCost ||
+      !property.lockerCount ||
+      !property.lockerCost
+    
     ) {
       toast.error("Missing Property Information");
       return;
@@ -116,12 +121,12 @@ const PropertyForm = () => {
       
       <Header />
       <link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  integrity="sha512-Gn5384z6kqr8yn8XekdlLZ5NINkAqF5V07R98ljePtb8iKDIp0cmYEdn7yg9H9n57F9+3gp4nnfW9CaoSmw+z0w=="
-  crossOrigin="anonymous"
-  referrerPolicy="no-referrer"
-/>
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+     integrity="sha512-Gn5384z6kqr8yn8XekdlLZ5NINkAqF5V07R98ljePtb8iKDIp0cmYEdn7yg9H9n57F9+3gp4nnfW9CaoSmw+z0w=="
+     crossOrigin="anonymous"
+     referrerPolicy="no-referrer"
+     />
       <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
@@ -208,7 +213,31 @@ const PropertyForm = () => {
               onChange={(e) => handleInputChange(e)}
               
             />
+            
           </div>
+
+           
+         <label className="input-label" htmlFor="parkingCost">Parking Cost:</label>
+         <div className="input-group">
+               <select
+                value={property.currency}
+                onChange={(e) => handleInputChange(e)}
+               name="currency"
+                className="form-select custom-select"
+          >
+                <option value="CAD">CAD $</option>
+                <option value="USD">USD $</option>
+                <option value="Euro">Euro €</option>
+               </select>
+                 <input
+                 id="parkingCost"
+                 type="text"
+                 value={property.parkingCost}
+                 onChange={(e) => handleInputChange(e)}
+                 name="parkingCost"
+                 className="form-control"
+         />
+         </div>
           <div className="input-group">
             <label className="input-label" htmlFor="lockerCount">
               Locker Count:
@@ -222,6 +251,29 @@ const PropertyForm = () => {
               
             />
           </div>
+          
+          
+          <label className="input-label" htmlFor="lockerCost">Locker Cost:</label>
+         <div className="input-group">
+               <select
+                value={property.currency}
+                onChange={(e) => handleInputChange(e)}
+                name="currency"
+                className="form-select custom-select"
+          >
+                <option value="CAD">CAD $</option>
+                <option value="USD">USD $</option>
+                <option value="Euro">Euro €</option>
+               </select>
+                 <input
+                 id="lockerCost"
+                 type="text"
+                 value={property.lockerCost}
+                 onChange={(e) => handleInputChange(e)}
+                 name="lockerCost"
+                 className="form-control"
+         />
+         </div>
 
         
  

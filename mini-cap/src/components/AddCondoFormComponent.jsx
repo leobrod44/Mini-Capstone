@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styling/AddCondoForm.css";
-import { addCondo } from "../backend/PropertyHandler";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-
 
 const AddCondoFormComponent = () => {
     let { propertyID, propertyName } = useParams();
