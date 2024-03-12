@@ -52,12 +52,12 @@ const PropertyDetailsPage = () => {
         </div>
 
         <div >
-          {hasCondos && <Link
+          <Link
             className="details-button-condo-files"
             to={`/condo-files/${propertyID}/${propertyName}`}
           >
             Condo Files
-          </Link>}
+          </Link>
           {hasCondos ? (
             <div className="condo_list">
               {condoDetails.map((condo, index) => (
