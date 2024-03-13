@@ -211,12 +211,13 @@ select
   }
   .custom-select {
     width: 10%;
-   height: auto; 
+    height: auto; 
     display: flex;
   }
   .button-container {
     display: flex;
     justify-content: space-between; 
+    width: 103%;
   }
   .center-page.modal-open {
   overflow: hidden; /* Hide the page content when the modal is open */
