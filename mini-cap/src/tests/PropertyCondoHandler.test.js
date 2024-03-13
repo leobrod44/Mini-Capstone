@@ -4,7 +4,7 @@ import {
     linkCondoToUser,
     sendCondoKey,
     storeCondoKey,
-    addCondo, addProperty, getProperties, getUserCondos, getCondos
+    addCondo, addProperty, getProperties, getUserCondos, getCondos, getCondo
 } from '../backend/PropertyHandler';
 import {doc, getDoc, getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs} from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
@@ -28,6 +28,7 @@ jest.mock('firebase/firestore', () => ({
     getDoc: jest.fn(),
     getDocs: jest.fn(),
     arrayUnion: jest.fn(),
+    getCondo: jest.fn(),
 }));
 jest.mock('firebase/storage', () => ({
     getStorage: jest.fn(),
@@ -396,5 +397,35 @@ describe("getting condos and properties functions", () => {
             { property: fakePropertyID, name: 'Condo 2' },
         ]);
     });
+    test('getCondo: should return condo data with property information', async () => {
+        // Mock data
+        const condoID = 'testCondoID';
+        const fakePropertyID = 'testPropertyID';
+        const fakeCondoData = { property: fakePropertyID, name: 'Condo 1' };
+        const fakePropertyData = { address: 'Mock Address', propertyName: 'Mock Property Name' };
+      
+        // Mock getDoc to return condo data
+        getDoc.mockResolvedValueOnce({
+          exists: true,
+          data: jest.fn(() => fakeCondoData)
+        });
+      
+        // Mock getDoc to return property data
+        getDoc.mockResolvedValueOnce({
+          exists: true,
+          data: jest.fn(() => fakePropertyData),
+        });
+      
+        // Call the function
+        const result = await getCondo(condoID);
+      
+        // Assert the result
+        expect(result).toEqual({
+          ...fakeCondoData,
+          address: fakePropertyData.address,
+          propertyName: fakePropertyData.propertyName,
+        });
+      });
+    
 
 });
