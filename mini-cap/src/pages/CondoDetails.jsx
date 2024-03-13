@@ -8,6 +8,7 @@ import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import PropTypes from 'prop-types';
 import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
+import RequestForm from "../components/RequestForm.jsx";
 
 
 
@@ -176,11 +177,10 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
 											<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
 										</>)}
 								</div>
-								<div>
-									<Link to="/createRequest" className="createRequest">
-										{" "}
-										Create Request
-									</Link>
+								<div id="modal" className="modal">
+									<div className="modal-content">
+										<RequestForm/>
+									</div>
 								</div>
 						</div>
 					</div>

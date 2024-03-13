@@ -12,7 +12,6 @@ import MGMTDashboard from "./pages/MGMTDashboard";
 import PropertyDetailsPage from "./pages/PropertyDetailsPage";
 import AddCondoForm from './pages/AddCondoForm';
 import CondoDetails from "./pages/CondoDetails";
-import RequestForm from "./pages/RequestForm";
 
 
 function App() {
@@ -31,7 +30,6 @@ function App() {
         //<Route path="/add-condo" element={<AddCondoForm />} />
         <Route path="/add-condo/:propertyID/:propertyName" element={<AddCondoForm />} />
         <Route path="/condo-details" element={<CondoDetails />} />
-        <Route path="/createRequest" element={<RequestForm />} />
     </Routes>
 
     </BrowserRouter>
