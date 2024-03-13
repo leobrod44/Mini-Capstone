@@ -2,18 +2,12 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import "../index.css";
 import "../styling/CondoDetails.css";
-<<<<<<< HEAD
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-=======
-import React, {useEffect, useState} from "react";
->>>>>>> main
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
-<<<<<<< HEAD
 import RequestForm from "../components/RequestForm.jsx";
-=======
 import {getCondo} from "../backend/PropertyHandler";
 import {getCondoPicture} from "../backend/ImageHandler";
 import {toast} from "react-toastify";
@@ -21,7 +15,6 @@ import {useNavigate, useParams} from "react-router-dom";
 import store from "storejs";
 import {getCompanyEmail} from "../backend/UserHandler";
 import {MANAGEMENT_COMPANY} from "../backend/Constants";
->>>>>>> main
 
 export default function CondoDetails(){
 	let { condoId } = useParams();
@@ -229,7 +222,6 @@ export default function CondoDetails(){
 										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
 									</>)}
 							</div>
-<<<<<<< HEAD
 								<div>
 									{role === "company" && ( 
 										<>
@@ -242,8 +234,6 @@ export default function CondoDetails(){
 										<RequestForm/>
 									</div>
 								</div>
-=======
->>>>>>> main
 						</div>
 					</div>
 					{showPopup && <Popup_SendKey handleClose={handlePopupToggle}/>}
