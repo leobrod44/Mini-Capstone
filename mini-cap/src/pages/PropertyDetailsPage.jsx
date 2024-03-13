@@ -66,9 +66,6 @@ const PropertyDetailsPage = () => {
           ) : (
               <div className="edit_container">
                 <EditPropertyComponent toggleEdit={toggleEdit} />
-                <button className="edit-property-button" onClick={toggleEdit}>
-                  Cancel
-                </button>
               </div>
           )}
         </div>
