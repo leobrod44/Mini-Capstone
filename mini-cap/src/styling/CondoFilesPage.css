@@ -11,15 +11,16 @@
   background-color: #ffffff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  padding: 30px;
+  padding: 3vw; /* Adjust padding using viewport width */
   text-align: center;
   margin: auto;
-  width: 50%;
-  margin-top: 20px; /* Adjust margin as needed */
+  width: 90%; /* Adjust width using percentage */
+  max-width: 800px; /* Limit maximum width for large screens */
+  margin-top: 4vh; /* Adjust margin using viewport height */
 }
 
 .white-container h4 {
-  margin-top: 20px;
+  margin-top: 3vh; /* Adjust margin using viewport height */
 }
 
 .white-container ul {
@@ -29,7 +30,7 @@
 
 .white-container li {
   cursor: pointer;
-  margin: 5px 0;
+  margin: 2vh 0; /* Adjust margin using viewport height */
   color: #4540db;
   /* Add any other styles as needed */
 }
@@ -51,18 +52,18 @@
   background-color: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  padding: 20px;
+  padding: 3vw; /* Adjust padding using viewport width */
   text-align: center;
   cursor: default;
 }
 
 .modal-content h2 {
   color: #4540db;
-  margin-bottom: 10px;
+  margin-bottom: 3vh; /* Adjust margin using viewport height */
 }
 
 .modal-content p {
-  margin: 10px 0;
+  margin: 3vh 0; /* Adjust margin using viewport height */
 }
 
 .modal-content button {
@@ -70,7 +71,7 @@
   color: #fff;
   border: none;
   border-radius: 4px;
-  padding: 10px 20px;
+  padding: 1.5vh 3vw; /* Adjust padding using viewport width and height */
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -78,6 +79,7 @@
 .modal-content button:hover {
   background-color: #7975d6;
 }
+
 .DB_titleF {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;

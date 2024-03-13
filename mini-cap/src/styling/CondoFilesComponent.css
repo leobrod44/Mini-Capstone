@@ -1,18 +1,19 @@
 /* CondoFilesComponent.css */
 .cfc-container {
   margin: auto;
-  width: 50%;
+  width: 90%; /* Adjust width using percentage */
+  max-width: 800px; /* Limit maximum width for large screens */
 }
 
 .file-input {
-  margin-bottom: 10px;
+  margin-bottom: 3vh; /* Adjust margin using viewport height */
 }
 
 .drag-and-drop-area {
   border: 2px dashed #ddd;
-  padding: 20px;
+  padding: 3vw; /* Adjust padding using viewport width */
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 3vh; /* Adjust margin using viewport height */
 }
 
 .dragging {
@@ -22,14 +23,14 @@
 .button-container {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 3vh; /* Adjust margin using viewport height */
 }
 
 .details-button,
 .cancel-button {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
-  font-size: 20px;
+  font-size: 3vh; /* Adjust font size using viewport height */
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -37,8 +38,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 36px;
-  width: 125px;
+  height: 5vh; /* Adjust height using viewport height */
+  width: 25vw; /* Adjust width using viewport width */
+  max-width: 200px; /* Limit maximum width for large screens */
 }
 
 .details-button {
