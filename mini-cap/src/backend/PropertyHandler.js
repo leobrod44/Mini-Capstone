@@ -310,11 +310,11 @@ export async function getCondo(condoID) {
     const docSnap = await getDoc(docRef);
     const condoData = docSnap.data();
 
-    if (docSnap.exists()) {
+    if (docSnap.exists) {
       const propertyDocRef = doc(db, "Property", condoData.property);
       const propertyDoc = await getDoc(propertyDocRef);
 
-      if (propertyDoc.exists()) {
+      if (propertyDoc.exists) {
         condoData.address = propertyDoc.data().address;
         condoData.propertyName = propertyDoc.data().propertyName;
         condoData.propertyID = propertyDoc.id;
