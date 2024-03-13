@@ -2,24 +2,78 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import "../index.css";
 import "../styling/CondoDetails.css";
+<<<<<<< HEAD
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+=======
+import React, {useEffect, useState} from "react";
+>>>>>>> main
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
-import PropTypes from 'prop-types';
 import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
+<<<<<<< HEAD
 import RequestForm from "../components/RequestForm.jsx";
+=======
+import {getCondo} from "../backend/PropertyHandler";
+import {getCondoPicture} from "../backend/ImageHandler";
+import {toast} from "react-toastify";
+import {useNavigate, useParams} from "react-router-dom";
+import store from "storejs";
+import {getCompanyEmail} from "../backend/UserHandler";
+import {MANAGEMENT_COMPANY} from "../backend/Constants";
+>>>>>>> main
 
-
-
-export default function CondoDetails({ name, address, parkingCount, lockerCount, unitNumber, price, size, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
-	
+export default function CondoDetails(){
+	let { condoId } = useParams();
+	// export default function CondoDetails({ propertyName, address, parkingNumber, lockerNumber, unitNumber, price, unitSize, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
+	const [condoDetails, setCondoDetails] = useState(false);
 	const [showPopup, setShowPopup] = useState(false);
+	const [show, setShow] = useState(false);
+	let [condoPicURL, setCondoPicURL] = useState(null);
+	const navigate = useNavigate();
+	const [role, setTheRole] = useState("");
+	const [companyEmail, setCompanyEmail] = useState(null);
+
+	useEffect(() => {
+		const fetchCondo = async () => {
+			try {
+				setTheRole(store("role"));
+				const condo = await getCondo(condoId);
+				condoPicURL = await getCondoPicture(
+					condo.propertyName + "/" + condo.unitNumber
+				);
+				setCondoPicURL(condoPicURL);
+				condo.picture = condoPicURL;
+				setCondoDetails(condo);
+				setCompanyEmail(await getCompanyEmail(condoId));
+			} catch (err) {
+				console.error(err);
+			}
+		};
+		fetchCondo();
+
+	}, []);
+
+	if (condoDetails === null) {
+		// If condoDetails is still null, return a loading state or handle it accordingly
+		return <div>Loading...</div>;
+	}
+
+	//NOT FINISHED
+	const deleteCondoAttempt = async () => {
+		try {
+			//logic to delete condo
+		} catch (error) {
+			toast.error("Error deleting account");
+		}
+		setShow(false);
+		navigate(`/propertydetailspage/${propertyID}/${propertyName}`);
+	};
+
     const handlePopupToggle = () => {
         setShowPopup(!showPopup);
     }
 
-    const [show, setShow] = useState(false);
     const handleClickDelete = () => {
         setShow(true);
     };
@@ -27,32 +81,26 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
         setShow(false);
 	};
 
-	const condoStatus = 'vacant';
-    const role = 'company';
+	const {
+		propertyName,
+		address,
+		unitNumber,
+		squareFeet,
+		unitSize,
+		parkingNumber,
+		lockerNumber,
+		picture,
+		propertyID,
+		occupant,
+		status
+	} = condoDetails;
 
-	CondoDetails.propTypes = {
-        name: PropTypes.string.isRequired,
-        profilePicture: PropTypes.string,
-        address: PropTypes.string.isRequired,
-        parkingCount: PropTypes.string,
-        lockerCount: PropTypes.string,
-        unitNumber: PropTypes.string,
-        price: PropTypes.string,
-        size: PropTypes.string,
-        squareFeet: PropTypes.string,
-        pricesf: PropTypes.string,
-        status: PropTypes.string,
-        contact: PropTypes.string,
-        currentPrice: PropTypes.string,
-        rentDueDate: PropTypes.string
-    };
+	return(
+		<div className='pageContainer'>
+		<>
+			<Header/>
 
-		return(
-			<div className='pageContainer'>
-			<>
-				<Header/>
-				
-				<div className="details" style={{zIndex: 2, position: 'relative', marginTop: '20px'}}>
+			<div className="details" style={{zIndex: 2, position: 'relative', marginTop: '20px'}}>
 				<div className="title_container">
 					<link
 						rel="stylesheet"
@@ -64,112 +112,124 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
 						<div className="condo-info">
 							<div className='name-and-number'>
 								<div className= 'pic-and-num'>
-									{<img src="https://ksquarecondos.com/wp-content/uploads/2019/09/q7l25-ts-c80_Gro-.%E5%89%AF%E6%9C%AC.jpg" alt="Profile" className="profile-picture" />}
+									{picture && <img src={picture} alt="Profile" className="profile-picture" />}
 								</div>
 								<div className='pic-and-tag'>
-								{condoStatus === "vacant" && role === 'company' && ( 
+								{status === "Vacant" && role === MANAGEMENT_COMPANY && (
+									<>
+									<div>
+										<div className={`user-tag vacant`}>{status}</div>
+										{role === "mgmt" && (
 										<>
-										<div>
-											<div className={`user-tag vacant`}>{"Vacant"}{status}</div>
-											{role === "company" && ( 
-											<>
-												<button className="sendkey-button" onClick={handlePopupToggle}>Send Key</button>
-											</>)}
-										</div>
+											<button className="sendkey-button" onClick={handlePopupToggle}>Send Key</button>
 										</>)}
-								{condoStatus === "rented" && role === 'company' && ( 
-										<>
-											<div className={`user-tag rented`}>{"Rented"}{status}</div>
-											
-										</>)}
+									</div>
+									</>
+								)}
+								{status  === "Rented" && role === MANAGEMENT_COMPANY && (
+									<>
+										<div className={`user-tag renter`}>{status}</div>
+									</>
+								)}
+								{status  === "Owned" && role === MANAGEMENT_COMPANY && (
+									<>
+										<div className={`user-tag owner`}>{status}</div>
+									</>
+								)}
+
 								</div>
+
 
 							</div>
 								<div className='other-info'>
-								<h2 className="DB_title"> {"[Condo Name]"} {name} <br /><br /></h2>
+								<h2 className="DB_title"> {propertyName} <br /><br /></h2>
 
 								<div className='other-info1'>
-									<div className='other-info2'><h5>Address: </h5></div> 
-									<div className= 'other-info2'>{"[text]"} {address}</div>
-								</div>
-								
-								<div className='other-info1'>
-									<div className='other-info2'><h5>Unit Number: </h5></div> 
-									<div className='other-info2'>{"[text]"}{unitNumber}</div>
+									<div className='other-info2'><h5>Address: </h5></div>
+									<div className= 'other-info2'>{address}</div>
 								</div>
 
 								<div className='other-info1'>
-									<div className='other-info2'><h5>Square Feet: </h5></div> 
-									<div className= 'other-info2'>{"[text]"}{squareFeet} sq ft</div>
-								</div> 
-
-								<div className='other-info1'>
-									<div className='other-info2'><h5>Unit size: </h5></div> 
-									<div className= 'other-info2'>{"[text]"}{size} sq ft</div>
-								</div> 
-								<div className='other-info1'>
-									<div className='other-info2'><h5>Parking spot number: </h5></div> 
-									<div className= 'other-info2'>{"[text]"}{parkingCount}</div>
-								</div>  
-
-								<div className='other-info1'>
-									<div className='other-info2'><h5>Locker number: </h5></div> 
-									<div className= 'other-info2'>{"[text]"}{lockerCount}</div>
+									<div className='other-info2'><h5>Unit Number: </h5></div>
+									<div className='other-info2'>{unitNumber}</div>
 								</div>
 
 								<div className='other-info1'>
-									<div className='other-info2'><h5>Price/sq ft.: </h5></div> 
-									<div className='other-info2'>{"[text]"}{pricesf}</div>
-								</div>  
-
-								<div className='other-info1'>
-									<div className='other-info2'><h5>Unit Price: </h5></div> 
-									<div className='other-info2'>{}{price}</div>
-									
+									<div className='other-info2'><h5>Square Feet: </h5></div>
+									<div className= 'other-info2'>{squareFeet} sq ft</div>
 								</div>
 
 								<div className='other-info1'>
-								{condoStatus === "rented" && ( 
-										<>
-											<div className='other-info2'><h5>Current Rent Price: </h5></div> 
-											<div className='other-info2'>{}{currentPrice}</div>
-										</>)}
-								</div> 
+									<div className='other-info2'><h5>Unit size: </h5></div>
+									<div className= 'other-info2'>{unitSize} sq ft</div>
+								</div>
+								<div className='other-info1'>
+									<div className='other-info2'><h5>Parking spot number: </h5></div>
+									<div className= 'other-info2'>{parkingNumber}</div>
+								</div>
 
 								<div className='other-info1'>
-								{role === "renter" && condoStatus === "rented" && ( 
-										<>
-											<div className='other-info2'><h5>Next Rent Due Date: </h5></div> 
-											<div className='other-info2'>{}{rentDueDate}</div>
+									<div className='other-info2'><h5>Locker number: </h5></div>
+									<div className= 'other-info2'>{lockerNumber}</div>
+								</div>
 
-										</>)}
-								</div> 
+									{/*	THIS ALL PRICE LOGIC:*/}
+									{/*------------------------------------------------------------------------------------------*/}
+								{/*<div className='other-info1'>*/}
+								{/*	<div className='other-info2'><h5>Price/sq ft.: </h5></div>*/}
+								{/*	<div className='other-info2'>{"pricesf"}</div>*/}
+								{/*</div>*/}
+
+								{/*<div className='other-info1'>*/}
+								{/*	<div className='other-info2'><h5>Unit Price: </h5></div>*/}
+								{/*	<div className='other-info2'>{"price"}</div>*/}
+
+								{/*</div>*/}
+
+								{/*<div className='other-info1'>*/}
+								{/*{condoStatus === "rented" && (*/}
+								{/*		<>*/}
+								{/*			<div className='other-info2'><h5>Current Rent Price: </h5></div>*/}
+								{/*			<div className='other-info2'>{"currentPrice"}</div>*/}
+								{/*		</>)}*/}
+								{/*</div>*/}
+
+								{/*<div className='other-info1'>*/}
+								{/*{role === "renter" && condoStatus === "rented" && (*/}
+								{/*		<>*/}
+								{/*			<div className='other-info2'><h5>Next Rent Due Date: </h5></div>*/}
+								{/*			<div className='other-info2'>{"rentDueDate"}</div>*/}
+
+								{/*		</>)}*/}
+								{/*</div>*/}
+									{/*------------------------------------------------------------------------------------------*/}
 
 								<div className='other-info1'>
-								{role === "company" && ( 
+								{role === MANAGEMENT_COMPANY && status !== "Vacant" && (
 										<>
-											<div className='other-info2'><h5>Contact of Renter/Owner: </h5></div> 
-											<div className='other-info2'>{}{contact}</div>
-											<br /><br />
-										</>)}
-								</div>   
-								<div className='other-info1'>
-								{role === "renter" && ( 
-										<>
-											<div className='other-info2'><h5>Contact: </h5></div> 
-											<div className='other-info2'>{}{contact}</div>
+											<div className='other-info2'><h5>Renter/Owner Email: </h5></div>
+											<div className='other-info2'>{occupant}</div>
 											<br /><br />
 										</>)}
 								</div>
 								<div className='other-info1'>
-								{role === "owner" && ( 
+								{role !== MANAGEMENT_COMPANY && (
 										<>
-											<div className='other-info2'><h5>Contact: </h5></div> 
-											<div className='other-info2'>{}{contact}</div>
+											<div className='other-info2'><h5>Property Company Email: </h5></div>
+											<div className='other-info2'>{companyEmail}</div>
 											<br /><br />
 										</>)}
-								</div>                       
+								</div>
 							</div>
+							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
+							<div>
+								{role === MANAGEMENT_COMPANY && (
+									<>
+										<button className="edit-button"> Edit</button>
+										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
+									</>)}
+							</div>
+<<<<<<< HEAD
 								<div>
 									{role === "company" && ( 
 										<>
@@ -182,26 +242,27 @@ export default function CondoDetails({ name, address, parkingCount, lockerCount,
 										<RequestForm/>
 									</div>
 								</div>
+=======
+>>>>>>> main
 						</div>
 					</div>
 					{showPopup && <Popup_SendKey handleClose={handlePopupToggle}/>}
 					<div data-testid="popup-delete-test">
-					<DeleteModal
-					show={show}
-					handleClose={handleClose}
-					message={
-					"Are you sure you want to delete this Condo?"
-					}
-					/></div>
-					
+						<DeleteModal
+							show={show}
+							handleClose={handleClose}
+							handleDeleteItem={deleteCondoAttempt}
+							message={"Are you sure you want to delete this Condo?"}
+						/>
+					</div>
 				</div>
-				</div>
-
-				<BackArrowBtn/>
-				<div style={{zIndex: 1, position: 'relative'}}><Footer/></div>
-			</>
 			</div>
-		);
 
-	}
+			<BackArrowBtn/>
+			<div style={{zIndex: 1, position: 'relative'}}><Footer/></div>
+		</>
+		</div>
+	);
+
+}
 
