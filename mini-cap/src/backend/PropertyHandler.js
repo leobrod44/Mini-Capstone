@@ -9,7 +9,7 @@ import {
   updateDoc,
   arrayUnion,
 } from "firebase/firestore";
-import { cleanData } from "./DataCleaner";
+import { cleanData, sortArray } from "./DataCleaner";
 import store from "storejs";
 import emailjs from "@emailjs/browser";
 import { firebaseConfig } from "./FirebaseConfig";
@@ -215,7 +215,7 @@ export async function getProperties(companyID) {
         }
       })
     );
-    return properties;
+    return sortArray(properties, "propertyName");
   } catch (error) {
     throw new Error("Error getting properties: " + error);
   }
@@ -282,7 +282,7 @@ export async function getUserCondos(email) {
       })
     );
 
-    return condos;
+    return sortArray(condos, "unitNumber");
   } catch (e) {
     throw new Error("Error getting condos: " + e);
   }
@@ -298,7 +298,7 @@ export async function getCondos(propertyID) {
         condos.push(doc.data());
       }
     });
-    return condos;
+    return sortArray(condos, "unitNumber");
   } catch (e) {
     throw new Error("Error getting condos: ", e);
   }
