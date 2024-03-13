@@ -400,28 +400,6 @@ export async function getAssignedParking(condoID) {
   return sampleAmenity
 }
 
-//Provide property id, condo file to upload
-//Returns: nothing
-export async function uploadFile(propertyID, file) {
-  console.log("Uploading file to property: ", propertyID, file);
-
-}
-
-export async function getPropertyFiles(propertyID) {
-  console.log("Getting files for property: ", propertyID);
-  return ["file1", "file2", "file3"]
-}
-
-//Provide: userID of renter/owner
-//Returns: array of files associated with the user
-export async function getUsersFiles(userID) {
-  //check if user is renter/owner
-  //find all condos that are owned 
-  //check if their property has files
-  //generate list
-  console.log("Getting files for user: ", userID);
-  return ["file1", "file2", "file3"]
-}
 
 //Provide: property id, updated property JSON
 //Returns: nothing

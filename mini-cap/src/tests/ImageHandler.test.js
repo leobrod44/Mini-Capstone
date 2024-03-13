@@ -1,16 +1,25 @@
-import {uploadUserPicture, updateUserPicture,getCondoPicture,getProfilePicture,getPropertyPicture, setPicture, setPictureWithID } from '../backend/ImageHandler'; // Import your function
-import { storage, getStorage, ref, getDownloadURL, deleteObject, uploadBytes } from 'firebase/storage';
-
-
+import { updateUserPicture,getCondoPicture,getProfilePicture,getPropertyPicture, setPicture, setPictureWithID, uploadFile,getPropertyFiles,getUsersFiles } from '../backend/ImageHandler'; // Import your function
+import { storage, getStorage, ref, getDownloadURL, deleteObject, uploadBytes, listAll } from 'firebase/storage';
+import { getUserData } from '../backend/UserHandler';
+import { getCondo } from '../backend/PropertyHandler';
+import store from 'storejs';
+import { RENTER_OWNER } from '../backend/Constants';
 // Mock Firebase storage functions
 jest.mock('firebase/storage', () => ({
   getStorage: jest.fn(),
   ref: jest.fn(),
   getDownloadURL: jest.fn(),
   deleteObject: jest.fn(),
-  uploadBytes: jest.fn()
+  uploadBytes: jest.fn(),
+  listAll: jest.fn()
+}));
+jest.mock('../backend/UserHandler', () => ({
+  getUserData: jest.fn()
 }));
 
+jest.mock('../backend/PropertyHandler', () => ({
+  getCondo: jest.fn()
+}));
 describe('update image functions', () => {
   afterEach(() => {
     jest.clearAllMocks(); // Clear mock function calls after each test
@@ -53,7 +62,7 @@ describe('update image functions', () => {
     uploadBytes.mockResolvedValue(fakeUploadBytesResult);
 
     // Call the function
-    await uploadUserPicture(fakeEmail, fakePhoto);
+    await updateUserPicture(fakeEmail, fakePhoto);
 
     // Check if storage functions are called with correct arguments
     expect(getStorage).toHaveBeenCalledTimes(1);
@@ -181,8 +190,75 @@ describe('set picture functions', () => {
 
     // Assertions
     expect(ref).toHaveBeenCalledWith(storage, path + id);
-    expect(uploadBytes).toHaveBeenCalledWith(mockRef, 'mocked_picture_data');
-    expect(getDownloadURL).toHaveBeenCalledWith(mockRef);
+    expect(uploadBytes).toHaveBeenCalledWith(ref(storage, '/example/path/2'), 'mocked_picture_data');
   });
+      
+  });
+  describe('condo files', () => {
+    afterEach(() => {
+      jest.clearAllMocks(); // Clear mock function calls after each test
+    });
+    test('test upload file', async () => {
+      const data = { picture: 'mocked_picture_data' };
+      const path = '/example/path/';
+      const id = '123456789';
+      const mockStorage = {};
+      const mockRef = {};
+      const mockDownloadURL = 'https://example.com/picture.jpg';
+      
+      const fileContent = 'This is a sample PDF file content.';
+      const blob = new Blob([fileContent], { type: 'application/pdf' });
+      const selectedFile = new File([blob], 'sample.pdf', { type: 'application/pdf' });
+
+      ref.mockReturnValue(mockRef);
+      listAll.mockResolvedValueOnce({ items: ['1','2'] })
+      await uploadFile(id, selectedFile);
+
+
+      expect(uploadBytes).toHaveBeenCalledWith(ref(storage, '/example/path/2'), selectedFile);
+
+    });
+    test('test get files by property', async () => {
+      const data = { picture: 'mocked_picture_data' };
+      const path = '/example/path/';
+      const id = '123456789';
+      const mockStorage = {};
+      const mockRef = {};
+      const mockDownloadURL = 'https://example.com/picture.jpg';
+      const mockRefs = { items: ['/example/path/1','/example/path/2'] }
+
+      ref.mockReturnValue(mockRef);
+      getDownloadURL.mockResolvedValue(mockDownloadURL);
+      listAll.mockResolvedValueOnce(mockRefs)
+      await getPropertyFiles(id);
+
+      expect(getDownloadURL).toHaveBeenCalledWith('/example/path/1');
+      expect(getDownloadURL).toHaveBeenCalledWith('/example/path/2');
+
+    });
+    test('test get files by user', async () => {
+      const data = { picture: 'mocked_picture_data' };
+      const path = '/example/path/';
+      const id = '123456789';
+      const mockStorage = {};
+      const mockRef = {};
+      const mockDownloadURL = 'https://example.com/picture.jpg';
+      const mockRefs = { items: ['/example/path/1','/example/path/2'] }
+
+
+      ref.mockReturnValue(mockRef);
+      getDownloadURL.mockResolvedValue(mockDownloadURL);
+      listAll.mockResolvedValueOnce(mockRefs)
+      getUserData.mockResolvedValueOnce({owns: ['1','2']});
+      getCondo.mockResolvedValue({ property: '1' });
+
+      store("role", RENTER_OWNER);  
+      await getUsersFiles(id);
+
+      expect(getDownloadURL).toHaveBeenCalledWith('/example/path/1');
+      expect(getDownloadURL).toHaveBeenCalledWith('/example/path/2');
+
+    });
+
       
   });
