@@ -98,14 +98,6 @@ const CondoFilesComponent = ({ condoID, onFileClick }) => {
                 multiple
                 className="file-input"
             />
-            <div className="button-container">
-                <button className="details-button" onClick={handleUploadClick}>
-                    Upload Files
-                </button>
-                <button className="cancel-button" onClick={handleCancelClick}>
-                    Cancel
-                </button>
-            </div>
             {/* Display uploaded files */}
             {files.length > 0 && (
                 <div>
@@ -119,8 +111,18 @@ const CondoFilesComponent = ({ condoID, onFileClick }) => {
                     </ul>
                 </div>
             )}
+            {/* Upload Files and Cancel buttons */}
+            <div className="button-container">
+                <button className="details-button" onClick={handleUploadClick}>
+                    Upload Files
+                </button>
+                <button className="cancel-button" onClick={handleCancelClick}>
+                    Cancel
+                </button>
+            </div>
         </div>
     );
+
 };
 
 CondoFilesComponent.propTypes = {
