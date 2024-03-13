@@ -96,11 +96,27 @@ select
     cursor: pointer;
     width: 100%;
 }
+.cancel-button{
+  background-color: grey;
+  color: #ffffff;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 50%;
+  margin-right: 10px;
+}
+.cancel-button:hover{
+  background-color: darkgray;
+}
 
 .add-condo-button:hover,
 .add-property-button:hover {
   background-color: #2f2c9b;
 }
+
+
 .delete-property-button{
   background-color: red;
   color: #ffffff;
@@ -109,10 +125,13 @@ select
     border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
-    width: 50%;
+    width: 100%;
     margin-right: 10px;
+    margin-top: 10px;
 }
-
+.delete-property-button:hover{
+  background-color: #842029;
+}
 
 .condo-form {
     background-color: #ffffff; /* Match the background color of the form */

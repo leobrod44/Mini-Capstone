@@ -6,7 +6,7 @@ import "../styling/EditPropertyComponent.css";
 import DeleteModal from "../components/DeleteModal"; 
 import AddressComponent from "../components/AddressComponent"; 
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
-import { getProperties } from "../backend/PropertyHandler";
+import { getProperties, updateProperty, deleteProperty } from "../backend/PropertyHandler";
 import store from "storejs";
 
 const EditPropertyComponent = () => {
@@ -106,8 +106,7 @@ useEffect(() => {
     });
   };
   
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
   //validation that all required information is filled in
     if (
       !property.propertyName ||
@@ -121,8 +120,7 @@ useEffect(() => {
     }
     // if all required field are filled , save edits
     try{
-      //call editProperty function, doesn't exist yet i think
-      //await editProperty(property);
+      await updateProperty(propertyID, property);
       navigate("/MGMTDashboard");
     }catch(err){
       console.error(err);
@@ -131,6 +129,16 @@ useEffect(() => {
     
     console.log("Edited:", property);
   };
+
+  const handleDelete = async () => {
+      try{
+        await deleteProperty(propertyID);
+        navigate("/MGMTDashboard");
+      }catch(err){
+        console.error(err);
+      }
+      console.log("Deleted:", property);
+    };
 
   return (
     <div style={{ backgroundColor: 'f0f4f8'}}>  
@@ -238,16 +246,21 @@ useEffect(() => {
           </div>
 
           <div className="button-container">
-            <button  className="delete-property-button" onClick={() => handleClickDelete()}>
-              Delete Property
+
+            <button  className="cancel-button" type="button" onClick={() => toggleEdit()}>
+              Cancel
             </button>
          
-            <button className="edit-property-button" type="submit">
-                          
-              Edit Property
+            <button className="add-condo-button" type="submit" onClick={() => handleSubmit()}>
+              Save Changes
             </button>
-           
           </div>
+          <div className="button-container">
+            <button type="button" className="delete-property-button" onClick={() => handleClickDelete()}>
+              Delete Property
+            </button>
+          </div>
+          
         </form>
       <BackArrowBtn/>
       <DeleteModal
