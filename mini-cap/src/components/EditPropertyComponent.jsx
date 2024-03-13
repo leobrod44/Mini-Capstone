@@ -8,8 +8,9 @@ import AddressComponent from "../components/AddressComponent";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import { getProperties, updateProperty, deleteProperty } from "../backend/PropertyHandler";
 import store from "storejs";
+import { PropTypes } from "prop-types";
 
-const EditPropertyComponent = () => {
+const EditPropertyComponent = ( {toggleEdit} ) => {
   const { propertyID } = useParams();
   const navigate = useNavigate();
   const [property, setProperty] = useState({
@@ -267,9 +268,14 @@ useEffect(() => {
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
         message="Are you sure you want to delete this Property?"
+        handleDeleteItem={handleDelete}
       />
     </div>
   );
+};
+
+EditPropertyComponent.propTypes = {
+  toggleEdit: PropTypes.func.isRequired,
 };
 
 export default EditPropertyComponent;
