@@ -55,7 +55,12 @@ const CondoFilesPage = () => {
             <div className="center-pageF">
                 <h3 className="condo-files-heading">{`Condo Files for Property ${propertyName}`}</h3>
                 <div className="white-container">
-                    <CondoFilesComponent condoID={propertyID} onFileClick={handleOpenModal} /> {/* Replace condoID with propertyID */}
+                    <CondoFilesComponent
+                        condoID={propertyID}
+                        condoFiles={condoFiles}
+                        setCondoFiles={setCondoFiles}
+                        onFileClick={handleOpenModal}
+                    />
                     {condoFiles.length > 0 && (
                         <div>
                             <h4>Files associated with {propertyName}</h4>
@@ -69,6 +74,7 @@ const CondoFilesPage = () => {
                         </div>
                     )}
                 </div>
+
             </div>
             <Footer />
 

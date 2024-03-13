@@ -1,10 +1,9 @@
-// CondoFilesComponent.jsx
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "../styling/CondoFilesComponent.css";
 import { uploadFile } from "../backend/PropertyHandler"; // Import the uploadFile function
 
-const CondoFilesComponent = ({ condoID, onFileClick }) => {
+const CondoFilesComponent = ({ condoID, condoFiles, setCondoFiles, onFileClick }) => {
     const [files, setFiles] = useState([]);
     const [isDragging, setIsDragging] = useState(false);
 
@@ -62,9 +61,15 @@ const CondoFilesComponent = ({ condoID, onFileClick }) => {
     const handleUploadClick = async () => {
         // Upload files using the backend function
         try {
-            await Promise.all(files.map(async (file) => {
+            // Upload files and get the updated list of files
+            const uploadedFiles = await Promise.all(files.map(async (file) => {
                 await uploadFile(condoID, file);
+                return { fileName: file.name };
             }));
+
+            // Add the uploaded files to the existing files
+            setCondoFiles([...condoFiles, ...uploadedFiles]);
+
             // Reset files after uploading
             setFiles([]);
         } catch (error) {
@@ -127,6 +132,8 @@ const CondoFilesComponent = ({ condoID, onFileClick }) => {
 
 CondoFilesComponent.propTypes = {
     condoID: PropTypes.string.isRequired,
+    condoFiles: PropTypes.array.isRequired,
+    setCondoFiles: PropTypes.func.isRequired,
     onFileClick: PropTypes.func.isRequired,
 };
 
