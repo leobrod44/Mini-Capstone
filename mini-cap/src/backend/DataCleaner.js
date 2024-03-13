@@ -72,3 +72,18 @@ export function cleanData(type, data) {
     return newData;
 }
 
+export function sortArray(array, key) {
+    return array.sort((a, b) => {
+        const valueA = a[key];
+        const valueB = b[key];
+        
+        if (valueA < valueB) {
+            return -1;
+        } else if (valueA > valueB) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
+}
+
