@@ -3,7 +3,7 @@ import Footer from "../components/Footer.jsx";
 import "../index.css";
 import "../styling/CondoDetails.css";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
@@ -11,7 +11,6 @@ import RequestForm from "../components/RequestForm.jsx";
 import {getCondo} from "../backend/PropertyHandler";
 import {getCondoPicture} from "../backend/ImageHandler";
 import {toast} from "react-toastify";
-import {useNavigate, useParams} from "react-router-dom";
 import store from "storejs";
 import {getCompanyEmail} from "../backend/UserHandler";
 import {MANAGEMENT_COMPANY} from "../backend/Constants";
@@ -26,6 +25,7 @@ export default function CondoDetails(){
 	const navigate = useNavigate();
 	const [role, setTheRole] = useState("");
 	const [companyEmail, setCompanyEmail] = useState(null);
+	const [displayForm, setDisplayForm] = useState(false);
 
 	useEffect(() => {
 		const fetchCondo = async () => {
@@ -70,6 +70,15 @@ export default function CondoDetails(){
     const handleClickDelete = () => {
         setShow(true);
     };
+
+	const handleClickRequest = () => {
+		setDisplayForm(true);
+	};
+
+	const handleClickClose = () => {
+        setDisplayForm(false);
+    };
+
     const handleClose = () => {
         setShow(false);
 	};
@@ -222,18 +231,17 @@ export default function CondoDetails(){
 										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
 									</>)}
 							</div>
-								<div>
-									{role === "company" && ( 
-										<>
-											<button className="edit-button"> Edit</button>
-											<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
-										</>)}
-								</div>
-								<div id="modal" className="modal">
-									<div className="modal-content">
-										<RequestForm/>
-									</div>
-								</div>
+							<div>
+								{role !== MANAGEMENT_COMPANY && (
+									<>
+										<button className="modal-button" onClick={() => handleClickRequest()}> Create Request</button>
+									</>)}
+							</div>
+							<div id="modal" className="modal" style={{ display: displayForm ? 'block' : 'none' }}>
+								<RequestForm
+									handleClickClose={handleClickClose}
+								/>
+							</div>
 						</div>
 					</div>
 					{showPopup && <Popup_SendKey handleClose={handlePopupToggle}/>}
@@ -247,12 +255,13 @@ export default function CondoDetails(){
 					</div>
 				</div>
 			</div>
+			{ !displayForm && (
+				<BackArrowBtn/>
+			)}
 
-			<BackArrowBtn/>
 			<div style={{zIndex: 1, position: 'relative'}}><Footer/></div>
 		</>
 		</div>
 	);
 
 }
-
