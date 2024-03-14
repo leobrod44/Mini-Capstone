@@ -48,7 +48,6 @@ export default function CondoDetails(){
 		const fetchRequests = async () => {
 			try {
 				setRequests(await getRequests(condoId));
-
 			} catch (error) {
 				console.error("Error fetching requests:", error);
 			}
@@ -248,8 +247,14 @@ export default function CondoDetails(){
 
 							<div className="other-info">
 								{showCondoRequests && (
-									//add logic to iterate through all condo requests (if they exist)
-									<CondoRequests role={role} />
+									requests.map((request, index) => (
+										<CondoRequests
+											key={index}
+											type={request.type}
+											notes={request.notes}
+											role={role}
+										/>
+									))
 								)}
 							</div>
 						</div>
