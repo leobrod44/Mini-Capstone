@@ -3,7 +3,7 @@ import "../styling/CondoRequestsView.css";
 import PropTypes from "prop-types";
 import { MANAGEMENT_COMPANY } from "../backend/Constants";
 
-const CondoRequestsView = ({ role }) => {
+const CondoRequestsView = ({ role, type, notes }) => {
     const [currentStep, setCurrentStep] = useState(1);
 
     useEffect(() => {
@@ -19,14 +19,15 @@ const CondoRequestsView = ({ role }) => {
     return (
         <div className="Requests-info">
             <div className="other-info1">
-                <div className="other-info2"><h5>Request Type</h5></div>
-                <p>**Add type here**</p>
+                <div className="other-info2"><h5>Request Type:</h5></div>
+                <p className="type">{type}</p>
             </div>
             <div className="other-info1">
-                <div className="other-info2"><h5>Description</h5></div>
-                <p>**Add description here**</p>
+                <div className="other-info2"><h5>Description:</h5></div>
+                <p className="description">{notes}</p>
             </div>
             <div className="tracker-container">
+                <div className="other-info2"><h5>Status:</h5></div>
                 <div className="progressive-tracker">
                     <div className="tracker-element">
                         <div className={`step ${currentStep === 1 ? 'active' : currentStep > 1 ? 'completed' : ''}`}></div>
@@ -59,6 +60,8 @@ const CondoRequestsView = ({ role }) => {
 
 CondoRequestsView.propTypes = {
     role: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    notes: PropTypes.string.isRequired
 };
 
 export default CondoRequestsView;
