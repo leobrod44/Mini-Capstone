@@ -361,7 +361,7 @@ const PropertyForm = () => {
                </select>
                  <input
                  id="parkingCost"
-                 type="text"
+                 type="number"  min="0"
                  value={property.parkingCost}
                  onChange={(e) => handleInputChange(e)}
                  name="parkingCost"
@@ -394,8 +394,8 @@ const PropertyForm = () => {
                 <option value="Euro">Euro €</option>
                </select>
                  <input
-                 id="lockerCost"
-                 type="text"
+                 id="lockerCost" 
+                 type="number" min="0" 
                  value={property.lockerCost}
                  onChange={(e) => handleInputChange(e)}
                  name="lockerCost"
