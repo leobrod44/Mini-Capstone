@@ -1,5 +1,5 @@
 /* CondoFilesComponent.css */
-.cfc-container {
+.cfc-containerFiles {
   margin: auto;
   width: 90%; /* Adjust width using percentage */
   max-width: 800px; /* Limit maximum width for large screens */
@@ -20,14 +20,14 @@
   background-color: #f0f0f0; /* Add a background color when dragging */
 }
 
-.button-container {
+.button-containerFiles {
   display: flex;
   justify-content: space-between;
   margin-bottom: 3vh; /* Adjust margin using viewport height */
 }
 
-.details-button,
-.cancel-button {
+.details-buttonFiles,
+.cancel-buttonFiles {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 3vh; /* Adjust font size using viewport height */
@@ -43,24 +43,24 @@
   max-width: 200px; /* Limit maximum width for large screens */
 }
 
-.details-button {
+.details-buttonFiles {
   background-color: #4540db;
   color: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.details-button:hover {
+.details-buttonFiles:hover {
   background-color: #7975d6;
   color: #ffffff;
 }
 
-.cancel-button {
+.cancel-buttonFiles {
   background-color: #ff4d4f;
   color: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.cancel-button:hover {
+.cancel-buttonFiles:hover {
   background-color: #ff7875;
   color: #ffffff;
 }

@@ -5,7 +5,8 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import BackArrowBtn from "../components/BackArrowBtn";
 import CondoFilesComponent from "../components/CondoFilesComponent";
-import { getPropertyFiles, getCondo } from "../backend/PropertyHandler";
+import { getCondo } from "../backend/PropertyHandler";
+import { getPropertyFiles } from "../backend/ImageHandler";
 import "../styling/CondoFilesPage.css";
 
 const CondoFilesPage = () => {

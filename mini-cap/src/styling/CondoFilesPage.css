@@ -74,6 +74,7 @@
   padding: 1.5vh 3vw; /* Adjust padding using viewport width and height */
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: larger;
 }
 
 .modal-content button:hover {

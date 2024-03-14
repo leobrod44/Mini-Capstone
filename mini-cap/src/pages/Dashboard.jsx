@@ -11,6 +11,9 @@ import { getUserCondos, linkCondoToUser } from "../backend/PropertyHandler.js";
 
 import store from "storejs";
 import { toast } from "react-toastify";
+import Pagination from "../components/Pagination";
+import "../styling/Pagination.css";
+
 
 const Dashboard = () => {
   // State to represent whether the user has registered condos or not, since i dont have backend right now
@@ -18,7 +21,8 @@ const Dashboard = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [condoDetails, setCondoDetails] = useState([]);
   let [condoPicURL, setCondoPicURL] = useState(null);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  
   useEffect(() => {
     const fetchCondos = async () => {
       try {
@@ -69,6 +73,17 @@ const Dashboard = () => {
     //setHasCondos(true);
   };
 
+  
+  const condosPerPage = 4;
+  const indexOfLastCondo = currentPage * condosPerPage;
+  const indexOfFirstCondo = indexOfLastCondo - condosPerPage;
+
+  const condosToDisplayPaginated = condoDetails.slice(
+    indexOfFirstCondo,
+    indexOfLastCondo
+  );
+
+
   return (
     <div>
       <Header />
@@ -80,7 +95,7 @@ const Dashboard = () => {
           {hasCondos ? (
             <div className="condo_list">
               {/* Render properties */}
-              {condoDetails.map((condo, index) => (
+              {condosToDisplayPaginated.map((condo, index) => (
                 <CondoComponent
                   key={index}
                   condo={{
@@ -91,10 +106,19 @@ const Dashboard = () => {
                     parkingNumber: condo.parkingNumber,
                     lockerNumber: condo.lockerNumber,
                     userType: condo.userType,
+                    condoId: condo.id
                   }}
                   data-testid="condo-component"
                 />
               ))}
+              <div className="pagination-container">
+                <Pagination
+                  itemsPerPage={condosPerPage}
+                  totalItems={condoDetails.length}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
+              </div>
             </div>
           ) : (
             // Render registration section if the user has no properties

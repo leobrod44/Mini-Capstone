@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import "../styling/CondoFilesComponent.css";
-import { uploadFile } from "../backend/PropertyHandler"; // Import the uploadFile function
+//import { uploadFile } from "../backend/PropertyHandler"; // Import the uploadFile function
+import { uploadFile } from "../backend/ImageHandler"; // Import the uploadFile function
 
 const CondoFilesComponent = ({ condoID, condoFiles, setCondoFiles, onFileClick }) => {
     const [files, setFiles] = useState([]);
@@ -24,40 +25,6 @@ const CondoFilesComponent = ({ condoID, condoFiles, setCondoFiles, onFileClick }
         }
     };
 
-    const handleDragEnter = (event) => {
-        event.preventDefault();
-        setIsDragging(true);
-    };
-
-    const handleDragOver = (event) => {
-        event.preventDefault();
-    };
-
-    const handleDragLeave = () => {
-        setIsDragging(false);
-    };
-
-    const handleDrop = (event) => {
-        event.preventDefault();
-
-        const droppedFiles = Array.from(event.dataTransfer.files);
-        setFiles([...files, ...droppedFiles]); // Append new files to the existing files
-
-        // Read content of text files and trigger the onFileClick callback
-        for (const file of droppedFiles) {
-            if (file.type === "text/plain") {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const content = e.target.result;
-                    onFileClick({ fileName: file.name, content });
-                };
-                reader.readAsText(file);
-            }
-        }
-
-        setIsDragging(false);
-    };
-
     const handleUploadClick = async () => {
         // Upload files using the backend function
         try {
@@ -72,24 +39,34 @@ const CondoFilesComponent = ({ condoID, condoFiles, setCondoFiles, onFileClick }
 
             // Reset files after uploading
             setFiles([]);
+
         } catch (error) {
-            console.error("Error uploading files:", error);
+            // Handle error
+            // console.error("Error uploading files:", error);
+        }
+    };
+    const resetFileInputValue = () => {
+        const input = document.getElementById("file-input");
+        if (input) {
+            input.value = "";
         }
     };
 
     const handleCancelClick = () => {
+        // Reset the file input value to allow re-selection of the same file
+        resetFileInputValue();
         // Cancel the upload and reset the files
         setFiles([]);
     };
 
     return (
-        <div className={`cfc-container ${isDragging ? "dragging" : ""}`}>
+        <div className={`cfc-containerFiles ${isDragging ? "dragging" : ""}`}>
             <div
                 className="drag-and-drop-area"
-                onDragEnter={handleDragEnter}
+                onDragEnter={(event) => handleDragEnter(event, setIsDragging)}
                 onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
+                onDragLeave={() => handleDragLeave(setIsDragging)}
+                onDrop={(event) => handleDrop(event, files, setFiles, setIsDragging, onFileClick)}
             >
                 {isDragging ? (
                     <p>Drop files here</p>
@@ -97,11 +74,14 @@ const CondoFilesComponent = ({ condoID, condoFiles, setCondoFiles, onFileClick }
                     <p>Drag &amp; Drop files here</p>
                 )}
             </div>
+            <label htmlFor="file-input">Upload Files</label> {/* Add label element here */}
             <input
+                id="file-input"
                 type="file"
                 onChange={handleFileUpload}
                 multiple
                 className="file-input"
+                data-testid="file-input"
             />
             {/* Display uploaded files */}
             {files.length > 0 && (
@@ -117,18 +97,18 @@ const CondoFilesComponent = ({ condoID, condoFiles, setCondoFiles, onFileClick }
                 </div>
             )}
             {/* Upload Files and Cancel buttons */}
-            <div className="button-container">
-                <button className="details-button" onClick={handleUploadClick}>
+            <div className="button-containerFiles">
+                <button className="details-buttonFiles" onClick={handleUploadClick}>
                     Upload Files
                 </button>
-                <button className="cancel-button" onClick={handleCancelClick}>
+                <button className="cancel-buttonFiles" onClick={handleCancelClick}>
                     Cancel
                 </button>
             </div>
         </div>
     );
-
 };
+
 
 CondoFilesComponent.propTypes = {
     condoID: PropTypes.string.isRequired,
@@ -138,3 +118,81 @@ CondoFilesComponent.propTypes = {
 };
 
 export default CondoFilesComponent;
+
+export const handleDragEnter = (event, setIsDragging) => {
+    event.preventDefault();
+    setIsDragging(true);
+};
+
+export const handleDragOver = (event) => {
+    event.preventDefault();
+};
+
+export const handleDragLeave = (setIsDragging) => {
+    setIsDragging(false);
+};
+
+export const handleDrop = (event, files, setFiles, setIsDragging, onFileClick) => {
+    event.preventDefault();
+
+    const droppedFiles = Array.from(event.dataTransfer.files);
+
+    if (files) {
+        setFiles([...files, ...droppedFiles]); // Append new files to the existing files
+    } else {
+        setFiles([...droppedFiles]); // Set dropped files if no existing files
+    }
+
+    // Read content of text files and trigger the onFileClick callback
+    for (const file of droppedFiles) {
+        if (file.type === "text/plain") {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target.result;
+                onFileClick({ fileName: file.name, content });
+            };
+            if (reader.readAsText) {
+                reader.readAsText(file);
+            } else {
+                //    console.error("FileReader.readAsText is not supported in this environment.");
+            }
+        }
+    }
+
+    setIsDragging(false);
+};
+
+export const handleUploadClick = async (condoID, files, setFiles, setCondoFiles, condoFiles) => {
+    // Upload files using the backend function
+    try {
+        // Upload files and get the updated list of files
+        const uploadedFiles = await Promise.all(files.map(async (file) => {
+            await uploadFile(condoID, file);
+            return { fileName: file.name };
+        }));
+
+        // Add the uploaded files to the existing files
+        setCondoFiles([...condoFiles, ...uploadedFiles]);
+
+        // Reset files after uploading
+        setFiles([]);
+
+    } catch (error) {
+        // Handle error
+        // console.error("Error uploading files:", error);
+    }
+};
+export const resetFileInputValue = () => {
+    const input = document.getElementById("file-input");
+    if (input) {
+        input.value = "";
+    }
+};
+
+
+export const handleCancelClick = (setFiles) => {
+    // Reset the file input value to allow re-selection of the same file
+    resetFileInputValue();
+    // Cancel the upload and reset the files
+    setFiles([]);
+};
