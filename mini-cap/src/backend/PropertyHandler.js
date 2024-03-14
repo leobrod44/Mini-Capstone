@@ -422,7 +422,6 @@ export async function getCondoOccupant(condoId) {
 
     if (condoDocSnap.exists) {
       const { occupant } = condoDocSnap.data();
-      console.log("occupant is: "+occupant);
       return occupant;
     } else {
       console.error('Condo document not found');
