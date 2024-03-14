@@ -135,8 +135,8 @@ const PropertyForm = () => {
     const parsedValue = type === 'number' ? parseInt(value, 10) : value;
   
     // Check for minimum value validation
-    if (type === 'number' && parsedValue < 0) {
-      toast.error(`Count must be greater than or equal to 0`);
+    if (type === 'number' && parsedValue <1) {
+      toast.error(`Count must be greater than  0`);
       return;
     }
   
