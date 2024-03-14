@@ -13,10 +13,11 @@ import {useNavigate, useParams} from "react-router-dom";
 import store from "storejs";
 import {getCompanyEmail} from "../backend/UserHandler";
 import {MANAGEMENT_COMPANY} from "../backend/Constants";
+import CondoRequests from "../components/CondoRequestsView.jsx";
+import { MdExpandLess, MdExpandMore } from "react-icons/md";
 
 export default function CondoDetails(){
 	let { condoId } = useParams();
-	// export default function CondoDetails({ propertyName, address, parkingNumber, lockerNumber, unitNumber, price, unitSize, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
 	const [condoDetails, setCondoDetails] = useState(false);
 	const [showPopup, setShowPopup] = useState(false);
 	const [show, setShow] = useState(false);
@@ -68,6 +69,7 @@ export default function CondoDetails(){
     const handleClickDelete = () => {
         setShow(true);
     };
+
     const handleClose = () => {
         setShow(false);
 	};
@@ -85,6 +87,12 @@ export default function CondoDetails(){
 		occupant,
 		status
 	} = condoDetails;
+
+	const [showCondoRequests, setShowCondoRequests] = useState(false);
+
+	const toggleCondoRequests = () => {
+		setShowCondoRequests(!showCondoRequests);
+	}
 
 	return(
 		<div className='pageContainer'>
@@ -110,7 +118,7 @@ export default function CondoDetails(){
 									<>
 									<div>
 										<div className={`user-tag vacant`}>{status}</div>
-										{role === "mgmt" && (
+										{role === MANAGEMENT_COMPANY && (
 										<>
 											<button className="sendkey-button" onClick={handlePopupToggle}>Send Key</button>
 										</>)}
@@ -220,6 +228,20 @@ export default function CondoDetails(){
 										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
 									</>)}
 							</div>
+							<div style={{display: "flex" , alignItems: "center"}}>
+								<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>Condo Requests</h5>
+								<div>
+									<button id="toggleButton" className="requests-button" onClick={toggleCondoRequests}>
+										{showCondoRequests ? <MdExpandLess/> : <MdExpandMore />} </button>
+								</div>
+							</div>
+
+							<div className="other-info">
+								{showCondoRequests && (
+									//add logic to iterate through all condo requests (if they exist)
+									<CondoRequests role={role} />
+								)}
+							</div>
 						</div>
 					</div>
 					{showPopup && <Popup_SendKey handleClose={handlePopupToggle}/>}
@@ -233,7 +255,6 @@ export default function CondoDetails(){
 					</div>
 				</div>
 			</div>
-
 			<BackArrowBtn/>
 			<div style={{zIndex: 1, position: 'relative'}}><Footer/></div>
 		</>
