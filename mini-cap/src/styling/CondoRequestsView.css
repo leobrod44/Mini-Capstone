@@ -1,0 +1,108 @@
+.Requests-info {
+    background-color: #ffffff;
+    font-family: "Roboto", sans-serif;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #000000; /* Thin black border */
+    border-radius: 5px; /* Rounded border corners */
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.Requests-info > * {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.RequestsText {
+    font-family: "Roboto", sans-serif;
+    position: relative;
+    color:#2f2c9b;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.other-info {
+    text-align: left;
+    margin-left: 10px;
+}
+
+.other-info1 {
+    text-align: left;
+}
+
+.other-info2 {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.tracker-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.progressive-tracker {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.tracker-element {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ccc;
+}
+
+.step.active {
+    background-color: blue;
+}
+
+.step.completed {
+    background-color: blue;
+}
+
+.tracker-button {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    background-color: #4540db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    height: 35px;
+    width: 75px;
+}
+
+.tracker-button:hover {
+    background-color: #7975d6;
+    color: #ffffff;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.button-container button {
+    margin: 0 5px;
+}
