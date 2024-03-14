@@ -102,3 +102,11 @@
     display: flex;
     justify-content: center;
 }
+
+.type {
+    font-size: 18px !important;
+}
+
+.description {
+    font-size: 14px !important;
+}
