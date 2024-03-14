@@ -15,6 +15,7 @@ import {getCompanyEmail} from "../backend/UserHandler";
 import {MANAGEMENT_COMPANY} from "../backend/Constants";
 import CondoRequests from "../components/CondoRequestsView.jsx";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import { getRequests } from "../backend/RequestHandler";
 
 export default function CondoDetails(){
 	let { condoId } = useParams();
@@ -25,6 +26,7 @@ export default function CondoDetails(){
 	const navigate = useNavigate();
 	const [role, setTheRole] = useState("");
 	const [companyEmail, setCompanyEmail] = useState(null);
+	const [requests, setRequests] = useState([]);
 
 	useEffect(() => {
 		const fetchCondo = async () => {
@@ -42,8 +44,18 @@ export default function CondoDetails(){
 				console.error(err);
 			}
 		};
-		fetchCondo();
 
+		const fetchRequests = async () => {
+			try {
+				setRequests(await getRequests(condoId));
+
+			} catch (error) {
+				console.error("Error fetching requests:", error);
+			}
+		};
+
+		fetchCondo();
+		fetchRequests();
 	}, []);
 
 	if (condoDetails === null) {
