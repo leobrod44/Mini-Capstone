@@ -135,9 +135,7 @@ export default function CondoDetails(){
 										<div className={`user-tag owner`}>{status}</div>
 									</>
 								)}
-
-								</div>
-
+							</div>
 
 							</div>
 								<div className='other-info'>
@@ -260,6 +258,5 @@ export default function CondoDetails(){
 		</>
 		</div>
 	);
-
 }
 
