@@ -16,11 +16,6 @@ const CondoRequestsView = ({ role }) => {
         // updateRequest(condoId, requestId);
     };
 
-    const handlePrevious = () => {
-        if (currentStep > 1)
-            setCurrentStep(currentStep - 1);
-    };
-
     return (
         <div className="Requests-info">
             <div className="other-info1">
@@ -54,7 +49,6 @@ const CondoRequestsView = ({ role }) => {
             <div className="button-container">
                 {role === MANAGEMENT_COMPANY && (
                     <div>
-                        <button className="tracker-button" onClick={handlePrevious}>Previous</button>
                         <button className="tracker-button" onClick={handleAdvance}>Advance</button>
                     </div>
                 )}
