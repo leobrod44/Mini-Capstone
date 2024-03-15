@@ -112,7 +112,7 @@ export async function updateRequest(condoID, requestID) {
             return "Completed"
         }
         else{
-            return stepType[requestData.step];
+            return requestData.step;
         }
     } catch (e) {
         console.error("Error updating request: ", e);
