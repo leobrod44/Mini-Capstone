@@ -46,9 +46,17 @@ const CondoFilesComponent = ({ condoID, condoFiles, setCondoFiles, onFileClick }
         }
     };
     const resetFileInputValue = () => {
-        const input = document.getElementById("file-input");
-        if (input) {
-            input.value = "";
+        const form = document.createElement("form");
+        const input = document.createElement("input");
+        input.type = "file";
+        input.id = "file-input";
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.reset();
+        document.body.removeChild(form);
+        const input1 = document.getElementById("file-input");
+        if (input1) {
+            input1.value = "";
         }
     };
 
@@ -183,11 +191,20 @@ export const handleUploadClick = async (condoID, files, setFiles, setCondoFiles,
     }
 };
 export const resetFileInputValue = () => {
-    const input = document.getElementById("file-input");
-    if (input) {
-        input.value = "";
+    const form = document.createElement("form");
+    const input = document.createElement("input");
+    input.type = "file";
+    input.id = "file-input";
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.reset();
+    document.body.removeChild(form);
+    const input1 = document.getElementById("file-input");
+    if (input1) {
+        input1.value = "";
     }
 };
+
 
 
 export const handleCancelClick = (setFiles) => {

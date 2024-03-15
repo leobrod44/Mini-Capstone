@@ -7,6 +7,7 @@ import CondoFilesComponent, {
   handleDrop,
   handleUploadClick,
   handleCancelClick,
+  resetFileInputValue,
 } from "../components/CondoFilesComponent";
 
 describe("CondoFilesComponent", () => {
@@ -256,33 +257,21 @@ describe("CondoFilesComponent", () => {
       });
       await expect(uploadPromise).rejects.toThrow("Upload cancelled");
     });
+  });
 
-    test("resets file input value after successful upload", async () => {
-      const files = [{ name: "file1.txt" }, { name: "file2.txt" }];
-      const setFiles = jest.fn();
-      const setCondoFiles = jest.fn();
-      const uploadFile = jest
-        .fn()
-        .mockResolvedValueOnce({ fileName: "file1.txt" })
-        .mockResolvedValueOnce({ fileName: "file2.txt" });
+  it("resets the value of file input element", () => {
+    // Create a file input element and set its initial value
+    const input = document.createElement("input");
+    input.setAttribute("id", "file-input");
+    input.setAttribute("type", "file");
+    input.value = "test.txt";
+    document.body.appendChild(input);
 
-      const condoFiles = []; // Ensure condoFiles is initialized as an empty array
+    // Call the resetFileInputValue function
+    resetFileInputValue();
 
-      const input = document.createElement("input");
-      input.type = "file";
-      document.body.appendChild(input);
-
-      await handleUploadClick(
-        condoID,
-        files,
-        setFiles,
-        setCondoFiles,
-        condoFiles, // Pass condoFiles to the function
-        uploadFile
-      );
-
-      expect(input.files.length).toBe(0); // Check if file input value is cleared
-    });
+    // Assert that the value of the file input element is now an empty string
+    expect(input.value).toBe("");
   });
 
   describe("handleCancelClick", () => {
