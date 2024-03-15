@@ -247,14 +247,18 @@ export default function CondoDetails(){
 
 							<div className="other-info">
 								{showCondoRequests && (
-									requests.map((request, index) => (
-										<CondoRequests
-											key={index}
-											type={request.type}
-											notes={request.notes}
-											role={role}
-										/>
-									))
+									requests.length > 0 ? (
+										requests.map((request, index) => (
+											<CondoRequests
+												key={index}
+												type={request.type}
+												notes={request.notes}
+												role={role}
+											/>
+										))
+									) : (
+										<p className="request-container">There are no current requests</p>
+									)
 								)}
 							</div>
 						</div>
