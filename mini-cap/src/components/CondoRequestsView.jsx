@@ -9,9 +9,11 @@ const CondoRequestsView = ({ role, type, notes, step, condoId, requestId }) => {
 
     const handleAdvance = async () => {
         if (currentStep < 4)
-            setCurrentStep(currentStep + 1);
-        let newStep = await updateRequest(condoId, requestId)
-        setCurrentStep(newStep);
+        {
+            let newStep = await updateRequest(condoId, requestId)
+            console.log(newStep);
+            setCurrentStep(newStep);
+        }
     };
 
     return (
