@@ -3,7 +3,7 @@ import "../styling/CondoRequestsView.css";
 import PropTypes from "prop-types";
 import { MANAGEMENT_COMPANY } from "../backend/Constants";
 
-const CondoRequestsView = ({ role, type, notes, step }) => {
+const CondoRequestsView = ({ role, type, notes, step, condoId, requestId }) => {
     const [currentStep, setCurrentStep] = useState(step);
 
     useEffect(() => {
@@ -12,7 +12,6 @@ const CondoRequestsView = ({ role, type, notes, step }) => {
     const handleAdvance = () => {
         if (currentStep < 4)
             setCurrentStep(currentStep + 1);
-
         // updateRequest(condoId, requestId);
     };
 
@@ -62,7 +61,9 @@ CondoRequestsView.propTypes = {
     role: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     notes: PropTypes.string.isRequired,
-    step: PropTypes.number.isRequired
+    step: PropTypes.number.isRequired,
+    condoId: PropTypes.string.isRequired,
+    requestId: PropTypes.string.isRequired
 };
 
 export default CondoRequestsView;
