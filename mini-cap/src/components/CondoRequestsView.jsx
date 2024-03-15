@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import "../styling/CondoRequestsView.css";
 import PropTypes from "prop-types";
 import { MANAGEMENT_COMPANY } from "../backend/Constants";
+import {updateRequest} from "../backend/RequestHandler";
 
 const CondoRequestsView = ({ role, type, notes, step, condoId, requestId }) => {
     const [currentStep, setCurrentStep] = useState(step);
 
-    useEffect(() => {
-    }, []);
-
-    const handleAdvance = () => {
+    const handleAdvance = async () => {
         if (currentStep < 4)
             setCurrentStep(currentStep + 1);
-        // updateRequest(condoId, requestId);
+        let newStep = await updateRequest(condoId, requestId)
+        setCurrentStep(newStep);
     };
 
     return (
