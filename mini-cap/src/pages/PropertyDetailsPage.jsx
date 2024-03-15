@@ -95,7 +95,7 @@ const PropertyDetailsPage = () => {
                 <p className="card_title">You have not added any condos yet.</p>
                 {/*<p className="button"> Add a condo</p>*/}
                 <Link
-                  className="button"
+                  className="buttonDetails"
                   to={`/add-condo/${propertyID}/${propertyName}`}
                 >
                   Add a condo

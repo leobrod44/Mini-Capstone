@@ -7,7 +7,7 @@
   margin-top: 2.5%;
 }
 
-.white-container {
+.white-containerFiles {
   background-color: #ffffff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -19,16 +19,16 @@
   margin-top: 4vh; /* Adjust margin using viewport height */
 }
 
-.white-container h4 {
+.white-containerFiles h4 {
   margin-top: 3vh; /* Adjust margin using viewport height */
 }
 
-.white-container ul {
+.white-containerFiles ul {
   list-style-type: none;
   padding: 0;
 }
 
-.white-container li {
+.white-containerFiles li {
   cursor: pointer;
   margin: 2vh 0; /* Adjust margin using viewport height */
   color: #4540db;
@@ -36,7 +36,7 @@
 }
 
 /* Add modal styles */
-.modal {
+.modalFiles {
   position: fixed;
   top: 0;
   left: 0;
@@ -48,7 +48,7 @@
   align-items: center;
 }
 
-.modal-content {
+.modal-contentFiles {
   background-color: #fff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -57,16 +57,16 @@
   cursor: default;
 }
 
-.modal-content h2 {
+.modal-contentFiles h2 {
   color: #4540db;
   margin-bottom: 3vh; /* Adjust margin using viewport height */
 }
 
-.modal-content p {
+.modal-contentFiles p {
   margin: 3vh 0; /* Adjust margin using viewport height */
 }
 
-.modal-content button {
+.modal-contentFiles button {
   background-color: #4540db;
   color: #fff;
   border: none;
@@ -77,7 +77,7 @@
   font-size: larger;
 }
 
-.modal-content button:hover {
+.modal-contentFiles button:hover {
   background-color: #7975d6;
 }
 

@@ -55,7 +55,7 @@ const CondoFilesPage = () => {
             <BackArrowBtn />
             <div className="center-pageF">
                 <h3 className="condo-files-heading">{`Condo Files for Property ${propertyName}`}</h3>
-                <div className="white-container">
+                <div className="white-containerFiles">
                     <CondoFilesComponent
                         condoID={propertyID}
                         condoFiles={condoFiles}
@@ -81,8 +81,8 @@ const CondoFilesPage = () => {
 
             {/* Modal */}
             {selectedFile && (
-                <div className="modal" onClick={handleCloseModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modalFiles" onClick={handleCloseModal}>
+                    <div className="modal-contentFiles" onClick={(e) => e.stopPropagation()}>
                         <h2>{selectedFile.fileName}</h2>
                         {selectedFile.content && <p>{selectedFile.content}</p>}
                         <button onClick={handleCloseModal}>Close</button>

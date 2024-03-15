@@ -30,7 +30,7 @@
   display: flex;
   position: absolute;
   top: 85px;
-  left: 39%;
+  left: 35%;
   justify-content: center;
   align-items: center;
   height: 36px;
@@ -112,7 +112,7 @@
   font-weight: bolder;
 }
 
-.button {
+.buttonDetails {
   background-color: #4540db;
   color: #ffffff;
   padding: 10px 20px;
@@ -124,7 +124,7 @@
   margin-top: 5%;
 }
 
-.button:hover {
+.buttonDetails:hover {
   background-color: #7975d6;
 }
 
