@@ -256,7 +256,7 @@ export default function CondoDetails(){
 												role={role}
 												step={request.step}
 												condoId={condoId}
-												requestId={request.id}
+												requestId={request.requestID}
 											/>
 										))
 									) : (
