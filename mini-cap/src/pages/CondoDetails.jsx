@@ -254,6 +254,7 @@ export default function CondoDetails(){
 												type={request.type}
 												notes={request.notes}
 												role={role}
+												step={request.step}
 											/>
 										))
 									) : (
