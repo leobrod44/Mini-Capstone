@@ -108,12 +108,13 @@ export async function updateRequest(condoID, requestID) {
             console.error("Invalid request type");
         }
         await updateDoc(requestRef, requestData);
-        if(requestData.step >= stepType.length){
-            return "Completed"
-        }
-        else{
+        //  COMMENTED OUT THIS BECAUSE IN CONDOREQUESTSVIEW.JSX YOU CAN ONLY DO MAX 4 ADVANCES
+        // if(requestData.step >= stepType.length){
+        //     return "Completed"
+        // }
+        // else{
             return requestData.step;
-        }
+        // }
     } catch (e) {
         console.error("Error updating request: ", e);
     }
