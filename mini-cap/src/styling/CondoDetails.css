@@ -229,3 +229,8 @@ h2{
   background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
   color: #ffffff; /* Change text color on hover to white */
 }
+
+.request-container {
+  display: flex;
+  justify-content: center;
+}
