@@ -93,6 +93,15 @@ const handleCloseDeleteModal = (index) => {
 
   const handleCondoInputChange = (e, index) => {
     const { name, value } = e.target;
+
+  // Parse the value as a float for number input fields
+  const parsedValue = name === 'unitPrice' ? parseFloat(value) : value;
+
+  // Check for minimum value validation only for "Unit Price"
+  if (name === 'unitPrice' && parsedValue <= 0) {
+    toast.error(`Unit Price must be greater than 0`);
+    return;
+  }
     const updatedCondos = [...property.condos];
     updatedCondos[index] = {
       ...updatedCondos[index],
@@ -159,7 +168,7 @@ const handleCloseDeleteModal = (index) => {
   
     // Check for minimum value validation
     if (type === 'number' && parsedValue <1) {
-      toast.error(`Count must be greater than  0`);
+      toast.error(`Count or Price must be greater than  0`);
       return;
     }
   
@@ -499,7 +508,7 @@ onChange={(e) => handleCondoInputChange(e, index)}
     </select>
     <input
     id="unitPrice"
-      type="text"
+      type="number"
       value={condo.unitPrice}
       onChange={(e) => handleCondoInputChange(e, index)}
       name="unitPrice"
