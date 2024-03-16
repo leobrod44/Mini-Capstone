@@ -22,17 +22,40 @@ const PropertyForm = () => {
     condos: [],
   });
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [condoToDelete, setCondoToDelete] = useState(null);
-
+  
   const [previewPropertyImage, setPreviewPropertyImage] = useState(null);
   const [condoPreviewImages, setCondoPreviewImages] = useState([]);
-
+  const [condoDeleteModalVisible, setCondoDeleteModalVisible] = useState([]);
   const [visibleCondoForms, setVisibleCondoForms] = useState([]);
   const [isAddingCondo, setIsAddingCondo] = useState(false); 
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedCondoIndex, setSelectedCondoIndex] = useState(null); // Track which condo is being deleted
   const navigate = useNavigate();
 
-
+  
+  const handleShowDeleteModal = (index) => {
+    const updatedVisibility = [...condoDeleteModalVisible];
+  updatedVisibility[index] = true;
+  setCondoDeleteModalVisible(updatedVisibility);
+};
+// Function to handle closing delete modal for a specific condo
+const handleCloseDeleteModal = (index) => {
+  const updatedVisibility = [...condoDeleteModalVisible];
+  updatedVisibility[index] = false;
+  setCondoDeleteModalVisible(updatedVisibility);
+};
+  const handleDeleteCondo = () => {
+    const updatedCondos = [...property.condos];
+    updatedCondos.splice(selectedCondoIndex, 1);
+    setProperty({
+      ...property,
+      condos: updatedCondos,
+    });
+    const updatedCondoPreviewImages = [...condoPreviewImages];
+    updatedCondoPreviewImages.splice(selectedCondoIndex, 1);
+    setCondoPreviewImages(updatedCondoPreviewImages);
+    setShowDeleteModal(false);
+  };
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
@@ -220,34 +243,6 @@ const PropertyForm = () => {
     setIsAddingCondo(false);
 };
   
-  const handleDeleteCondo = (index) => {
-    setCondoToDelete(index);
-    setShowDeleteModal(true);
-  };
-
-  const handleDeleteConfirmed = () => {
-    const updatedCondos = [...property.condos];
-    updatedCondos.splice(condoToDelete, 1);
-
-    setProperty({
-      ...property,
-      condos: updatedCondos,
-    });
-
-    setCondoPreviewImages((prevImages) => {
-      const newImages = [...prevImages];
-      newImages.splice(condoToDelete, 1);
-      return newImages;
-    });
-
-    setVisibleCondoForms([]);
-    setShowDeleteModal(false);
-  };
-
-  const handleCloseDeleteModal = () => {
-    setShowDeleteModal(false);
-    setCondoToDelete(null);
-  };
 
   return (
     <div>
@@ -404,35 +399,34 @@ const PropertyForm = () => {
          </div>
 
 
-          <div className="condo-list">
-            {property.condos.map((condo, index) => (
-              <div key={index}>
-                {visibleCondoForms.includes(index) ? (
-      <div className="condo-preview">
-        <h5>{`Condo ${condo.unitNumber} `}</h5>
-        <p>Unit Number: {condo.unitNumber}</p>
-        <p>Unit Price: {condo.currency} {condo.unitPrice}</p>
-        <p>Unit Size: {condo.unitSize}</p>
-        <p>Square Feet: {condo.squareFeet}</p>
-        <p> Parking Spot Number: {condo.parkingNumber}</p>
-        <p> Locker Number: {condo.lockerNumber}</p>
-
-        
-        {condo.picture && (
-          <img
-            src={URL.createObjectURL(condo.picture)}
-            alt={`Condo ${condo.unitNumber} Preview`}
-          />
-        )}
-        <div className="input-group mt-3"></div>
-      <button  className="delete-condo-button"
-
-                  onClick={() => handleDeleteCondo(index)}
-                >
-                  Delete
-                </button>
-    
-  </div>
+         <div className="condo-list">
+  {property.condos.map((condo, index) => (
+    <div key={index}>
+      {visibleCondoForms.includes(index) ? (
+        <div className="condo-preview">
+          <h5>{`Condo ${condo.unitNumber} `}</h5>
+          <p>Unit Number: {condo.unitNumber}</p>
+          <p>Unit Price: {condo.currency} {condo.unitPrice}</p>
+          <p>Unit Size: {condo.unitSize}</p>
+          <p>Square Feet: {condo.squareFeet}</p>
+          <p>Parking Spot Number: {condo.parkingNumber}</p>
+          <p>Locker Number: {condo.lockerNumber}</p>
+          {condo.picture && (
+            <img
+              src={URL.createObjectURL(condo.picture)}
+              alt={`Condo ${condo.unitNumber} Preview`}
+            />
+          )}
+          <button  type="button" className="btn btn-danger btn-block mt-2" onClick={() => handleShowDeleteModal(index)}>Delete</button>
+          <DeleteModal
+        show={condoDeleteModalVisible[index]}
+        handleClose={() => handleCloseDeleteModal(index)}
+         handleDeleteItem={handleDeleteCondo}
+      message="Are you sure you want to delete this condo?"
+      />
+          {/* Add a Delete button for each condo */}
+        </div>
+      
                 ) : (
                   <div className="add-condo-form">
                     
@@ -596,12 +590,7 @@ onChange={(e) => handleCondoInputChange(e, index)}
           </div>
         </form>
       </div>
-      <DeleteModal
-        show={showDeleteModal}
-        handleClose={handleCloseDeleteModal}
-        handleDeleteItem={handleDeleteConfirmed}
-        message="Are you sure you want to delete this condo?"
-      />
+      
       <Footer />
     </div>
   );
