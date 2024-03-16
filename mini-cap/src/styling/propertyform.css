@@ -59,7 +59,7 @@ h3 {
 }
 
 
-input,
+input
 select
  {
   font-family: "Roboto", sans-serif;
@@ -69,6 +69,11 @@ select
   border-radius: 4px;
   font-size: 16px;
   
+}
+.custom-select {
+  width: 10%;
+ height: auto; 
+  display: flex;
 }
 
 .add-condo-button,

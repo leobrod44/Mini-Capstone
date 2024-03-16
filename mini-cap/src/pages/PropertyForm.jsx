@@ -16,7 +16,9 @@ const PropertyForm = () => {
     address: "",
     unitCount: "",
     parkingCount: "",
+    parkingCost: "",
     lockerCount: "",
+    lockerCost: "",
     condos: [],
   });
 
@@ -27,7 +29,7 @@ const PropertyForm = () => {
   const [condoPreviewImages, setCondoPreviewImages] = useState([]);
 
   const [visibleCondoForms, setVisibleCondoForms] = useState([]);
-
+  const [isAddingCondo, setIsAddingCondo] = useState(false); 
   const navigate = useNavigate();
 
 
@@ -133,8 +135,8 @@ const PropertyForm = () => {
     const parsedValue = type === 'number' ? parseInt(value, 10) : value;
   
     // Check for minimum value validation
-    if (type === 'number' && parsedValue < 0) {
-      toast.error(`Count must be greater than or equal to 0`);
+    if (type === 'number' && parsedValue <1) {
+      toast.error(`Count must be greater than  0`);
       return;
     }
   
@@ -152,7 +154,10 @@ const PropertyForm = () => {
       !property.address ||
       !property.unitCount ||
       !property.parkingCount ||
-      !property.lockerCount
+      !property.lockerCount ||
+      !property.lockerCost ||
+      !property.parkingCost
+  
     ) {
       toast.error("Missing Property Information");
       return;
@@ -176,12 +181,16 @@ const PropertyForm = () => {
       !property.address ||
       !property.unitCount ||
       !property.parkingCount ||
-      !property.lockerCount
+      !property.lockerCount ||
+      !property.lockerCost ||
+      !property.parkingCost
+  
     ) {
       toast.error("Please complete the property form first");
       return;
     }
-  
+    if (isAddingCondo) return;  //If already adding a condo, do nothing
+    setIsAddingCondo(true);
     // If all required fields are filled, add a new condo
     setProperty({
       ...property,
@@ -208,7 +217,9 @@ const PropertyForm = () => {
       ...prevVisibleCondoForms,
       index,
     ]);
-  };
+    setIsAddingCondo(false);
+};
+  
   const handleDeleteCondo = (index) => {
     setCondoToDelete(index);
     setShowDeleteModal(true);
@@ -274,6 +285,7 @@ const PropertyForm = () => {
           </div>
           {previewPropertyImage && (
             <div className="image-preview">
+
               <img src={previewPropertyImage} alt="Property Preview" />
             </div>
           )}
@@ -335,6 +347,27 @@ const PropertyForm = () => {
               
             />
           </div>
+          <label className="input-label" htmlFor="parkingCost">Parking Cost:</label>
+         <div className="input-group">
+               <select
+                value={property.currency}
+                onChange={(e) => handleInputChange(e)}
+               name="currency"
+                className="form-select custom-select"
+          >
+                <option value="CAD">CAD $</option>
+                <option value="USD">USD $</option>
+                <option value="Euro">Euro €</option>
+               </select>
+                 <input
+                 id="parkingCost"
+                 type="number"  min="0"
+                 value={property.parkingCost}
+                 onChange={(e) => handleInputChange(e)}
+                 name="parkingCost"
+                 className="form-control"
+         />
+         </div>
           <div className="input-group">
             <label className="input-label" htmlFor="lockerCount">
               Locker Count:
@@ -348,6 +381,28 @@ const PropertyForm = () => {
               
             />
           </div>
+          <label className="input-label" htmlFor="lockerCost">Locker Cost:</label>
+         <div className="input-group">
+               <select
+                value={property.currency}
+                onChange={(e) => handleInputChange(e)}
+                name="currency"
+                className="form-select custom-select"
+          >
+                <option value="CAD">CAD $</option>
+                <option value="USD">USD $</option>
+                <option value="Euro">Euro €</option>
+               </select>
+                 <input
+                 id="lockerCost" 
+                 type="number" min="0" 
+                 value={property.lockerCost}
+                 onChange={(e) => handleInputChange(e)}
+                 name="lockerCost"
+                 className="form-control"
+         />
+         </div>
+
 
           <div className="condo-list">
             {property.condos.map((condo, index) => (
@@ -379,27 +434,64 @@ const PropertyForm = () => {
     
   </div>
                 ) : (
-                  <div className="condo-form">
+                  <div className="add-condo-form">
                     
  
                     <h5>Unit {index + 1}</h5>
-                    <label>Unit Number:</label>
+                    <div className="input-group">
+                    <label className="form-label mt-3" htmlFor="customFile">
+                        <label className="input-label" htmlFor="condoPicture"> Condo Picture: </label>
+                    </label>
+                     <div className="row justify-content-center">
+                     <div className="col-sm-">
+                     <input
+                     id="condoPicture"
+                      type="file"
+                      className="form-control"
+                      onChange={(e) => handleCondoFileChange(e, index)}
+                      style={{ paddingTop: "0px", paddingBottom: "0px" }}
+                   
+                    />
+                    </div>
+                    
+    </div>
+  </div>
+  {condoPreviewImages[index] && (
+    <div className="image-preview">
+        <img
+          src={condoPreviewImages[index]}
+          alt={`Condo ${condo.unitNumber} Preview`}
+        />
+        </div>
+    
+  )}                
+                              <div className="input-group">
+
+                    <label className="input-label" htmlFor="unitNumber"> Unit Number: </label>
                     <input
+                    id="unitNumber"
                       type="text"
                       value={condo.unitNumber}
                       onChange={(e) => handleCondoInputChange(e, index)}
                       name="unitNumber"
                     />
-<label> Square Feet </label>
+                    </div>
+                    
+                    <div className="input-group">
+ <label className="input-label" htmlFor="squareFeet">
+          Square Feet:
+          </label>
 <input
+id="squareFeet"
 type= "text"
 value={condo.squareFeet}
 onChange={(e) => handleCondoInputChange(e, index)}
  name="squareFeet"
  ></input>
 
+</div>
 
-  <label>Unit Price:</label>
+<label className="input-label" htmlFor="unitPrice">Unit Price:</label>
   <div className="input-group">
     <select
       value={condo.currency}
@@ -412,6 +504,7 @@ onChange={(e) => handleCondoInputChange(e, index)}
       <option value="Euro">Euro €</option>
     </select>
     <input
+    id="unitPrice"
       type="text"
       value={condo.unitPrice}
       onChange={(e) => handleCondoInputChange(e, index)}
@@ -422,8 +515,13 @@ onChange={(e) => handleCondoInputChange(e, index)}
 
 
 
-<label>Unit Size:</label>
+  <div className="input-group">
+  <label className="input-label" htmlFor="unitSize">
+        
+        Unit Size:
+        </label>
 <select
+  id="unitSize"
   value={condo.unitSize}
   onChange={(e) => handleCondoInputChange(e, index)}
   name="unitSize"
@@ -435,41 +533,37 @@ onChange={(e) => handleCondoInputChange(e, index)}
   <option value="4.5">4 1/2</option>
   <option value="5.5">5 1/2</option>
 </select>
-<label> Parking Spot  </label>
+</div>
+
+
+<div className="input-group">
+<label className="input-label" htmlFor="parkingNumber">
+          Parking Spot:
+          </label>
 <input
+id="parkingNumber"
 type= "text"
 value={condo.parkingNumber}
 onChange={(e) => handleCondoInputChange(e, index)}
  name="parkingNumber"
  ></input>
+</div>
 
-<label> Locker  </label>
+
+<div className="input-group">
+<label className="input-label" htmlFor="lockerNumber">
+        
+        Locker:
+        </label>
 <input
+ id="lockerNumber"
 type= "text"
 value={condo.lockerNumber}
 onChange={(e) => handleCondoInputChange(e, index)}
  name="lockerNumber"
  ></input>
-                     <label>Condo Picture:</label>
-                     <div className="row justify-content-center">
-                     <div className="col-sm-">
-                     <input
-                      type="file"
-                      className="form-control"
-                      onChange={(e) => handleCondoFileChange(e, index)}
-                      style={{ paddingTop: "0px", paddingBottom: "0px" }}
-                   
-                    />
-                    
-    </div>
-  </div>
-  {condoPreviewImages[index] && (
-        <img
-          src={condoPreviewImages[index]}
-          alt={`Condo ${condo.unitNumber} Preview`}
-        />
-    
-  )}
+ </div>
+
   <div className="input-group mt-3"></div>
                     {/* "Submit Condo" button for each condo */}
                     <button
@@ -485,6 +579,7 @@ onChange={(e) => handleCondoInputChange(e, index)}
             ))}
           </div>
           <div className="button-container">
+          {!isAddingCondo && (
           <button
               className="add-condo-button"
               onClick={handleAddCondo}
@@ -492,7 +587,7 @@ onChange={(e) => handleCondoInputChange(e, index)}
             >
               Add Condo
             </button>
-         
+           )}
             <button className="add-property-button" type="submit">
                           
               Submit Property
