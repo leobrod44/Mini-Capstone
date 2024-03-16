@@ -27,7 +27,7 @@ import { cleanData } from "./DataCleaner";
 //Sprint 3
 
 //Provide: condo id, request type, notes of request
-//Returns: request id (for confirmation)
+//Returns: nothing
 export async function submitRequest(condoID, type, notes) {
     if (!TYPES.includes(type)) {
         console.error("Invalid request type");
@@ -45,13 +45,7 @@ export async function submitRequest(condoID, type, notes) {
         const requestID = docRef.id;
 
         await updateDoc(docRef, { requestID: requestID });
-        try{
-            await assignWorker(requestID);
-            return requestID;
-        }
-        catch(e){
-            console.error("Error assigning worker: ", e);
-        }
+        return requestID;
         
     } catch(e) {
         console.error("Error submitting request: ", e);
@@ -79,7 +73,7 @@ export async function getRequests(condoID){
 }
 
 //Provide: condo id and request id (all request updates will be done backend)
-//Returns: the current step in which the request is in. Completed means last step is passed
+//Returns: nothing
 export async function updateRequest(condoID, requestID) {
     try {
         const condoRef = doc(db, 'Condo', condoID);
@@ -91,6 +85,15 @@ export async function updateRequest(condoID, requestID) {
         }
         const requestData = requestDoc.data();
         requestData.step += 1;
+        //step 1 is the first step, so we assign a worker here
+        if(requestData.step == 1){
+            try{
+                await assignWorker(requestData)
+            }
+            catch(e){
+                console.error("Error assigning worker: ", e);
+            }
+        }
         var stepType
         if(requestData.type === "Administrative"){
             stepType = ADMINISTRATIVE_STEPS;
@@ -104,12 +107,11 @@ export async function updateRequest(condoID, requestID) {
         else{
             console.error("Invalid request type");
         }
+        await updateDoc(requestRef, requestData);
         if(requestData.step >= stepType.length){
-            await updateDoc(requestRef, requestData);
             return "Completed"
         }
         else{
-            await updateDoc(requestRef, requestData);
             return stepType[requestData.step];
         }
     } catch (e) {
@@ -119,7 +121,7 @@ export async function updateRequest(condoID, requestID) {
 
 
 //BACKEND ONLY
-export async function assignWorker(requestID) {
+export async function assignWorker(requestData) {
 
 }
 
@@ -131,13 +133,17 @@ export async function getAssignedWorker(requestID) {
 //SPRINT 4
 
 //Provide: userID
-//Returns: array of new notifications
+//Returns: array of new notifications containing message to display and path
 export async function getNotifications(userID){
 
+    
+    //request update, event reminder
+    //provide message to display and path for when clicked
 }
 
 //Provide: userID, requestID
 //Returns: nothing
 export async function setNotificationViewed(userID, notification){
 
+    //called when clicked on notificaton
 }
