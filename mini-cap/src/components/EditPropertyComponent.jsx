@@ -19,7 +19,9 @@ const EditPropertyComponent = ( {toggleEdit} ) => {
     address: "",
     unitCount: "",
     parkingCount: "",
+    parkingPrice: "",
     lockerCount: "",
+    lockerPrice: "",
   });
 
 const backgroundColor = '#f0f4f8';
@@ -233,6 +235,19 @@ useEffect(() => {
             />
           </div>
           <div className="input-group">
+            <label className="input-label" htmlFor="parkingPrice">
+              Parking Price:
+            </label>
+            <input
+              type="number" min="0"  
+              id="parkingPrice"
+              name="parkingPrice"
+              value={property.parkingPrice}
+              onChange={(e) => handleInputChange(e)}
+              
+            />
+          </div>
+          <div className="input-group">
             <label className="input-label" htmlFor="lockerCount">
               Locker Count:
             </label>
@@ -242,12 +257,24 @@ useEffect(() => {
               name="lockerCount"
               value={property.lockerCount}
               onChange={(e) => handleInputChange(e)}
+            />
+          </div>
+
+          <div className="input-group">
+            <label className="input-label" htmlFor="lockerPrice">
+              Locker Price:
+            </label>
+            <input
+              type="number" min="0"  
+              id="lockerPrice"
+              name="lockerPrice"
+              value={property.lockerPrice}
+              onChange={(e) => handleInputChange(e)}
               
             />
           </div>
 
           <div className="button-container">
-
             <button  className="cancel-button" type="button" onClick={() => toggleEdit()}>
               Cancel
             </button>
