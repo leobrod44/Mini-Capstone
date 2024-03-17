@@ -128,6 +128,11 @@ export default function CondoDetails(){
 											{isRentPaid ? <FaCheck className="CONDOgreen-check" /> : <FaTimes className="CONDOred-cross" />}
 										</>
 									)}
+									{role == MANAGEMENT_COMPANY && status !== "Vacant" && (
+										<>
+											{isRentPaid ? <FaCheck className="CONDOgreen-check" /> : <FaTimes className="CONDOred-cross" />}
+										</>
+									)}
 								</div>
 								<div className='pic-and-tag'>
 								{status === "Vacant" && role === MANAGEMENT_COMPANY && (
@@ -264,13 +269,9 @@ export default function CondoDetails(){
 							)}
 							</div>
 							<div className="other-info">
-								{role !== MANAGEMENT_COMPANY && (
-									<>
-										{showFinancialDetails && (
-											<FinancialDetails/>
-										)}  
-									</>
-									)}
+								{showFinancialDetails && (
+									<FinancialDetails/>
+								)}
 							</div>
 						</div>
 					</div>

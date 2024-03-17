@@ -353,6 +353,18 @@ const sampleAmenity = {
   "unitNumber": 1,
 }
 
+const sampleFinacialDetails = {
+  "BasePrice" : 100,
+  "ParkingPrice" : 10,
+  "LockerPrice" : 10,
+  "AdditionalFees" : 0,
+  "TotalPrice" : 120
+}
+
+const sampleIsPaid = {
+  "RentPaid" : true
+}
+
 
 //Provide: property id
 //Returns: amenity array associated with a property
@@ -416,14 +428,14 @@ export async function deleteProperty(propertyID) {
 
 //Provide: condoID
 //Returns: fees associated to the condo
-export async function getFinanceDetails(condoID) {
-
+export async function getFinanceDetails() {
+  return sampleFinacialDetails
 }
 
 //Provide: condoID
 //Returns: Boolean
-export async function isRentPaid(condoID) {
-
+export async function checkRentPaid() {
+  return sampleIsPaid
 }
 
 //returns the occupant email or empty string for the condo
