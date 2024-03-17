@@ -1,3 +1,7 @@
+/**
+ * React component for adding and submitting property details including condos.
+ * @module PropertyForm
+ */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -8,8 +12,13 @@ import Footer from "../components/Footer";
 import DeleteModal from "../components/DeleteModal"; 
 import AddressComponent from "../components/AddressComponent"; 
 import { addProperty } from "../backend/PropertyHandler";
-
+/**
+ * Functional component representing a form for adding property details.
+ * @returns {JSX.Element} JSX component
+ */
 const PropertyForm = () => {
+    // State hooks for managing property data and UI states
+
   const [property, setProperty] = useState({
     picture: null,
     propertyName: "",
@@ -32,30 +41,55 @@ const PropertyForm = () => {
   const [selectedCondoIndex, setSelectedCondoIndex] = useState(null); // Track which condo is being deleted
   const navigate = useNavigate();
 
-  
+    /**
+   * Handles showing the delete confirmation modal for a specific condo.
+   * @param {number} index - The index of the condo in the property's list.
+   */
   const handleShowDeleteModal = (index) => {
     const updatedVisibility = [...condoDeleteModalVisible];
   updatedVisibility[index] = true;
   setCondoDeleteModalVisible(updatedVisibility);
 };
-// Function to handle closing delete modal for a specific condo
-const handleCloseDeleteModal = (index) => {
+/**
+   * Handles closing the delete confirmation modal for a specific condo.
+   * @param {number} index - The index of the condo in the property's list.
+   */
+  const handleCloseDeleteModal = (index) => {
   const updatedVisibility = [...condoDeleteModalVisible];
   updatedVisibility[index] = false;
   setCondoDeleteModalVisible(updatedVisibility);
 };
+ /**
+   * Handles deleting a condo from the property.
+   * Removes the selected condo from the list of condos and updates the UI.
+   */
+
   const handleDeleteCondo = () => {
-    const updatedCondos = [...property.condos];
-    updatedCondos.splice(selectedCondoIndex, 1);
+      // Create a copy of the current list of condos
+      const updatedCondos = [...property.condos];
+     // Remove the selected condo from the list based on its index
+     updatedCondos.splice(selectedCondoIndex, 1);
+     // Update the property state with the modified list of condos
     setProperty({
       ...property,
       condos: updatedCondos,
     });
+      // Create a copy of the current list of condo preview images
+
     const updatedCondoPreviewImages = [...condoPreviewImages];
+      // Remove the preview image of the deleted condo based on its index
+
     updatedCondoPreviewImages.splice(selectedCondoIndex, 1);
+      // Update the condo preview images state with the modified list
+
     setCondoPreviewImages(updatedCondoPreviewImages);
     setShowDeleteModal(false);
   };
+/**
+   * Handles file input change for the property image.
+   * Reads the selected file and sets the preview image.
+   * @param {Event} e - The file change event triggered when a file is selected.
+   */  
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
@@ -65,32 +99,41 @@ const handleCloseDeleteModal = (index) => {
         picture: null,
       });
     }
-
+    //validation for file type, if not supported toasts an error
     if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
       toast.error("File type not supported");
       return;
     }
-
+    //validation for file size, if not supported toasts an error
     if (file.size > 2097152) {
       toast.error("File must be less than 2 MB");
       return;
     }
-
+   // if all checks pass, set the property picture state with the selected file
     setProperty({
       ...property,
       picture: file,
     });
-
+         // Create a new instance of FileReader to read the file
     const reader = new FileReader();
+      // Define an onloadend event handler for the FileReader
     reader.onloadend = () => {
+           // When the file reading is complete, set the preview property image state
+           // with the data URL representing the file content
       setPreviewPropertyImage(reader.result);
     };
-
+       // Read the selected file as a data URL
     reader.readAsDataURL(file);
   };
 
 
-
+    /**
+ * Handles input change for a specific condo within the property.
+ * Updates the corresponding condo object in the property's list of condos with the new input value.
+ * Performs value parsing and validation for number input fields, specifically for "Unit Price".
+ * @param {Event} e - The input change event triggered when a value is entered.
+ * @param {number} index - The index of the condo in the property's list of condos.
+ */
   const handleCondoInputChange = (e, index) => {
     const { name, value } = e.target;
 
@@ -103,10 +146,12 @@ const handleCloseDeleteModal = (index) => {
     return;
   }
     const updatedCondos = [...property.condos];
+    // Update the selected condo object with the new input value
     updatedCondos[index] = {
       ...updatedCondos[index],
-      [name]: value,
+      [name]: value, // Update the specific property (identified by name) of the condo
     };
+      // Update the property state with the modified list of condos
     setProperty({
       ...property,
       condos: updatedCondos,
@@ -114,31 +159,36 @@ const handleCloseDeleteModal = (index) => {
   };
 
   
-
+   /**
+ * Handles input change for a specific condo within the property.
+ * Updates the corresponding condo object in the property's list of condos with the new input value.
+ * @param {Event} e - The input change event triggered when a value is entered.
+ * @param {number} index - The index of the condo in the property's list of condos.
+ */
   const handleCondoFileChange = (e, index) => {
     const file = e.target.files[0];
-
+     
     if (!file) {
       toast.error("File not supported");
       return;
     }
-
+     //validation for the type of document uploaded
     if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
       toast.error("File type not supported");
       return;
-    }
-
+    } 
+    //validation for the size of the file
     if (file.size > 2097152) {
       toast.error("File must be less than 2 MB");
       return;
     }
-
+       // if all validations pass, the condo picture field is set with the uploaded file
     const updatedCondos = [...property.condos];
     updatedCondos[index] = {
       ...updatedCondos[index],
       picture: file,
     };
-
+      
     setProperty({
       ...property,
       condos: updatedCondos,
@@ -159,7 +209,12 @@ const handleCloseDeleteModal = (index) => {
 
 
 
-
+/**
+ * Handles input change for general input fields.
+ * Parses input values and performs minimum value validation for number input fields.
+ * Updates the corresponding property state with the new input value.
+ * @param {Event} e - The input change event triggered when a value is entered.
+ */
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
   
@@ -177,7 +232,14 @@ const handleCloseDeleteModal = (index) => {
       [name]: parsedValue,
     });
   };
-  
+  /**
+ * Handles the form submission.
+ * Prevents the default form submission behavior and performs validation on required information.
+ * If all required fields are filled, saves the property by calling the addProperty function.
+ * Navigates to "/MGMTDashboard" upon successful property addition.
+ * Logs the submitted property information.
+ * @param {Event} e - The form submission event.
+ */
   const handleSubmit = async (e) => {
     e.preventDefault();
   //validation that all required information is filled in
@@ -205,7 +267,12 @@ const handleCloseDeleteModal = (index) => {
     
     console.log("Submitted:", property);
   };
-
+/**
+ * Handles the addition of a new condo to the property.
+ * Checks if all required fields in the property form are filled.
+ * If all required fields are filled and not already adding a condo, adds a new condo to the property.
+ * @returns {void}
+ */
   const handleAddCondo = () => {
     // Check if all required fields in the condo  form are filled
     if (
@@ -222,17 +289,27 @@ const handleCloseDeleteModal = (index) => {
       return;
     }
     if (isAddingCondo) return;  //If already adding a condo, do nothing
-    setIsAddingCondo(true);
-    // If all required fields are filled, add a new condo
-    setProperty({
+    setIsAddingCondo(true);    // Set isAddingCondo to true to indicate that a condo is being added
+
+  // Add a new empty condo object to the property's list of condos
+  setProperty({
       ...property,
       condos: [...property.condos, {}],
     });
   };
+  /**
+ * Handles the submission of a specific condo within the property.
+ * @param {number} index - The index of the condo in the property's list of condos.
+ * @returns {void}
+ */
+
   const handleCondoSubmit = (index) => {
+      // Retrieve the condo object to be submitted
+
     const submittedCondo = property.condos[index];
 
- 
+      // Check if the submitted condo has at least one field filled
+
   if (
     Object.values(submittedCondo).every((value) => //validation that condo form is not submitted empty
       value === null || value === undefined || value === ""
