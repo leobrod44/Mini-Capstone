@@ -205,6 +205,33 @@ export async function addCondo(data, propertyID, propertyName) {
       status: "Vacant"
     });
 
+    const propertyRef = doc(db, "Property", propertyID);
+    // Fetch the snapshot of the property document
+    const amenitiesRef = collection(propertyRef, "Amenities");
+    const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+    let parkingAssigned = false;
+    let lockerAssigned = false;
+    //assign condo to free amenities in property
+    for (const doc of amenitiesSnapshot.docs) {
+      if(!parkingAssigned && doc.data().available == true && doc.data().type == "Parking"){
+        await updateDoc(doc.ref, {
+          condo: docID,
+          available: false
+          //NUMBER??
+        })
+        parkingAssigned = true;
+      }else if(!lockerAssigned && doc.data().available == true && doc.data().type == "Locker"){
+        await updateDoc(doc.ref, {
+          condo: docID,
+          available: false
+          //NUMBER??
+        })
+        lockerAssigned = true;
+      }else if(lockerAssigned && parkingAssigned)
+        break;
+    }
+
     // If picture data is provided, add the picture to storage
     if (pictureData) {
       try {
@@ -269,6 +296,30 @@ export async function addProperty(data) {
         throw new Error("Error adding condo: " + error);
       }
     }
+
+    //add all parking spots in new property
+    const amenitiesRef = collection(docRef, "Amenities");
+    for(let i = 0; i<data.parkingCount; i++){
+      await addDoc(amenitiesRef, {
+        available: true,
+        condo: "",
+        number: "",
+        price: data.parkingCost,
+        type: "Parking"
+      });
+    }
+
+    //add all lockers in new property
+    for(let i = 0; i<data.lockerCount; i++){
+      await addDoc(amenitiesRef, {
+        available: true,
+        condo: "",
+        number: "",
+        price: data.lockerCost,
+        type: "Locker"
+      });
+    }
+
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
     throw new Error("Error adding document: " + error);
@@ -645,7 +696,7 @@ export async function getCondoOccupant(condoId) {
 export async function calculateCondoFees(condoId) {
   try {
     // Retrieve the document reference for the specified condo ID from the "Condo" collection
-    const docRef = doc(db, "Condo", condoID);
+    const docRef = doc(db, "Condo", condoId);
     // Fetch the snapshot of the condo document
     const docSnap = await getDoc(docRef);
 
@@ -666,7 +717,7 @@ export async function calculateCondoFees(condoId) {
         const amenitiesSnapshot = await getDocs(amenitiesCollection);
 
         //Get all amenities for the condo and add their price
-        const updates = amenitiesSnapshot.docs.map(async doc => {
+        amenitiesSnapshot.docs.map(async doc => {
           let tempData = doc.data();
           if(tempData.condo == condoId)
             totalPrice += tempData.price;
@@ -692,30 +743,3 @@ export async function calculateCondoFees(condoId) {
     throw error;
   }
 }
-
-
-//TEMP FUNCTION FOR FIREBASE REFACTORING
-// export async function refactorAmenities() {
-//   try {
-//
-//     const propertyCollection = collection(db, "Property");
-//     // Fetch snapshots of properties from the collection
-//     const propertySnapshot = await getDocs(propertyCollection);
-//     const updates = propertySnapshot.docs.map(async doc => {
-//
-//       const amenitiescoll = collection(doc.ref, "Amenities");
-//       const amenitiesSnapshot = await getDocs(amenitiescoll);
-//
-//       const updates = amenitiesSnapshot.docs.map(async doc => {
-//         await updateDoc(doc.ref, {
-//           number: ""
-//         });
-//       });
-//
-//     });
-//
-//     //await Promise.all(updates);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
