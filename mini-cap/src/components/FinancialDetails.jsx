@@ -80,28 +80,28 @@ const FinancialDetails = () => {
         <div className="Financial-info">
             <div className="other-info1">
                 <div className="other-info2"><h5>Base Price:</h5></div>
-                <div className="other-info2">{BasePrice} $</div>
+                <div className="textDetail">{BasePrice} $</div>
             </div>
             <div className="other-info1">
                 <div className="other-info2"><h5>Parking Price:</h5></div>
-                <div className="other-info2">{ParkingPrice} $</div>
+                <div className="textDetail">{ParkingPrice} $</div>
             </div>
             <div className="other-info1">
                 <div className="other-info2"><h5>Locker Price:</h5></div>
-                <div className="other-info2">{LockerPrice} $</div>
+                <div className="textDetail">{LockerPrice} $</div>
             </div>
             <div className="other-info1">
                 <div className="other-info2"><h5>Additional Fees:</h5></div>
-                <div className="other-info2">{AdditionalPrice} $</div>
+                <div className="textDetail">{AdditionalPrice} $</div>
             </div>
             <div className="other-info1">
                 <div className="other-info2"><h5>Total Unit Price:</h5></div>
-                <div className="other-info2">{TotalPrice} $</div>
+                <div className="textDetail">{TotalPrice} $</div>
             </div>
             <br></br>
             <div className="other-info1">
                 <span className="FinanceText">Rent Paid: </span>
-                <span>{getRentPaymentStatus()}</span>
+                <span className="textDetail">{getRentPaymentStatus()}</span>
                 {role !== MANAGEMENT_COMPANY && (
                     <>
                         {isRentPaid ? <FaCheck className="green-check" /> : <FaTimes className="red-cross" />}
