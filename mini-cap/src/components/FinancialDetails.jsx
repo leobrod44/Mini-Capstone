@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import "../styling/FinancialDetails.css";
 import { FaCheck, FaTimes } from 'react-icons/fa'; // Import icons from react-icons library
-import {useParams} from "react-router-dom";
-import {MANAGEMENT_COMPANY} from "../backend/Constants";
+import { useParams } from "react-router-dom";
+import { MANAGEMENT_COMPANY } from "../backend/Constants";
 
 const FinancialDetails = () => {
     let { condoId } = useParams();
@@ -17,29 +17,28 @@ const FinancialDetails = () => {
         TotalPrice: 0
     });
 
-	useEffect(() => {
-		const fetchCondo = async () => {
-			try {
-				setTheRole(store("role"));
-				const condo = await getCondo(condoId);
-				setCondoDetails(condo);
-			} catch (err) {
-				console.error(err);
-			}
-		};
-		fetchCondo();
+    useEffect(() => {
+        const fetchCondo = async () => {
+            try {
+                setTheRole(store("role"));
+                const condo = await getCondo(condoId);
+                setCondoDetails(condo);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchCondo();
 
-	}, []);
+    }, []);
 
     const {
-		status
-	} = condoDetails;
+        status
+    } = condoDetails;
 
     const toggleRentPaid = () => {
         setIsRentPaid(!isRentPaid);
     };
 
-    {/* TO DO */}
     useEffect(() => {
         const fetchingFinanceDetails = async () => {
             try {
@@ -52,7 +51,6 @@ const FinancialDetails = () => {
         fetchingFinanceDetails();
     }, []);
 
-    {/* TO DO */}
     const setRentPaidStatus = async () => {
         try {
             const rentPaid = await checkRentPaid();
@@ -73,6 +71,10 @@ const FinancialDetails = () => {
         AdditionalPrice,
         TotalPrice
     } = fDetails;
+
+    const getRentPaymentStatus = () => {
+        return isRentPaid ? "Paid" : "Unpaid";
+    };
 
     return (
         <div className="Financial-info">
@@ -99,17 +101,17 @@ const FinancialDetails = () => {
             <br></br>
             <div className="other-info1">
                 <span className="FinanceText">Rent Paid: </span>
-                <span>{isRentPaid.toString()} </span>
+                <span>{getRentPaymentStatus()}</span>
                 {role !== MANAGEMENT_COMPANY && (
-					<>
-						{isRentPaid ? <FaCheck className="green-check" /> : <FaTimes className="red-cross" />}
-					</>
-				)}
-				{role == MANAGEMENT_COMPANY && status !== "Vacant" && (
-					<>
-						{isRentPaid ? <FaCheck className="green-check" /> : <FaTimes className="red-cross" />}
-					</>
-				)}
+                    <>
+                        {isRentPaid ? <FaCheck className="green-check" /> : <FaTimes className="red-cross" />}
+                    </>
+                )}
+                {role == MANAGEMENT_COMPANY && status !== "Vacant" && (
+                    <>
+                        {isRentPaid ? <FaCheck className="green-check" /> : <FaTimes className="red-cross" />}
+                    </>
+                )}
             </div>
             <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
         </div>
