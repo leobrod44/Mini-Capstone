@@ -3,7 +3,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import AddCondoBtn from "../components/AddCondoBtn";
-import BackArrowBtn from "../components/BackArrowBtn"; // Import BackArrowBtn component
+import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn component
+import EditPropertyComponent from "../components/EditPropertyComponent";
 import "../index.css";
 import "../styling/PropertyDetailsPage.css";
 import CondoMgmtComponent from "../components/CondoMGMTComponent";
@@ -20,6 +21,7 @@ const PropertyDetailsPage = () => {
   const [condoDetails, setCondoDetails] = useState([]);
   const [hasCondos, setHasCondos] = useState(false);
   let [condoPicURL, setCondoPicURL] = useState(null);
+  const [showEdit, setShowEdit] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -48,6 +50,9 @@ const PropertyDetailsPage = () => {
     fetchCondos();
   }, []);
 
+  const toggleEdit = () => {
+    setShowEdit(!showEdit);
+  };
 
   const condosPerPage = 4;
   const indexOfLastCondo = currentPage * condosPerPage;
@@ -67,54 +72,69 @@ const PropertyDetailsPage = () => {
           <h3 className="DB_title"> {propertyName}</h3>
         </div>
 
-        <div >
-          <Link
-            className="details-button-condo-files"
-            to={`/condo-files/${propertyID}/${propertyName}`}
-          >
-            Add Property Files
-          </Link>
-          {hasCondos ? (
-            <div className="condo_list">
-
-              {condosToDisplayPaginated.map((condo, index) => (
-                <CondoMgmtComponent key={index} {...condo} condoId={condo.id} />
-              ))}
-
+        <div className="buttons_container">
+          {showEdit ? (
+            <div>
+              <button className="details-button" onClick={toggleEdit}>
+                Edit Property
+              </button>
             </div>
           ) : (
-            <div className="content_container">
-              <div className="white_card">
-                <p className="card_title">You have not added any condos yet.</p>
-                {/*<p className="button"> Add a condo</p>*/}
-                <Link
-                  className="buttonDetails"
-                  to={`/add-condo/${propertyID}/${propertyName}`}
-                >
-                  Add a condo
-                </Link>
-              </div>
+            <div className="edit_container">
+              <EditPropertyComponent toggleEdit={toggleEdit} />
             </div>
-
           )}
-          <div className="pagination-container">
-            <Pagination
-              itemsPerPage={condosPerPage}
-              totalItems={condoDetails.length}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
-          </div>
         </div>
+
+        {showEdit && (
+          <div>
+            <Link
+              className="details-button-condo-files"
+              to={`/condo-files/${propertyID}/${propertyName}`}
+            >
+              Add Property Files
+            </Link>
+            {hasCondos ? (
+              <div className="condo_list">
+
+                {condosToDisplayPaginated.map((condo, index) => (
+                  <CondoMgmtComponent key={index} {...condo} condoId={condo.id} />
+                ))}
+
+              </div>
+            ) : (
+              <div className="content_container">
+                <div className="white_card">
+                  <p className="card_title">You have not added any condos yet.</p>
+                  {/*<p className="button"> Add a condo</p>*/}
+                  <Link
+                    className="buttonDetails"
+                    to={`/add-condo/${propertyID}/${propertyName}`}
+                  >
+                    Add a condo
+                  </Link>
+                </div>
+              </div>
+            )}
+            <div className="pagination-container">
+              <Pagination
+                itemsPerPage={condosPerPage}
+                totalItems={condoDetails.length}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
+            </div>
+          </div>
+        )}
         {hasCondos && (
           <AddCondoBtn
             data-testid="add-condo-btn"
             onClick={() => navigate(`/add-condo/${propertyID}/${propertyName}`)}
           />
         )}
-      </div>
+      </div >
       <Footer />
-    </div>
+    </div >
   );
 };
 
