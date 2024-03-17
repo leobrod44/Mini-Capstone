@@ -1,3 +1,6 @@
+body{
+  background-color: #f0f4f8;
+}
 h2,
 h3 {
   font-family: Roboto, Arial, Helvetica, sans-serif;
@@ -59,7 +62,7 @@ h3 {
 }
 
 
-input
+input,
 select
  {
   font-family: "Roboto", sans-serif;
@@ -70,14 +73,9 @@ select
   font-size: 16px;
   
 }
-.custom-select {
-  width: 10%;
- height: auto; 
-  display: flex;
-}
 
 .add-condo-button,
-.add-property-button {
+.edit-property-button {
   background-color: #382fb8;
   color: #ffffff;
   padding: 10px;
@@ -98,12 +96,28 @@ select
     cursor: pointer;
     width: 100%;
 }
+.cancel-button{
+  background-color: grey;
+  color: #ffffff;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 50%;
+  margin-right: 10px;
+}
+.cancel-button:hover{
+  background-color: darkgray;
+}
 
 .add-condo-button:hover,
 .add-property-button:hover {
   background-color: #2f2c9b;
 }
-.delete-condo-button{
+
+
+.delete-property-button{
   background-color: red;
   color: #ffffff;
     padding: 10px;
@@ -112,8 +126,12 @@ select
     font-size: 16px;
     cursor: pointer;
     width: 100%;
+    margin-right: 10px;
+    margin-top: 10px;
 }
-
+.delete-property-button:hover{
+  background-color: #842029;
+}
 
 .condo-form {
     background-color: #ffffff; /* Match the background color of the form */
@@ -193,13 +211,15 @@ select
   }
   .custom-select {
     width: 10%;
-   height: auto; 
+    height: auto; 
     display: flex;
   }
   .button-container {
     display: flex;
     justify-content: space-between; 
-    
-  
+    width: 103%;
   }
+  .center-page.modal-open {
+  overflow: hidden; /* Hide the page content when the modal is open */
+}
   
