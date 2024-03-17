@@ -641,3 +641,81 @@ export async function getCondoOccupant(condoId) {
     throw error;
   }
 }
+
+export async function calculateCondoFees(condoId) {
+  try {
+    // Retrieve the document reference for the specified condo ID from the "Condo" collection
+    const docRef = doc(db, "Condo", condoID);
+    // Fetch the snapshot of the condo document
+    const docSnap = await getDoc(docRef);
+
+    // Extract condo data from the snapshot
+    const condoData = docSnap.data();
+
+    let totalPrice = 0;
+    // Check if the condo document exists
+    if (docSnap.exists) {
+      // Retrieve the document reference for the property associated with the condo
+      const propertyDocRef = doc(db, "Property", condoData.property);
+      // Fetch the snapshot of the property document
+      const propertyDoc = await getDoc(propertyDocRef);
+
+      // Check if the property document exists
+      if (propertyDoc.exists) {
+        const amenitiesCollection = collection(doc.ref, "Amenities");
+        const amenitiesSnapshot = await getDocs(amenitiesCollection);
+
+        //Get all amenities for the condo and add their price
+        const updates = amenitiesSnapshot.docs.map(async doc => {
+          let tempData = doc.data();
+          if(tempData.condo == condoId)
+            totalPrice += tempData.price;
+        });
+      } else {
+        // If the property document does not exist, return null
+        return null;
+      }
+
+      totalPrice += condoData.unitPrice;
+
+      // Return the condo data with additional property information
+      return totalPrice;
+    } else {
+      // If the condo document does not exist, log a message and return null
+      console.log("No such document!");
+      return null;
+    }
+  } catch (error) {
+    // If an error occurs during the process, log the error
+    console.error(error);
+    // Rethrow the error to propagate it up the call stack
+    throw error;
+  }
+}
+
+
+//TEMP FUNCTION FOR FIREBASE REFACTORING
+// export async function refactorAmenities() {
+//   try {
+//
+//     const propertyCollection = collection(db, "Property");
+//     // Fetch snapshots of properties from the collection
+//     const propertySnapshot = await getDocs(propertyCollection);
+//     const updates = propertySnapshot.docs.map(async doc => {
+//
+//       const amenitiescoll = collection(doc.ref, "Amenities");
+//       const amenitiesSnapshot = await getDocs(amenitiescoll);
+//
+//       const updates = amenitiesSnapshot.docs.map(async doc => {
+//         await updateDoc(doc.ref, {
+//           number: ""
+//         });
+//       });
+//
+//     });
+//
+//     //await Promise.all(updates);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
