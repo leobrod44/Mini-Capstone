@@ -37,7 +37,7 @@ function App() {
           path="/add-condo/:propertyID/:propertyName"
           element={<AddCondoForm />}
         />
-        <Route path="/condo-details" element={<CondoDetails />} />
+        <Route path="/condo-details/:condoId" element={<CondoDetails />}  />
         <Route
           path="/condo-files/:propertyID/:propertyName"
           element={<CondoFilesPage />}
