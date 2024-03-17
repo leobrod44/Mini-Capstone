@@ -315,7 +315,9 @@ export async function getProperties(companyID) {
       })
     );
 
+
     // Sort the properties array by propertyName and return it
+
     return sortArray(properties, "propertyName");
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
@@ -412,11 +414,13 @@ export async function getUserCondos(email) {
       })
     );
 
+
     // Sort the condos array by unitNumber and return it
     return sortArray(condos, "unitNumber");
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
     throw new Error("Error getting condos: " + error);
+
   }
 }
 
@@ -446,12 +450,14 @@ export async function getCondos(propertyID) {
         condos.push(doc.data());
       }
     });
+
     
     // Sort the condos array by unit number
     return sortArray(condos, "unitNumber");
   } catch (error) {
     // If an error occurs, throw an error with a descriptive message
     throw new Error("Error getting condos: " + error);
+
   }
 }
 
@@ -473,16 +479,20 @@ export async function getCondo(condoID) {
     // Extract condo data from the snapshot
     const condoData = docSnap.data();
 
+
     // Check if the condo document exists
     if (docSnap.exists) {
       // Retrieve the document reference for the property associated with the condo
+
       const propertyDocRef = doc(db, "Property", condoData.property);
       // Fetch the snapshot of the property document
       const propertyDoc = await getDoc(propertyDocRef);
 
+
       // Check if the property document exists
       if (propertyDoc.exists) {
         // Update condo data with additional property information
+
         condoData.address = propertyDoc.data().address;
         condoData.propertyName = propertyDoc.data().propertyName;
         condoData.propertyID = propertyDoc.id;
