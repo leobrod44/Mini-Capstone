@@ -26,14 +26,23 @@ import { cleanData } from "./DataCleaner";
 
 //Sprint 3
 
-//Provide: condo id, request type, notes of request
-//Returns: request id (for confirmation)
+
+/**
+ * Submits a request associated with the specified condo ID, request type, and notes.
+ * 
+ * @param {string} condoID - The ID of the condo related to the request.
+ * @param {string} type - The type of the request.
+ * @param {string} notes - The notes/details of the request.
+ * @returns {Promise<string|null>} A Promise that resolves with the ID of the submitted request if successful, or null if an error occurs.
+ */
 export async function submitRequest(condoID, type, notes) {
+    // Check if the request type is valid
     if (!TYPES.includes(type)) {
         console.error("Invalid request type");
-        return;
+        return null;
     }
     try {
+        // Add a new request document to the condo's requests collection
         const docRef = await addDoc(collection(doc(db, 'Condo', condoID), 'Requests'), {
             type: type,
             notes: notes,
@@ -42,84 +51,135 @@ export async function submitRequest(condoID, type, notes) {
             condoID: condoID,
             requestID: null 
         });
+        // Get the ID of the newly added request document
         const requestID = docRef.id;
 
+        // Update the request document with its own ID
         await updateDoc(docRef, { requestID: requestID });
-        try{
-            await assignWorker(requestID);
-            return requestID;
-        }
-        catch(e){
-            console.error("Error assigning worker: ", e);
-        }
+
+
+        // Return the ID of the submitted request
+        return requestID;
         
     } catch(e) {
+        // Log any errors that occur during the process
         console.error("Error submitting request: ", e);
+        // Return null if an error occurs
+        return null;
     }
 }
 
-//Provide: condo id
-//Returns: array of requests associated with the condo
+
+/**
+ * Retrieves an array of requests associated with the specified condo ID.
+ * 
+ * @param {string} condoID - The ID of the condo for which requests are being retrieved.
+ * @returns {Promise<Array<object>|null>} A Promise that resolves with an array of request objects associated with the condo, or null if an error occurs.
+ */
 export async function getRequests(condoID){
     try {
+        // Get reference to the condo document
         const condoRef = doc(db, 'Condo', condoID);
+        // Get reference to the requests collection under the condo document
         const requestCollection = collection(condoRef, 'Requests');
+        // Get snapshot of requests documents
         const requestSnapshot = await getDocs(requestCollection);
+        // Initialize an array to store requests
         var requests = [];
 
+        // Iterate through each request document
         await Promise.all(
             requestSnapshot.docs.map(async (doc) => {
+                // Get data of the request
                 var data = doc.data();
+                // Push the request data to the array
                 requests.push(data);
             }));
+        
+        // Return the array of requests
         return requests;
     } catch(e) {
+        // Log any errors that occur during the process
         console.error("Error getting requests: ", e);
+        // Return null if an error occurs
+        return null;
     }
 }
 
-//Provide: condo id and request id (all request updates will be done backend)
-//Returns: the current step in which the request is in. Completed means last step is passed
+=
+
+/**
+ * Updates the request associated with the specified condo ID and request ID.
+ * 
+ * @param {string} condoID - The ID of the condo related to the request.
+ * @param {string} requestID - The ID of the request to be updated.
+ * @returns {Promise<string|null>} A Promise that resolves with the next step in the request process if successful, or "Completed" if the request process is finished, or null if an error occurs.
+ */
 export async function updateRequest(condoID, requestID) {
     try {
+        // Get references to the condo and request documents
         const condoRef = doc(db, 'Condo', condoID);
         const requestRef = doc(collection(condoRef, 'Requests'), requestID);
+        
+        // Get the request document
         const requestDoc = await getDoc(requestRef);
+        
+        // Check if the request exists
         if (!requestDoc.exists()) {
             console.error("Request does not exist");
-            return;
+            return null;
         }
+        
+        // Get the data of the request
         const requestData = requestDoc.data();
+        // Increment the step of the request
         requestData.step += 1;
-        var stepType
+
+        
+        // If it's the first step, assign a worker
+        if(requestData.step === 1){
+            try{
+                await assignWorker(requestData);
+            } catch(e){
+                console.error("Error assigning worker: ", e);
+            }
+        }
+        
+        // Determine the type of steps based on the request type
+        let stepType;
+
         if(requestData.type === "Administrative"){
             stepType = ADMINISTRATIVE_STEPS;
-        }
-        else if(requestData.type === "Financial"){
+        } else if(requestData.type === "Financial"){
             stepType = FINANCIAL_STEPS;
-        }
-        else if(requestData.type === "Maintenance"){
+        } else if(requestData.type === "Maintenance"){
             stepType = MAINTENANCE_STEPS;
-        }
-        else{
+        } else {
             console.error("Invalid request type");
         }
+
+        
+        // Update the request document
+        await updateDoc(requestRef, requestData);
+        
+        // Check if the request process is completed
         if(requestData.step >= stepType.length){
-            await updateDoc(requestRef, requestData);
-            return "Completed"
-        }
-        else{
-            await updateDoc(requestRef, requestData);
+            return "Completed";
+        } else {
+            // Return the next step in the request process
+
             return stepType[requestData.step];
         }
     } catch (e) {
         console.error("Error updating request: ", e);
+        return null;
     }
 }
 
 
+
 //BACKEND ONLY
-export async function assignWorker(requestID) {
+export async function assignWorker(requestData) {
 
 }
 
@@ -131,13 +191,17 @@ export async function getAssignedWorker(requestID) {
 //SPRINT 4
 
 //Provide: userID
-//Returns: array of new notifications
+//Returns: array of new notifications containing message to display and path
 export async function getNotifications(userID){
 
+    
+    //request update, event reminder
+    //provide message to display and path for when clicked
 }
 
 //Provide: userID, requestID
 //Returns: nothing
 export async function setNotificationViewed(userID, notification){
 
+    //called when clicked on notificaton
 }
