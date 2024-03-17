@@ -80,14 +80,7 @@ const PropertyDetailsPage = () => {
               {condosToDisplayPaginated.map((condo, index) => (
                 <CondoMgmtComponent key={index} {...condo} condoId={condo.id} />
               ))}
-              <div className="pagination-container">
-                <Pagination
-                  itemsPerPage={condosPerPage}
-                  totalItems={condoDetails.length}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                />
-              </div>
+
             </div>
           ) : (
             <div className="content_container">
@@ -102,7 +95,16 @@ const PropertyDetailsPage = () => {
                 </Link>
               </div>
             </div>
+
           )}
+          <div className="pagination-container">
+            <Pagination
+              itemsPerPage={condosPerPage}
+              totalItems={condoDetails.length}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          </div>
         </div>
         {hasCondos && (
           <AddCondoBtn
