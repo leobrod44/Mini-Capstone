@@ -211,7 +211,32 @@ export async function assignWorker(requestData) {
 }
 
 //BACKEND ONLY
-export async function getAssignedWorker(requestID) {
+export async function getAssignedWorker(condoID, requestID) {
+
+    try{
+        // Retrieve the document reference for the specified condo ID from the "Condo" collection
+        const condoRef = doc(db, "Condo", condoID);
+        // Fetch the snapshot of the condo document
+        const condoSnap = await getDoc(condoRef);
+        // Extract condo data from the snapshot
+        const condoData = condoSnap.data();
+
+        // Get document reference for the specified property ID
+        const workersCollRef = collection(db, "Property", condoData.property, "Workers");
+        const workersSnapshot = await getDocs(workersCollRef);
+
+        for (const worker of workersSnapshot.docs) {
+            for(const request in worker.data().assignedRequests){
+                if(request.requestID == requestID)
+                    return worker.data();
+            }
+        }
+        return null;
+    } catch (e) {
+        console.error("Error getting worker: ", e);
+        return null;
+    }
+
 
 }
 
