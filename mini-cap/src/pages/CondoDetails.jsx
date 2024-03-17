@@ -252,11 +252,12 @@ export default function CondoDetails(){
 									</>)}
 							</div>
 							<div style={{display: "flex" , alignItems: "center"}}>
-            					<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>				
-           						<div>
-                					<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}> 
-									{showFinancialDetails ? <MdExpandLess/> : <MdExpandMore />} </button>
-        						</div>								
+							<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>
+								<div>
+									<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}>
+										{showFinancialDetails ? <MdExpandLess/> : <MdExpandMore />}
+									</button>
+								</div>
 							</div>
 							<div className="other-info">
 								{showFinancialDetails && (
