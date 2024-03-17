@@ -125,10 +125,10 @@ export default function CondoDetails(){
 								<div>
 									{role !== MANAGEMENT_COMPANY && (
 										<>
-											{isRentPaid ? <FaCheck className="CONDOgreen-check" /> : <FaTimes className="CONDOred-cross" />}
+											{isRentPaid ? <FaCheck className="Ownergreen-check" /> : <FaTimes className="Ownerred-cross" />}
 										</>
 									)}
-									{role == MANAGEMENT_COMPANY && status !== "Vacant" && (
+									{role === MANAGEMENT_COMPANY && status !== "Vacant" && (
 										<>
 											{isRentPaid ? <FaCheck className="CONDOgreen-check" /> : <FaTimes className="CONDOred-cross" />}
 										</>
@@ -251,22 +251,12 @@ export default function CondoDetails(){
 										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
 									</>)}
 							</div>
-							<div>
-							{role !== MANAGEMENT_COMPANY && (
-								<>
-									<div style={{display: "flex" , alignItems: "center"}}>
-            						<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>
-										
-           						 		<div>
-                							<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}> 
-											{showFinancialDetails ? <MdExpandLess/> : <MdExpandMore />} </button>
-            							</div>
-										
-									</div>
-								
-								
-								</>
-							)}
+							<div style={{display: "flex" , alignItems: "center"}}>
+            					<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>				
+           						<div>
+                					<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}> 
+									{showFinancialDetails ? <MdExpandLess/> : <MdExpandMore />} </button>
+        						</div>								
 							</div>
 							<div className="other-info">
 								{showFinancialDetails && (
@@ -287,8 +277,11 @@ export default function CondoDetails(){
 				</div>
 			</div>
 			{role !== MANAGEMENT_COMPANY && (
-								
-			<button onClick={toggleRentPaid}>Toggle Rent Paid</button>)}
+				<button onClick={toggleRentPaid}>Toggle Rent Paid</button>)
+			}
+			{role === MANAGEMENT_COMPANY && status !=="Vacant" && (					
+				<button onClick={toggleRentPaid}>Toggle Rent Paid</button>)
+			}
 
 			<BackArrowBtn/>
 			<div style={{zIndex: 1, position: 'relative'}}><Footer/></div>
