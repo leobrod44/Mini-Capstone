@@ -1,12 +1,12 @@
 import { initializeApp } from "firebase/app";
 import {
     doc,
-  addDoc,
-  getDocs,
-  collection,
-  getFirestore,
-  getDoc,
-  updateDoc
+    addDoc,
+    getDocs,
+    collection,
+    getFirestore,
+    getDoc,
+    updateDoc, arrayUnion
 } from "firebase/firestore";
 import { firebaseConfig } from "./FirebaseConfig";
 const app = initializeApp(firebaseConfig);
@@ -21,8 +21,9 @@ const sampleRequest = {
     "viewed": false,
   }
   import { getCondo } from "./PropertyHandler";
-import { ADMINISTRATIVE_STEPS, FINANCIAL_STEPS, TYPES } from "./Constants";
+import {ADMINISTRATIVE_STEPS, FINANCIAL_STEPS, OPERATIONAL_STEPS, TYPES} from "./Constants";
 import { cleanData } from "./DataCleaner";
+import {getPropertyPicture} from "./ImageHandler";
 
 //Sprint 3
 
@@ -147,8 +148,8 @@ export async function updateRequest(condoID, requestID) {
             stepType = ADMINISTRATIVE_STEPS;
         } else if(requestData.type === "Financial"){
             stepType = FINANCIAL_STEPS;
-        } else if(requestData.type === "Maintenance"){
-            stepType = MAINTENANCE_STEPS;
+        } else if(requestData.type === "Operational"){
+            stepType = OPERATIONAL_STEPS;
         } else {
             console.error("Invalid request type");
         }
@@ -173,6 +174,39 @@ export async function updateRequest(condoID, requestID) {
 
 //BACKEND ONLY
 export async function assignWorker(requestData) {
+    try{
+        // Retrieve the document reference for the specified condo ID from the "Condo" collection
+        const condoRef = doc(db, "Condo", requestData.condoID);
+        // Fetch the snapshot of the condo document
+        const condoSnap = await getDoc(condoRef);
+        // Extract condo data from the snapshot
+        const condoData = condoSnap.data();
+
+        // Get document reference for the specified property ID
+        const propertyRef = doc(db, "Property", condoData.property);
+
+        const workersCollRef = collection(propertyRef, "Workers")
+        const workersSnapshot = await getDocs(workersCollRef);
+        workersSnapshot.docs.map(async (doc) => {
+            if(requestData.type == doc.data().type){
+                //add request to list of requests assigned to worker
+                await updateDoc(doc.ref, {
+                    assignedRequests: arrayUnion({requestID: requestData.requestID, condoID: requestData.condoID})
+                });
+
+                //if worker has no current request assign this one
+                if(doc.data().currentRequest == ""){
+                    await updateDoc(doc.ref, {
+                        currentRequest: arrayUnion({requestID: requestData.requestID, condoID: requestData.condoID})
+                    });
+                }
+            }
+        })
+
+    } catch (e) {
+        console.error("Error assigning worker: ", e);
+        return null;
+    }
 
 }
 
