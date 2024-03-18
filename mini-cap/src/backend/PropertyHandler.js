@@ -14,6 +14,7 @@ import store from "storejs";
 import emailjs from "@emailjs/browser";
 import { firebaseConfig } from "./FirebaseConfig";
 import { setPictureWithID, getPropertyPicture } from "./ImageHandler";
+import { query, where, deleteDoc } from "firebase/firestore";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const condoPictureRef = "condoPictures/";
@@ -615,18 +616,6 @@ export async function getAssignedParking(condoID) {
   return sampleAmenity;
 }
 
-//Provide: property id, updated property JSON
-//Returns: nothing
-export async function updateProperty(propertyID, data) {
-  console.log("Updating property: ", propertyID, data);
-}
-
-//Provide: property id
-//Returns: nothing
-export async function deleteProperty(propertyID) {
-  console.log("Deleting property: ", propertyID);
-}
-
 //Provide: condoID
 //Returns: fees associated to the condo
 export async function getFinanceDetails() {
@@ -746,5 +735,63 @@ export async function deleteCondo(condoId) {
   } catch (err) {
     console.error(`Error deleting condo: ${err}`);
     return false; // Return false for failure
+  }
+}
+
+/**
+ * Updates a property document in the Firestore database.
+ *
+ * @param {string} propertyID - The ID of the property document to update.
+ * @param {object} data - The updated data for the property.
+ */
+export async function updateProperty(propertyID, data) {
+  try {
+    // Get a reference to the property document
+    const propertyRef = doc(db, "Property", propertyID);
+
+    // Update the property document with the new data
+    await updateDoc(propertyRef, data);
+
+    console.log("Property updated successfully:", propertyID);
+  } catch (error) {
+    console.error("Error updating property:", error);
+    throw new Error("Error updating property: " + error.message);
+  }
+}
+
+/**
+ * Deletes a property document and its associated condos from the Firestore database.
+ *
+ * @param {string} propertyID - The ID of the property document to delete.
+ */
+export async function deleteProperty(propertyID) {
+  try {
+    // Get a reference to the property document
+    const propertyRef = doc(db, "Property", propertyID);
+
+    // Delete the property document
+    await deleteDoc(propertyRef);
+
+    // Query to find all condos associated with the property
+    const condoQuery = query(
+      collection(db, "Condo"),
+      where("property", "==", propertyID)
+    );
+
+    // Get all condos associated with the property
+    const condoSnapshot = await getDocs(condoQuery);
+
+    // Delete each condo document associated with the property
+    condoSnapshot.forEach(async (condoDoc) => {
+      await deleteDoc(doc(db, "Condo", condoDoc.id));
+    });
+
+    console.log(
+      "Property and associated condos deleted successfully:",
+      propertyID
+    );
+  } catch (error) {
+    console.error("Error deleting property:", error);
+    throw new Error("Error deleting property: " + error.message);
   }
 }

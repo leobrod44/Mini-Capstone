@@ -1,16 +1,20 @@
-import {React, useState, useEffect} from "react";
+import { React, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styling/EditPropertyComponent.css";
-import DeleteModal from "../components/DeleteModal"; 
-import AddressComponent from "../components/AddressComponent"; 
+import DeleteModal from "../components/DeleteModal";
+import AddressComponent from "../components/AddressComponent";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
-import { getProperties, updateProperty, deleteProperty } from "../backend/PropertyHandler";
+import {
+  getProperties,
+  updateProperty,
+  deleteProperty,
+} from "../backend/PropertyHandler";
 import store from "storejs";
 import { PropTypes } from "prop-types";
 
-const EditPropertyComponent = ( {toggleEdit} ) => {
+const EditPropertyComponent = ({ toggleEdit }) => {
   const { propertyID } = useParams();
   const navigate = useNavigate();
   const [property, setProperty] = useState({
@@ -24,15 +28,17 @@ const EditPropertyComponent = ( {toggleEdit} ) => {
     lockerCost: "",
   });
 
-const backgroundColor = '#f0f4f8';
-document.body.style.backgroundColor = backgroundColor;
+  const backgroundColor = "#f0f4f8";
+  document.body.style.backgroundColor = backgroundColor;
 
-useEffect(() => {
+  useEffect(() => {
     const fetchPropertyData = async () => {
       try {
         const company = store("user"); // Assuming you have the company information in user storage
         const properties = await getProperties(company);
-        const selectedProperty = properties.find((prop) => prop.propertyID === propertyID);
+        const selectedProperty = properties.find(
+          (prop) => prop.propertyID === propertyID
+        );
 
         if (selectedProperty) {
           setProperty(selectedProperty);
@@ -52,10 +58,10 @@ useEffect(() => {
   const [previewPropertyImage, setPreviewPropertyImage] = useState(null);
   const [showDeleteModal, setShow] = useState(false);
   const handleClickDelete = () => {
-      setShow(true);
+    setShow(true);
   };
   const handleCloseDeleteModal = () => {
-      setShow(false);
+    setShow(false);
   };
 
   const handleFileChange = (e) => {
@@ -93,24 +99,24 @@ useEffect(() => {
 
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
-  
+
     // Parse the value as an integer for number input fields
-    const parsedValue = type === 'number' ? parseInt(value, 10) : value;
-  
+    const parsedValue = type === "number" ? parseInt(value, 10) : value;
+
     // Check for minimum value validation
-    if (type === 'number' && parsedValue < 0) {
+    if (type === "number" && parsedValue < 0) {
       toast.error(`Count must be greater than or equal to 0`);
       return;
     }
-  
+
     setProperty({
       ...property,
       [name]: parsedValue,
     });
   };
-  
+
   const handleSubmit = async () => {
-  //validation that all required information is filled in
+    //validation that all required information is filled in
     if (
       !property.propertyName ||
       !property.address ||
@@ -121,30 +127,33 @@ useEffect(() => {
       toast.error("Missing Property Information");
       return;
     }
-    // if all required field are filled , save edits
-    try{
+    console.log("Edited Property:", property); // Check if property data is correct
+
+    try {
       await updateProperty(propertyID, property);
-      navigate("/MGMTDashboard");
-    }catch(err){
+      toast.success("Property updated successfully");
+      navigate("/MGMTDashboard"); // Navigate to the dashboard after successful update
+    } catch (err) {
       console.error(err);
+      toast.error("Error updating property");
     }
 
-    
     console.log("Edited:", property);
   };
 
   const handleDelete = async () => {
-      try{
-        await deleteProperty(propertyID);
-        navigate("/MGMTDashboard");
-      }catch(err){
-        console.error(err);
-      }
-      console.log("Deleted:", property);
-    };
+    try {
+      await deleteProperty(propertyID);
+      toast.success("Property deleted successfully");
+      navigate("/MGMTDashboard"); // Navigate to the dashboard after successful deletion
+    } catch (err) {
+      console.error(err);
+      toast.error("Error deleting property");
+    }
+  };
 
   return (
-    <div style={{ backgroundColor: 'f0f4f8'}}>  
+    <div style={{ backgroundColor: "f0f4f8" }}>
       <link
         rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -158,144 +167,150 @@ useEffect(() => {
         integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
         crossOrigin="anonymous"
       />
-        <form className="add-property-form" onSubmit={handleSubmit}>
-          <h3>My Property</h3>
-          <label className="form-label mt-3" htmlFor="customFile">
-            <label className="input-label" htmlFor="propertyPicture">
-              Property Picture:
-            </label>
+      <form className="add-property-form" onSubmit={handleSubmit}>
+        <h3>My Property</h3>
+        <label className="form-label mt-3" htmlFor="customFile">
+          <label className="input-label" htmlFor="propertyPicture">
+            Property Picture:
           </label>
-          <div className="row justify-content-center">
-            <div className="col-sm-">
-              <input
-                type="file"
-                className="form-control"
-                id="customFile"
-                onChange={(e) => handleFileChange(e)}
-              />
-            </div>
+        </label>
+        <div className="row justify-content-center">
+          <div className="col-sm-">
+            <input
+              type="file"
+              className="form-control"
+              id="customFile"
+              onChange={(e) => handleFileChange(e)}
+            />
           </div>
-          {previewPropertyImage && (
-            <div className="image-preview">
-              <img src={previewPropertyImage} alt="Property Preview" />
-            </div>
-          )}
+        </div>
+        {previewPropertyImage && (
+          <div className="image-preview">
+            <img src={previewPropertyImage} alt="Property Preview" />
+          </div>
+        )}
 
-          <div className="input-group mt-3"></div>
-          <div className="input-group">
-            <label className="input-label" htmlFor="propertyName">
-              Property Name:
-            </label>
-            <input
-              type="text"
-              id="propertyName"
-              name="propertyName"
-              value={property.propertyName}
-              onChange={(e) => handleInputChange(e)}
-              
-            />
-            </div>
-            <div className="input" >
-              <AddressComponent 
-              id="address"
-              type="address"
-              labelText="Address"
-              name="address"
-              onChange={(e) => handleInputChange(e)}
-              setFormData={setProperty}
-              value={property.address}
-              />
-            </div>
-           
+        <div className="input-group mt-3"></div>
+        <div className="input-group">
+          <label className="input-label" htmlFor="propertyName">
+            Property Name:
+          </label>
+          <input
+            type="text"
+            id="propertyName"
+            name="propertyName"
+            value={property.propertyName}
+            onChange={(e) => handleInputChange(e)}
+          />
+        </div>
+        <div className="input">
+          <AddressComponent
+            id="address"
+            type="address"
+            labelText="Address"
+            name="address"
+            onChange={(e) => handleInputChange(e)}
+            setFormData={setProperty}
+            value={property.address}
+          />
+        </div>
 
-          <div className="input-group">
-            <label className="input-label" htmlFor="unitCount">
-              Unit Count:
-            </label>
-            <input
-              type="number" min="0"  
-              id="unitCount"
-              name="unitCount"
-              value={property.unitCount}
-              onChange={(e) => handleInputChange(e)}
-              
-            />
-          </div>
-          <div className="input-group">
-            <label className="input-label" htmlFor="parkingCount">
-              Parking Count:
-            </label>
-            <input
-              type="number" min="0"  
-              id="parkingCount"
-              name="parkingCount"
-              value={property.parkingCount}
-              onChange={(e) => handleInputChange(e)}
-              
-            />
-          </div>
-          <div className="input-group">
-            <label className="input-label" htmlFor="parkingCost">
-              Parking Price:
-            </label>
-            <input
-              type="number" min="0"  
-              id="parkingCost"
-              name="parkingCost"
-              value={property.parkingCost}
-              onChange={(e) => handleInputChange(e)}
-              
-            />
-          </div>
-          <div className="input-group">
-            <label className="input-label" htmlFor="lockerCount">
-              Locker Count:
-            </label>
-            <input
-              type="number" min="0" 
-              id="lockerCount"
-              name="lockerCount"
-              value={property.lockerCount}
-              onChange={(e) => handleInputChange(e)}
-            />
-          </div>
+        <div className="input-group">
+          <label className="input-label" htmlFor="unitCount">
+            Unit Count:
+          </label>
+          <input
+            type="number"
+            min="0"
+            id="unitCount"
+            name="unitCount"
+            value={property.unitCount}
+            onChange={(e) => handleInputChange(e)}
+          />
+        </div>
+        <div className="input-group">
+          <label className="input-label" htmlFor="parkingCount">
+            Parking Count:
+          </label>
+          <input
+            type="number"
+            min="0"
+            id="parkingCount"
+            name="parkingCount"
+            value={property.parkingCount}
+            onChange={(e) => handleInputChange(e)}
+          />
+        </div>
+        <div className="input-group">
+          <label className="input-label" htmlFor="parkingCost">
+            Parking Price:
+          </label>
+          <input
+            type="number"
+            min="0"
+            id="parkingCost"
+            name="parkingCost"
+            value={property.parkingCost}
+            onChange={(e) => handleInputChange(e)}
+          />
+        </div>
+        <div className="input-group">
+          <label className="input-label" htmlFor="lockerCount">
+            Locker Count:
+          </label>
+          <input
+            type="number"
+            min="0"
+            id="lockerCount"
+            name="lockerCount"
+            value={property.lockerCount}
+            onChange={(e) => handleInputChange(e)}
+          />
+        </div>
 
-          <div className="input-group">
-            <label className="input-label" htmlFor="lockerCost">
-              Locker Price:
-            </label>
-            <input
-              type="number" min="0"  
-              id="lockerCost"
-              name="lockerCost"
-              value={property.lockerCost}
-              onChange={(e) => handleInputChange(e)}
-              
-            />
-          </div>
+        <div className="input-group">
+          <label className="input-label" htmlFor="lockerCost">
+            Locker Price:
+          </label>
+          <input
+            type="number"
+            min="0"
+            id="lockerCost"
+            name="lockerCost"
+            value={property.lockerCost}
+            onChange={(e) => handleInputChange(e)}
+          />
+        </div>
 
-          <div className="button-container">
-            <button  className="cancel-button" type="button" onClick={() => toggleEdit()}>
-              Cancel
-            </button>
-         
-            <button className="add-condo-button" type="submit" onClick={() => handleSubmit()}>
-              Save Changes
-            </button>
-          </div>
-          <div className="button-container">
-            <button type="button" className="delete-property-button" onClick={() => handleClickDelete()}>
-              Delete Property
-            </button>
-          </div>
-          
-        </form>
-      <BackArrowBtn/>
+        <div className="button-container">
+          <button
+            className="cancel-button"
+            type="button"
+            onClick={() => toggleEdit()}
+          >
+            Cancel
+          </button>
+
+          <button className="add-condo-button" type="submit">
+            Save Changes
+          </button>
+        </div>
+        <div className="button-container">
+          <button
+            type="button"
+            className="delete-property-button"
+            onClick={() => handleClickDelete()}
+          >
+            Delete Property
+          </button>
+        </div>
+      </form>
+      <BackArrowBtn />
       <DeleteModal
         show={showDeleteModal}
         handleClose={handleCloseDeleteModal}
         message="Are you sure you want to delete this Property?"
-        handleDeleteItem={handleDelete}
+        handleDeleteItem={handleDelete} // Call handleDelete when the user confirms
       />
     </div>
   );
