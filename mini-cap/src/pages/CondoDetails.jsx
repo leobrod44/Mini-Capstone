@@ -117,7 +117,6 @@ export default function CondoDetails() {
     parkingNumber,
     lockerNumber,
     picture,
-    propertyID,
     occupant,
     status,
   } = condoDetails;

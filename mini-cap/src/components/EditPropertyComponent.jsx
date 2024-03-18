@@ -116,29 +116,17 @@ const EditPropertyComponent = ({ toggleEdit }) => {
   };
 
   const handleSubmit = async () => {
-    //validation that all required information is filled in
-    if (
-      !property.propertyName ||
-      !property.address ||
-      !property.unitCount ||
-      !property.parkingCount ||
-      !property.lockerCount
-    ) {
-      toast.error("Missing Property Information");
-      return;
-    }
-    console.log("Edited Property:", property); // Check if property data is correct
-
     try {
-      await updateProperty(propertyID, property);
-      toast.success("Property updated successfully");
-      navigate("/MGMTDashboard"); // Navigate to the dashboard after successful update
-    } catch (err) {
-      console.error(err);
+      const success = await updateProperty(propertyID, property);
+      if (success) {
+        toast.success("Property details updated successfully");
+        navigate("/MGMTDashboard", { state: { updated: true } });
+      } else {
+        throw new Error("Failed to update property details");
+      }
+    } catch (error) {
       toast.error("Error updating property");
     }
-
-    console.log("Edited:", property);
   };
 
   const handleDelete = async () => {

@@ -746,16 +746,16 @@ export async function deleteCondo(condoId) {
  */
 export async function updateProperty(propertyID, data) {
   try {
-    // Get a reference to the property document
-    const propertyRef = doc(db, "Property", propertyID);
+    const propertyDocRef = doc(db, "Property", propertyID);
+    const cleanedData = cleanData ? cleanData("Property", data) : data;
 
-    // Update the property document with the new data
-    await updateDoc(propertyRef, data);
-
-    console.log("Property updated successfully:", propertyID);
-  } catch (error) {
-    console.error("Error updating property:", error);
-    throw new Error("Error updating property: " + error.message);
+    // Update the property document with the provided data
+    await updateDoc(propertyDocRef, cleanedData);
+    console.log(`Property with ID ${propertyID} has been updated.`);
+    return true; // Return true for success
+  } catch (err) {
+    console.error(`Error updating property: ${err}`);
+    return false; // Return false for failure
   }
 }
 
