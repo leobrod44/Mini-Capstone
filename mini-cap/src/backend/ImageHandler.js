@@ -85,7 +85,6 @@ export async function getCondoPicture(id) {
 
 
 
-
 /**
  * Updates the profile picture of the user with the specified email.
  * 
@@ -128,7 +127,9 @@ export async function setPicture(data, path){
         var pictureData = data.picture;
         // Check if picture data exists
         if(pictureData){
+
             // Upload picture data to the specified path
+
             await uploadBytes(ref(storage,path + data.email), pictureData);
         }
     }
@@ -155,8 +156,10 @@ export async function setPictureWithID(data, path, id){
             var r = ref(storage,path + id);
             // Upload picture data to the generated storage reference
             var pic = await uploadBytes(r, pictureData);
+
             // Log the uploaded picture information
             console.log("Uploaded picture: ", pic);
+
         }
     }
     catch(e){
@@ -164,6 +167,7 @@ export async function setPictureWithID(data, path, id){
         throw new Error("Error adding picture: ", e);
     }
 }
+
 
 
 /**
@@ -238,17 +242,21 @@ export async function getUsersFiles(userID) {
             // Retrieve data of owned condos by the user
             var owned = await getUserData(userID);
             // Retrieve condos data associated with the user's ownership
+
             var condos = await Promise.all(owned.owns.map(async element => {
                 var c = await getCondo(element);
                 return c;
             }));
+
             // Extract unique property IDs from the owned condos
             var properties = Array.from(new Set(condos.map(c => c.property)));
             // Retrieve files associated with each property
+
             var files = await Promise.all(properties.map(async property => {
                 var f = await getPropertyFiles(property);
                 return f;
             }));
+
             // Return the array of arrays of file URLs
             return files;
         }
@@ -257,3 +265,4 @@ export async function getUsersFiles(userID) {
         throw e;
     }
 }
+

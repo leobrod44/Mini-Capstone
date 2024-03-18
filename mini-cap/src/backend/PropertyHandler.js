@@ -330,7 +330,9 @@ export async function getProperties(companyID) {
       })
     );
 
+
     // Sort the properties array by propertyName and return it
+
     return sortArray(properties, "propertyName");
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
@@ -427,11 +429,13 @@ export async function getUserCondos(email) {
       })
     );
 
+
     // Sort the condos array by unitNumber and return it
     return sortArray(condos, "unitNumber");
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
     throw new Error("Error getting condos: " + error);
+
   }
 }
 
@@ -461,12 +465,14 @@ export async function getCondos(propertyID) {
         condos.push(doc.data());
       }
     });
+
     
     // Sort the condos array by unit number
     return sortArray(condos, "unitNumber");
   } catch (error) {
     // If an error occurs, throw an error with a descriptive message
     throw new Error("Error getting condos: " + error);
+
   }
 }
 
@@ -488,16 +494,20 @@ export async function getCondo(condoID) {
     // Extract condo data from the snapshot
     const condoData = docSnap.data();
 
+
     // Check if the condo document exists
     if (docSnap.exists) {
       // Retrieve the document reference for the property associated with the condo
+
       const propertyDocRef = doc(db, "Property", condoData.property);
       // Fetch the snapshot of the property document
       const propertyDoc = await getDoc(propertyDocRef);
 
+
       // Check if the property document exists
       if (propertyDoc.exists) {
         // Update condo data with additional property information
+
         condoData.address = propertyDoc.data().address;
         condoData.propertyName = propertyDoc.data().propertyName;
         condoData.propertyID = propertyDoc.id;
@@ -558,6 +568,18 @@ const sampleAmenity = {
   "amenityID": "1",
   "price": 100,
   "unitNumber": 1,
+}
+
+const sampleFinacialDetails = {
+  "BasePrice" : 100,
+  "ParkingPrice" : 10,
+  "LockerPrice" : 10,
+  "AdditionalFees" : 0,
+  "TotalPrice" : 120
+}
+
+const sampleIsPaid = {
+  "RentPaid" : true
 }
 
 
@@ -621,6 +643,19 @@ export async function deleteProperty(propertyID) {
   console.log("Deleting property: ", propertyID);
 }
 
+//Provide: condoID
+//Returns: fees associated to the condo
+export async function getFinanceDetails() {
+  return sampleFinacialDetails
+}
+
+//Provide: condoID
+//Returns: Boolean
+export async function checkRentPaid() {
+  return sampleIsPaid
+}
+//returns the occupant email or empty string for the condo
+
 /**
  * Retrieves the occupant of a specified condo.
  * 
@@ -639,9 +674,6 @@ export async function getCondoOccupant(condoId) {
     if (condoDocSnap.exists) {
       // Extract occupant from condo data
       const { occupant } = condoDocSnap.data();
-      // Log occupant information
-      console.log("Occupant is: " + occupant);
-      // Return occupant's email
       return occupant;
     } else {
       // Log error message if condo document not found
