@@ -14,13 +14,13 @@ import {useNavigate, useParams} from "react-router-dom";
 import store from "storejs";
 import {getCompanyEmail} from "../backend/UserHandler";
 import {MANAGEMENT_COMPANY} from "../backend/Constants";
+import CondoRequests from "../components/CondoRequestsView.jsx";
+import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import { getRequests } from "../backend/RequestHandler";
 import { FaCheck, FaTimes } from 'react-icons/fa'; // Import icons from react-icons library
-import { MdExpandLess } from "react-icons/md";
-import { MdExpandMore } from "react-icons/md";
 
 export default function CondoDetails(){
 	let { condoId } = useParams();
-	// export default function CondoDetails({ propertyName, address, parkingNumber, lockerNumber, unitNumber, price, unitSize, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
 	const [condoDetails, setCondoDetails] = useState(false);
 	const [showPopup, setShowPopup] = useState(false);
 	const [show, setShow] = useState(false);
@@ -28,6 +28,7 @@ export default function CondoDetails(){
 	const navigate = useNavigate();
 	const [role, setTheRole] = useState("");
 	const [companyEmail, setCompanyEmail] = useState(null);
+	const [requests, setRequests] = useState([]);
 
 	useEffect(() => {
 		const fetchCondo = async () => {
@@ -45,8 +46,17 @@ export default function CondoDetails(){
 				console.error(err);
 			}
 		};
-		fetchCondo();
 
+		const fetchRequests = async () => {
+			try {
+				setRequests(await getRequests(condoId));
+			} catch (error) {
+				console.error("Error fetching requests:", error);
+			}
+		};
+
+		fetchCondo();
+		fetchRequests();
 	}, []);
 
 	if (condoDetails === null) {
@@ -72,6 +82,7 @@ export default function CondoDetails(){
     const handleClickDelete = () => {
         setShow(true);
     };
+
     const handleClose = () => {
         setShow(false);
 	};
@@ -90,6 +101,11 @@ export default function CondoDetails(){
 		status
 	} = condoDetails;
 
+	const [showCondoRequests, setShowCondoRequests] = useState(false);
+
+	const toggleCondoRequests = () => {
+		setShowCondoRequests(!showCondoRequests);
+	}
 	const[showFinancialDetails, setShowFinancialDetails] = useState(false);
 
 	const toggleFinancialDetails = () => {
@@ -139,7 +155,7 @@ export default function CondoDetails(){
 									<>
 									<div>
 										<div className={`user-tag vacant`}>{status}</div>
-										{role === "mgmt" && (
+										{role === MANAGEMENT_COMPANY && (
 										<>
 											<button className="sendkey-button" onClick={handlePopupToggle}>Send Key</button>
 										</>)}
@@ -156,9 +172,7 @@ export default function CondoDetails(){
 										<div className={`user-tag owner`}>{status}</div>
 									</>
 								)}
-
-								</div>
-
+							</div>
 
 							</div>
 							<div className='other-info'>
@@ -243,6 +257,35 @@ export default function CondoDetails(){
 								</div>
 								
 							</div>
+
+							<div style={{display: "flex" , alignItems: "center"}}>
+								<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>Condo Requests</h5>
+								<div>
+									<button id="toggleButton" className="requests-button" onClick={toggleCondoRequests}>
+										{showCondoRequests ? <MdExpandLess/> : <MdExpandMore />} </button>
+								</div>
+							</div>
+
+							<div className="other-info">
+								{showCondoRequests && (
+									requests.length > 0 ? (
+										requests.map((request, index) => (
+											<CondoRequests
+												key={index}
+												type={request.type}
+												notes={request.notes}
+												role={role}
+												step={request.step}
+												condoId={condoId}
+												requestId={request.requestID}
+											/>
+										))
+									) : (
+										<p className="request-container">There are no current requests</p>
+									)
+								)}
+							</div>
+
 							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
 							<div>
 								{role === MANAGEMENT_COMPANY && (
@@ -289,6 +332,5 @@ export default function CondoDetails(){
 		</>
 		</div>
 	);
-
 }
 

@@ -659,9 +659,6 @@ export async function getCondoOccupant(condoId) {
     if (condoDocSnap.exists) {
       // Extract occupant from condo data
       const { occupant } = condoDocSnap.data();
-      // Log occupant information
-      console.log("Occupant is: " + occupant);
-      // Return occupant's email
       return occupant;
     } else {
       // Log error message if condo document not found

@@ -161,15 +161,14 @@ export async function updateRequest(condoID, requestID) {
         
         // Update the request document
         await updateDoc(requestRef, requestData);
-        
-        // Check if the request process is completed
-        if(requestData.step >= stepType.length){
-            return "Completed";
-        } else {
-            // Return the next step in the request process
-
-            return stepType[requestData.step];
-        }
+      
+        //  COMMENTED OUT THIS BECAUSE IN CONDOREQUESTSVIEW.JSX YOU CAN ONLY DO MAX 4 ADVANCES
+        // if(requestData.step >= stepType.length){
+        //     return "Completed"
+        // }
+        // else{
+            return requestData.step;
+        // }
     } catch (e) {
         console.error("Error updating request: ", e);
         return null;
