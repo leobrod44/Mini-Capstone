@@ -106,7 +106,6 @@ export async function getRequests(condoID){
     }
 }
 
-=
 
 /**
  * Updates the request associated with the specified condo ID and request ID.
