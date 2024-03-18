@@ -13,7 +13,8 @@ const RequestForm = ({handleClickClose}) => {
     const [description, setDescription] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [condoName, setCondoName] = useState("Condo Name");
-    const [unitNumber, setUnitNumber] = useState("Unit Number")
+    const [unitNumber, setUnitNumber] = useState("Unit Number");
+    const [notificationsActive, setNotificationsActive] = useState();
 
     useEffect(() => {
         const fetchCondo = async () => {
@@ -27,7 +28,24 @@ const RequestForm = ({handleClickClose}) => {
         };
         fetchCondo();
     }, []);
+
+    useEffect(() => {
+        const checkNotifications = () => {
+          const activeNotifications = [null];
+          
+          if (activeNotifications.length > 0) {
+            setNotificationsActive(true);
+          } else {
+            setNotificationsActive(false);
+          }
+        };
     
+        checkNotifications();
+    
+        const interval = setInterval(checkNotifications, 1000);
+    
+        return () => clearInterval(interval);
+      }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -49,7 +67,9 @@ const RequestForm = ({handleClickClose}) => {
             setDescription("");
             setSubmitting(false); // Set submitting state back to false
         }
-        toast.success("Request submitted successfully"); // Show success popup
+        toast.success("Request submitted successfully", {
+            onClose: handleClickClose
+          });
         console.log("The request was submitted successfully")
     };
 
@@ -62,15 +82,18 @@ const RequestForm = ({handleClickClose}) => {
         <label className="dropdown" htmlFor="dropdown">Subject:</label>
         <select id="dropdown" value={subject} onChange={(e) => setSubject(e.target.value)}>
             <option value="1">Moving Request</option>
-            <option value="2">Request Access</option>
-            <option value="3">Report Violation</option>
-            <option value="4">Report Damage in Common Area</option>
-            <option value="5">Request Maintenance</option>
-            <option value="6">General Question</option>
+            <option value="1">Request Access</option>
+            <option value="1">Report Violation</option>
+            <option value="2">Report Damage in Common Area</option>
+            <option value="2">Request Maintenance</option>
+            <option value="1">General Question</option>
+            <option value="3">Payment Invoice</option>
+            <option value="3">Fee Inquiries</option>
+            <option value="3">Insurance Coverage Details</option>
         </select>
         <label className="dropdown" htmlFor="description">Description:</label>
         <textarea id="description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter request description here..."></textarea>
-        <button type="button" className="cancel-button" onClick={handleClickClose}>
+        <button type="button" className="cancel-button" onClick={handleClickClose} disabled={notificationsActive}>
             Cancel
         </button>
         <button type="submit" className="submit-button" disabled={submitting}>
