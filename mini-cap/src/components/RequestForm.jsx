@@ -58,7 +58,7 @@ const RequestForm = ({handleClickClose}) => {
                 toast.error("Please fill all fields");
                 return;
               }
-            const requestID = await submitRequest("condoID", subject, description);
+            const requestID = await submitRequest(condoId, subject, description);
         } catch (error) {
             toast.error("Request failed to submit for unexpected reasons")
             console.error(error);

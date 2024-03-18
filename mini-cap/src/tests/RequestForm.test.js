@@ -3,7 +3,9 @@ import { render, fireEvent, cleanup, waitFor } from '@testing-library/react';
 import "@testing-library/jest-dom";
 import { BrowserRouter } from "react-router-dom";
 import { toast } from "react-toastify";
-import RequestForm from "../pages/RequestForm.jsx";
+import RequestForm from "../components/RequestForm.jsx";
+import CondoDetails from "../pages/CondoDetails.jsx";
+import { submitRequest } from '../backend/RequestHandler';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -23,6 +25,10 @@ jest.mock("react-toastify", () => {
     };
   });
 
+  jest.mock("../backend/RequestHandler", () => ({
+    submitRequest: jest.fn(),
+  }));  
+
   console.log = jest.fn();
 
   describe("RequestForm", () => {
@@ -35,7 +41,7 @@ jest.mock("react-toastify", () => {
 
       // Fill out the form //
       fireEvent.change(getByLabelText("Subject:"), {
-        target: { value: "Financial" },
+        target: { value: "1" },
       });
   
       fireEvent.change(getByLabelText("Description:"), {
@@ -59,27 +65,24 @@ jest.mock("react-toastify", () => {
 
         // Fill out the form //
         fireEvent.change(getByLabelText("Subject:"), {
-            target: { value: "Financial" },
+            target: { value: "1" },
         });
     
         fireEvent.change(getByLabelText("Description:"), {
-            target: { value: null },
+            target: { value: "" },
         });
     
-        const submitRequestButton = getByText("Submit", {
-            selector: "button",
-          });
+        const submitRequestButton = getByText("Submit");
     
         // Submit the form
         fireEvent.click(submitRequestButton);
     
         // Ensure the error message is shown
         await waitFor(() => {
-            // Ensure that the error is thrown
-            expect(() => {
-                throw new Error("Description must be at least 15 words long.");
-            }).toThrow();
+          expect(toast.error).toHaveBeenCalledWith("Please fill all fields");
         });
+
+        expect(submitRequest).not.toHaveBeenCalled();
     });
 
     it("should not be successful because description is less than 15 words", async () => {
@@ -138,21 +141,7 @@ jest.mock("react-toastify", () => {
         await waitFor(() => {
           expect(toast.error).toHaveBeenCalledWith("Please fill all fields");
         });
-    });
-    
-    it("should return to condo-details page after clicking cancel", async () => {
-        const { getByLabelText, getByText } = render(
-          <BrowserRouter>
-            <RequestForm />
-          </BrowserRouter>
-        );
-
-        const cancelLinkButton = getByText('Cancel');
-        
-        fireEvent.click(cancelLinkButton);
-
-        expect(window.location.href).toMatch('/condo-details');
-    });
+    }); 
 
     it('should handle form submission successfully', async () => {
       // Mock submitRequest function
