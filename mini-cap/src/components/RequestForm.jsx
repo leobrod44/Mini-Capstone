@@ -1,14 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { submitRequest } from '../backend/RequestHandler';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "../styling/RequestForm.css";
+import {getCondo} from "../backend/PropertyHandler";
 
 const RequestForm = ({handleClickClose}) => {
+    let { condoId } = useParams();
     const [subject, setSubject] = useState("Administrative");
     const [description, setDescription] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const [condoName, setCondoName] = useState("Condo Name");
+    const [unitNumber, setUnitNumber] = useState("Unit Number")
+
+    useEffect(() => {
+        const fetchCondo = async () => {
+            try {
+                const condo = await getCondo(condoId);
+                setCondoName(condo.propertyName);
+                setUnitNumber(condo.unitNumber);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchCondo();
+    }, []);
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -38,7 +57,8 @@ const RequestForm = ({handleClickClose}) => {
     <div className="Requestcontainer">
         <form className="form-box" onSubmit={handleSubmit}>
         <h2 className="titleform">Submit Request</h2>
-        <h3 className="Requesttitle"> Condo + UnitNumber</h3>
+        <br></br>
+        <h3 className="Requesttitle"> {condoName} {unitNumber} </h3>
         <label className="dropdown" htmlFor="dropdown">Subject:</label>
         <select id="dropdown" value={subject} onChange={(e) => setSubject(e.target.value)}>
             <option value="1">Moving Request</option>
