@@ -205,33 +205,6 @@ export async function addCondo(data, propertyID, propertyName) {
       status: "Vacant"
     });
 
-    const propertyRef = doc(db, "Property", propertyID);
-    // Fetch the snapshot of the property document
-    const amenitiesRef = collection(propertyRef, "Amenities");
-    const amenitiesSnapshot = await getDocs(amenitiesRef);
-
-    let parkingAssigned = false;
-    let lockerAssigned = false;
-    //assign condo to free amenities in property
-    for (const doc of amenitiesSnapshot.docs) {
-      if(!parkingAssigned && doc.data().available == true && doc.data().type == "Parking"){
-        await updateDoc(doc.ref, {
-          condo: docID,
-          available: false
-          //NUMBER??
-        })
-        parkingAssigned = true;
-      }else if(!lockerAssigned && doc.data().available == true && doc.data().type == "Locker"){
-        await updateDoc(doc.ref, {
-          condo: docID,
-          available: false
-          //NUMBER??
-        })
-        lockerAssigned = true;
-      }else if(lockerAssigned && parkingAssigned)
-        break;
-    }
-
     // If picture data is provided, add the picture to storage
     if (pictureData) {
       try {
@@ -295,29 +268,6 @@ export async function addProperty(data) {
         // If an error occurs while adding a condo, throw an error with a descriptive message
         throw new Error("Error adding condo: " + error);
       }
-    }
-
-    //add all parking spots in new property
-    const amenitiesRef = collection(docRef, "Amenities");
-    for(let i = 0; i<data.parkingCount; i++){
-      await addDoc(amenitiesRef, {
-        available: true,
-        condo: "",
-        number: i,
-        price: data.parkingCost,
-        type: "Parking"
-      });
-    }
-
-    //add all lockers in new property
-    for(let i = 0; i<data.lockerCount; i++){
-      await addDoc(amenitiesRef, {
-        available: true,
-        condo: "",
-        number: i,
-        price: data.lockerCost,
-        type: "Locker"
-      });
     }
 
   } catch (error) {
