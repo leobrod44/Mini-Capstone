@@ -49,7 +49,8 @@ export async function submitRequest(condoID, type, notes) {
             step: 0,
             viewed: false,
             condoID: condoID,
-            requestID: null 
+            requestID: null,
+            assignedWorkerID: ""
         });
         // Get the ID of the newly added request document
         const requestID = docRef.id;
@@ -182,24 +183,20 @@ export async function assignWorker(requestData) {
         // Extract condo data from the snapshot
         const condoData = condoSnap.data();
 
+        const requestDocRef = doc(db, "Condo", requestData.condoID, "Requests", requestData.requestID);
+
         // Get document reference for the specified property ID
         const propertyRef = doc(db, "Property", condoData.property);
 
         const workersCollRef = collection(propertyRef, "Workers")
         const workersSnapshot = await getDocs(workersCollRef);
+
         workersSnapshot.docs.map(async (doc) => {
             if(requestData.type == doc.data().type){
-                //add request to list of requests assigned to worker
-                await updateDoc(doc.ref, {
-                    assignedRequests: arrayUnion({requestID: requestData.requestID, condoID: requestData.condoID})
+                //add worker to request data
+                await updateDoc(requestDocRef, {
+                    assignedWorkerID: doc.ref.id
                 });
-
-                //if worker has no current request assign this one
-                if(doc.data().currentRequest == ""){
-                    await updateDoc(doc.ref, {
-                        currentRequest: arrayUnion({requestID: requestData.requestID, condoID: requestData.condoID})
-                    });
-                }
             }
         })
 
