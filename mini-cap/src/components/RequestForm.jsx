@@ -14,7 +14,7 @@ const RequestForm = ({handleClickClose}) => {
     const [submitting, setSubmitting] = useState(false);
     const [condoName, setCondoName] = useState("Condo Name");
     const [unitNumber, setUnitNumber] = useState("Unit Number");
-    const [notificationsActive, setNotificationsActive] = useState();
+    const [notificationsActive, setNotificationsActive] = useState([]);
 
     useEffect(() => {
         const fetchCondo = async () => {
@@ -31,7 +31,7 @@ const RequestForm = ({handleClickClose}) => {
 
     useEffect(() => {
         const checkNotifications = () => {
-          const activeNotifications = [null];
+          const activeNotifications = [];
           
           if (activeNotifications.length > 0) {
             setNotificationsActive(true);
