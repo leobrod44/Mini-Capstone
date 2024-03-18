@@ -100,7 +100,7 @@ textarea {
     resize: vertical; /* Allow vertical resizing */
     margin-top: 10px; /* Adjust margin */
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
-    resize: none;
+    resize: none !important;
 }
 
 textarea:focus {
