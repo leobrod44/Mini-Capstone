@@ -205,6 +205,51 @@ export async function addCondo(data, propertyID, propertyName) {
       status: "Vacant"
     });
 
+    const propertyRef = doc(db, "Property", propertyID);
+    // Fetch the snapshot of the property document
+    const amenitiesRef = collection(propertyRef, "Amenities");
+    const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+    if(data.parking){
+      let parkingAssigned = false;
+      //assign condo to free parking in property
+      for (const doc of amenitiesSnapshot.docs) {
+        if(!parkingAssigned && doc.data().available == true && doc.data().type == "Parking"){
+          //update parking document with condo info
+          await updateDoc(doc.ref, {
+            condo: docID,
+            available: false
+          })
+          //update condo document with parking number
+          await updateDoc(docRef, {
+            parkingNumber: doc.data().number,
+          })
+          parkingAssigned = true;
+        }else if(parkingAssigned)
+          break;
+      }
+    }
+
+    if(data.locker){
+      let lockerAssigned = false;
+      //assign condo to free locker in property
+      for (const doc of amenitiesSnapshot.docs) {
+        if(!lockerAssigned && doc.data().available == true && doc.data().type == "Locker"){
+          //update locker document with condo info
+          await updateDoc(doc.ref, {
+            condo: docID,
+            available: false
+          })
+          //update condo document with parking number
+          await updateDoc(docRef, {
+            lockerNumber: doc.data().number,
+          })
+          lockerAssigned = true;
+        }else if(lockerAssigned)
+          break;
+      }
+    }
+
     // If picture data is provided, add the picture to storage
     if (pictureData) {
       try {
