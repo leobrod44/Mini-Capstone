@@ -135,15 +135,44 @@ export async function getAssignedWorker(requestID) {
 //Provide: userID
 //Returns: array of new notifications containing message to display and path
 export async function getNotifications(userID){
-
-    
-    //request update, event reminder
-    //provide message to display and path for when clicked
+    try {
+        const notificationCollection = collection(doc(db, 'Users', userID), 'Notifications');
+        const notificationSnapshot = await getDocs(notificationCollection);
+        var notifications = [];
+        await Promise.all(
+            notificationSnapshot.docs.map(async (doc) => {
+                var data = doc.data();
+                notifications.push(data);
+            }));
+        return notifications;
+    } catch(e) {
+        console.error("Error getting notifications: ", e);
+    }
 }
 
 //Provide: userID, requestID
 //Returns: nothing
-export async function setNotificationViewed(userID, notification){
+export async function setNotificationViewed(email, notificationID){
+    try {
+        const notificationRef = doc(collection(doc(db, 'Users', email), 'Notifications'), notificationID);
+        await updateDoc(notificationRef, { viewed: true });
+    } catch(e) {
+        console.error("Error setting notification viewed: ", e);
+    }
+}
 
-    //called when clicked on notificaton
+export async function addRequestNotification(destinatiorType, email, requestData){
+    try {
+        var collectionRef = destinatiorType == 0 ? "Users" : "Company";
+        const docRef = await addDoc(collection(doc(db, collectionRef, email), 'Notifications'), {
+            type: requestData.type,
+            message: requestData.notes,
+            path: `/condo-details/${requestData.condoID}`,
+            date: new Date().toISOString(),
+            viewed: false
+        });
+        return docRef.id;
+    } catch(e) {
+        console.error("Error adding notification: ", e);
+    }
 }

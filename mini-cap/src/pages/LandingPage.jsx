@@ -2,12 +2,31 @@ import React from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import "../styling/LandingPage.css"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../index.css";
 import store from "storejs";
+import { addRequestNotification, getNotifications } from "../backend/RequestHandler";
+import { getUserCondos } from "../backend/PropertyHandler";
+
+const LandingPage = async() => {
 
 
-const LandingPage =() => {
+  //   var destinatiorType=0
+  //   var email = "lauren.rigante@hotmail.com"
+  //  // const navigate = useNavigate()
+   
+  //   var condos = await getUserCondos(email)
+  //   var requestData = {
+  //     requestID: "123",
+  //     condoID: condos[0].id,
+  //     type: "0",
+  //     notes: "test",
+  //     step:0
+  //   };
+  //   await addRequestNotification(destinatiorType, email, requestData)
+  //   var n = await getNotifications(email)
+  //   useNavigate(n[0].path)
+
 
     return(
        <div>

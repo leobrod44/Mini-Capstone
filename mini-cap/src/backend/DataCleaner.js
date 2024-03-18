@@ -36,7 +36,6 @@ const structure = {
         "type": "", //(Financial, Administrative, Operational)
         "notes": "", 
         "step": "", 
-        "viewed": "", 
     },
     "Amenity": {
         "amenityID": "", 
@@ -44,8 +43,12 @@ const structure = {
         "unitNumber": "", 
     },
     "Notification":{
+        "destination": "",
+        "type":"",
         "message": "",
-        "path":""
+        "path":"",
+        "date":"",
+        "viewed":""
 
     }
 }
