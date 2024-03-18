@@ -4,11 +4,18 @@ import "react-toastify/dist/ReactToastify.css";
 import "../styling/AddCondoForm.css";
 import { addCondo } from "../backend/PropertyHandler";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-
+/**
+ * Represents a form component for adding a new condo.
+ * @returns {JSX.Element} The rendered AddCondoFormComponent.
+ */
 const AddCondoFormComponent = () => {
+      // Retrieve property ID and name from URL parameters
     let { propertyID, propertyName } = useParams();
+       // Navigation hook for redirecting after submission
     const navigate = useNavigate();
-      const { state } = useLocation();
+          // Location hook for accessing state
+    const { state } = useLocation();
+        // State to manage condo form data
       const [condo, setCondo] = useState({
         unitNumber: "",
         propertyID: propertyID,
@@ -19,42 +26,68 @@ const AddCondoFormComponent = () => {
         lockerNumber: "",
         picture: null,
       });
-      
+          // State to manage preview image
       const [previewCondoImage, setPreviewCondoImage] = useState(null);
-      const handleFileChange = (e) => {
+        
+/**
+ * Handles the change event for the file input field.
+ * Validates the selected file type and size, then updates the condo state with the selected picture file.
+ * Also sets the preview image of the condo.
+ * @param {Event} e - The change event object.
+ * @returns {void}
+ */
+      const handleFileChange = (e) => {       // Retrieve the selected file from the event
+
         const file = e.target.files[0];
-    
+    // Reset the condo picture if no file is selected
         if (!file) {
           setCondo({
             ...condo,
             picture: null,
           });
         }
-    
+     // Check if the file type is supported (PNG, JPEG, JPG)
+   
         if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
           toast.error("File type not supported");
           return;
         }
-    
+     // Check if the file size is within the limit (2 MB)
+   
         if (file.size > 2097152) {
           toast.error("File must be less than 2 MB");
           return;
         }
+    // Update the condo state with the selected file
     
         setCondo({
           ...condo,
           picture: file,
         });
-    
+     // Create a new FileReader object to read the file as a data URL   
         const reader = new FileReader();
+     // Set up a callback function to execute when the file reading is complete
+
         reader.onloadend = () => {
+                  // Set the preview image of the condo with the data URL
+
           setPreviewCondoImage(reader.result);
         };
-    
+            // Read the file as a data URL
+
         reader.readAsDataURL(file);
       };
-    
+
+
+/**
+ * Handles the change event for input fields in the condo form.
+ * Validates the input value for the "unitPrice" field to ensure it contains only numbers.
+ * Updates the condo state with the new input value.
+ * @param {Event} e - The change event object.
+ * @returns {void}
+ */
       const handleInputChange = (e) => {
+        // Extract the name and value from the input element
         const { name, value } = e.target;
       
         // Check if the input is for unitPrice and if it contains only numbers
@@ -62,12 +95,19 @@ const AddCondoFormComponent = () => {
           toast.error("Please enter a valid number for Unit Price");
           return;
         }
-      
+          // Update the condo state with the new input value
+
         setCondo((prevCondo) => ({ ...prevCondo, [name]: value }));
       };
     
      
-    
+/**
+ * Handles the form submission for adding a condo.
+ * Validates if any field is empty and displays an error if so.
+ * Submits the condo if all fields are filled, resets the form, and navigates to the property details page.
+ * @param {Event} e - The form submission event object.
+ * @returns {void}
+ */
       const handleSubmit = async (e) => {
         e.preventDefault();
       
@@ -91,12 +131,13 @@ const AddCondoFormComponent = () => {
           lockerNumber: "",
           picture: null,
         });
-        try{
+        try{  // Attempt to add the condo using the addCondo function
             await addCondo(condo,propertyID,propertyName);
         }
-        catch(e){
+        catch(e){ // Display an error message if adding the condo fails
           toast.error("Error adding condo");
         }
+          // Navigate to the property details page after successful submission
         navigate(`/propertydetailspage/${propertyID}/${propertyName}`);
       };
       return (

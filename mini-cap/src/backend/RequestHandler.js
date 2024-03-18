@@ -26,6 +26,7 @@ import { cleanData } from "./DataCleaner";
 
 //Sprint 3
 
+
 /**
  * Submits a request associated with the specified condo ID, request type, and notes.
  * 
@@ -55,6 +56,7 @@ export async function submitRequest(condoID, type, notes) {
 
         // Update the request document with its own ID
         await updateDoc(docRef, { requestID: requestID });
+
 
         // Return the ID of the submitted request
         return requestID;
@@ -131,6 +133,7 @@ export async function updateRequest(condoID, requestID) {
         const requestData = requestDoc.data();
         // Increment the step of the request
         requestData.step += 1;
+
         
         // If it's the first step, assign a worker
         if(requestData.step === 1){
@@ -143,6 +146,7 @@ export async function updateRequest(condoID, requestID) {
         
         // Determine the type of steps based on the request type
         let stepType;
+
         if(requestData.type === "Administrative"){
             stepType = ADMINISTRATIVE_STEPS;
         } else if(requestData.type === "Financial"){
@@ -152,17 +156,18 @@ export async function updateRequest(condoID, requestID) {
         } else {
             console.error("Invalid request type");
         }
+
         
         // Update the request document
         await updateDoc(requestRef, requestData);
-        
-        // Check if the request process is completed
-        if(requestData.step >= stepType.length){
-            return "Completed";
-        } else {
-            // Return the next step in the request process
-            return stepType[requestData.step];
-        }
+      
+        //  COMMENTED OUT THIS BECAUSE IN CONDOREQUESTSVIEW.JSX YOU CAN ONLY DO MAX 4 ADVANCES
+        // if(requestData.step >= stepType.length){
+        //     return "Completed"
+        // }
+        // else{
+            return requestData.step;
+        // }
     } catch (e) {
         console.error("Error updating request: ", e);
         return null;

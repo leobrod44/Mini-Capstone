@@ -6,6 +6,7 @@ import React, {useEffect, useState} from "react";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
+import FinancialDetails from "../components/FinancialDetails.jsx";
 import {getCondo} from "../backend/PropertyHandler";
 import {getCondoPicture} from "../backend/ImageHandler";
 import {toast} from "react-toastify";
@@ -13,10 +14,13 @@ import {useNavigate, useParams} from "react-router-dom";
 import store from "storejs";
 import {getCompanyEmail} from "../backend/UserHandler";
 import {MANAGEMENT_COMPANY} from "../backend/Constants";
+import CondoRequests from "../components/CondoRequestsView.jsx";
+import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import { getRequests } from "../backend/RequestHandler";
+import { FaCheck, FaTimes } from 'react-icons/fa'; // Import icons from react-icons library
 
 export default function CondoDetails(){
 	let { condoId } = useParams();
-	// export default function CondoDetails({ propertyName, address, parkingNumber, lockerNumber, unitNumber, price, unitSize, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
 	const [condoDetails, setCondoDetails] = useState(false);
 	const [showPopup, setShowPopup] = useState(false);
 	const [show, setShow] = useState(false);
@@ -24,6 +28,7 @@ export default function CondoDetails(){
 	const navigate = useNavigate();
 	const [role, setTheRole] = useState("");
 	const [companyEmail, setCompanyEmail] = useState(null);
+	const [requests, setRequests] = useState([]);
 
 	useEffect(() => {
 		const fetchCondo = async () => {
@@ -41,8 +46,17 @@ export default function CondoDetails(){
 				console.error(err);
 			}
 		};
-		fetchCondo();
 
+		const fetchRequests = async () => {
+			try {
+				setRequests(await getRequests(condoId));
+			} catch (error) {
+				console.error("Error fetching requests:", error);
+			}
+		};
+
+		fetchCondo();
+		fetchRequests();
 	}, []);
 
 	if (condoDetails === null) {
@@ -68,6 +82,7 @@ export default function CondoDetails(){
     const handleClickDelete = () => {
         setShow(true);
     };
+
     const handleClose = () => {
         setShow(false);
 	};
@@ -86,12 +101,30 @@ export default function CondoDetails(){
 		status
 	} = condoDetails;
 
-	return(
-		<div className='pageContainer'>
-		<>
-			<Header/>
+	const [showCondoRequests, setShowCondoRequests] = useState(false);
 
-			<div className="details" style={{zIndex: 2, position: 'relative', marginTop: '20px'}}>
+	const toggleCondoRequests = () => {
+		setShowCondoRequests(!showCondoRequests);
+	}
+	const[showFinancialDetails, setShowFinancialDetails] = useState(false);
+
+	const toggleFinancialDetails = () => {
+		setShowFinancialDetails(!showFinancialDetails);
+	}
+
+	{/* TO DO is RentPaid */}
+    const [isRentPaid, setIsRentPaid] = useState(false); // State to track whether rent is paid
+
+    const toggleRentPaid = () => {
+        setIsRentPaid(!isRentPaid);
+    };
+
+		return(
+			<div className='pageContainer'>
+			<>
+				<Header/>
+				
+				<div className="details" style={{zIndex: 2, position: 'relative', marginTop: '20px'}}>
 				<div className="title_container">
 					<link
 						rel="stylesheet"
@@ -105,12 +138,24 @@ export default function CondoDetails(){
 								<div className= 'pic-and-num'>
 									{picture && <img src={picture} alt="Profile" className="profile-picture" />}
 								</div>
+								<div>
+									{role !== MANAGEMENT_COMPANY && (
+										<>
+											{isRentPaid ? <FaCheck className="Ownergreen-check" /> : <FaTimes className="Ownerred-cross" />}
+										</>
+									)}
+									{role === MANAGEMENT_COMPANY && status !== "Vacant" && (
+										<>
+											{isRentPaid ? <FaCheck className="CONDOgreen-check" /> : <FaTimes className="CONDOred-cross" />}
+										</>
+									)}
+								</div>
 								<div className='pic-and-tag'>
 								{status === "Vacant" && role === MANAGEMENT_COMPANY && (
 									<>
 									<div>
 										<div className={`user-tag vacant`}>{status}</div>
-										{role === "mgmt" && (
+										{role === MANAGEMENT_COMPANY && (
 										<>
 											<button className="sendkey-button" onClick={handlePopupToggle}>Send Key</button>
 										</>)}
@@ -127,14 +172,14 @@ export default function CondoDetails(){
 										<div className={`user-tag owner`}>{status}</div>
 									</>
 								)}
-
-								</div>
-
+							</div>
 
 							</div>
-								<div className='other-info'>
+							<div className='other-info'>
 								<h2 className="DB_title"> {propertyName} <br /><br /></h2>
 
+								<h5 style={{paddingTop:"25px", paddingLeft:"25%", color:"#2f2c9"}}>General Information</h5>
+           
 								<div className='other-info1'>
 									<div className='other-info2'><h5>Address: </h5></div>
 									<div className= 'other-info2'>{address}</div>
@@ -200,18 +245,47 @@ export default function CondoDetails(){
 										<>
 											<div className='other-info2'><h5>Renter/Owner Email: </h5></div>
 											<div className='other-info2'>{occupant}</div>
-											<br /><br />
 										</>)}
 								</div>
+
 								<div className='other-info1'>
 								{role !== MANAGEMENT_COMPANY && (
 										<>
 											<div className='other-info2'><h5>Property Company Email: </h5></div>
 											<div className='other-info2'>{companyEmail}</div>
-											<br /><br />
 										</>)}
 								</div>
+								
 							</div>
+
+							<div style={{display: "flex" , alignItems: "center"}}>
+								<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>Condo Requests</h5>
+								<div>
+									<button id="toggleButton" className="requests-button" onClick={toggleCondoRequests}>
+										{showCondoRequests ? <MdExpandLess/> : <MdExpandMore />} </button>
+								</div>
+							</div>
+
+							<div className="other-info">
+								{showCondoRequests && (
+									requests.length > 0 ? (
+										requests.map((request, index) => (
+											<CondoRequests
+												key={index}
+												type={request.type}
+												notes={request.notes}
+												role={role}
+												step={request.step}
+												condoId={condoId}
+												requestId={request.requestID}
+											/>
+										))
+									) : (
+										<p className="request-container">There are no current requests</p>
+									)
+								)}
+							</div>
+
 							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
 							<div>
 								{role === MANAGEMENT_COMPANY && (
@@ -219,6 +293,19 @@ export default function CondoDetails(){
 										<button className="edit-button"> Edit</button>
 										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
 									</>)}
+							</div>
+							<div style={{display: "flex" , alignItems: "center"}}>
+							<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>
+								<div>
+									<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}>
+										{showFinancialDetails ? <MdExpandLess/> : <MdExpandMore />}
+									</button>
+								</div>
+							</div>
+							<div className="other-info">
+								{showFinancialDetails && (
+									<FinancialDetails/>
+								)}
 							</div>
 						</div>
 					</div>
@@ -233,12 +320,17 @@ export default function CondoDetails(){
 					</div>
 				</div>
 			</div>
+			{role !== MANAGEMENT_COMPANY && (
+				<button onClick={toggleRentPaid}>Toggle Rent Paid</button>)
+			}
+			{role === MANAGEMENT_COMPANY && status !=="Vacant" && (					
+				<button onClick={toggleRentPaid}>Toggle Rent Paid</button>)
+			}
 
 			<BackArrowBtn/>
 			<div style={{zIndex: 1, position: 'relative'}}><Footer/></div>
 		</>
 		</div>
 	);
-
 }
 
