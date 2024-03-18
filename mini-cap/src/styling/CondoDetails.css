@@ -3,7 +3,7 @@
 h2{
     font-family: "Roboto", sans-serif;
     position: relative;
-    margin-bottom: 3px;
+ 
     color:#2f2c9b;
     font-size: 20px;
     font-weight: 700;
@@ -126,10 +126,47 @@ h2{
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
     height: 36px;
     width: 125px;
-    margin-top: 10px;
+    margin-top: 20px;
     margin-right: 10px;
     float: right;
   }
+
+  .edit-button:hover {
+    background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
+    color: #ffffff; /* Change text color on hover to white */
+  }
+
+  .finance-button {
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    font-weight: 400;
+    font-size: 20px; /* Chosen font size */
+    background-color: #4540db; /* Chosen background color from signup2 branch */
+    color: #fff; /* Assuming var(--white) is white, replaced with #fff */
+    border: none; /* No border */
+    border-radius: 4px; /* Chosen border-radius */
+    cursor: pointer; /* Hand cursor on hover */
+    transition: all 0.3s ease; /* Example transition */
+    display: flex; /* Display style */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
+    height: 40px;
+    width: 40px;
+    float: right;
+  }
+
+  .finance-button:hover {
+    background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
+    color: #ffffff; /* Change text color on hover to white */
+  }
+  .green-line {
+    width: 90px; 
+    height: 4px; 
+    background-color: #2f2c9b;
+    margin: 10px auto; 
+    margin-bottom: 10%;
+  }
+
   .sendkey-button {
     font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
     font-weight: 400;
@@ -149,6 +186,11 @@ h2{
     display: block;
   }
 
+  .sendkey-button:hover {
+    background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
+    color: #ffffff; /* Change text color on hover to white */
+  }
+
   .delete-button{
     font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
     font-weight: 400;
@@ -165,7 +207,7 @@ h2{
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
     height: 36px;
     width: 125px;
-    margin-top: 10px;
+    margin-top: 20px;
     margin-right: 10px;
     float: left;
   }
@@ -233,4 +275,32 @@ h2{
 .request-container {
   display: flex;
   justify-content: center;
+}
+  
+.CONDOgreen-check {
+    color: green;
+    justify-self: right;
+    margin-right: -60px;
+    margin-top: 50px;
+}
+
+.CONDOred-cross {
+    color: red;
+    justify-self: right;
+    margin-right: -60px;
+    margin-top: 50px;
+}
+
+.Ownergreen-check {
+  color: green;
+  justify-self: right;
+  margin-right: -60px;
+  margin-top: 0px;
+}
+
+.Ownerred-cross {
+  color: red;
+  justify-self: right;
+  margin-right: -60px;
+  margin-top: 0px;
 }
