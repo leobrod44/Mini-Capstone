@@ -314,6 +314,30 @@ export async function addProperty(data) {
         throw new Error("Error adding condo: " + error);
       }
     }
+
+    //add all parking spots in new property
+    const amenitiesRef = collection(docRef, "Amenities");
+    for(let i = 1; i<=data.parkingCount; i++){
+      await addDoc(amenitiesRef, {
+        available: true,
+        condo: "",
+        number: i,
+        price: data.parkingCost,
+        type: "Parking"
+      });
+    }
+
+    //add all lockers in new property
+    for(let i = 1; i<=data.lockerCount; i++){
+      await addDoc(amenitiesRef, {
+        available: true,
+        condo: "",
+        number: i,
+        price: data.lockerCost,
+        type: "Locker"
+      });
+    }
+
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
     throw new Error("Error adding document: " + error);
