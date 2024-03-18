@@ -218,17 +218,19 @@ export async function getAssignedWorker(condoID, requestID) {
         // Extract condo data from the snapshot
         const condoData = condoSnap.data();
 
-        // Get document reference for the specified property ID
-        const workersCollRef = collection(db, "Property", condoData.property, "Workers");
-        const workersSnapshot = await getDocs(workersCollRef);
+        const requestDocRef = doc(db, "Condo", condoID, "Requests", requestID);
+        // Fetch the snapshot of the request document
+        const requestSnap = await getDoc(requestDocRef);
+        // Extract request data from the snapshot
+        const requestData = requestSnap.data();
 
-        for (const worker of workersSnapshot.docs) {
-            for(const request in worker.data().assignedRequests){
-                if(request.requestID == requestID)
-                    return worker.data();
-            }
-        }
-        return null;
+        // Get document reference for the specified property ID
+        const workerDocRef = doc(db, "Property", condoData.property, "Workers", requestData.assignedWorkerID);
+        // Fetch the snapshot of the worker document
+        const workerSnap = await getDoc(workerDocRef);
+        // Return worker data (contains fields type and name)
+        return workerSnap.data();
+
     } catch (e) {
         console.error("Error getting worker: ", e);
         return null;
