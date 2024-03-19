@@ -269,6 +269,21 @@ export async function addProperty(data) {
         throw new Error("Error adding condo: " + error);
       }
     }
+
+    //Add workers for the new property
+    const workersRef = collection(docRef, "Workers")
+    await addDoc(workersRef, {
+      type: "Financial",
+      name: data.propertyName + " Financial Worker",
+    });
+    await addDoc(workersRef, {
+      type: "Administrative",
+      name: data.propertyName + " Administrative Worker",
+    });
+    await addDoc(workersRef, {
+      type: "Operational",
+      name: data.propertyName + " Operational Worker",
+    });
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
     throw new Error("Error adding document: " + error);
