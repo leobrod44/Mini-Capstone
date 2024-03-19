@@ -94,7 +94,7 @@ const CondoFilesComponent = ({ condoID, condoFiles, setCondoFiles, onFileClick }
             {/* Display uploaded files */}
             {files.length > 0 && (
                 <div>
-                    <h4>Uploaded Files:</h4>
+                    <h4>Selected Files:</h4>
                     <ul>
                         {files.map((file, index) => (
                             <li key={index} onClick={() => onFileClick({ fileName: file.name })}>
