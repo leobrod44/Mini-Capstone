@@ -4,7 +4,7 @@ import {
     linkCondoToUser,
     sendCondoKey,
     storeCondoKey,
-    addCondo, addProperty, getProperties, getUserCondos, getCondos, getCondo
+    addCondo, addProperty, getProperties, getUserCondos, getCondos, getCondo, calculateCondoFees
 } from '../backend/PropertyHandler';
 import {doc, getDoc, getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs} from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
@@ -427,5 +427,48 @@ describe("getting condos and properties functions", () => {
         });
       });
     
+
+});
+
+describe("financial property and condo tests", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('getCondoFees: should calculate fees for a rented condo', async () => {
+        const fakeCondoId = 'fakeCondoId';
+        const fakeCondoData = { status: 'Rented', property: 'fakePropertyId', unitPrice: 100 };
+        const fakeAmenityData = { condo: 'fakeCondoId', price: 50 };
+        const fakePropertyDoc = { exists: true };
+        const fakeAmenitiesSnapshot = { docs: [{ data: () => fakeAmenityData }] };
+
+        doc.mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce({ exists: true, data: () => fakeCondoData }) })
+            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc) })
+            .mockReturnValueOnce({ getDocs: getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot) });
+
+        const result = await calculateCondoFees(fakeCondoId);
+
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoId);
+        expect(getDoc).toHaveBeenCalledTimes(2);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(getDocs).toHaveBeenCalled();
+        expect(result).toEqual({ monthlyFees: 150, totalFees: null });
+    });
+
+    test('getCondoFees: test when condo document does not exist', async () => {
+        const fakeCondoId = 'fakeCondoId';
+        const fakeCondoData = { status: 'Rented', property: 'fakePropertyId', unitPrice: 100 };
+        const fakeAmenityData = { condo: 'fakeCondoId', price: 50 };
+        const fakePropertyDoc = { exists: true };
+        const fakeAmenitiesSnapshot = { docs: [{ data: () => fakeAmenityData }] };
+
+        doc.mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce({ exists: false, data: () => fakeCondoData }) })
+            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc) })
+            .mockReturnValueOnce({ getDocs: getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot) });
+
+        const result = await calculateCondoFees(fakeCondoId);
+
+        expect(result).toEqual(null);
+    });
 
 });
