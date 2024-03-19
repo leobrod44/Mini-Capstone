@@ -83,10 +83,6 @@ export default function CondoDetails() {
 		fetchRequests();
 	}, []);
 
-	if (condoDetails === null) {
-		// If condoDetails is still null, return a loading state or handle it accordingly
-		return <div>Loading...</div>;
-	}
 
 	// Function to handle delete condo attempt
 	const deleteCondoAttempt = async () => {
