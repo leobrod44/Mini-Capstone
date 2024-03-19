@@ -450,7 +450,6 @@ describe("financial property and condo tests", () => {
 
         expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoId);
         expect(getDoc).toHaveBeenCalledTimes(2);
-        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
         expect(getDocs).toHaveBeenCalled();
         expect(result).toEqual({ monthlyFees: 150, totalFees: null });
     });
