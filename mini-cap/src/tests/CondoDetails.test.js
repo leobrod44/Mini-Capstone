@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import CondoDetails from '../pages/CondoDetails';
+import {BrowserRouter, MemoryRouter} from "react-router-dom";
 
 // Mock required components
 jest.mock('../components/Header.jsx', () => () => <div data-testid="header-mock">Header Mock</div>);
@@ -150,4 +151,54 @@ test('handleClose sets show to false', () => {
   const popup = getByTestId('popup-delete-test');
   expect(popup).toBeInTheDocument();
   expect(window.getComputedStyle(popup).getPropertyValue('display')).toBe('block');
+});
+
+
+//MATTS TESTS------------------
+// Mock the asynchronous functions and other necessary imports...
+// Mock the backend functions
+
+// Mock the backend functions
+// Mock the backend functions and other dependencies...
+jest.mock('../backend/PropertyHandler', () => ({
+  getCondo: jest.fn(() => Promise.resolve({
+    propertyName: 'Bus Stand Manor',
+    address: '43 Bus Stand Rd, Sector 43-A, Sector 43, Chandigarh, 160047, India',
+    unitNumber: '1',
+    unitSize: '2.5',
+    parkingNumber: '7',
+    lockerNumber: '2',
+    propertyID: '4NMQJngouRxKmmzeCNgY',
+    occupant: 'disbister.reid@gmail.com',
+    status: 'Owned'
+  })),
+}));
+jest.mock('../backend/ImageHandler', () => ({
+  getCondoPicture: jest.fn(() => Promise.resolve('mocked_image_url')),
+}));
+jest.mock('../backend/UserHandler', () => ({
+  getCompanyEmail: jest.fn(() => Promise.resolve('mocked_company_email')),
+}));
+jest.mock('../backend/RequestHandler', () => ({
+  getRequests: jest.fn(() => Promise.resolve([{ /* mocked request data */ }])),
+}));
+
+describe('CondoDetails Component', () => {
+  test('fetches condo details and requests on mount', async () => {
+    render(
+        <MemoryRouter>
+          <CondoDetails/>
+        </MemoryRouter>
+    );
+
+    // Wait for the asynchronous operations to complete
+    await waitFor(() => {
+      expect(require('../backend/PropertyHandler').getCondo).toHaveBeenCalledTimes(1);
+      expect(require('../backend/ImageHandler').getCondoPicture).toHaveBeenCalledTimes(0);
+      expect(require('../backend/UserHandler').getCompanyEmail).toHaveBeenCalledTimes(0);
+      expect(require('../backend/RequestHandler').getRequests).toHaveBeenCalledTimes(1);
+    });
+
+    // Add any additional assertions here based on your component's behavior
+  });
 });
