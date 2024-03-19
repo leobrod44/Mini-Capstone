@@ -30,15 +30,10 @@ emailjs.init({
  * @throws {Error} If an error occurs while storing the condo key data.
  */
 export async function storeCondoKey(data) {
-  // Log the provided data for debugging purposes
-  console.log(data);
 
   try {
     // Add the condo key data to the "Keys" collection in the database
     const docRef = await addDoc(collection(db, "Keys"), data);
-
-    // Log the role property of the provided data for debugging purposes
-    console.log(data.role);
 
     // Update the newly created condo key document to mark it as unused
     await updateDoc(docRef, {
@@ -62,9 +57,6 @@ export async function storeCondoKey(data) {
  * @returns {void}
  */
 export async function sendCondoKey(email, key) {
-  // Log the recipient email address for debugging purposes
-  console.log(email);
-
   // Use emailjs to send the condo key via email
   emailjs
     .send(
@@ -75,16 +67,7 @@ export async function sendCondoKey(email, key) {
         publicKey: "Gw4N_w4eDx939VEBl", // Public key for authentication
       }
     )
-    .then(
-      () => {
-        // Log success message if the email is sent successfully
-        console.log("Successfully sent key!");
-      },
-      (error) => {
-        // Log error message if there is a failure in sending the email
-        console.log("Failed to send key: ", error.text);
-      }
-    );
+    .then();
 }
 /**
  * Links a condo to a user based on a provided key.
@@ -164,8 +147,6 @@ export async function linkCondoToUser(email, key) {
     // Return a message indicating that the condo has been successfully linked to the user
     return "Condo added!";
   } catch (error) {
-    // Log and handle any errors that occur during the process
-    console.error(error);
     return "An error occurred while linking condo to user.";
   }
 }
@@ -595,12 +576,9 @@ export async function getCondo(condoID) {
       return condoData;
     } else {
       // If the condo document does not exist, log a message and return null
-      console.log("No such document!");
       return null;
     }
   } catch (error) {
-    // If an error occurs during the process, log the error
-    console.error(error);
     // Rethrow the error to propagate it up the call stack
     throw error;
   }
@@ -614,7 +592,6 @@ export async function getCondo(condoID) {
  * @throws {Error} If an error occurs during the retrieval process.
  */
 export async function getPropertyData(id) {
-  try {
     // Get document reference for the specified property ID
     const docRef = doc(db, "Property", id);
     // Fetch document snapshot
@@ -624,14 +601,10 @@ export async function getPropertyData(id) {
     if (docSnap.exists()) {
       // Return property data
       return docSnap.data();
-    } else {
-      // Log message if document does not exist
-      console.log("No such document!");
-    }
-  } catch (err) {
-    // Log any errors
-    console.error(err);
-  }
+    } 
+    // Return null if document not found
+    return null;
+  
 }
 
 //Sprint 3
@@ -660,7 +633,6 @@ const sampleIsPaid = {
 //Provide: property id
 //Returns: amenity array associated with a property
 export async function getAmenities(propertyID) {
-  console.log("Getting amenities for property: ", propertyID);
   return [sampleAmenity, sampleAmenity, sampleAmenity];
 }
 
@@ -761,14 +733,10 @@ export async function getCondoOccupant(condoId) {
       const { occupant } = condoDocSnap.data();
       return occupant;
     } else {
-      // Log error message if condo document not found
-      console.error("Condo document not found");
       // Return null if condo document not found
       return null;
     }
   } catch (error) {
-    // Log error if any occurs during the process
-    console.error("Error getting condo occupant:", error);
     // Throw error to propagate it up the call stack
     throw error;
   }
@@ -820,12 +788,9 @@ export async function calculateCondoFees(condoId) {
 
     } else {
       // If the condo document does not exist, log a message and return null
-      console.log("No such document!");
       return null;
     }
   } catch (error) {
-    // If an error occurs during the process, log the error
-    console.error(error);
     // Rethrow the error to propagate it up the call stack
     throw error;
   }
