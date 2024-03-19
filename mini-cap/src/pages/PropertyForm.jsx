@@ -226,7 +226,14 @@ const PropertyForm = () => {
       toast.error(`Count or Price must be greater than  0`);
       return;
     }
-  
+    if (name === "lockerCount" && parseInt(value) > 30) {
+      toast.error("Locker count cannot exceed 30");
+      return;
+    }
+    if (name === "parkingCount" && parseInt(value) > 30) {
+      toast.error("Parking count cannot exceed 30");
+      return;
+    }
     setProperty({
       ...property,
       [name]: parsedValue,
@@ -420,7 +427,7 @@ const PropertyForm = () => {
               Parking Count:
             </label>
             <input
-              type="number" min="0"  
+              type="number" min="0"  max="30"
               id="parkingCount"
               name="parkingCount"
               value={property.parkingCount}
@@ -476,7 +483,7 @@ const PropertyForm = () => {
                </select>
                  <input
                  id="lockerCost" 
-                 type="number" min="0" 
+                 type="number" min="0"   max="30" 
                  value={property.lockerCost}
                  onChange={(e) => handleInputChange(e)}
                  name="lockerCost"
