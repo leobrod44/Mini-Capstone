@@ -210,7 +210,7 @@ export async function addCondo(data, propertyID, propertyName) {
     const amenitiesRef = collection(propertyRef, "Amenities");
     const amenitiesSnapshot = await getDocs(amenitiesRef);
 
-    if(data.parking){
+    if(data.parkingNumber){
       let parkingAssigned = false;
       //assign condo to free parking in property
       for (const doc of amenitiesSnapshot.docs) {
@@ -230,7 +230,7 @@ export async function addCondo(data, propertyID, propertyName) {
       }
     }
 
-    if(data.locker){
+    if(data.lockerNumber){
       let lockerAssigned = false;
       //assign condo to free locker in property
       for (const doc of amenitiesSnapshot.docs) {
