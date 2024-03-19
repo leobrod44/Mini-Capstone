@@ -331,6 +331,7 @@ export default function CondoDetails(){
 							<div id="modal" className="modal" style={{ display: displayForm ? 'block' : 'none' }}>
 								<RequestForm
 									handleClickClose={handleClickClose}
+									condoInfo = {condoDetails}
 								/>
 							</div>
 						</div>
