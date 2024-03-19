@@ -1,0 +1,90 @@
+/* CondoFilesPage.css */
+.center-pageF {
+  text-align: center;
+}
+
+.condo-files-heading {
+  margin-top: 2.5%;
+}
+
+.white-containerFiles {
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 3vw; /* Adjust padding using viewport width */
+  text-align: center;
+  margin: auto;
+  width: 90%; /* Adjust width using percentage */
+  max-width: 800px; /* Limit maximum width for large screens */
+  margin-top: 4vh; /* Adjust margin using viewport height */
+}
+
+.white-containerFiles h4 {
+  margin-top: 3vh; /* Adjust margin using viewport height */
+}
+
+.white-containerFiles ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.white-containerFiles li {
+  cursor: pointer;
+  margin: 2vh 0; /* Adjust margin using viewport height */
+  color: #4540db;
+  /* Add any other styles as needed */
+}
+
+/* Add modal styles */
+.modalFiles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-contentFiles {
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 3vw; /* Adjust padding using viewport width */
+  text-align: center;
+  cursor: default;
+}
+
+.modal-contentFiles h2 {
+  color: #4540db;
+  margin-bottom: 3vh; /* Adjust margin using viewport height */
+}
+
+.modal-contentFiles p {
+  margin: 3vh 0; /* Adjust margin using viewport height */
+}
+
+.modal-contentFiles button {
+  background-color: #4540db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 1.5vh 3vw; /* Adjust padding using viewport width and height */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: larger;
+}
+
+.modal-contentFiles button:hover {
+  background-color: #7975d6;
+}
+
+.DB_titleF {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: #4540db;
+  display: inline-block;
+  margin-top: 2.5%;
+}
