@@ -205,6 +205,59 @@ export async function addCondo(data, propertyID, propertyName) {
       status: "Vacant"
     });
 
+    const propertyRef = doc(db, "Property", propertyID);
+    // Fetch the snapshot of the property document
+    const amenitiesRef = collection(propertyRef, "Amenities");
+    const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+    if(data.parkingNumber){
+      let parkingAssigned = false;
+      //assign condo to free parking in property
+      for (const doc of amenitiesSnapshot.docs) {
+        if(!parkingAssigned && doc.data().available == true && doc.data().type == "Parking"){
+          //update parking document with condo info
+          await updateDoc(doc.ref, {
+            condo: docID,
+            available: false
+          })
+          //update condo document with parking number
+          await updateDoc(docRef, {
+            parkingNumber: doc.data().number,
+          })
+          parkingAssigned = true;
+        }else if(parkingAssigned)
+          break;
+      }
+    }else{
+      await updateDoc(docRef, {
+        parkingNumber: "No Parking",
+      });
+    }
+
+    if(data.lockerNumber){
+      let lockerAssigned = false;
+      //assign condo to free locker in property
+      for (const doc of amenitiesSnapshot.docs) {
+        if(!lockerAssigned && doc.data().available == true && doc.data().type == "Locker"){
+          //update locker document with condo info
+          await updateDoc(doc.ref, {
+            condo: docID,
+            available: false
+          })
+          //update condo document with parking number
+          await updateDoc(docRef, {
+            lockerNumber: doc.data().number,
+          })
+          lockerAssigned = true;
+        }else if(lockerAssigned)
+          break;
+      }
+    }else{
+      await updateDoc(docRef, {
+        lockerNumber: "No Locker",
+      });
+    }
+
     // If picture data is provided, add the picture to storage
     if (pictureData) {
       try {
@@ -283,6 +336,30 @@ export async function addProperty(data) {
       type: "Operational",
       name: data.propertyName + " Operational Worker",
     });
+
+    //add all parking spots in new property
+    const amenitiesRef = collection(docRef, "Amenities");
+    for(let i = 1; i<=data.parkingCount; i++){
+      await addDoc(amenitiesRef, {
+        available: true,
+        condo: "",
+        number: i,
+        price: data.parkingCost,
+        type: "Parking"
+      });
+    }
+
+    //add all lockers in new property
+    for(let i = 1; i<=data.lockerCount; i++){
+      await addDoc(amenitiesRef, {
+        available: true,
+        condo: "",
+        number: i,
+        price: data.lockerCost,
+        type: "Locker"
+      });
+    }
+
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
     throw new Error("Error adding document: " + error);
