@@ -39,13 +39,10 @@ export async function getUserData(email) {
           // Return the data of the user document
           return docSnap.data();
       } else {
-          // Log a message if the document does not exist
-          console.log("No such document!");
+          // return null if the document does not exist
           return null;
       }
   } catch (err) {
-      // Log any errors that occur during the process
-      console.error(err);
       return null;
   }
 }
@@ -68,14 +65,12 @@ export async function getCompanyData(email) {
       if (docSnap.exists()) {
           // Return the data of the company document
           return docSnap.data();
-      } else {
-          // Log a message if the document does not exist
-          console.log("No such document!");
+      } else {  
+            // return null if the document does not exist
           return null;
       }
   } catch (err) {
       // Log any errors that occur during the process
-      console.error(err);
       return null;
   }
 }
@@ -99,8 +94,7 @@ export async function updateUserInfo(email, data) {
           phoneNumber: data.phoneNumber,
       });
   } catch (err) {
-      // Log any errors that occur during the process
-      console.error(err);
+        throw err;
   }
 }
 
@@ -122,8 +116,7 @@ export async function updateCompanyInfo(email, data) {
           phoneNumber: data.phoneNumber,
       });
   } catch (err) {
-      // Log any errors that occur during the process
-      console.error(err);
+      throw err;
   }
 }
 
@@ -299,10 +292,8 @@ export async function storeData(collection, data, key) {
       // Set the document in the collection
       const docRef = await setDoc(doc(db, collection, key), clean)
           .then((res) => {
-              console.log("Document added successfully:", res);
           })
           .catch((err) => {
-              console.error("Unable to add user to database:", err);
               throw new Error(err);
           });
 
@@ -419,9 +410,7 @@ export async function getCompanyEmail(condoId) {
               // Get the email of the company owner
               const companyOwner = propertyDocSnap.data().companyOwner;
               return companyOwner;
-          } else {
-              console.log(`Property with ID ${propertyId} does not exist.`);
-          }
+          } 
       } else {
           console.log(`Condo with ID ${condoId} does not exist.`);
       }
