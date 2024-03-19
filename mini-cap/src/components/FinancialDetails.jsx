@@ -3,7 +3,18 @@ import "../styling/FinancialDetails.css";
 import { FaCheck, FaTimes } from 'react-icons/fa'; // Import icons from react-icons library
 import { useParams } from "react-router-dom";
 import { MANAGEMENT_COMPANY } from "../backend/Constants";
+import { getFinanceDetails } from '../backend/PropertyHandler';
+import { getCondo } from '../backend/PropertyHandler';
+import { checkRentPaid } from '../backend/PropertyHandler';
+import store from "storejs";
 
+/**
+ * Represents a component for displaying financial details of a condo.
+ * Retrieves the condo ID from the URL parameters.
+ * Manages condo details availability, rent payment status,
+ * and financial details such as base price, parking price, locker price, additional price, and total price.
+ * @returns {JSX.Element} The rendered FinancialDetails component.
+ **/
 const FinancialDetails = () => {
     let { condoId } = useParams();
     const [role, setTheRole] = useState("");
@@ -17,6 +28,13 @@ const FinancialDetails = () => {
         TotalPrice: 0
     });
 
+
+/**
+ * Fetches condo details and sets the user role state using local storage.
+ * Retrieves the condo ID from the URL parameters.
+ * Executes once when the component mounts.
+ * @returns {void}
+ **/
     useEffect(() => {
         const fetchCondo = async () => {
             try {
@@ -31,14 +49,30 @@ const FinancialDetails = () => {
 
     }, []);
 
+    /**
+     * Destructures the "status" property from the condoDetails object.
+     * This property presumably represents the status of the condo, such as "Rented", "Owned" and "vacant"
+     * @type {string} status - The status of the condo.
+     **/
     const {
         status
     } = condoDetails;
 
+
+    /**
+     * Temporarily toggles the rent payment status state between true and false.
+     * If rent is currently paid, it sets the state to unpaid, and vice versa.
+     * @returns {void}
+     **/
     const toggleRentPaid = () => {
         setIsRentPaid(!isRentPaid);
     };
 
+    /**
+     * Fetches financial details asynchronously and updates the financial details state.
+     * Executes once when the component mounts.
+     * @returns {void}
+     **/
     useEffect(() => {
         const fetchingFinanceDetails = async () => {
             try {
@@ -51,6 +85,11 @@ const FinancialDetails = () => {
         fetchingFinanceDetails();
     }, []);
 
+    /**
+    * Sets the rent payment status state based on the result of an asynchronous rent payment check.
+    * Fetches the rent payment status and updates the isRentPaid state accordingly.
+    * @returns {void}
+    **/
     const setRentPaidStatus = async () => {
         try {
             const rentPaid = await checkRentPaid();
@@ -60,10 +99,24 @@ const FinancialDetails = () => {
         }
     };
 
+    /**
+    * Calls the setRentPaidStatus function once when the component mounts.
+    * This useEffect hook is used to initiate the process of checking the rent payment status.
+    * @returns {void}
+    **/
     useEffect(() => {
         setRentPaidStatus();
     }, []);
 
+    /**
+    * Destructures financial details properties from the fDetails object.
+    * These properties include BasePrice, ParkingPrice, LockerPrice, AdditionalPrice, and TotalPrice.
+    * @type {number} BasePrice - The base price of the condo otherwise known as rent.
+    * @type {number} ParkingPrice - The price for parking spot/spots associated with the condo.
+    * @type {number} LockerPrice - The price for locker/lockers associated with the condo.
+     * @type {number} AdditionalPrice - Any additional charges associated with requests.
+    * @type {number} TotalPrice - The total price calculated based on all the financial details.
+    **/
     const {
         BasePrice,
         ParkingPrice,
@@ -72,6 +125,11 @@ const FinancialDetails = () => {
         TotalPrice
     } = fDetails;
 
+    /**
+    * Retrieves the rent payment status.
+    * Returns "Paid" if rent is paid, otherwise returns "Unpaid".
+    * @returns {string} The rent payment status.
+    **/
     const getRentPaymentStatus = () => {
         return isRentPaid ? "Paid" : "Unpaid";
     };
