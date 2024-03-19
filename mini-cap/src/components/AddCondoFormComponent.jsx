@@ -22,8 +22,8 @@ const AddCondoFormComponent = () => {
         squareFeet: "",
         unitPrice: "",
         unitSize: "",
-        parkingNumber: "",
-        lockerNumber: "",
+        parkingNumber: false,
+        lockerNumber: false,
         picture: null,
       });
           // State to manage preview image
@@ -97,7 +97,14 @@ const AddCondoFormComponent = () => {
         }
           // Update the condo state with the new input value
 
-        setCondo((prevCondo) => ({ ...prevCondo, [name]: value }));
+          setCondo((prevCondo) => {
+            // If the input is a checkbox, update its value accordingly
+            if (e.target.type === "checkbox") {
+              return { ...prevCondo, [name]: e.target.checked };
+            } else {
+              return { ...prevCondo, [name]: value };
+            }
+          });
       };
     
      
@@ -224,35 +231,7 @@ const AddCondoFormComponent = () => {
           </select>
           </div>
         
-  
-          <div className="input-group">
-        <label className="input-label" htmlFor="parkingNumber">
-          Parking Spot:
-          </label>
-          <input
-            id="parkingNumber"
-            type="text"
-            name="parkingNumber"
-            value={condo.parkingNumber}
-            onChange={handleInputChange}
-          />
-          </div>
-        
-          <div className="input-group">
-        <label className="input-label" htmlFor="lockerNumber">
-        
-          Locker:
-          </label>
-          <input
-            id="lockerNumber"
-            type="text"
-            name="lockerNumber"
-            value={condo.lockerNumber}
-            onChange={handleInputChange}
-          />
-         </div>
-  
-         
+ 
          <label className="input-label" htmlFor="unitPrice">Unit Price:</label>
          <div className="input-group">
     <select
@@ -275,8 +254,37 @@ const AddCondoFormComponent = () => {
     />
   </div>
 
+  <div className="input-group">
+        <label className="input-label" htmlFor="parkingNumber"  style={{ marginRight: '10px' }} >
+          Parking:
+          </label>
+          <input
+            id="parkingNumber"
+            type="checkbox"
+            name="parkingNumber"
+            checked={condo.parkingNumber}
+            onChange={handleInputChange}
+            className="custom-checkbox"
+            style={{ marginLeft: '0px' }}
 
 
+          />
+          </div>
+          <div className="input-group">
+          <label className="input-label" htmlFor="lockerNumber" style={{ marginRight: '10px' }} >
+        
+          Locker:
+          </label>
+          <input
+            id="lockerNumber"
+            type="checkbox"
+            name="lockerNumber"
+            checked={condo.lockerNumber}
+            onChange={handleInputChange}
+            className="custom-checkbox"
+            style={{ marginLeft: '5px' }}
+          />
+         </div>
 
 <button className="add-condo-button" type="submit"
              onClick={handleSubmit}
