@@ -1,4 +1,3 @@
-
 import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -12,9 +11,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MGMTDashboard from "./pages/MGMTDashboard";
 import PropertyDetailsPage from "./pages/PropertyDetailsPage";
-import AddCondoForm from './pages/AddCondoForm';
+import AddCondoForm from "./pages/AddCondoForm";
 import CondoDetails from "./pages/CondoDetails";
-
+import CondoFilesPage from "./pages/CondoFilesPage";
 
 function App() {
   return (
@@ -22,20 +21,28 @@ function App() {
       <ToastContainer pauseOnHover={false} autoClose={1000} />
       <Routes>
         <Route path="/" element={<LandingPage />} />
-
         <Route path="/user-profile" element={<UserProfile />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mgmtdashboard" element={<MGMTDashboard />} />
-        <Route path="/propertydetailspage/:propertyID/:propertyName" element={<PropertyDetailsPage />} />
-       <Route path="/add-property" element={<PropertyForm />} />
-       <Route path="/add-condo" element={<AddCondoForm />} />
-       <Route path="/add-condo/:propertyID/:propertyName" element={<AddCondoForm />} />
-       <Route path="/condo-details/:condoId" element={<CondoDetails />} />
-
-    </Routes>
-
+        <Route
+          path="/propertydetailspage/:propertyID/:propertyName"
+          element={<PropertyDetailsPage />}
+        />
+        <Route path="/add-property" element={<PropertyForm />} />
+        //
+        <Route path="/add-condo" element={<AddCondoForm />} />
+        <Route
+          path="/add-condo/:propertyID/:propertyName"
+          element={<AddCondoForm />}
+        />
+        <Route path="/condo-details/:condoId" element={<CondoDetails />}  />
+        <Route
+          path="/condo-files/:propertyID/:propertyName"
+          element={<CondoFilesPage />}
+        />
+      </Routes>
     </BrowserRouter>
   );
 }
