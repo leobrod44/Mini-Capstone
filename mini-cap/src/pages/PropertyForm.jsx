@@ -157,7 +157,21 @@ const PropertyForm = () => {
       condos: updatedCondos,
     });
   };
-
+  const handleCondoCheckboxChange = (e, index) => {
+    const { name, checked } = e.target;
+  
+    const updatedCondos = [...property.condos];
+    // Update the selected condo object with the new checkbox value
+    updatedCondos[index] = {
+      ...updatedCondos[index],
+      [name]: checked, // Update the specific property (identified by name) of the condo
+    };
+    // Update the property state with the modified list of condos
+    setProperty({
+      ...property,
+      condos: updatedCondos,
+    });
+  };
   
    /**
  * Handles input change for a specific condo within the property.
@@ -502,8 +516,8 @@ const PropertyForm = () => {
           <p>Unit Price: {condo.currency} {condo.unitPrice}</p>
           <p>Unit Size: {condo.unitSize}</p>
           <p>Square Feet: {condo.squareFeet}</p>
-          <p>Parking Spot Number: {condo.parkingNumber}</p>
-          <p>Locker Number: {condo.lockerNumber}</p>
+          <p>Parking: {condo.parkingNumber}</p>
+          <p>Locker: {condo.lockerNumber}</p>
           {condo.picture && (
             <img
               src={URL.createObjectURL(condo.picture)}
@@ -624,32 +638,33 @@ onChange={(e) => handleCondoInputChange(e, index)}
 
 
 <div className="input-group">
-<label className="input-label" htmlFor="parkingNumber">
-          Parking Spot:
+<label className="input-label"  htmlFor={`ParkingNumber${index}`} style={{ marginRight: '5px' }}>
+          Parking:
           </label>
 <input
-id="parkingNumber"
-type= "text"
+id={`parkingNumber${index}`}
+type= "checkbox"
 value={condo.parkingNumber}
-onChange={(e) => handleCondoInputChange(e, index)}
+onChange={(e) => handleCondoCheckboxChange(e, index)} 
  name="parkingNumber"
+ className="custom-checkbox"
  ></input>
 </div>
 
 
 <div className="input-group">
-<label className="input-label" htmlFor="lockerNumber">
-        
-        Locker:
-        </label>
-<input
- id="lockerNumber"
-type= "text"
-value={condo.lockerNumber}
-onChange={(e) => handleCondoInputChange(e, index)}
- name="lockerNumber"
- ></input>
- </div>
+  <label className="input-label" htmlFor={`lockerNumber${index}`} style={{ marginRight: '10px' }}>
+    Locker:
+  </label>
+  <input
+    id={`lockerNumber${index}`}
+    type="checkbox"
+    checked={condo.lockerNumber} /* Assuming lockerNumber is a boolean */
+    onChange={(e) => handleCondoCheckboxChange(e, index)} /* New handler for checkbox */
+    name="lockerNumber"
+    className="custom-checkbox"
+  />
+</div>
 
   <div className="input-group mt-3"></div>
                     {/* "Submit Condo" button for each condo */}
