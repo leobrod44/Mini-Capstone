@@ -794,7 +794,7 @@ export async function calculateCondoFees(condoId) {
 
       // Check if the property document exists
       if (propertyDoc.exists) {
-        const amenitiesCollection = collection(doc.ref, "Amenities");
+        const amenitiesCollection = collection(propertyDocRef, "Amenities");
         const amenitiesSnapshot = await getDocs(amenitiesCollection);
 
         //Get all amenities for the condo and add their price
