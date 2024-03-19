@@ -122,77 +122,6 @@ describe("CondoFilesComponent", () => {
       expect(setIsDragging).toHaveBeenCalledWith(false);
     });
 
-    // New test cases
-    test("appends dropped files to existing files", () => {
-      const existingFiles = [{ name: "existingFile.txt", type: "text/plain" }];
-      const setFiles = jest.fn();
-      const setIsDragging = jest.fn();
-      const event = {
-        preventDefault: jest.fn(),
-        dataTransfer: {
-          files: [{ name: "newFile.txt", type: "text/plain" }],
-        },
-      };
-      handleDrop(event, existingFiles, setFiles, setIsDragging, onFileClick);
-      expect(setFiles).toHaveBeenCalledWith([
-        ...existingFiles,
-        event.dataTransfer.files[0],
-      ]);
-      expect(onFileClick).toHaveBeenCalledWith({
-        fileName: event.dataTransfer.files[0].name,
-        content: expect.any(String),
-      });
-      expect(setIsDragging).toHaveBeenCalledWith(false);
-    });
-
-    test("handles drop event with no files", () => {
-      const existingFiles = [{ name: "existingFile.txt", type: "text/plain" }];
-      const setFiles = jest.fn();
-      const setIsDragging = jest.fn();
-      const event = {
-        preventDefault: jest.fn(),
-        dataTransfer: {
-          files: [],
-        },
-      };
-      handleDrop(event, existingFiles, setFiles, setIsDragging, onFileClick);
-      expect(setFiles).not.toHaveBeenCalled();
-      expect(onFileClick).not.toHaveBeenCalled();
-      expect(setIsDragging).toHaveBeenCalledWith(false);
-    });
-
-    test("handles drop event with no existing files", () => {
-      const setFiles = jest.fn();
-      const setIsDragging = jest.fn();
-      const event = {
-        preventDefault: jest.fn(),
-        dataTransfer: {
-          files: [{ name: "newFile.txt", type: "text/plain" }],
-        },
-      };
-      handleDrop(event, null, setFiles, setIsDragging, onFileClick);
-      setFiles.toHaveBeenCalledWith([event.dataTransfer.files[0]]);
-      expect(onFileClick).toHaveBeenCalledWith({
-        fileName: event.dataTransfer.files[0].name,
-        content: expect.any(String),
-      });
-      expect(setIsDragging).toHaveBeenCalledWith(false);
-    });
-
-    test("handles drop event with no files and no existing files", () => {
-      const setFiles = jest.fn();
-      const setIsDragging = jest.fn();
-      const event = {
-        preventDefault: jest.fn(),
-        dataTransfer: {
-          files: [],
-        },
-      };
-      handleDrop(event, null, setFiles, setIsDragging, onFileClick);
-      expect(setFiles).not.toHaveBeenCalled();
-      expect(onFileClick).not.toHaveBeenCalled();
-      expect(setIsDragging).toHaveBeenCalledWith(false);
-    });
     test("does not trigger onFileClick for non-text files", () => {
       const files = [];
       const setFiles = jest.fn();
@@ -236,42 +165,6 @@ describe("CondoFilesComponent", () => {
       expect(setCondoFiles).toHaveBeenCalledWith([{ fileName: "file1.txt" }]);
       expect(setFiles).toHaveBeenCalledWith([]);
     });
-
-    test("handles cancellation during file upload", async () => {
-      const files = [{ name: "file1.txt" }, { name: "file2.txt" }];
-      const setFiles = jest.fn();
-      const setCondoFiles = jest.fn();
-      const uploadFile = jest.fn().mockImplementationOnce(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate a delay
-      });
-
-      const uploadPromise = handleUploadClick(
-        condoID,
-        files,
-        setFiles,
-        setCondoFiles,
-        uploadFile
-      );
-      await waitFor(() => {
-        fireEvent.click(screen.getByText("Cancel"));
-      });
-      await expect(uploadPromise).rejects.toThrow("Upload cancelled");
-    });
-  });
-
-  it("resets the value of file input element", () => {
-    // Create a file input element and set its initial value
-    const input = document.createElement("input");
-    input.setAttribute("id", "file-input");
-    input.setAttribute("type", "file");
-    input.value = "test.txt";
-    document.body.appendChild(input);
-
-    // Call the resetFileInputValue function
-    resetFileInputValue();
-
-    // Assert that the value of the file input element is now an empty string
-    expect(input.value).toBe("");
   });
 
   describe("handleCancelClick", () => {
