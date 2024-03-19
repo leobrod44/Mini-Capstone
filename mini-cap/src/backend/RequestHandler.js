@@ -1,12 +1,12 @@
 import { initializeApp } from "firebase/app";
 import {
     doc,
-  addDoc,
-  getDocs,
-  collection,
-  getFirestore,
-  getDoc,
-  updateDoc
+    addDoc,
+    getDocs,
+    collection,
+    getFirestore,
+    getDoc,
+    updateDoc, arrayUnion
 } from "firebase/firestore";
 import { firebaseConfig } from "./FirebaseConfig";
 const app = initializeApp(firebaseConfig);
@@ -21,10 +21,12 @@ const sampleRequest = {
     "viewed": false,
   }
   import { getCondo } from "./PropertyHandler";
-import { ADMINISTRATIVE_STEPS, FINANCIAL_STEPS, TYPES } from "./Constants";
+import {ADMINISTRATIVE_STEPS, FINANCIAL_STEPS, OPERATIONAL_STEPS, TYPES} from "./Constants";
 import { cleanData } from "./DataCleaner";
+import {getPropertyPicture} from "./ImageHandler";
 
 //Sprint 3
+
 
 /**
  * Submits a request associated with the specified condo ID, request type, and notes.
@@ -48,13 +50,15 @@ export async function submitRequest(condoID, type, notes) {
             step: 0,
             viewed: false,
             condoID: condoID,
-            requestID: null 
+            requestID: null,
+            assignedWorkerID: ""
         });
         // Get the ID of the newly added request document
         const requestID = docRef.id;
 
         // Update the request document with its own ID
         await updateDoc(docRef, { requestID: requestID });
+
 
         // Return the ID of the submitted request
         return requestID;
@@ -131,6 +135,7 @@ export async function updateRequest(condoID, requestID) {
         const requestData = requestDoc.data();
         // Increment the step of the request
         requestData.step += 1;
+
         
         // If it's the first step, assign a worker
         if(requestData.step === 1){
@@ -143,26 +148,28 @@ export async function updateRequest(condoID, requestID) {
         
         // Determine the type of steps based on the request type
         let stepType;
+
         if(requestData.type === "Administrative"){
             stepType = ADMINISTRATIVE_STEPS;
         } else if(requestData.type === "Financial"){
             stepType = FINANCIAL_STEPS;
-        } else if(requestData.type === "Maintenance"){
-            stepType = MAINTENANCE_STEPS;
+        } else if(requestData.type === "Operational"){
+            stepType = OPERATIONAL_STEPS;
         } else {
             console.error("Invalid request type");
         }
+
         
         // Update the request document
         await updateDoc(requestRef, requestData);
-        
-        // Check if the request process is completed
-        if(requestData.step >= stepType.length){
-            return "Completed";
-        } else {
-            // Return the next step in the request process
-            return stepType[requestData.step];
-        }
+      
+        //  COMMENTED OUT THIS BECAUSE IN CONDOREQUESTSVIEW.JSX YOU CAN ONLY DO MAX 4 ADVANCES
+        // if(requestData.step >= stepType.length){
+        //     return "Completed"
+        // }
+        // else{
+            return requestData.step;
+        // }
     } catch (e) {
         console.error("Error updating request: ", e);
         return null;
@@ -173,11 +180,67 @@ export async function updateRequest(condoID, requestID) {
 
 //BACKEND ONLY
 export async function assignWorker(requestData) {
+    try{
+        // Retrieve the document reference for the specified condo ID from the "Condo" collection
+        const condoRef = doc(db, "Condo", requestData.condoID);
+        // Fetch the snapshot of the condo document
+        const condoSnap = await getDoc(condoRef);
+        // Extract condo data from the snapshot
+        const condoData = condoSnap.data();
+
+        const requestDocRef = doc(db, "Condo", requestData.condoID, "Requests", requestData.requestID);
+
+        // Get document reference for the specified property ID
+        const propertyRef = doc(db, "Property", condoData.property);
+
+        const workersCollRef = collection(propertyRef, "Workers")
+        const workersSnapshot = await getDocs(workersCollRef);
+
+        workersSnapshot.docs.map(async (doc) => {
+            if(requestData.type == doc.data().type){
+                //add worker to request data
+                await updateDoc(requestDocRef, {
+                    assignedWorkerID: doc.ref.id
+                });
+            }
+        })
+
+    } catch (e) {
+        console.error("Error assigning worker: ", e);
+        return null;
+    }
 
 }
 
 //BACKEND ONLY
-export async function getAssignedWorker(requestID) {
+export async function getAssignedWorker(condoID, requestID) {
+
+    try{
+        // Retrieve the document reference for the specified condo ID from the "Condo" collection
+        const condoRef = doc(db, "Condo", condoID);
+        // Fetch the snapshot of the condo document
+        const condoSnap = await getDoc(condoRef);
+        // Extract condo data from the snapshot
+        const condoData = condoSnap.data();
+
+        const requestDocRef = doc(db, "Condo", condoID, "Requests", requestID);
+        // Fetch the snapshot of the request document
+        const requestSnap = await getDoc(requestDocRef);
+        // Extract request data from the snapshot
+        const requestData = requestSnap.data();
+
+        // Get document reference for the specified property ID
+        const workerDocRef = doc(db, "Property", condoData.property, "Workers", requestData.assignedWorkerID);
+        // Fetch the snapshot of the worker document
+        const workerSnap = await getDoc(workerDocRef);
+        // Return worker data (contains fields type and name)
+        return workerSnap.data();
+
+    } catch (e) {
+        console.error("Error getting worker: ", e);
+        return null;
+    }
+
 
 }
 

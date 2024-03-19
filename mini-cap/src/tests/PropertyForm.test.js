@@ -71,7 +71,7 @@ describe("PropertyForm", () => {
     fireEvent.click(submitPropertyButton);
   });
 
-  it("should show an error for negative Unit Count", async () => {
+  it("should show an error for negative  Counts and 0 counts", async () => {
     const { getByLabelText, getByText } = render(
       <Router>
         <PropertyForm />
@@ -93,31 +93,28 @@ describe("PropertyForm", () => {
       target: { value: "-5" },
     });
     fireEvent.change(getByLabelText("Parking Count:"), {
-      target: { value: "99" },
+      target: { value: "-5" },
     });
     fireEvent.change(getByLabelText("Parking Cost:"), {
-      target: { value: "200" },
+      target: { value: "-5" },
     });
     fireEvent.change(getByLabelText("Locker Count:"), {
-      target: { value: "88" },
+      target: { value: "-5" },
     });
     fireEvent.change(getByLabelText("Locker Cost:"), {
-      target: { value: "100" },
+      target: { value: "0" },
     });
     const submitPropertyButton = getByText("Submit Property", {
       selector: "button",
     });
 
+  
     // Submit the form
     fireEvent.click(submitPropertyButton);
-
-    // Ensure the error message is shown
-    await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith(
-        "Count must be greater than or equal to 0"
-      );
-    });
+  
+    expect(toast.error).toHaveBeenCalledWith("Count must be greater than  0");
   });
+  
   
 
   it("should display toast error for unsupported file type", () => {
@@ -159,7 +156,7 @@ describe("PropertyForm", () => {
     // Assert that toast.error is called with the expected message
     expect(toast.error).toHaveBeenCalledWith("File must be less than 2 MB");
   });
-});
+
 
 it("should display toast error for empty property fields on Add condo button click", () => {
   const { getByLabelText, getByText } = render(
@@ -201,14 +198,13 @@ it("should display toast error for empty property fields on Add condo button cli
   fireEvent.click(addCondoButton);
   expect(toast.error).toHaveBeenCalledWith("Please complete the property form first");
 });
-it("should allow user to fill out the Condo Fields", async () => {
-  const { getByLabelText, getByText, getByRole } = render(
+
+it("should toast error if a field is missing in the property form", () => {
+  const { getByLabelText, getByText } = render(
     <Router>
       <PropertyForm />
     </Router>
   );
-  // Fill out the form //// property part
-
   const file2 = new File(["dummy content"], "image.jpg", {
     type: "image/jpeg",
   });
@@ -218,55 +214,57 @@ it("should allow user to fill out the Condo Fields", async () => {
   });
 
   fireEvent.change(getByLabelText("Property Name:"), {
-    target: { value: "Example Property" },
+    target: { value: "" },
   });
 
   fireEvent.change(getByLabelText("Unit Count:"), {
-    target: { value: "255" },
+    target: { value: "3" },
   });
 
   fireEvent.change(getByLabelText("Parking Count:"), {
-    target: { value: "99" },
+    target: { value: "3" },
   });
   fireEvent.change(getByLabelText("Parking Cost:"), {
-    target: { value: "200" },
+    target: { value: "3" },
   });
 
   fireEvent.change(getByLabelText("Locker Count:"), {
-    target: { value: "88" },
+    target: { value: "3" },
   });
   fireEvent.change(getByLabelText("Locker Cost:"), {
     target: { value: "100" },
   });
-
-  const addCondoButton = getByText("Add Condo", { selector: "button" });
-  //start filling condo
-  fireEvent.click(addCondoButton);
-
-  
-  fireEvent.change(getByLabelText("Unit Number:"), {
-    target: { value: "101" },
+  // Submit the form
+  const submitPropertyButton = getByText("Submit Property", {
+    selector: "button",
   });
-  fireEvent.change(getByLabelText("Square Feet:"), { target: { value: "23sqft" } });
-  fireEvent.change(getByLabelText ("Unit Size:"), { target: { value: "1.5" } });
- 
-  fireEvent.change(getByLabelText("Parking Spot:"), {
-    target: { value: "P99" },
-  });
-  fireEvent.change(getByLabelText("Locker:"), {
-    target: { value: "L12" },
-  });
-  
-  
-  fireEvent.change(getByLabelText("Unit Price:"), {
-    target: { value: "1500" },
-  });
-
-  const saveCondoButton = getByText("Save Condo", { selector: "button" });
 
   // Submit the form
-  fireEvent.click(saveCondoButton);
+  fireEvent.click(submitPropertyButton);
 
+  expect(toast.error).toHaveBeenCalledWith("Missing Property Information");
+});
 
+it("should toast error if all fields are missing in the property form", async () => {
+  const { getByLabelText, getByText } = render(
+    <Router>
+      <PropertyForm />
+    </Router>
+  );
+ 
+  const submitPropertyButton = getByText("Submit Property", {
+    selector: "button",
+  });
+
+  // Submit the form
+  fireEvent.click(submitPropertyButton);
+
+  
+  await waitFor(() => {
+    expect(toast.error).toHaveBeenCalledWith(
+      "Missing Property Information"
+    );
+  });
+});
 
 });
