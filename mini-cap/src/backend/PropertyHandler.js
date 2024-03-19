@@ -322,6 +322,20 @@ export async function addProperty(data) {
         throw new Error("Error adding condo: " + error);
       }
     }
+    //Add workers for the new property
+    const workersRef = collection(docRef, "Workers")
+    await addDoc(workersRef, {
+      type: "Financial",
+      name: data.propertyName + " Financial Worker",
+    });
+    await addDoc(workersRef, {
+      type: "Administrative",
+      name: data.propertyName + " Administrative Worker",
+    });
+    await addDoc(workersRef, {
+      type: "Operational",
+      name: data.propertyName + " Operational Worker",
+    });
 
     //add all parking spots in new property
     const amenitiesRef = collection(docRef, "Amenities");
@@ -747,6 +761,63 @@ export async function getCondoOccupant(condoId) {
     // Log error if any occurs during the process
     console.error('Error getting condo occupant:', error);
     // Throw error to propagate it up the call stack
+    throw error;
+  }
+}
+
+export async function calculateCondoFees(condoId) {
+  try {
+    // Retrieve the document reference for the specified condo ID from the "Condo" collection
+    const docRef = doc(db, "Condo", condoId);
+    // Fetch the snapshot of the condo document
+    const docSnap = await getDoc(docRef);
+
+    // Extract condo data from the snapshot
+    const condoData = docSnap.data();
+
+    let amenitiesPrice = 0;
+    // Check if the condo document exists
+    if (docSnap.exists) {
+      // Retrieve the document reference for the property associated with the condo
+      const propertyDocRef = doc(db, "Property", condoData.property);
+      // Fetch the snapshot of the property document
+      const propertyDoc = await getDoc(propertyDocRef);
+
+      // Check if the property document exists
+      if (propertyDoc.exists) {
+        const amenitiesCollection = collection(doc.ref, "Amenities");
+        const amenitiesSnapshot = await getDocs(amenitiesCollection);
+
+        //Get all amenities for the condo and add their price
+        amenitiesSnapshot.docs.map(async doc => {
+          let tempData = doc.data();
+          if(tempData.condo == condoId)
+            amenitiesPrice += tempData.price;
+        });
+      } else {
+        // If the property document does not exist, return null
+        return null;
+      }
+
+      let totalPrice = amenitiesPrice + condoData.unitPrice;
+
+      //If rented: return price of amenities + price of condo per month
+      //If owned: return monthly price of amenities, and return total fees which are monthly + remaining condo payments
+      if (condoData.status == "Rented"){
+        return {monthlyFees: totalPrice, totalFees: null};
+      } else {
+        return {monthlyFees: amenitiesPrice, totalFees: totalPrice};
+      }
+
+    } else {
+      // If the condo document does not exist, log a message and return null
+      console.log("No such document!");
+      return null;
+    }
+  } catch (error) {
+    // If an error occurs during the process, log the error
+    console.error(error);
+    // Rethrow the error to propagate it up the call stack
     throw error;
   }
 }
