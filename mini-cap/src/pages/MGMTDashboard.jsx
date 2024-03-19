@@ -11,6 +11,10 @@ import store from "storejs";
 import Pagination from "../components/Pagination";
 import "../styling/Pagination.css";
 
+/**
+ * Functional component representing the Management Dashboard.
+ * @returns {JSX.Element} Management Dashboard component.
+ */
 const MGMTDashboard = () => {
   const [hasProperties, setHasProperties] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState([]);
@@ -32,6 +36,7 @@ const MGMTDashboard = () => {
     fetchProperties();
   }, []);
 
+  //constants for pagination
   const propertiesPerPage = 4;
   const indexOfLastProperty = currentPage * propertiesPerPage;
   const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
