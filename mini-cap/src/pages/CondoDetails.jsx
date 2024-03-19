@@ -271,27 +271,39 @@ export default function CondoDetails(){
 								<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>Condo Requests</h5>
 								<div>
 									<button id="toggleButton" className="requests-button" onClick={toggleCondoRequests}>
-										{showCondoRequests ? <MdExpandLess/> : <MdExpandMore />} </button>
+										{showCondoRequests ? <MdExpandLess/> : <MdExpandMore />} 
+									</button>
 								</div>
 							</div>
 
 							<div className="other-info">
 								{showCondoRequests && (
-									requests.length > 0 ? (
+									<>
+									{requests.length > 0 ? (
 										requests.map((request, index) => (
-											<CondoRequests
-												key={index}
-												type={request.type}
-												notes={request.notes}
-												role={role}
-												step={request.step}
-												condoId={condoId}
-												requestId={request.requestID}
-											/>
+										<CondoRequests
+											key={index}
+											type={request.type}
+											notes={request.notes}
+											role={role}
+											step={request.step}
+											condoId={condoId}
+											requestId={request.requestID}
+										/>
 										))
 									) : (
 										<p className="request-container">There are no current requests</p>
-									)
+									)}
+
+									{/* Code snippet to appear when status is "Owned" */}
+									{status === "Owned" && (
+										<div>
+										<button className="modal-button" onClick={() => handleClickRequest()}>
+											Create Request
+										</button>
+										</div>
+									)}
+									</>
 								)}
 							</div>
 
@@ -315,12 +327,6 @@ export default function CondoDetails(){
 								{showFinancialDetails && (
 									<FinancialDetails/>
 								)}
-							</div>
-							<div>
-								{role !== MANAGEMENT_COMPANY && (
-									<>
-										<button className="modal-button" onClick={() => handleClickRequest()}> Create Request</button>
-									</>)}
 							</div>
 							<div id="modal" className="modal" style={{ display: displayForm ? 'block' : 'none' }}>
 								<RequestForm
