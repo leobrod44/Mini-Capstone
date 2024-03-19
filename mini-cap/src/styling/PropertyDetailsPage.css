@@ -9,6 +9,86 @@
 .title_container {
   text-align: center;
   margin-bottom: 5%;
+  position: relative;
+}
+
+.condo_list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align items to the start of the cross axis (top) */
+}
+
+/* Default styles */
+.details-button-condo-files {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  position: absolute;
+  top: 85px;
+  left: 35%;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  width: 200px;
+  background-color: #4540db;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  align-self: flex-end;
+  margin-bottom: 10px;
+}
+
+/* Media query for responsiveness */
+@media screen and (max-width: 1200px) {
+  .details-button-condo-files {
+    font-size: 19px;
+    height: 34px;
+    width: 190px;
+    top: 75px;
+    left: 41%;
+    transform: translateX(-50%);
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .details-button-condo-files {
+    font-size: 17px;
+    height: 30px;
+    width: 170px;
+    top: 70px;
+    left: 39%;
+  }
+}
+/* Media query for responsiveness */
+@media screen and (max-width: 768px) {
+  .details-button-condo-files {
+    font-size: 18px;
+    height: 32px;
+    width: 180px;
+    top: 65px;
+    left: 35%;
+    transform: translateX(-50%);
+  }
+}
+
+/* Additional media query for even smaller screens */
+@media screen and (max-width: 576px) {
+  .details-button-condo-files {
+    font-size: 16px;
+    height: 28px;
+    width: 160px;
+    top: 45px;
+    left: 20%;
+  }
+}
+
+.details-button-condo-files:hover {
+  background-color: #7975d6;
+  color: #ffffff;
 }
 
 .content_container {
@@ -37,7 +117,8 @@
   color: #4540db;
   font-weight: bolder;
 }
-.button {
+
+.buttonDetails {
   background-color: #4540db;
   color: #ffffff;
   padding: 10px 20px;
@@ -49,9 +130,10 @@
   margin-top: 5%;
 }
 
-.button:hover {
+.buttonDetails:hover {
   background-color: #7975d6;
 }
+
 .center-page {
   position: relative;
 }

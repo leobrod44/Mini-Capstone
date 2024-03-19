@@ -4,7 +4,7 @@ import {
     linkCondoToUser,
     sendCondoKey,
     storeCondoKey,
-    addCondo, addProperty, getProperties, getUserCondos, getCondos, getCondo, calculateCondoFees
+    addCondo, addProperty, getProperties, getUserCondos, getCondos, getCondo, getCondoOccupant, calculateCondoFees
 } from '../backend/PropertyHandler';
 import {doc, getDoc, getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs} from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
@@ -426,8 +426,76 @@ describe("getting condos and properties functions", () => {
           propertyName: fakePropertyData.propertyName,
         });
       });
-    
+});
 
+describe("getCondoOccupant function", () => {
+    afterEach(() => {
+        jest.clearAllMocks(); // Clear mock function calls after each test
+    });
+
+    test("should return condo occupant if condo document exists", async () => {
+        // Mock data
+        const condoId = "fakeCondoId";
+        const fakeOccupant = "fakeOccupant";
+
+        const fakeCondoDocSnap = {
+            exists: true,
+            data: jest.fn(() => ({ occupant: fakeOccupant })),
+        };
+
+        // Mock Firestore function behavior
+        const fakeCondoDocRef = jest.fn();
+        doc.mockReturnValue(fakeCondoDocRef);
+        getDoc.mockResolvedValue(fakeCondoDocSnap);
+
+        // Call the function
+        const result = await getCondoOccupant(condoId);
+
+        // Assertions
+        expect(result).toEqual(fakeOccupant);
+        expect(doc).toHaveBeenCalledWith(expect.anything(), "Condo", condoId);
+        expect(getDoc).toHaveBeenCalledWith(fakeCondoDocRef);
+    });
+
+    test("should return null if condo document does not exist", async () => {
+        // Mock data
+        const condoId = "fakeCondoId";
+
+        const fakeCondoDocSnap = {
+            exists: false,
+        };
+
+        // Mock Firestore function behavior
+        const fakeCondoDocRef = jest.fn();
+        doc.mockReturnValue(fakeCondoDocRef);
+        getDoc.mockResolvedValue(fakeCondoDocSnap);
+
+        // Call the function
+        const result = await getCondoOccupant(condoId);
+
+        // Assertions
+        expect(result).toBeNull();
+        expect(doc).toHaveBeenCalledWith(expect.anything(), "Condo", condoId);
+        expect(getDoc).toHaveBeenCalledWith(fakeCondoDocRef);
+    });
+
+    test("should throw an error if any error occurs during the process", async () => {
+        // Mock data
+        const condoId = "fakeCondoId";
+        const errorMessage = "An unexpected error occurred";
+
+        // Mock Firestore function behavior
+        const fakeCondoDocRef = jest.fn();
+        doc.mockReturnValue(fakeCondoDocRef);
+        getDoc.mockRejectedValue(new Error(errorMessage));
+
+        // Call the function and expect it to throw an error
+        await expect(getCondoOccupant(condoId)).rejects.toThrow(errorMessage);
+
+        // Assertions
+        expect(doc).toHaveBeenCalledWith(expect.anything(), "Condo", condoId);
+        expect(getDoc).toHaveBeenCalledWith(fakeCondoDocRef);
+    });
 });
 
 describe("financial property and condo tests", () => {

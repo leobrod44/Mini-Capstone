@@ -10,6 +10,7 @@ import {
   loginUser,
   storeData,
   deleteAccount,
+  getCompanyEmail
 } from "../backend/UserHandler"; // Import your function
 import {
   doc,
@@ -515,3 +516,146 @@ describe("addCompany function", () => {
     );
   });
 });
+
+describe("getCompanyEmail function", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("getCompanyEmail function should return undefined if condo document does not exist", async () => {
+    // Mock data
+    const conId = "nonExistingCondoId";
+    const fakeCondoDocSnap = {
+      exists: jest.fn(() => false), // Simulate non-existing condo document
+    };
+
+    // Mock Firestore function behavior
+    const fakeCondoDocRef = jest.fn();
+    doc.mockReturnValue(fakeCondoDocRef);
+    getDoc.mockResolvedValue(fakeCondoDocSnap);
+
+    // Call the function
+    const result = await getCompanyEmail(conId);
+
+    // Assertions
+    expect(result).toBeUndefined();
+    expect(doc).toHaveBeenCalledWith(expect.anything(), "Condo", conId);
+    expect(getDoc).toHaveBeenCalledWith(fakeCondoDocRef);
+  });
+
+  test("should return null if condo or property document does not exist", async () => {
+    // Mock Firestore to simulate non-existing condo and property documents
+    const fakeNonExistingCondoId = "nonExistingCondoId";
+
+    const fakeCondoDocSnap = { exists: jest.fn(() => false) };
+    doc.mockReturnValue(fakeCondoDocSnap);
+
+    const result = await getCompanyEmail(fakeNonExistingCondoId);
+
+    expect(result).toBeNull();
+    expect(doc).toHaveBeenCalledTimes(1);
+    expect(doc).toHaveBeenCalledWith(expect.anything(), "Condo", fakeNonExistingCondoId);
+  });
+
+  test("getCompanyEmail function should return null if property document does not exist", async () => {
+    // Mock data
+    const fakeCondoId = "fakeCondoId";
+    const fakePropertyId = "nonExistingPropertyId";
+
+    const fakeCondoDocSnap = {
+      exists: jest.fn(() => true),
+      data: jest.fn(() => ({ property: fakePropertyId })),
+    };
+    const fakePropertyDocSnap = { exists: jest.fn(() => false) };
+
+    // Mock Firestore function behavior
+    const fakeCondoDocRef = jest.fn();
+    const fakePropertyDocRef = jest.fn();
+    doc.mockImplementation((db, collection, id) => {
+      if (collection === "Condo" && id === fakeCondoId) {
+        return fakeCondoDocRef;
+      } else if (collection === "Property" && id === fakePropertyId) {
+        return fakePropertyDocRef;
+      }
+    });
+    getDoc.mockImplementation((docRef) => {
+      if (docRef === fakeCondoDocRef) {
+        return Promise.resolve(fakeCondoDocSnap);
+      } else if (docRef === fakePropertyDocRef) {
+        return Promise.resolve(fakePropertyDocSnap);
+      }
+    });
+
+    // Call the function
+    const result = await getCompanyEmail(fakeCondoId);
+
+    // Assertions
+    expect(result).toBeUndefined();
+    expect(doc).toHaveBeenCalledTimes(2);
+    expect(doc).toHaveBeenCalledWith(expect.anything(), "Condo", fakeCondoId);
+    expect(doc).toHaveBeenCalledWith(expect.anything(), "Property", fakePropertyId);
+  });
+
+
+  test("should return null if error occurs during the process", async () => {
+    // Mock Firestore to simulate an error during the process
+    const fakeCondoId = "fakeCondoId";
+    const errorMessage = "Firestore error";
+
+    doc.mockImplementation(() => {
+      throw new Error(errorMessage);
+    });
+
+    const result = await getCompanyEmail(fakeCondoId);
+
+    expect(result).toBeNull();
+    expect(doc).toHaveBeenCalledTimes(1);
+    expect(doc).toHaveBeenCalledWith(expect.anything(), "Condo", fakeCondoId);
+    console.error = jest.fn(); // Prevent error from being logged in the test output
+  });
+
+  test("getCompanyEmail function should return company owner from property document", async () => {
+    // Mock data
+    const fakeCondoId = "fakeCondoId";
+    const fakePropertyId = "fakePropertyId";
+    const fakeCompanyOwner = "fakeCompanyOwner";
+
+    const fakeCondoDocSnap = {
+      exists: jest.fn(() => true),
+      data: jest.fn(() => ({ property: fakePropertyId })),
+    };
+    const fakePropertyDocSnap = {
+      exists: jest.fn(() => true),
+      data: jest.fn(() => ({ companyOwner: fakeCompanyOwner })),
+    };
+
+    // Mock Firestore function behavior
+    const fakeCondoDocRef = jest.fn();
+    const fakePropertyDocRef = jest.fn();
+    doc.mockImplementation((db, collection, id) => {
+      if (collection === "Condo" && id === fakeCondoId) {
+        return fakeCondoDocRef;
+      } else if (collection === "Property" && id === fakePropertyId) {
+        return fakePropertyDocRef;
+      }
+    });
+    getDoc.mockImplementation((docRef) => {
+      if (docRef === fakeCondoDocRef) {
+        return Promise.resolve(fakeCondoDocSnap);
+      } else if (docRef === fakePropertyDocRef) {
+        return Promise.resolve(fakePropertyDocSnap);
+      }
+    });
+
+    // Call the function
+    const result = await getCompanyEmail(fakeCondoId);
+
+    // Assertions
+    expect(result).toEqual(fakeCompanyOwner);
+    expect(doc).toHaveBeenCalledTimes(2);
+    expect(doc).toHaveBeenCalledWith(expect.anything(), "Condo", fakeCondoId);
+    expect(doc).toHaveBeenCalledWith(expect.anything(), "Property", fakePropertyId);
+  });
+
+});
+
