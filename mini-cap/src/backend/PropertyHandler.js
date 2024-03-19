@@ -228,6 +228,10 @@ export async function addCondo(data, propertyID, propertyName) {
         }else if(parkingAssigned)
           break;
       }
+    }else{
+      await updateDoc(docRef, {
+        parkingNumber: "No Parking",
+      });
     }
 
     if(data.lockerNumber){
@@ -248,6 +252,10 @@ export async function addCondo(data, propertyID, propertyName) {
         }else if(lockerAssigned)
           break;
       }
+    }else{
+      await updateDoc(docRef, {
+        lockerNumber: "No Locker",
+      });
     }
 
     // If picture data is provided, add the picture to storage
