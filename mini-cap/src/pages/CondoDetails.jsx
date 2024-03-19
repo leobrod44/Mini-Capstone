@@ -2,45 +2,68 @@ import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import "../index.css";
 import "../styling/CondoDetails.css";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
 import FinancialDetails from "../components/FinancialDetails.jsx";
-import {getCondo} from "../backend/PropertyHandler";
-import {getCondoPicture} from "../backend/ImageHandler";
-import {toast} from "react-toastify";
-import {useNavigate, useParams} from "react-router-dom";
+import { getCondo } from "../backend/PropertyHandler";
+import { getCondoPicture } from "../backend/ImageHandler";
+import { toast } from "react-toastify";
+import { useNavigate, useParams } from "react-router-dom";
 import store from "storejs";
-import {getCompanyEmail} from "../backend/UserHandler";
-import {MANAGEMENT_COMPANY} from "../backend/Constants";
+import { getCompanyEmail } from "../backend/UserHandler";
+import { MANAGEMENT_COMPANY } from "../backend/Constants";
 import CondoRequests from "../components/CondoRequestsView.jsx";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { getRequests } from "../backend/RequestHandler";
 import { FaCheck, FaTimes } from 'react-icons/fa'; // Import icons from react-icons library
 
-export default function CondoDetails(){
+/**
+ * Component for displaying details of a condo.
+ * @returns {JSX.Element} The rendered CondoDetails component.
+ */
+export default function CondoDetails() {
+	// Retrieve condoId from URL parameters
 	let { condoId } = useParams();
+
+	// State to manage condo details
 	const [condoDetails, setCondoDetails] = useState(false);
+	// State to manage showing popup
 	const [showPopup, setShowPopup] = useState(false);
+	// State to manage showing delete confirmation modal
 	const [show, setShow] = useState(false);
+	// State to manage condo picture URL
 	let [condoPicURL, setCondoPicURL] = useState(null);
+	// Navigation hook
 	const navigate = useNavigate();
+	// State to manage user role
 	const [role, setTheRole] = useState("");
+	// State to manage company email
 	const [companyEmail, setCompanyEmail] = useState(null);
+	// State to manage condo requests
 	const [requests, setRequests] = useState([]);
+	// State to manage showing condo requests
+	const [showCondoRequests, setShowCondoRequests] = useState(false);
+	// State to manage showing financial details
+	const [showFinancialDetails, setShowFinancialDetails] = useState(false);
+	// State to track whether rent is paid
+	const [isRentPaid, setIsRentPaid] = useState(false);
 
 	useEffect(() => {
 		const fetchCondo = async () => {
 			try {
+				// Retrieve user role from local storage
 				setTheRole(store("role"));
+				// Retrieve condo details
 				const condo = await getCondo(condoId);
-				condoPicURL = await getCondoPicture(
-					condo.propertyName + "/" + condo.unitNumber
-				);
+				// Retrieve condo picture URL
+				condoPicURL = await getCondoPicture(condo.propertyName + "/" + condo.unitNumber);
 				setCondoPicURL(condoPicURL);
 				condo.picture = condoPicURL;
+				// Set condo details state
 				setCondoDetails(condo);
+				// Retrieve company email
 				setCompanyEmail(await getCompanyEmail(condoId));
 			} catch (err) {
 				console.error(err);
@@ -49,6 +72,7 @@ export default function CondoDetails(){
 
 		const fetchRequests = async () => {
 			try {
+				// Retrieve condo requests
 				setRequests(await getRequests(condoId));
 			} catch (error) {
 				console.error("Error fetching requests:", error);
@@ -64,29 +88,34 @@ export default function CondoDetails(){
 		return <div>Loading...</div>;
 	}
 
-	//NOT FINISHED
+	// Function to handle delete condo attempt
 	const deleteCondoAttempt = async () => {
 		try {
-			//logic to delete condo
+			// Logic to delete condo
 		} catch (error) {
 			toast.error("Error deleting account");
 		}
+		// Hide delete confirmation modal and navigate to property details page
 		setShow(false);
 		navigate(`/propertydetailspage/${propertyID}/${propertyName}`);
 	};
 
-    const handlePopupToggle = () => {
-        setShowPopup(!showPopup);
-    }
-
-    const handleClickDelete = () => {
-        setShow(true);
-    };
-
-    const handleClose = () => {
-        setShow(false);
+	// Function to toggle popup visibility
+	const handlePopupToggle = () => {
+		setShowPopup(!showPopup);
 	};
 
+	// Function to handle click on delete button
+	const handleClickDelete = () => {
+		setShow(true);
+	};
+
+	// Function to close delete confirmation modal
+	const handleClose = () => {
+		setShow(false);
+	};
+
+	// Destructure condoDetails for easier access
 	const {
 		propertyName,
 		address,
@@ -101,23 +130,20 @@ export default function CondoDetails(){
 		status
 	} = condoDetails;
 
-	const [showCondoRequests, setShowCondoRequests] = useState(false);
-
+	// Function to toggle showing condo requests
 	const toggleCondoRequests = () => {
 		setShowCondoRequests(!showCondoRequests);
-	}
-	const[showFinancialDetails, setShowFinancialDetails] = useState(false);
+	};
 
+	// Function to toggle showing financial details
 	const toggleFinancialDetails = () => {
 		setShowFinancialDetails(!showFinancialDetails);
-	}
+	};
 
-	{/* TO DO is RentPaid */}
-    const [isRentPaid, setIsRentPaid] = useState(false); // State to track whether rent is paid
-
-    const toggleRentPaid = () => {
-        setIsRentPaid(!isRentPaid);
-    };
+	// Function to toggle rent paid status
+	const toggleRentPaid = () => {
+		setIsRentPaid(!isRentPaid);
+	};
 
 		return(
 			<div className='pageContainer'>
