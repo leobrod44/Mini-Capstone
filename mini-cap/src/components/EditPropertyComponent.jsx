@@ -8,25 +8,16 @@ import AddressComponent from "../components/AddressComponent";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import {
   getProperties,
-  updateProperty,
   deleteProperty,
+  editProperty,
 } from "../backend/PropertyHandler";
 import store from "storejs";
 import { PropTypes } from "prop-types";
 
-const EditPropertyComponent = ({ toggleEdit }) => {
+const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
   const { propertyID } = useParams();
   const navigate = useNavigate();
-  const [property, setProperty] = useState({
-    picture: null,
-    propertyName: "",
-    address: "",
-    unitCount: "",
-    parkingCount: "",
-    parkingCost: "",
-    lockerCount: "",
-    lockerCost: "",
-  });
+  const [property, setProperty] = useState(propertyDetails);
 
   const backgroundColor = "#f0f4f8";
   document.body.style.backgroundColor = backgroundColor;
@@ -115,17 +106,20 @@ const EditPropertyComponent = ({ toggleEdit }) => {
     });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     try {
-      const success = await updateProperty(propertyID, property);
+      const success = await editProperty(propertyID, property);
       if (success) {
         toast.success("Property details updated successfully");
-        navigate("/MGMTDashboard", { state: { updated: true } });
+        onUpdate(property); // Pass the updated property details to the parent component
+        toggleEdit(); // Close the edit form
+        navigate("/MGMTDashboard"); // Navigate to the dashboard after successful update
       } else {
         throw new Error("Failed to update property details");
       }
     } catch (error) {
-      toast.error("Error updating property");
+      toast.error("Error updating property: " + error.message);
     }
   };
 

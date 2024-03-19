@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import AddCondoBtn from "../components/AddCondoBtn";
-import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn component
+import BackArrowBtn from "../components/BackArrowBtn"; // Import BackArrowBtn component
 import EditPropertyComponent from "../components/EditPropertyComponent";
 import "../index.css";
 import "../styling/PropertyDetailsPage.css";
@@ -18,6 +18,7 @@ const PropertyDetailsPage = () => {
   // State to represent whether the user has registered condos or not, since i dont have backend right now
   const navigate = useNavigate();
   const [condoDetails, setCondoDetails] = useState([]);
+  const [propertyDetails, setPropertyDetails] = useState(null);
   const [hasCondos, setHasCondos] = useState(false);
   let [condoPicURL, setCondoPicURL] = useState(null);
   const [showEdit, setShowEdit] = useState(true);
@@ -49,10 +50,27 @@ const PropertyDetailsPage = () => {
     fetchCondos();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch property details
+        const fetchedPropertyDetails = await getPropertyData(propertyID);
+        setPropertyDetails(fetchedPropertyDetails);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchData();
+  }, [propertyID]);
+
+  const handlePropertyUpdate = (updatedDetails) => {
+    setPropertyDetails(updatedDetails);
+  };
+
   const toggleEdit = () => {
     setShowEdit(!showEdit);
   };
-  
+
   const condosPerPage = 4;
   const indexOfLastCondo = currentPage * condosPerPage;
   const indexOfFirstCondo = indexOfLastCondo - condosPerPage;
@@ -79,9 +97,13 @@ const PropertyDetailsPage = () => {
               </button>
             </div>
           ) : (
-              <div className="edit_container">
-                <EditPropertyComponent toggleEdit={toggleEdit} />
-              </div>
+            <div className="edit_container">
+              <EditPropertyComponent
+                propertyDetails={propertyDetails}
+                onUpdate={handlePropertyUpdate}
+                toggleEdit={toggleEdit}
+              />
+            </div>
           )}
         </div>
 
@@ -89,30 +111,35 @@ const PropertyDetailsPage = () => {
           <div>
             {hasCondos ? (
               <div className="condo_list">
-              
-              {condosToDisplayPaginated.map((condo, index) => (
-                <CondoMgmtComponent key={index} {...condo} condoId={condo.id} />
-              ))}
-               <div className="pagination-container">
-                <Pagination
-                  itemsPerPage={condosPerPage}
-                  totalItems={condoDetails.length}
-                  currentPage={currentPage}
-                  setCurrentPage={setCurrentPage}
-                />
+                {condosToDisplayPaginated.map((condo, index) => (
+                  <CondoMgmtComponent
+                    key={index}
+                    {...condo}
+                    condoId={condo.id}
+                  />
+                ))}
+                <div className="pagination-container">
+                  <Pagination
+                    itemsPerPage={condosPerPage}
+                    totalItems={condoDetails.length}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                  />
+                </div>
               </div>
-            </div>
             ) : (
               <div className="content_container">
                 <div className="white_card">
-                  <p className="card_title">You have not added any condos yet.</p>
+                  <p className="card_title">
+                    You have not added any condos yet.
+                  </p>
                   {/*<p className="button"> Add a condo</p>*/}
                   <Link
-                  className="button"
-                  to={`/add-condo/${propertyID}/${propertyName}`}
-                >
-                  Add a condo
-                </Link>
+                    className="button"
+                    to={`/add-condo/${propertyID}/${propertyName}`}
+                  >
+                    Add a condo
+                  </Link>
                 </div>
               </div>
             )}
@@ -125,7 +152,7 @@ const PropertyDetailsPage = () => {
           />
         )}
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };

@@ -215,16 +215,7 @@ export default function CondoDetails() {
                       onChange={handleInputChange}
                     />
                   </div>
-                  <div className="other-info1">
-                    <h5 className="other-info2">Price/Sq Ft.</h5>
-                    <input
-                      type="text"
-                      className="edit-input"
-                      name="pricePerSqFt"
-                      value={editedDetails.pricePerSqFt}
-                      onChange={handleInputChange}
-                    />
-                  </div>
+
                   <div className="other-info1">
                     <h5 className="other-info2">Unit Price</h5>
                     <input
@@ -246,7 +237,7 @@ export default function CondoDetails() {
                   </button>
                   <button
                     type="button"
-                    className="delete-button cancel-button"
+                    className="cncl-btn"
                     onClick={toggleEditMode}
                   >
                     Cancel

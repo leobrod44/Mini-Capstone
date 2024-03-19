@@ -677,12 +677,34 @@ export async function editCondo(condoId, data) {
     const condoDocRef = doc(db, "Condo", condoId);
     const cleanedData = cleanData("Condo", data);
 
-    // Update the condo document with the provided data
+    // Update the condo document with the cleaned data
     await updateDoc(condoDocRef, cleanedData);
     console.log(`Condo with ID ${condoId} has been updated.`);
     return true; // Return true for success
   } catch (err) {
     console.error(`Error updating condo: ${err}`);
+    return false; // Return false for failure
+  }
+}
+
+/**
+ * Updates the data of an existing property.
+ *
+ * @param {string} propertyId - The unique identifier of the property to be updated.
+ * @param {object} data - The data to update in the property document. Expected to contain keys for property name, unit count, parking count, locker count, parking price, and locker price.
+ * @returns {Promise<boolean>} A promise that resolves to true if the update is successful, or false if there is an error.
+ */
+export async function editProperty(propertyId, data) {
+  try {
+    const propertyDocRef = doc(db, "Property", propertyId);
+    const cleanedData = cleanData("Property", data);
+
+    // Update the property document with the cleaned data
+    await updateDoc(propertyDocRef, cleanedData);
+    console.log(`Property with ID ${propertyId} has been updated.`);
+    return true; // Return true for success
+  } catch (err) {
+    console.error(`Error updating property: ${err}`);
     return false; // Return false for failure
   }
 }
@@ -734,27 +756,6 @@ export async function deleteCondo(condoId) {
     return true; // Return true for success
   } catch (err) {
     console.error(`Error deleting condo: ${err}`);
-    return false; // Return false for failure
-  }
-}
-
-/**
- * Updates a property document in the Firestore database.
- *
- * @param {string} propertyID - The ID of the property document to update.
- * @param {object} data - The updated data for the property.
- */
-export async function updateProperty(propertyID, data) {
-  try {
-    const propertyDocRef = doc(db, "Property", propertyID);
-    const cleanedData = cleanData ? cleanData("Property", data) : data;
-
-    // Update the property document with the provided data
-    await updateDoc(propertyDocRef, cleanedData);
-    console.log(`Property with ID ${propertyID} has been updated.`);
-    return true; // Return true for success
-  } catch (err) {
-    console.error(`Error updating property: ${err}`);
     return false; // Return false for failure
   }
 }
