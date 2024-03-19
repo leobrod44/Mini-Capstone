@@ -268,6 +268,20 @@ export async function addProperty(data) {
         throw new Error("Error adding condo: " + error);
       }
     }
+    //Add workers for the new property
+    const workersRef = collection(docRef, "Workers")
+    await addDoc(workersRef, {
+      type: "Financial",
+      name: data.propertyName + " Financial Worker",
+    });
+    await addDoc(workersRef, {
+      type: "Administrative",
+      name: data.propertyName + " Administrative Worker",
+    });
+    await addDoc(workersRef, {
+      type: "Operational",
+      name: data.propertyName + " Operational Worker",
+    });
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
     throw new Error("Error adding document: " + error);
@@ -314,7 +328,9 @@ export async function getProperties(companyID) {
       })
     );
 
+
     // Sort the properties array by propertyName and return it
+
     return sortArray(properties, "propertyName");
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
@@ -411,11 +427,13 @@ export async function getUserCondos(email) {
       })
     );
 
+
     // Sort the condos array by unitNumber and return it
     return sortArray(condos, "unitNumber");
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
     throw new Error("Error getting condos: " + error);
+
   }
 }
 
@@ -446,11 +464,13 @@ export async function getCondos(propertyID) {
       }
     });
 
+
     // Sort the condos array by unit number
     return sortArray(condos, "unitNumber");
   } catch (error) {
     // If an error occurs, throw an error with a descriptive message
     throw new Error("Error getting condos: " + error);
+
   }
 }
 
@@ -472,16 +492,20 @@ export async function getCondo(condoID) {
     // Extract condo data from the snapshot
     const condoData = docSnap.data();
 
+
     // Check if the condo document exists
     if (docSnap.exists) {
       // Retrieve the document reference for the property associated with the condo
+
       const propertyDocRef = doc(db, "Property", condoData.property);
       // Fetch the snapshot of the property document
       const propertyDoc = await getDoc(propertyDocRef);
 
+
       // Check if the property document exists
       if (propertyDoc.exists) {
         // Update condo data with additional property information
+
         condoData.address = propertyDoc.data().address;
         condoData.propertyName = propertyDoc.data().propertyName;
         condoData.propertyID = propertyDoc.id;
@@ -536,10 +560,25 @@ export async function getPropertyData(id) {
 //Sprint 3
 
 const sampleAmenity = {
-  amenityID: "1",
-  price: 100,
-  unitNumber: 1,
-};
+
+  "amenityID": "1",
+  "price": 100,
+  "unitNumber": 1,
+}
+
+const sampleFinacialDetails = {
+  "BasePrice" : 100,
+  "ParkingPrice" : 10,
+  "LockerPrice" : 10,
+  "AdditionalFees" : 0,
+  "TotalPrice" : 120
+}
+
+const sampleIsPaid = {
+  "RentPaid" : true
+}
+
+
 
 //Provide: property id
 //Returns: amenity array associated with a property
@@ -612,6 +651,19 @@ export async function deleteProperty(propertyID) {
   console.log("Deleting property: ", propertyID);
 }
 
+//Provide: condoID
+//Returns: fees associated to the condo
+export async function getFinanceDetails() {
+  return sampleFinacialDetails
+}
+
+//Provide: condoID
+//Returns: Boolean
+export async function checkRentPaid() {
+  return sampleIsPaid
+}
+//returns the occupant email or empty string for the condo
+
 /**
  * Retrieves the occupant of a specified condo.
  *
@@ -630,9 +682,6 @@ export async function getCondoOccupant(condoId) {
     if (condoDocSnap.exists) {
       // Extract occupant from condo data
       const { occupant } = condoDocSnap.data();
-      // Log occupant information
-      console.log("Occupant is: " + occupant);
-      // Return occupant's email
       return occupant;
     } else {
       // Log error message if condo document not found
@@ -644,6 +693,63 @@ export async function getCondoOccupant(condoId) {
     // Log error if any occurs during the process
     console.error("Error getting condo occupant:", error);
     // Throw error to propagate it up the call stack
+    throw error;
+  }
+}
+
+export async function calculateCondoFees(condoId) {
+  try {
+    // Retrieve the document reference for the specified condo ID from the "Condo" collection
+    const docRef = doc(db, "Condo", condoId);
+    // Fetch the snapshot of the condo document
+    const docSnap = await getDoc(docRef);
+
+    // Extract condo data from the snapshot
+    const condoData = docSnap.data();
+
+    let amenitiesPrice = 0;
+    // Check if the condo document exists
+    if (docSnap.exists) {
+      // Retrieve the document reference for the property associated with the condo
+      const propertyDocRef = doc(db, "Property", condoData.property);
+      // Fetch the snapshot of the property document
+      const propertyDoc = await getDoc(propertyDocRef);
+
+      // Check if the property document exists
+      if (propertyDoc.exists) {
+        const amenitiesCollection = collection(doc.ref, "Amenities");
+        const amenitiesSnapshot = await getDocs(amenitiesCollection);
+
+        //Get all amenities for the condo and add their price
+        amenitiesSnapshot.docs.map(async doc => {
+          let tempData = doc.data();
+          if(tempData.condo == condoId)
+            amenitiesPrice += tempData.price;
+        });
+      } else {
+        // If the property document does not exist, return null
+        return null;
+      }
+
+      let totalPrice = amenitiesPrice + condoData.unitPrice;
+
+      //If rented: return price of amenities + price of condo per month
+      //If owned: return monthly price of amenities, and return total fees which are monthly + remaining condo payments
+      if (condoData.status == "Rented"){
+        return {monthlyFees: totalPrice, totalFees: null};
+      } else {
+        return {monthlyFees: amenitiesPrice, totalFees: totalPrice};
+      }
+
+    } else {
+      // If the condo document does not exist, log a message and return null
+      console.log("No such document!");
+      return null;
+    }
+  } catch (error) {
+    // If an error occurs during the process, log the error
+    console.error(error);
+    // Rethrow the error to propagate it up the call stack
     throw error;
   }
 }

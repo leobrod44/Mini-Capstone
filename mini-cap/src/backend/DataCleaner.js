@@ -86,6 +86,7 @@ export function cleanData(type, data) {
     return newData;
 }
 
+
 /**
  * Sorts an array of objects based on the specified key.
  * 
@@ -93,6 +94,7 @@ export function cleanData(type, data) {
  * @param {string} key - The key based on which the array should be sorted.
  * @returns {Array<object>} The sorted array of objects.
  */
+
 export function sortArray(array, key) {
     return array.sort((a, b) => {
         const valueA = a[key];
@@ -107,5 +109,4 @@ export function sortArray(array, key) {
         }
     });
 }
-
 
