@@ -688,6 +688,12 @@ export async function getCondoOccupant(condoId) {
   }
 }
 
+/**
+ * Calculates the fees for a condominium based on its amenities and status (rented or owned).
+ * Will return only monthly fees for a renter, and monthly and total fees for an owner
+ * @param {string} condoId - The ID of the condominium.
+ * @returns {Promise<{monthlyFees: number, totalFees: number}|null>} A promise that resolves with an object containing the monthly fees and total fees if successful, or null if there was an error.
+ */
 export async function calculateCondoFees(condoId) {
   try {
     // Retrieve the document reference for the specified condo ID from the "Condo" collection
