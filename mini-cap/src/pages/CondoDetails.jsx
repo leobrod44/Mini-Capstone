@@ -3,14 +3,15 @@ import Footer from "../components/Footer.jsx";
 import "../index.css";
 import "../styling/CondoDetails.css";
 import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import DeleteModal from '../components/DeleteModal.jsx';
 import Popup_SendKey from '../components/Popup_SendKey.js';
+import RequestForm from "../components/RequestForm.jsx";
 import FinancialDetails from "../components/FinancialDetails.jsx";
-import { getCondo } from "../backend/PropertyHandler";
-import { getCondoPicture } from "../backend/ImageHandler";
-import { toast } from "react-toastify";
-import { useNavigate, useParams } from "react-router-dom";
+import {getCondo} from "../backend/PropertyHandler";
+import {getCondoPicture} from "../backend/ImageHandler";
+import {toast} from "react-toastify";
 import store from "storejs";
 import { getCompanyEmail } from "../backend/UserHandler";
 import { MANAGEMENT_COMPANY } from "../backend/Constants";
@@ -41,6 +42,7 @@ export default function CondoDetails() {
 	const [role, setTheRole] = useState("");
 	// State to manage company email
 	const [companyEmail, setCompanyEmail] = useState(null);
+	const [displayForm, setDisplayForm] = useState(false);
 	// State to manage condo requests
 	const [requests, setRequests] = useState([]);
 	// State to manage showing condo requests
@@ -106,9 +108,19 @@ export default function CondoDetails() {
 		setShow(true);
 	};
 
+	// Function to open request form modal
+	const handleClickRequest = () => {
+		setDisplayForm(true);
+	};
+
+	// Funcion to close request form modal
+	const handleClickClose = () => {
+        setDisplayForm(false);
+    };
+
 	// Function to close delete confirmation modal
-	const handleClose = () => {
-		setShow(false);
+    const handleClose = () => {
+        setShow(false);
 	};
 
 	// Destructure condoDetails for easier access
@@ -283,7 +295,7 @@ export default function CondoDetails() {
 								{/* Check if condo status is "Rented" */}
 								{(condoDetails.status === "Owned" || role === MANAGEMENT_COMPANY) && (
 									<div>
-										<div style={{display: "flex" , alignItems: "center"}}>
+										<div style={{display: "flex" , alignItems: "center", paddingTop:"8%"}}>
 											<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>Condo Requests</h5>
 											<div>
 												<button id="toggleButton" className="requests-button" onClick={toggleCondoRequests}>
@@ -292,42 +304,58 @@ export default function CondoDetails() {
 											</div>
 										</div>
 
-										<div className="other-info">
-											{showCondoRequests && (
-												requests.length > 0 ? (
-													requests.map((request, index) => (
-														<CondoRequests
-															key={index}
-															type={request.type}
-															notes={request.notes}
-															role={role}
-															step={request.step}
-															condoId={condoId}
-															requestId={request.requestID}
-														/>
-													))
-												) : (
-													<p className="request-container">There are no current requests</p>
-												)
-											)}
+							<div className="other-info">
+								{showCondoRequests && (
+									<>
+									{requests.length > 0 ? (
+										requests.map((request, index) => (
+										<CondoRequests
+											key={index}
+											type={request.type}
+											notes={request.notes}
+											role={role}
+											step={request.step}
+											condoId={condoId}
+											requestId={request.requestID}
+										/>
+										))
+									) : (
+										<p className="request-container" style={{fontSize:"17px"}}>You have no current requests</p>
+									)}
+
+									{/* Code snippet to appear when status is "Owned" */}
+									{status === "Owned" && (
+										<div>
+										<button className="modal-button" onClick={() => handleClickRequest()} style={{marginTop:"10%"}}>
+											Create Request
+										</button>
 										</div>
-									</div>
+									)}
+									</>
 								)}
-							</div>
-							<div style={{display: "flex" , alignItems: "center"}}>
-							<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>
-								<div>
-									<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}>
-										{showFinancialDetails ? <MdExpandLess/> : <MdExpandMore />}
-									</button>
 								</div>
 							</div>
+							)}
+						</div>
+						<div style={{display: "flex" , alignItems: "center"}}>
+							<h5 style={{paddingTop:"15%",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>
+							<div>
+								<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}>
+									{showFinancialDetails ? <MdExpandLess/> : <MdExpandMore />}
+								</button>
+							</div>
+						</div>
 							<div className="other-info">
 								{showFinancialDetails && (
 									<FinancialDetails/>
 								)}
 							</div>
-
+							<div id="modal" className="modal" style={{ display: displayForm ? 'block' : 'none' }}>
+								<RequestForm
+									handleClickClose={handleClickClose}
+									condoInfo = {condoDetails}
+								/>
+							</div>
 							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
 							<div>
 								{role === MANAGEMENT_COMPANY && (
@@ -355,11 +383,11 @@ export default function CondoDetails() {
 			{role === MANAGEMENT_COMPANY && status !=="Vacant" && (					
 				<button onClick={toggleRentPaid}>Toggle Rent Paid</button>)
 			}
-
-			<BackArrowBtn/>
+			{ !displayForm && (
+				<BackArrowBtn/>
+			)}
 			<div style={{zIndex: 1, position: 'relative'}}><Footer/></div>
 		</>
 		</div>
 	);
 }
-
