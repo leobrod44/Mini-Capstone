@@ -793,8 +793,13 @@ export async function assignParking(condoID) {
   }
 }
 
-//Provide: condo id
-//Returns: locker amenity associated with the condo
+/**
+ * Retrieves the locker assigned to a condo.
+ *
+ * @param {string} condoID The ID of the condo for which to retrieve the assigned locker.
+ * @returns {Promise<Object>} A promise that resolves with the data of the assigned locker document.
+ * @throws {Error} If no associated locker is found.
+ */
 export async function getAssignedLocker(condoID) {
   const condoDocRef = doc(db, "Condo", condoID);
   // Fetch document snapshot
@@ -822,11 +827,37 @@ export async function getAssignedLocker(condoID) {
 
 }
 
-//Provide: condo id
-//Returns: parking amenity associated with the condo
+/**
+ * Retrieves the parking space assigned to a condo.
+ *
+ * @param {string} condoID The ID of the condo for which to retrieve the assigned parking space.
+ * @returns {Promise<Object>} A promise that resolves with the data of the assigned parking space document.
+ * @throws {Error} If no associated parking space is found.
+ */
 export async function getAssignedParking(condoID) {
-  console.log("Getting assigned parking for condo: ", condoID);
-  return sampleAmenity;
+  const condoDocRef = doc(db, "Condo", condoID);
+  // Fetch document snapshot
+  const condoDocSnap = await getDoc(condoDocRef);
+  const propertyID = condoDocSnap.data().property
+
+  const propertyRef = doc(db, "Property", propertyID);
+  // Fetch the snapshot of the property document
+  const amenitiesRef = collection(propertyRef, "Amenities");
+  const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+  var assignedParkingArr = await Promise.all(amenitiesSnapshot.docs.map(async (doc) => {
+    if (doc.data().condo == condoID && doc.data().type == "Parking") {
+      return doc;
+    }
+  }));
+
+  assignedParkingArr = assignedParkingArr.filter(doc => doc !== undefined);
+
+  if (assignedParkingArr.length > 0) {
+    return assignedParkingArr[0].data();
+  } else {
+    throw new Error("No associated parking found");
+  }
 }
 
 //Provide: property id, updated property JSON
