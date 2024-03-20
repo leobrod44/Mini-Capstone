@@ -290,27 +290,10 @@ export async function addProperty(data) {
     });
 
     //add all parking spots in new property
-    const amenitiesRef = collection(docRef, "Amenities");
-    for(let i = 1; i<=data.parkingCount; i++){
-      await addDoc(amenitiesRef, {
-        available: true,
-        condo: "",
-        number: i,
-        price: data.parkingCost,
-        type: "Parking"
-      });
-    }
+    await addParkings(docRef.id, data.parkingCount, data.parkingCost);
 
     //add all lockers in new property
-    for(let i = 1; i<=data.lockerCount; i++){
-      await addDoc(amenitiesRef, {
-        available: true,
-        condo: "",
-        number: i,
-        price: data.lockerCost,
-        type: "Locker"
-      });
-    }
+    await addLockers(docRef.id, data.lockerCount, data.lockerCost);
 
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
