@@ -630,10 +630,34 @@ const sampleIsPaid = {
 
 
 
-//Provide: property id
-//Returns: amenity array associated with a property
+/**
+ * Retrieves a list of amenities associated with a property.
+ *
+ * @param propertyID The ID of the property for which amenities are to be fetched.
+ * @return A list of amenities associated with the property.
+ * @throws Error If an error occurs while fetching amenities.
+ */
 export async function getAmenities(propertyID) {
-  return [sampleAmenity, sampleAmenity, sampleAmenity];
+  try {
+    const propertyRef = doc(db, "Property", propertyID);
+    // Retrieve the collection of amenities from the property
+    const amenitiesColl = collection(propertyRef, "Amenities");
+    // Fetch snapshots of amenities from the collection
+    const amenitiesSnap = await getDocs(amenitiesColl);
+
+    // Initialize an array to store amenities
+    var amenities = [];
+
+    // Iterate through each amenities snapshot
+    amenitiesSnap.forEach((doc) => {
+      amenities.push(doc.data());
+    });
+
+    return amenities;
+  } catch (error) {
+    // If an error occurs, throw an error with a descriptive message
+    throw new Error("Error getting condos: " + error);
+  }
 }
 
 //Provide: property id, number of lockers to create, price of a locker
