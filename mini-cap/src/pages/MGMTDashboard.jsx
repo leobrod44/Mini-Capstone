@@ -73,7 +73,7 @@ const MGMTDashboard = () => {
                   data-testid="property-component"
                 />
               ))}
-              <div className="pagination-container">
+              <div className="pagination-container" style={{display:"flex", justifyContent:"center", width:"100%"}}>
                 <Pagination
                   itemsPerPage={propertiesPerPage}
                   totalItems={propertyDetails.length}
