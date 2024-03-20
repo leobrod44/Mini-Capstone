@@ -778,10 +778,43 @@ export async function assignLocker(condoID) {
   }
 }
 
-//Provide: condo id to assign a parking spot
-//Returns: nothing
+/**
+ * Assigns a parking space to a condo based on availability.
+ *
+ * @param {string} condoID The ID of the condo to which a parking space will be assigned.
+ * @returns {Promise<void>} A promise that resolves when the parking space is successfully assigned.
+ * @throws {Error} If an error occurs while assigning the parking space.
+ */
 export async function assignParking(condoID) {
-  console.log("Assigning parking spot to condo: ", condoID);
+  // Get document reference for the specified condo ID
+  const condoDocRef = doc(db, "Condo", condoID);
+  // Fetch document snapshot
+  const condoDocSnap = await getDoc(condoDocRef);
+  const propertyID = condoDocSnap.data().property
+
+  const propertyRef = doc(db, "Property", propertyID);
+  // Fetch the snapshot of the property document
+  const amenitiesRef = collection(propertyRef, "Amenities");
+  const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+  let parkingAssigned = false;
+  // Assign condo to free parking in property
+  for (const doc of amenitiesSnapshot.docs) {
+    if(!parkingAssigned && doc.data().available == true && doc.data().type == "Parking"){
+      // Update parking document with condo info
+      await updateDoc(doc.ref, {
+        condo: condoID,
+        available: false
+      })
+      // Update condo document with parking space number
+      await updateDoc(condoDocRef, {
+        parkingNumber: doc.data().number,
+      })
+      parkingAssigned = true;
+    } else if(parkingAssigned) {
+      break;
+    }
+  }
 }
 
 //Provide: condo id
