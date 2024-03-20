@@ -252,6 +252,35 @@ h5 {
   color: black;
 }
 
+.requests-button {
+  font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+  font-weight: 400;
+  font-size: 20px; /* Chosen font size */
+  background-color: #4540db; /* Chosen background color from signup2 branch */
+  color: #fff; /* Assuming var(--white) is white, replaced with #fff */
+  border: none; /* No border */
+  border-radius: 4px; /* Chosen border-radius */
+  cursor: pointer; /* Hand cursor on hover */
+  transition: all 0.3s ease; /* Example transition */
+  display: flex; /* Display style */
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
+  height: 40px;
+  width: 40px;
+  float: right;
+}
+
+.requests-button:hover {
+  background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
+  color: #ffffff; /* Change text color on hover to white */
+}
+
+.request-container {
+  display: flex;
+  justify-content: center;
+}
+  
 .CONDOgreen-check {
   color: green;
   justify-self: right;

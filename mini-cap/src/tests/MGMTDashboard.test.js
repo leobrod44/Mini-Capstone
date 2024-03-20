@@ -2,7 +2,6 @@ import React from 'react';
 import { render, screen, fireEvent,waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import MGMTDashboard from '../pages/MGMTDashboard';
-import { getProperties } from '../backend/Fetcher';
 import * as PropertyHandler from '../backend/PropertyHandler';
 
 

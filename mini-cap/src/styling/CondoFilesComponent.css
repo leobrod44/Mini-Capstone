@@ -1,0 +1,66 @@
+/* CondoFilesComponent.css */
+.cfc-containerFiles {
+  margin: auto;
+  width: 90%; /* Adjust width using percentage */
+  max-width: 800px; /* Limit maximum width for large screens */
+}
+
+.file-input {
+  margin-bottom: 3vh; /* Adjust margin using viewport height */
+}
+
+.drag-and-drop-area {
+  border: 2px dashed #ddd;
+  padding: 3vw; /* Adjust padding using viewport width */
+  text-align: center;
+  margin-bottom: 3vh; /* Adjust margin using viewport height */
+}
+
+.dragging {
+  background-color: #f0f0f0; /* Add a background color when dragging */
+}
+
+.button-containerFiles {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3vh; /* Adjust margin using viewport height */
+}
+
+.details-buttonFiles,
+.cancel-buttonFiles {
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 2.3vh; /* Adjust font size using viewport height */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5vh; /* Adjust height using viewport height */
+  width: 25vw; /* Adjust width using viewport width */
+  max-width: 200px; /* Limit maximum width for large screens */
+}
+
+.details-buttonFiles {
+  background-color: #4540db;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.details-buttonFiles:hover {
+  background-color: #7975d6;
+  color: #ffffff;
+}
+
+.cancel-buttonFiles {
+  background-color: #888;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cancel-buttonFiles:hover {
+  background-color: #a0a0a0;
+  color: #ffffff;
+}

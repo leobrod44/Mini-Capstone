@@ -91,10 +91,21 @@ const PropertyDetailsPage = () => {
 
         <div className="buttons_container">
           {showEdit ? (
-            <div>
-              <button className="details-button" onClick={toggleEdit}>
-                Edit Property
-              </button>
+            <div className="top-button-container">
+              <div>
+                <button className="property-buttons" onClick={toggleEdit}>
+                  Edit Property
+                </button>
+              </div>
+
+              <div>
+                <Link
+                  className="property-link"
+                  to={`/condo-files/${propertyID}/${propertyName}`}
+                >
+                  Add Property Files
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="edit_container">
@@ -118,14 +129,6 @@ const PropertyDetailsPage = () => {
                     condoId={condo.id}
                   />
                 ))}
-                <div className="pagination-container">
-                  <Pagination
-                    itemsPerPage={condosPerPage}
-                    totalItems={condoDetails.length}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                  />
-                </div>
               </div>
             ) : (
               <div className="content_container">
@@ -135,7 +138,7 @@ const PropertyDetailsPage = () => {
                   </p>
                   {/*<p className="button"> Add a condo</p>*/}
                   <Link
-                    className="button"
+                    className="buttonDetails"
                     to={`/add-condo/${propertyID}/${propertyName}`}
                   >
                     Add a condo
@@ -143,6 +146,14 @@ const PropertyDetailsPage = () => {
                 </div>
               </div>
             )}
+            <div className="pagination-container">
+              <Pagination
+                itemsPerPage={condosPerPage}
+                totalItems={condoDetails.length}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
+            </div>
           </div>
         )}
         {hasCondos && (

@@ -1,12 +1,12 @@
 import { initializeApp } from "firebase/app";
 import {
     doc,
-  addDoc,
-  getDocs,
-  collection,
-  getFirestore,
-  getDoc,
-  updateDoc
+    addDoc,
+    getDocs,
+    collection,
+    getFirestore,
+    getDoc,
+    updateDoc, arrayUnion
 } from "firebase/firestore";
 import { firebaseConfig } from "./FirebaseConfig";
 const app = initializeApp(firebaseConfig);
@@ -21,8 +21,9 @@ const sampleRequest = {
     "viewed": false,
   }
   import { getCondo } from "./PropertyHandler";
-import { ADMINISTRATIVE_STEPS, FINANCIAL_STEPS, TYPES } from "./Constants";
+import {ADMINISTRATIVE_STEPS, FINANCIAL_STEPS, OPERATIONAL_STEPS, TYPES} from "./Constants";
 import { cleanData } from "./DataCleaner";
+import {getPropertyPicture} from "./ImageHandler";
 
 //Sprint 3
 
@@ -38,7 +39,7 @@ import { cleanData } from "./DataCleaner";
 export async function submitRequest(condoID, type, notes) {
     // Check if the request type is valid
     if (!TYPES.includes(type)) {
-        console.error("Invalid request type");
+        // Return null if the request type is invalid
         return null;
     }
     try {
@@ -49,7 +50,8 @@ export async function submitRequest(condoID, type, notes) {
             step: 0,
             viewed: false,
             condoID: condoID,
-            requestID: null 
+            requestID: null,
+            assignedWorkerID: ""
         });
         // Get the ID of the newly added request document
         const requestID = docRef.id;
@@ -62,8 +64,6 @@ export async function submitRequest(condoID, type, notes) {
         return requestID;
         
     } catch(e) {
-        // Log any errors that occur during the process
-        console.error("Error submitting request: ", e);
         // Return null if an error occurs
         return null;
     }
@@ -99,14 +99,11 @@ export async function getRequests(condoID){
         // Return the array of requests
         return requests;
     } catch(e) {
-        // Log any errors that occur during the process
-        console.error("Error getting requests: ", e);
         // Return null if an error occurs
         return null;
     }
 }
 
-=
 
 /**
  * Updates the request associated with the specified condo ID and request ID.
@@ -126,7 +123,7 @@ export async function updateRequest(condoID, requestID) {
         
         // Check if the request exists
         if (!requestDoc.exists()) {
-            console.error("Request does not exist");
+            // Return null if the request does not exist
             return null;
         }
         
@@ -144,35 +141,14 @@ export async function updateRequest(condoID, requestID) {
                 console.error("Error assigning worker: ", e);
             }
         }
-        
-        // Determine the type of steps based on the request type
-        let stepType;
-
-        if(requestData.type === "Administrative"){
-            stepType = ADMINISTRATIVE_STEPS;
-        } else if(requestData.type === "Financial"){
-            stepType = FINANCIAL_STEPS;
-        } else if(requestData.type === "Maintenance"){
-            stepType = MAINTENANCE_STEPS;
-        } else {
-            console.error("Invalid request type");
-        }
-
-        
         // Update the request document
         await updateDoc(requestRef, requestData);
-        
-        // Check if the request process is completed
-        if(requestData.step >= stepType.length){
-            return "Completed";
-        } else {
-            // Return the next step in the request process
+        // return step
+        return requestData.step;
 
-            return stepType[requestData.step];
-        }
     } catch (e) {
-        console.error("Error updating request: ", e);
-        return null;
+        // throw error
+         throw e;
     }
 }
 
@@ -180,28 +156,82 @@ export async function updateRequest(condoID, requestID) {
 
 //BACKEND ONLY
 export async function assignWorker(requestData) {
+    try{
+        // Retrieve the document reference for the specified condo ID from the "Condo" collection
+        const condoRef = doc(db, "Condo", requestData.condoID);
+        // Fetch the snapshot of the condo document
+        const condoSnap = await getDoc(condoRef);
+        // Extract condo data from the snapshot
+        const condoData = condoSnap.data();
+
+        const requestDocRef = doc(db, "Condo", requestData.condoID, "Requests", requestData.requestID);
+
+        // Get document reference for the specified property ID
+        const propertyRef = doc(db, "Property", condoData.property);
+
+        const workersCollRef = collection(propertyRef, "Workers")
+        const workersSnapshot = await getDocs(workersCollRef);
+
+        workersSnapshot.docs.map(async (doc) => {
+            if(requestData.type == doc.data().type){
+                //add worker to request data
+                await updateDoc(requestDocRef, {
+                    assignedWorkerID: doc.ref.id
+                });
+            }
+        })
+
+    } catch (e) {
+        // Return null if an error occurs
+        return null;
+    }
 
 }
 
 //BACKEND ONLY
-export async function getAssignedWorker(requestID) {
+export async function getAssignedWorker(condoID, requestID) {
 
+    try{
+        // Retrieve the document reference for the specified condo ID from the "Condo" collection
+        const condoRef = doc(db, "Condo", condoID);
+        // Fetch the snapshot of the condo document
+        const condoSnap = await getDoc(condoRef);
+        // Extract condo data from the snapshot
+        const condoData = condoSnap.data();
+
+        const requestDocRef = doc(db, "Condo", condoID, "Requests", requestID);
+        // Fetch the snapshot of the request document
+        const requestSnap = await getDoc(requestDocRef);
+        // Extract request data from the snapshot
+        const requestData = requestSnap.data();
+
+        // Get document reference for the specified property ID
+        const workerDocRef = doc(db, "Property", condoData.property, "Workers", requestData.assignedWorkerID);
+        // Fetch the snapshot of the worker document
+        const workerSnap = await getDoc(workerDocRef);
+        // Return worker data (contains fields type and name)
+        return workerSnap.data();
+
+    } catch (e) {
+        // Return null if an error occurs
+        return null;
+    }
 }
 
 //SPRINT 4
 
-//Provide: userID
-//Returns: array of new notifications containing message to display and path
-export async function getNotifications(userID){
+// //Provide: userID
+// //Returns: array of new notifications containing message to display and path
+// export async function getNotifications(userID){
 
     
-    //request update, event reminder
-    //provide message to display and path for when clicked
-}
+//     //request update, event reminder
+//     //provide message to display and path for when clicked
+// }
 
-//Provide: userID, requestID
-//Returns: nothing
-export async function setNotificationViewed(userID, notification){
+// //Provide: userID, requestID
+// //Returns: nothing
+// export async function setNotificationViewed(userID, notification){
 
-    //called when clicked on notificaton
-}
+//     //called when clicked on notificaton
+// }

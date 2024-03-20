@@ -31,15 +31,9 @@ emailjs.init({
  * @throws {Error} If an error occurs while storing the condo key data.
  */
 export async function storeCondoKey(data) {
-  // Log the provided data for debugging purposes
-  console.log(data);
-
   try {
     // Add the condo key data to the "Keys" collection in the database
     const docRef = await addDoc(collection(db, "Keys"), data);
-
-    // Log the role property of the provided data for debugging purposes
-    console.log(data.role);
 
     // Update the newly created condo key document to mark it as unused
     await updateDoc(docRef, {
@@ -63,9 +57,6 @@ export async function storeCondoKey(data) {
  * @returns {void}
  */
 export async function sendCondoKey(email, key) {
-  // Log the recipient email address for debugging purposes
-  console.log(email);
-
   // Use emailjs to send the condo key via email
   emailjs
     .send(
@@ -76,16 +67,7 @@ export async function sendCondoKey(email, key) {
         publicKey: "Gw4N_w4eDx939VEBl", // Public key for authentication
       }
     )
-    .then(
-      () => {
-        // Log success message if the email is sent successfully
-        console.log("Successfully sent key!");
-      },
-      (error) => {
-        // Log error message if there is a failure in sending the email
-        console.log("Failed to send key: ", error.text);
-      }
-    );
+    .then();
 }
 /**
  * Links a condo to a user based on a provided key.
@@ -165,8 +147,6 @@ export async function linkCondoToUser(email, key) {
     // Return a message indicating that the condo has been successfully linked to the user
     return "Condo added!";
   } catch (error) {
-    // Log and handle any errors that occur during the process
-    console.error(error);
     return "An error occurred while linking condo to user.";
   }
 }
@@ -204,6 +184,65 @@ export async function addCondo(data, propertyID, propertyName) {
       occupant: "",
       status: "Vacant",
     });
+
+    const propertyRef = doc(db, "Property", propertyID);
+    // Fetch the snapshot of the property document
+    const amenitiesRef = collection(propertyRef, "Amenities");
+    const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+    if (data.parkingNumber) {
+      let parkingAssigned = false;
+      //assign condo to free parking in property
+      for (const doc of amenitiesSnapshot.docs) {
+        if (
+          !parkingAssigned &&
+          doc.data().available == true &&
+          doc.data().type == "Parking"
+        ) {
+          //update parking document with condo info
+          await updateDoc(doc.ref, {
+            condo: docID,
+            available: false,
+          });
+          //update condo document with parking number
+          await updateDoc(docRef, {
+            parkingNumber: doc.data().number,
+          });
+          parkingAssigned = true;
+        } else if (parkingAssigned) break;
+      }
+    } else {
+      await updateDoc(docRef, {
+        parkingNumber: "No Parking",
+      });
+    }
+
+    if (data.lockerNumber) {
+      let lockerAssigned = false;
+      //assign condo to free locker in property
+      for (const doc of amenitiesSnapshot.docs) {
+        if (
+          !lockerAssigned &&
+          doc.data().available == true &&
+          doc.data().type == "Locker"
+        ) {
+          //update locker document with condo info
+          await updateDoc(doc.ref, {
+            condo: docID,
+            available: false,
+          });
+          //update condo document with parking number
+          await updateDoc(docRef, {
+            lockerNumber: doc.data().number,
+          });
+          lockerAssigned = true;
+        } else if (lockerAssigned) break;
+      }
+    } else {
+      await updateDoc(docRef, {
+        lockerNumber: "No Locker",
+      });
+    }
 
     // If picture data is provided, add the picture to storage
     if (pictureData) {
@@ -268,6 +307,43 @@ export async function addProperty(data) {
         // If an error occurs while adding a condo, throw an error with a descriptive message
         throw new Error("Error adding condo: " + error);
       }
+    }
+    //Add workers for the new property
+    const workersRef = collection(docRef, "Workers");
+    await addDoc(workersRef, {
+      type: "Financial",
+      name: data.propertyName + " Financial Worker",
+    });
+    await addDoc(workersRef, {
+      type: "Administrative",
+      name: data.propertyName + " Administrative Worker",
+    });
+    await addDoc(workersRef, {
+      type: "Operational",
+      name: data.propertyName + " Operational Worker",
+    });
+
+    //add all parking spots in new property
+    const amenitiesRef = collection(docRef, "Amenities");
+    for (let i = 1; i <= data.parkingCount; i++) {
+      await addDoc(amenitiesRef, {
+        available: true,
+        condo: "",
+        number: i,
+        price: data.parkingCost,
+        type: "Parking",
+      });
+    }
+
+    //add all lockers in new property
+    for (let i = 1; i <= data.lockerCount; i++) {
+      await addDoc(amenitiesRef, {
+        available: true,
+        condo: "",
+        number: i,
+        price: data.lockerCost,
+        type: "Locker",
+      });
     }
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
@@ -498,12 +574,9 @@ export async function getCondo(condoID) {
       return condoData;
     } else {
       // If the condo document does not exist, log a message and return null
-      console.log("No such document!");
       return null;
     }
   } catch (error) {
-    // If an error occurs during the process, log the error
-    console.error(error);
     // Rethrow the error to propagate it up the call stack
     throw error;
   }
@@ -517,24 +590,18 @@ export async function getCondo(condoID) {
  * @throws {Error} If an error occurs during the retrieval process.
  */
 export async function getPropertyData(id) {
-  try {
-    // Get document reference for the specified property ID
-    const docRef = doc(db, "Property", id);
-    // Fetch document snapshot
-    const docSnap = await getDoc(docRef);
+  // Get document reference for the specified property ID
+  const docRef = doc(db, "Property", id);
+  // Fetch document snapshot
+  const docSnap = await getDoc(docRef);
 
-    // Check if document exists
-    if (docSnap.exists()) {
-      // Return property data
-      return docSnap.data();
-    } else {
-      // Log message if document does not exist
-      console.log("No such document!");
-    }
-  } catch (err) {
-    // Log any errors
-    console.error(err);
+  // Check if document exists
+  if (docSnap.exists()) {
+    // Return property data
+    return docSnap.data();
   }
+  // Return null if document not found
+  return null;
 }
 
 //Sprint 3
@@ -560,7 +627,6 @@ const sampleIsPaid = {
 //Provide: property id
 //Returns: amenity array associated with a property
 export async function getAmenities(propertyID) {
-  console.log("Getting amenities for property: ", propertyID);
   return [sampleAmenity, sampleAmenity, sampleAmenity];
 }
 
@@ -616,6 +682,12 @@ export async function getAssignedParking(condoID) {
   return sampleAmenity;
 }
 
+//Provide: property id, updated property JSON
+//Returns: nothing
+export async function updateProperty(propertyID, data) {
+  console.log("Updating property: ", propertyID, data);
+}
+
 //Provide: condoID
 //Returns: fees associated to the condo
 export async function getFinanceDetails() {
@@ -647,20 +719,65 @@ export async function getCondoOccupant(condoId) {
     if (condoDocSnap.exists) {
       // Extract occupant from condo data
       const { occupant } = condoDocSnap.data();
-      // Log occupant information
-      console.log("Occupant is: " + occupant);
-      // Return occupant's email
       return occupant;
     } else {
-      // Log error message if condo document not found
-      console.error("Condo document not found");
       // Return null if condo document not found
       return null;
     }
   } catch (error) {
-    // Log error if any occurs during the process
-    console.error("Error getting condo occupant:", error);
     // Throw error to propagate it up the call stack
+    throw error;
+  }
+}
+
+export async function calculateCondoFees(condoId) {
+  try {
+    // Retrieve the document reference for the specified condo ID from the "Condo" collection
+    const docRef = doc(db, "Condo", condoId);
+    // Fetch the snapshot of the condo document
+    const docSnap = await getDoc(docRef);
+
+    // Extract condo data from the snapshot
+    const condoData = docSnap.data();
+
+    let amenitiesPrice = 0;
+    // Check if the condo document exists
+    if (docSnap.exists) {
+      // Retrieve the document reference for the property associated with the condo
+      const propertyDocRef = doc(db, "Property", condoData.property);
+      // Fetch the snapshot of the property document
+      const propertyDoc = await getDoc(propertyDocRef);
+
+      // Check if the property document exists
+      if (propertyDoc.exists) {
+        const amenitiesCollection = collection(propertyDocRef, "Amenities");
+        const amenitiesSnapshot = await getDocs(amenitiesCollection);
+
+        //Get all amenities for the condo and add their price
+        amenitiesSnapshot.docs.map(async (doc) => {
+          let tempData = doc.data();
+          if (tempData.condo == condoId) amenitiesPrice += tempData.price;
+        });
+      } else {
+        // If the property document does not exist, return null
+        return null;
+      }
+
+      let totalPrice = amenitiesPrice + condoData.unitPrice;
+
+      //If rented: return price of amenities + price of condo per month
+      //If owned: return monthly price of amenities, and return total fees which are monthly + remaining condo payments
+      if (condoData.status == "Rented") {
+        return { monthlyFees: totalPrice, totalFees: null };
+      } else {
+        return { monthlyFees: amenitiesPrice, totalFees: totalPrice };
+      }
+    } else {
+      // If the condo document does not exist, log a message and return null
+      return null;
+    }
+  } catch (error) {
+    // Rethrow the error to propagate it up the call stack
     throw error;
   }
 }

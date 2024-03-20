@@ -4,7 +4,16 @@ import "../index.css";
 import { toast } from "react-toastify";
 import PropTypes from 'prop-types';
 
+/**
+ * Functional component representing a popup for registering a condo.
+ * @param {Object} props - The props object containing handleClose and handleRegisterCondo.
+ * @returns {JSX.Element} - The JSX for the popup component.
+ */
 const Popup = ({ handleClose, handleRegisterCondo }) => {
+  /**
+   * Function to handle form submission.
+   * @param {Object} event - The event object.
+   */
   const handleSubmit = (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
     const key = document.getElementById("key").value;
@@ -51,9 +60,9 @@ const Popup = ({ handleClose, handleRegisterCondo }) => {
   );
 };
 
-
+// PropTypes for type-checking props
 Popup.propTypes = {
-  handleClose: PropTypes.string,
-  handleRegisterCondo:PropTypes.string
+  handleClose: PropTypes.string, // Function to handle closing the popup
+  handleRegisterCondo:PropTypes.string // Function to handle registering the condo
 };
 export default Popup;

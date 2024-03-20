@@ -14,49 +14,80 @@ import { useNavigate, useParams } from "react-router-dom";
 import store from "storejs";
 import { getCompanyEmail } from "../backend/UserHandler";
 import { MANAGEMENT_COMPANY } from "../backend/Constants";
+import CondoRequests from "../components/CondoRequestsView.jsx";
+import { MdExpandLess, MdExpandMore } from "react-icons/md";
+import { getRequests } from "../backend/RequestHandler";
 import { FaCheck, FaTimes } from "react-icons/fa"; // Import icons from react-icons library
-import { MdExpandLess } from "react-icons/md";
-import { MdExpandMore } from "react-icons/md";
 
+/**
+ * Component for displaying details of a condo.
+ * @returns {JSX.Element} The rendered CondoDetails component.
+ */
 export default function CondoDetails() {
+  // Retrieve condoId from URL parameters
   let { condoId } = useParams();
-  // export default function CondoDetails({ propertyName, address, parkingNumber, lockerNumber, unitNumber, price, unitSize, squareFeet, pricesf, status, contact, currentPrice, rentDueDate }){
+
+  // State to manage condo details
   const [condoDetails, setCondoDetails] = useState(false);
+  // State to manage showing popup
   const [showPopup, setShowPopup] = useState(false);
+  // State to manage showing delete confirmation modal
   const [show, setShow] = useState(false);
+  // State to manage condo picture URL
   let [condoPicURL, setCondoPicURL] = useState(null);
+  // Navigation hook
   const navigate = useNavigate();
+  // State to manage user role
   const [role, setTheRole] = useState("");
+  // State to manage company email
   const [companyEmail, setCompanyEmail] = useState(null);
+  // State to manage condo requests
+  const [requests, setRequests] = useState([]);
+  // State to manage showing condo requests
+  const [showCondoRequests, setShowCondoRequests] = useState(false);
+  // State to manage showing financial details
+  const [showFinancialDetails, setShowFinancialDetails] = useState(false);
+  // State to track whether rent is paid
+  const [isRentPaid, setIsRentPaid] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedDetails, setEditedDetails] = useState({});
 
   useEffect(() => {
     const fetchCondo = async () => {
       try {
+        // Retrieve user role from local storage
         setTheRole(store("role"));
+        // Retrieve condo details
         const condo = await getCondo(condoId);
+        // Retrieve condo picture URL
         condoPicURL = await getCondoPicture(
           condo.propertyName + "/" + condo.unitNumber
         );
         setCondoPicURL(condoPicURL);
         condo.picture = condoPicURL;
+        // Set condo details state
         setCondoDetails(condo);
-        setEditedDetails(condo);
+        // Retrieve company email
         setCompanyEmail(await getCompanyEmail(condoId));
       } catch (err) {
         console.error(err);
       }
     };
+
+    const fetchRequests = async () => {
+      try {
+        // Retrieve condo requests
+        setRequests(await getRequests(condoId));
+      } catch (error) {
+        console.error("Error fetching requests:", error);
+      }
+    };
+
     fetchCondo();
+    fetchRequests();
   }, []);
 
-  if (condoDetails === null) {
-    // If condoDetails is still null, return a loading state or handle it accordingly
-    return <div>Loading...</div>;
-  }
-
-  //NOT FINISHED
+  // Function to handle delete condo attempt
   const deleteCondoAttempt = async () => {
     try {
       const success = await deleteCondo(condoId);
@@ -73,14 +104,17 @@ export default function CondoDetails() {
     }
     setShow(false);
   };
-
+  // Function to toggle popup visibility
   const handlePopupToggle = () => {
     setShowPopup(!showPopup);
   };
 
+  // Function to handle click on delete button
   const handleClickDelete = () => {
-    setShow(true); // Show the delete confirmation modal
+    setShow(true);
   };
+
+  // Function to close delete confirmation modal
   const handleClose = () => {
     setShow(false);
   };
@@ -108,6 +142,7 @@ export default function CondoDetails() {
     }
   };
 
+  // Destructure condoDetails for easier access
   const {
     propertyName,
     address,
@@ -117,322 +152,430 @@ export default function CondoDetails() {
     parkingNumber,
     lockerNumber,
     picture,
+    propertyID,
     occupant,
     status,
   } = condoDetails;
 
-  const [showFinancialDetails, setShowFinancialDetails] = useState(false);
+  // Function to toggle showing condo requests
+  const toggleCondoRequests = () => {
+    setShowCondoRequests(!showCondoRequests);
+  };
 
+  // Function to toggle showing financial details
   const toggleFinancialDetails = () => {
     setShowFinancialDetails(!showFinancialDetails);
   };
 
-  {
-    /* TO DO is RentPaid */
-  }
-  const [isRentPaid, setIsRentPaid] = useState(false); // State to track whether rent is paid
-
+  // Function to toggle rent paid status
   const toggleRentPaid = () => {
     setIsRentPaid(!isRentPaid);
   };
 
   return (
     <div className="pageContainer">
-      <Header />
+      <>
+        <Header />
 
-      <div
-        className="details"
-        style={{ zIndex: 2, position: "relative", marginTop: "20px" }}
-      >
-        <div className="title_container">
-          <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-            integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-            crossOrigin="anonymous"
-          />
-          <div className="condo-details-container">
-            {isEditMode ? (
-              <form className="condo-info">
-                <div className="name-and-number">
-                  {picture && (
-                    <img
-                      src={picture}
-                      alt="Condo"
-                      className="profile-picture edit-mode-image"
-                    />
-                  )}
-                </div>
-                <h2 className="DB_title">{editedDetails.propertyName}</h2>
-                <div className="other-info">
-                  <div className="other-info1">
-                    <h5 className="other-info2">Unit Number</h5>
-                    <input
-                      type="text"
-                      className="edit-input"
-                      name="unitNumber"
-                      value={editedDetails.unitNumber}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="other-info1">
-                    <h5 className="other-info2">Square Feet</h5>
-                    <input
-                      type="text"
-                      className="edit-input"
-                      name="squareFeet"
-                      value={editedDetails.squareFeet}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="other-info1">
-                    <h5 className="other-info2">Unit Size</h5>
-                    <input
-                      type="text"
-                      className="edit-input"
-                      name="unitSize"
-                      value={editedDetails.unitSize}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="other-info1">
-                    <h5 className="other-info2">Parking Spot Number</h5>
-                    <input
-                      type="text"
-                      className="edit-input"
-                      name="parkingNumber"
-                      value={editedDetails.parkingNumber}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                  <div className="other-info1">
-                    <h5 className="other-info2">Locker Number</h5>
-                    <input
-                      type="text"
-                      className="edit-input"
-                      name="lockerNumber"
-                      value={editedDetails.lockerNumber}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-
-                  <div className="other-info1">
-                    <h5 className="other-info2">Unit Price</h5>
-                    <input
-                      type="text"
-                      className="edit-input"
-                      name="lockerNumber"
-                      value={editedDetails.unitPrice}
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-                <div className="edit-buttons">
-                  <button
-                    type="button"
-                    className="edit-button"
-                    onClick={handleSaveChanges}
-                  >
-                    Save
-                  </button>
-                  <button
-                    type="button"
-                    className="cncl-btn"
-                    onClick={toggleEditMode}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            ) : (
-              <div className="condo-info">
-                <div className="name-and-number">
-                  <div className="pic-and-num">
+        <div
+          className="details"
+          style={{ zIndex: 2, position: "relative", marginTop: "20px" }}
+        >
+          <div className="title_container">
+            <link
+              rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+              integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+              crossOrigin="anonymous"
+            />
+            <div className="condo-details-container">
+              {isEditMode ? (
+                <form className="condo-info">
+                  <div className="name-and-number">
                     {picture && (
                       <img
                         src={picture}
-                        alt="Profile"
-                        className="profile-picture"
+                        alt="Condo"
+                        className="profile-picture edit-mode-image"
                       />
                     )}
                   </div>
-                  <div>
-                    {role !== MANAGEMENT_COMPANY && (
-                      <>
-                        {isRentPaid ? (
-                          <FaCheck className="Ownergreen-check" />
-                        ) : (
-                          <FaTimes className="Ownerred-cross" />
-                        )}
-                      </>
-                    )}
-                    {role === MANAGEMENT_COMPANY && status !== "Vacant" && (
-                      <>
-                        {isRentPaid ? (
-                          <FaCheck className="CONDOgreen-check" />
-                        ) : (
-                          <FaTimes className="CONDOred-cross" />
-                        )}
-                      </>
-                    )}
-                  </div>
-                  <div className="pic-and-tag">
-                    {status === "Vacant" && role === MANAGEMENT_COMPANY && (
-                      <>
-                        <div>
-                          <div className={`user-tag vacant`}>{status}</div>
-                          {role === "mgmt" && (
-                            <>
-                              <button
-                                className="sendkey-button"
-                                onClick={handlePopupToggle}
-                              >
-                                Send Key
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </>
-                    )}
-                    {status === "Rented" && role === MANAGEMENT_COMPANY && (
-                      <>
-                        <div className={`user-tag renter`}>{status}</div>
-                      </>
-                    )}
-                    {status === "Owned" && role === MANAGEMENT_COMPANY && (
-                      <>
-                        <div className={`user-tag owner`}>{status}</div>
-                      </>
-                    )}
-                  </div>
-                </div>
-                <div className="other-info">
-                  <h2 className="DB_title">
-                    {" "}
-                    {propertyName} <br />
-                    <br />
-                  </h2>
-                  <div className="other-info1">
-                    <div className="other-info2">
-                      <h5>Address: </h5>
+                  <h2 className="DB_title">{editedDetails.propertyName}</h2>
+                  <div className="other-info">
+                    <div className="other-info1">
+                      <h5 className="other-info2">Unit Number</h5>
+                      <input
+                        type="text"
+                        className="edit-input"
+                        name="unitNumber"
+                        value={editedDetails.unitNumber}
+                        onChange={handleInputChange}
+                      />
                     </div>
-                    <div className="other-info2">{address}</div>
-                  </div>
-                  <div className="other-info1">
-                    <div className="other-info2">
-                      <h5>Unit Number: </h5>
+                    <div className="other-info1">
+                      <h5 className="other-info2">Square Feet</h5>
+                      <input
+                        type="text"
+                        className="edit-input"
+                        name="squareFeet"
+                        value={editedDetails.squareFeet}
+                        onChange={handleInputChange}
+                      />
                     </div>
-                    <div className="other-info2">{unitNumber}</div>
-                  </div>
-                  <div className="other-info1">
-                    <div className="other-info2">
-                      <h5>Square Feet: </h5>
+                    <div className="other-info1">
+                      <h5 className="other-info2">Unit Size</h5>
+                      <input
+                        type="text"
+                        className="edit-input"
+                        name="unitSize"
+                        value={editedDetails.unitSize}
+                        onChange={handleInputChange}
+                      />
                     </div>
-                    <div className="other-info2">{squareFeet} sq ft</div>
-                  </div>
-                  <div className="other-info1">
-                    <div className="other-info2">
-                      <h5>Unit size: </h5>
+                    <div className="other-info1">
+                      <h5 className="other-info2">Parking Spot Number</h5>
+                      <input
+                        type="text"
+                        className="edit-input"
+                        name="parkingNumber"
+                        value={editedDetails.parkingNumber}
+                        onChange={handleInputChange}
+                      />
                     </div>
-                    <div className="other-info2">{unitSize} sq ft</div>
-                  </div>
-                  <div className="other-info1">
-                    <div className="other-info2">
-                      <h5>Parking spot number: </h5>
+                    <div className="other-info1">
+                      <h5 className="other-info2">Locker Number</h5>
+                      <input
+                        type="text"
+                        className="edit-input"
+                        name="lockerNumber"
+                        value={editedDetails.lockerNumber}
+                        onChange={handleInputChange}
+                      />
                     </div>
-                    <div className="other-info2">{parkingNumber}</div>
-                  </div>
-                  <div className="other-info1">
-                    <div className="other-info2">
-                      <h5>Locker number: </h5>
-                    </div>
-                    <div className="other-info2">{lockerNumber}</div>
-                  </div>
-                  <div className="other-info1">
-                    {role === MANAGEMENT_COMPANY && status !== "Vacant" && (
-                      <>
-                        <div className="other-info2">
-                          <h5>Renter/Owner Email: </h5>
-                        </div>
-                        <div className="other-info2">{occupant}</div>
-                      </>
-                    )}
-                  </div>
-                  <div className="other-info1">
-                    {role !== MANAGEMENT_COMPANY && (
-                      <>
-                        <div className="other-info2">
-                          <h5>Property Company Email: </h5>
-                        </div>
-                        <div className="other-info2">{companyEmail}</div>
-                      </>
-                    )}
-                  </div>
-                </div>
-                {role === MANAGEMENT_COMPANY && (
-                  <div className="buttons-container">
-                    <button className="edit-button" onClick={toggleEditMode}>
-                      Edit
-                    </button>
-                    <button
-                      className="delete-button"
-                      data-testid="delete-button-test"
-                      onClick={handleClickDelete}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                )}
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <h5
-                    style={{
-                      paddingTop: "25px",
-                      paddingBottom: "5%",
-                      paddingLeft: "25%",
-                      color: "#2f2c9",
-                      marginRight: "auto",
-                    }}
-                  >
-                    My financial details
-                  </h5>
-                  <div>
-                    <button
-                      id="toggleButton"
-                      className="finance-button"
-                      onClick={toggleFinancialDetails}
-                    >
-                      {showFinancialDetails ? (
-                        <MdExpandLess />
-                      ) : (
-                        <MdExpandMore />
-                      )}
-                    </button>
-                  </div>
-                </div>
-                <div className="other-info">
-                  {showFinancialDetails && <FinancialDetails />}
-                </div>
-              </div>
-            )}
-          </div>
-          {showPopup && <Popup_SendKey handleClose={handlePopupToggle} />}
-          <DeleteModal
-            show={show}
-            handleClose={handleClose}
-            handleDeleteItem={deleteCondoAttempt}
-            message={"Are you sure you want to delete this Condo?"}
-          />
-        </div>
-      </div>
-      {role !== MANAGEMENT_COMPANY && (
-        <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
-      )}
-      {role === MANAGEMENT_COMPANY && status !== "Vacant" && (
-        <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
-      )}
 
-      <BackArrowBtn />
-      <Footer />
+                    <div className="other-info1">
+                      <h5 className="other-info2">Unit Price</h5>
+                      <input
+                        type="text"
+                        className="edit-input"
+                        name="lockerNumber"
+                        value={editedDetails.unitPrice}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="edit-buttons">
+                    <button
+                      type="button"
+                      className="edit-button"
+                      onClick={handleSaveChanges}
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      className="cncl-btn"
+                      onClick={toggleEditMode}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="condo-info">
+                  <div className="name-and-number">
+                    <div className="pic-and-num">
+                      {picture && (
+                        <img
+                          src={picture}
+                          alt="Profile"
+                          className="profile-picture"
+                        />
+                      )}
+                    </div>
+                    <div>
+                      {role !== MANAGEMENT_COMPANY && (
+                        <>
+                          {isRentPaid ? (
+                            <FaCheck className="Ownergreen-check" />
+                          ) : (
+                            <FaTimes className="Ownerred-cross" />
+                          )}
+                        </>
+                      )}
+                      {role === MANAGEMENT_COMPANY && status !== "Vacant" && (
+                        <>
+                          {isRentPaid ? (
+                            <FaCheck className="CONDOgreen-check" />
+                          ) : (
+                            <FaTimes className="CONDOred-cross" />
+                          )}
+                        </>
+                      )}
+                    </div>
+                    <div className="pic-and-tag">
+                      {status === "Vacant" && role === MANAGEMENT_COMPANY && (
+                        <>
+                          <div>
+                            <div className={`user-tag vacant`}>{status}</div>
+                            {role === MANAGEMENT_COMPANY && (
+                              <>
+                                <button
+                                  className="sendkey-button"
+                                  onClick={handlePopupToggle}
+                                >
+                                  Send Key
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </>
+                      )}
+                      {status === "Rented" && role === MANAGEMENT_COMPANY && (
+                        <>
+                          <div className={`user-tag renter`}>{status}</div>
+                        </>
+                      )}
+                      {status === "Owned" && role === MANAGEMENT_COMPANY && (
+                        <>
+                          <div className={`user-tag owner`}>{status}</div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div className="other-info">
+                    <h2 className="DB_title">
+                      {" "}
+                      {propertyName} <br />
+                      <br />
+                    </h2>
+
+                    <h5
+                      style={{
+                        paddingTop: "25px",
+                        paddingLeft: "25%",
+                        color: "#2f2c9",
+                      }}
+                    >
+                      General Information
+                    </h5>
+
+                    <div className="other-info1">
+                      <div className="other-info2">
+                        <h5>Address: </h5>
+                      </div>
+                      <div className="other-info2">{address}</div>
+                    </div>
+
+                    <div className="other-info1">
+                      <div className="other-info2">
+                        <h5>Unit Number: </h5>
+                      </div>
+                      <div className="other-info2">{unitNumber}</div>
+                    </div>
+
+                    <div className="other-info1">
+                      <div className="other-info2">
+                        <h5>Square Feet: </h5>
+                      </div>
+                      <div className="other-info2">{squareFeet} sq ft</div>
+                    </div>
+
+                    <div className="other-info1">
+                      <div className="other-info2">
+                        <h5>Unit size: </h5>
+                      </div>
+                      <div className="other-info2">{unitSize} sq ft</div>
+                    </div>
+                    <div className="other-info1">
+                      <div className="other-info2">
+                        <h5>Parking spot number: </h5>
+                      </div>
+                      <div className="other-info2">{parkingNumber}</div>
+                    </div>
+
+                    <div className="other-info1">
+                      <div className="other-info2">
+                        <h5>Locker number: </h5>
+                      </div>
+                      <div className="other-info2">{lockerNumber}</div>
+                    </div>
+
+                    {/*	THIS ALL PRICE LOGIC:*/}
+                    {/*------------------------------------------------------------------------------------------*/}
+                    {/*<div className='other-info1'>*/}
+                    {/*	<div className='other-info2'><h5>Price/sq ft.: </h5></div>*/}
+                    {/*	<div className='other-info2'>{"pricesf"}</div>*/}
+                    {/*</div>*/}
+
+                    {/*<div className='other-info1'>*/}
+                    {/*	<div className='other-info2'><h5>Unit Price: </h5></div>*/}
+                    {/*	<div className='other-info2'>{"price"}</div>*/}
+
+                    {/*</div>*/}
+
+                    {/*<div className='other-info1'>*/}
+                    {/*{condoStatus === "rented" && (*/}
+                    {/*		<>*/}
+                    {/*			<div className='other-info2'><h5>Current Rent Price: </h5></div>*/}
+                    {/*			<div className='other-info2'>{"currentPrice"}</div>*/}
+                    {/*		</>)}*/}
+                    {/*</div>*/}
+
+                    {/*<div className='other-info1'>*/}
+                    {/*{role === "renter" && condoStatus === "rented" && (*/}
+                    {/*		<>*/}
+                    {/*			<div className='other-info2'><h5>Next Rent Due Date: </h5></div>*/}
+                    {/*			<div className='other-info2'>{"rentDueDate"}</div>*/}
+
+                    {/*		</>)}*/}
+                    {/*</div>*/}
+                    {/*------------------------------------------------------------------------------------------*/}
+
+                    <div className="other-info1">
+                      {role === MANAGEMENT_COMPANY && status !== "Vacant" && (
+                        <>
+                          <div className="other-info2">
+                            <h5>Renter/Owner Email: </h5>
+                          </div>
+                          <div className="other-info2">{occupant}</div>
+                        </>
+                      )}
+                    </div>
+
+                    <div className="other-info1">
+                      {role !== MANAGEMENT_COMPANY && (
+                        <>
+                          <div className="other-info2">
+                            <h5>Property Company Email: </h5>
+                          </div>
+                          <div className="other-info2">{companyEmail}</div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <h5
+                      style={{
+                        paddingTop: "25px",
+                        paddingBottom: "5%",
+                        paddingLeft: "25%",
+                        color: "#2f2c9",
+                        marginRight: "auto",
+                      }}
+                    >
+                      Condo Requests
+                    </h5>
+                    <div>
+                      <button
+                        id="toggleButton"
+                        className="requests-button"
+                        onClick={toggleCondoRequests}
+                      >
+                        {showCondoRequests ? (
+                          <MdExpandLess />
+                        ) : (
+                          <MdExpandMore />
+                        )}{" "}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="other-info">
+                    {showCondoRequests &&
+                      (requests.length > 0 ? (
+                        requests.map((request, index) => (
+                          <CondoRequests
+                            key={index}
+                            type={request.type}
+                            notes={request.notes}
+                            role={role}
+                            step={request.step}
+                            condoId={condoId}
+                            requestId={request.requestID}
+                          />
+                        ))
+                      ) : (
+                        <p className="request-container">
+                          There are no current requests
+                        </p>
+                      ))}
+                  </div>
+                  <div>
+                    {role === MANAGEMENT_COMPANY && (
+                      <>
+                        <button
+                          className="edit-button"
+                          onClick={toggleEditMode}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="delete-button"
+                          data-testid="delete-button-test"
+                          onClick={() => handleClickDelete()}
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <h5
+                      style={{
+                        paddingTop: "25px",
+                        paddingBottom: "5%",
+                        paddingLeft: "25%",
+                        color: "#2f2c9",
+                        marginRight: "auto",
+                      }}
+                    >
+                      My financial details
+                    </h5>
+                    <div>
+                      <button
+                        id="toggleButton"
+                        className="finance-button"
+                        onClick={toggleFinancialDetails}
+                      >
+                        {showFinancialDetails ? (
+                          <MdExpandLess />
+                        ) : (
+                          <MdExpandMore />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="other-info">
+                    {showFinancialDetails && <FinancialDetails />}
+                  </div>
+                </div>
+              )}
+            </div>
+            {showPopup && <Popup_SendKey handleClose={handlePopupToggle} />}
+            <div data-testid="popup-delete-test">
+              <DeleteModal
+                show={show}
+                handleClose={handleClose}
+                handleDeleteItem={deleteCondoAttempt}
+                message={"Are you sure you want to delete this Condo?"}
+              />
+            </div>
+          </div>
+        </div>
+        {role !== MANAGEMENT_COMPANY && (
+          <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
+        )}
+        {role === MANAGEMENT_COMPANY && status !== "Vacant" && (
+          <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
+        )}
+
+        <BackArrowBtn />
+        <div style={{ zIndex: 1, position: "relative" }}>
+          <Footer />
+        </div>
+      </>
     </div>
   );
 }
