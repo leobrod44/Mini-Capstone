@@ -345,15 +345,6 @@ export default function CondoDetails() {
 								</button>
 							</div>
 						</div>
-
-							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
-							<div>
-								{role === MANAGEMENT_COMPANY && (
-									<>
-										<button className="edit-button"> Edit</button>
-										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
-									</>)}
-							</div>
 							<div className="other-info">
 								{showFinancialDetails && (
 									<FinancialDetails/>
@@ -364,6 +355,14 @@ export default function CondoDetails() {
 									handleClickClose={handleClickClose}
 									condoInfo = {condoDetails}
 								/>
+							</div>
+							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
+							<div>
+								{role === MANAGEMENT_COMPANY && (
+								<>
+								<button className="edit-button"> Edit</button>
+								<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
+								</>)}
 							</div>
 						</div>
 					</div>
