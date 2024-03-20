@@ -76,6 +76,10 @@ const RequestForm = ({handleClickClose, condoInfo}) => {
               }
             const condo = await getCondo(condoID);
             const requestID = await submitRequest(condoID, subject, description);
+            toast.success("Request submitted successfully", {
+              onClose: handleClickClose
+            });
+            console.log("The request was submitted successfully")
         } catch (error) {
             toast.error("Request failed to submit for unexpected reasons")
             console.error(error);
@@ -84,10 +88,6 @@ const RequestForm = ({handleClickClose, condoInfo}) => {
             setDescription("");
             setSubmitting(false); // Set submitting state back to false
         }
-        toast.success("Request submitted successfully", {
-            onClose: handleClickClose
-          });
-        console.log("The request was submitted successfully")
     };
 
     return (
