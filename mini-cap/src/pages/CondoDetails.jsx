@@ -332,10 +332,19 @@ export default function CondoDetails() {
 										</div>
 									)}
 									</>
+								)}
 								</div>
 							</div>
-								)}
+							)}
+						</div>
+						<div style={{display: "flex" , alignItems: "center"}}>
+							<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>
+							<div>
+								<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}>
+									{showFinancialDetails ? <MdExpandLess/> : <MdExpandMore />}
+								</button>
 							</div>
+						</div>
 
 							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
 							<div>
@@ -344,14 +353,6 @@ export default function CondoDetails() {
 										<button className="edit-button"> Edit</button>
 										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
 									</>)}
-							</div>
-							<div style={{display: "flex" , alignItems: "center"}}>
-							<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>
-								<div>
-									<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}>
-										{showFinancialDetails ? <MdExpandLess/> : <MdExpandMore />}
-									</button>
-								</div>
 							</div>
 							<div className="other-info">
 								{showFinancialDetails && (
