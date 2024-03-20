@@ -119,7 +119,7 @@ const Dashboard = () => {
                   data-testid="condo-component"
                 />
               ))}
-              <div className="pagination-container">
+              <div className="pagination-container" style={{display:"flex", justifyContent:"center", width:"100%"}}>
                 <Pagination
                   itemsPerPage={condosPerPage}
                   totalItems={condoDetails.length}
