@@ -14,15 +14,18 @@ import { toast } from "react-toastify";
 import Pagination from "../components/Pagination";
 import "../styling/Pagination.css";
 
+import { Link, useParams } from "react-router-dom";
+
 
 const Dashboard = () => {
+  const { userID } = useParams();
   // State to represent whether the user has registered condos or not, since i dont have backend right now
   const [hasCondos, setHasCondos] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [condoDetails, setCondoDetails] = useState([]);
   let [condoPicURL, setCondoPicURL] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   useEffect(() => {
     const fetchCondos = async () => {
       try {
@@ -73,7 +76,7 @@ const Dashboard = () => {
     //setHasCondos(true);
   };
 
-  
+
   const condosPerPage = 4;
   const indexOfLastCondo = currentPage * condosPerPage;
   const indexOfFirstCondo = indexOfLastCondo - condosPerPage;
@@ -91,6 +94,12 @@ const Dashboard = () => {
         <div className="title_container">
           <h3 className="DB_title"> Welcome to your Condo Dashboard ! </h3>
         </div>
+        <Link
+          className="details-button-condo-files"
+          to={`/view-files/${userID}`} // Pass userID to the ViewFilesPage
+        >
+          View My Files
+        </Link>
         <div className="content_container">
           {hasCondos ? (
             <div className="condo_list">
