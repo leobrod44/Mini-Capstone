@@ -295,7 +295,7 @@ export default function CondoDetails() {
 								{/* Check if condo status is "Rented" */}
 								{(condoDetails.status === "Owned" || role === MANAGEMENT_COMPANY) && (
 									<div>
-										<div style={{display: "flex" , alignItems: "center"}}>
+										<div style={{display: "flex" , alignItems: "center", paddingTop:"8%"}}>
 											<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>Condo Requests</h5>
 											<div>
 												<button id="toggleButton" className="requests-button" onClick={toggleCondoRequests}>
@@ -320,13 +320,13 @@ export default function CondoDetails() {
 										/>
 										))
 									) : (
-										<p className="request-container">There are no current requests</p>
+										<p className="request-container" style={{fontSize:"17px"}}>You have no current requests</p>
 									)}
 
 									{/* Code snippet to appear when status is "Owned" */}
 									{status === "Owned" && (
 										<div>
-										<button className="modal-button" onClick={() => handleClickRequest()}>
+										<button className="modal-button" onClick={() => handleClickRequest()} style={{marginTop:"10%"}}>
 											Create Request
 										</button>
 										</div>
@@ -338,7 +338,7 @@ export default function CondoDetails() {
 							)}
 						</div>
 						<div style={{display: "flex" , alignItems: "center"}}>
-							<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>
+							<h5 style={{paddingTop:"15%",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>
 							<div>
 								<button id="toggleButton" className="finance-button" onClick={toggleFinancialDetails}>
 									{showFinancialDetails ? <MdExpandLess/> : <MdExpandMore />}
