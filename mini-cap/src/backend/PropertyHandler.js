@@ -681,7 +681,7 @@ export async function addLockers(propertyID, count, price) {
     // Fetch snapshots of documents that match the query
     const querySnapshot = await getDocs(q);
 
-    var lockerNumber = querySnapshot.size + 1;
+    let lockerNumber = querySnapshot.size + 1;
     // Add all lockers in property
     for(let i = 1; i<=count; i++){
       await addDoc(amenitiesColl, {
@@ -700,17 +700,42 @@ export async function addLockers(propertyID, count, price) {
   }
 }
 
-//Provide: property id, number of parking spots to create, price of a parking spot
-//Returns: nothing
+/**
+ * Adds a specified number of parking spaces to a property's amenities.
+ *
+ * @param {string} propertyID The ID of the property to which the parking spaces will be added.
+ * @param {number} count The number of parking spaces to add.
+ * @param {number} price The price of each parking space.
+ * @returns {Promise<void>} A promise that resolves when the parking spaces are successfully added.
+ * @throws {Error} If an error occurs while adding the parking spaces.
+ */
 export async function addParkings(propertyID, count, price) {
-  console.log(
-    "Adding parking to property: ",
-    propertyID,
-    " count: ",
-    count,
-    " price: ",
-    price
-  );
+  try {
+    const propertyRef = doc(db, "Property", propertyID);
+    // Retrieve the collection of amenities from the property
+    const amenitiesColl = collection(propertyRef, "Amenities");
+    // Create a query to filter documents based on the field value
+    const q = query(amenitiesColl, where("type", '==', "Parkings"));
+    // Fetch snapshots of documents that match the query
+    const querySnapshot = await getDocs(q);
+
+    let parkingNumber = querySnapshot.size + 1;
+    // Add all parking spaces in property
+    for(let i = 1; i<=count; i++){
+      await addDoc(amenitiesColl, {
+        available: true,
+        condo: "",
+        number: parkingNumber,
+        price: price,
+        type: "Parking"
+      });
+      parkingNumber++;
+    }
+
+  } catch (error) {
+    // If an error occurs, throw an error with a descriptive message
+    throw new Error("Error getting condos: " + error);
+  }
 }
 
 //Provide: condo id to assign a locker
