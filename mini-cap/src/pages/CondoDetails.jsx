@@ -314,15 +314,6 @@ export default function CondoDetails() {
 									</div>
 								)}
 							</div>
-
-							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
-							<div>
-								{role === MANAGEMENT_COMPANY && (
-									<>
-										<button className="edit-button"> Edit</button>
-										<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
-									</>)}
-							</div>
 							<div style={{display: "flex" , alignItems: "center"}}>
 							<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>My financial details</h5>
 								<div>
@@ -335,6 +326,15 @@ export default function CondoDetails() {
 								{showFinancialDetails && (
 									<FinancialDetails/>
 								)}
+							</div>
+
+							{/*NEED TO IMPLEMENT FUNCTIONALITY for edit*/}
+							<div>
+								{role === MANAGEMENT_COMPANY && (
+								<>
+								<button className="edit-button"> Edit</button>
+								<button className="delete-button" data-testid="delete-button-test" onClick={() => handleClickDelete()}>Delete</button>
+								</>)}
 							</div>
 						</div>
 					</div>
