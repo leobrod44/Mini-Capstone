@@ -108,16 +108,22 @@ export async function linkCondoToUser(email, key) {
     // Update user data based on the role specified in the key
     const userData = userSnap.data();
     var status
-
-    if(data.role === "renter"){
-      status = "Rented"
-      userData.rents.push(data.condo);
-      userData.rents = [...new Set(userData.rents)];
+    userData.rents = userData.rents || [];
+    userData.owns = userData.owns || [];
+    try{
+      if(data.role === "renter"){
+        status = "Rented"
+        userData.rents.push(data.condo);
+        userData.rents = [...new Set(userData.rents)];
+      }
+      else if(data.role === "owner"){
+        status = "Owned"
+        userData.owns.push(data.condo);
+        userData.owns = [...new Set(userData.owns)];
+      }
     }
-    else if(data.role === "owner"){
-      status = "Owned"
-      userData.owns.push(data.condo);
-      userData.owns = [...new Set(userData.owns)];
+    catch(e){
+      throw new Error("Error updating user data: " + e);
     }
     // Update user's "rents" field with the condo ID
     try{
@@ -127,7 +133,7 @@ export async function linkCondoToUser(email, key) {
     }
     // Update condo status to "Rented"
     try{
-      resp = await updateDoc(doc(db, "Condo", data.condo), {
+        await updateDoc(doc(db, "Condo", data.condo), {
         status: status,
         occupant: data.email
       });
@@ -381,8 +387,6 @@ export async function getProperties(companyID) {
         }
       })
     );
-
-
     // Sort the properties array by propertyName and return it
 
     return sortArray(properties, "propertyName");
