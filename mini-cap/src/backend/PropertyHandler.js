@@ -796,8 +796,30 @@ export async function assignParking(condoID) {
 //Provide: condo id
 //Returns: locker amenity associated with the condo
 export async function getAssignedLocker(condoID) {
-  console.log("Getting assigned locker for condo: ", condoID);
-  return sampleAmenity;
+  const condoDocRef = doc(db, "Condo", condoID);
+  // Fetch document snapshot
+  const condoDocSnap = await getDoc(condoDocRef);
+  const propertyID = condoDocSnap.data().property
+
+  const propertyRef = doc(db, "Property", propertyID);
+  // Fetch the snapshot of the property document
+  const amenitiesRef = collection(propertyRef, "Amenities");
+  const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+  var assignedLockerArr = await Promise.all(amenitiesSnapshot.docs.map(async (doc) => {
+    if (doc.data().condo == condoID && doc.data().type == "Locker") {
+      return doc;
+    }
+  }));
+
+  assignedLockerArr = assignedLockerArr.filter(doc => doc !== undefined);
+
+  if (assignedLockerArr.length > 0) {
+    return assignedLockerArr[0].data();
+  } else {
+    throw new Error("No associated locker found");
+  }
+
 }
 
 //Provide: condo id
