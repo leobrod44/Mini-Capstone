@@ -281,7 +281,7 @@ export default function CondoDetails() {
 							</div>
 							<div>
 								{/* Check if condo status is "Rented" */}
-								{condoDetails.status === "Owned" && (
+								{(condoDetails.status === "Owned" || role === MANAGEMENT_COMPANY) && (
 									<div>
 										<div style={{display: "flex" , alignItems: "center"}}>
 											<h5 style={{paddingTop:"25px",  paddingBottom:"5%", paddingLeft:"25%", color:"#2f2c9", marginRight:"auto"}}>Condo Requests</h5>
