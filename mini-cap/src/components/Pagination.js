@@ -1,14 +1,21 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
+/**
+ * Functional component representing a pagination component.
+ * @param {Object} props - The props object containing itemsPerPage, totalItems, currentPage, and setCurrentPage.
+ * @returns {JSX.Element} - The JSX for the pagination component.
+ */
 function Pagination(props) {
   const { itemsPerPage, totalItems, currentPage, setCurrentPage } = props;
 
+    // Array to store page numbers
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
     pageNumbers.push(i);
   }
 
+ // Function to handle click on page number button
   const handleClick = (number) => {
     setCurrentPage(number);
   };
@@ -45,12 +52,12 @@ function Pagination(props) {
   );
 }
 
-
+// PropTypes for type-checking props
 Pagination.propTypes = {
-  itemsPerPage: PropTypes.string,
-  totalItems:PropTypes.string,
-  currentPage: PropTypes.string,
-  setCurrentPage:PropTypes.string,
+  itemsPerPage: PropTypes.string, // Number of items per page
+  totalItems:PropTypes.string,  // Total number of items
+  currentPage: PropTypes.string, // Current page number
+  setCurrentPage:PropTypes.string, // Function to set current page
 };
 
 export default Pagination;

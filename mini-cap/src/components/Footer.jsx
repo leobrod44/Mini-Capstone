@@ -8,6 +8,10 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
 
+/**
+ * Functional component representing the footer section of the website.
+ * @returns {JSX.Element} - The JSX for the footer component.
+ */
 const Footer = () => {
   return (
     <div className="footerwrapper">
