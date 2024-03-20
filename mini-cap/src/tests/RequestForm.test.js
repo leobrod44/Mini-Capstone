@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import RequestForm from "../components/RequestForm.jsx";
 import CondoDetails from "../pages/CondoDetails.jsx";
 import { submitRequest } from '../backend/RequestHandler';
+import { getCondo } from "../backend/PropertyHandler.js";
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -32,10 +33,16 @@ jest.mock("react-toastify", () => {
   console.log = jest.fn();
 
   describe("RequestForm", () => {
+
+    const mockCondoInfo = {
+      propertyName: "Test Property",
+      unitNumber: "123",
+    };
+
     it("should allow user to fill out the Request Form", async () => {
       const { getByLabelText, getByText, getByRole } = render(
         <BrowserRouter>
-          <RequestForm />
+          <RequestForm condoInfo={mockCondoInfo}/>
         </BrowserRouter>
       );
 
@@ -59,7 +66,7 @@ jest.mock("react-toastify", () => {
     it("should not submit due to empty description", async () => {
         const { getByLabelText, getByText } = render(
           <BrowserRouter>
-            <RequestForm />
+            <RequestForm condoInfo={mockCondoInfo}/>
           </BrowserRouter>
         );
 
@@ -88,7 +95,7 @@ jest.mock("react-toastify", () => {
     it("should not be successful because description is less than 15 words", async () => {
         const { getByLabelText, getByText, getByRole } = render(
           <BrowserRouter>
-            <RequestForm />
+            <RequestForm condoInfo={mockCondoInfo}/>
           </BrowserRouter>
         );
     
@@ -119,7 +126,7 @@ jest.mock("react-toastify", () => {
     it("should display toast error for unsuccessful request submission", async () => {
         const { getByLabelText, getByText } = render(
           <BrowserRouter>
-            <RequestForm />
+            <RequestForm condoInfo={mockCondoInfo}/>
           </BrowserRouter>
         );
       
@@ -158,7 +165,7 @@ jest.mock("react-toastify", () => {
 
       const { getByLabelText, getByText } = render(
         <BrowserRouter>
-          <RequestForm/>
+          <RequestForm condoInfo={mockCondoInfo}/>
         </BrowserRouter>
       );
     
