@@ -738,10 +738,44 @@ export async function addParkings(propertyID, count, price) {
   }
 }
 
-//Provide: condo id to assign a locker
-//Returns: nothing
+/**
+ * Assigns a locker to a condo based on availability.
+ *
+ * @param {string} condoID The ID of the condo to which a locker will be assigned.
+ * @returns {Promise<void>} A promise that resolves when the locker is successfully assigned.
+ * @throws {Error} If an error occurs while assigning the locker.
+ */
 export async function assignLocker(condoID) {
-  console.log("Assigning locker to condo: ", condoID);
+  // Get document reference for the specified condo ID
+  const condoDocRef = doc(db, "Condo", condoID);
+  // Fetch document snapshot
+  const condoDocSnap = await getDoc(condoDocRef);
+  const propertyID = condoDocSnap.data().property
+
+
+  const propertyRef = doc(db, "Property", propertyID);
+  // Fetch the snapshot of the property document
+  const amenitiesRef = collection(propertyRef, "Amenities");
+  const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+  let lockerAssigned = false;
+  // Assign condo to free locker in property
+  for (const doc of amenitiesSnapshot.docs) {
+    if(!lockerAssigned && doc.data().available == true && doc.data().type == "Locker"){
+      // Update locker document with condo info
+      await updateDoc(doc.ref, {
+        condo: condoID,
+        available: false
+      })
+      // Update condo document with locker number
+      await updateDoc(condoDocRef, {
+        lockerNumber: doc.data().number,
+      })
+      lockerAssigned = true;
+    } else if(lockerAssigned) {
+      break;
+    }
+  }
 }
 
 //Provide: condo id to assign a parking spot
