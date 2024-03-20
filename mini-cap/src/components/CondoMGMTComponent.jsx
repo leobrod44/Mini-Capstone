@@ -6,14 +6,56 @@ import Popup_SendKey from './Popup_SendKey';
 import {useNavigate} from "react-router-dom";
 import { getCondoOccupant } from "../backend/PropertyHandler";
 
+/**
+ * Represents a component for displaying details of a condo unit in the management interface.
+ * Displays unit information such as unit number, picture, parking spot, locker, and occupant.
+ * Allows sending a key if no occupant is present.
+ * @param {string} picture - URL of the unit picture.
+ * @param {string} unitNumber - The unit number of the condo.
+ * @param {string} parkingNumber - The parking spot number associated with the unit.
+ * @param {string} lockerNumber - The locker number associated with the unit.
+ * @param {string} condoId - The ID of the condo.
+ * @returns {JSX.Element} The rendered CondoMgmtComponent.
+ */
 const CondoMgmtComponent = ({picture, unitNumber, parkingNumber, lockerNumber, condoId}) => {
+
+    /**
+     * Provides navigation functionality for routing within the application.
+     * Allows navigating to different pages or routes within the application.
+     * @type {Function} navigate - Function to trigger navigation to a specified route.
+     */
     const navigate = useNavigate();
+
+    /**
+     * Manages the visibility state of popup component send key.
+     * Indicates whether the popup component is currently visible or hidden.
+     * @type {[boolean, Function]} showPopup - A state variable representing the visibility of the send key component and a function to update its state.
+     */
     const [showPopup, setShowPopup] = useState(false);
+
+    /**
+     * Toggles the visibility state of the send key popup component.
+     * If the popup is currently hidden, it sets the state to visible, and vice versa.
+     * @returns {void}
+     */
     const handlePopupToggle = () => {
         setShowPopup(!showPopup);
     };
 
+    /**
+     * Manages the value of the occupant for the condo unit.
+     * Represents the name or identifier of the current occupant of the unit.
+     * @type {[string, Function]} occupantValue - A state variable representing the value of the occupant and a function to update its state.
+     */
     const [occupantValue, setOccupantValue] = useState("");
+
+    /**
+     * Fetches data related to the occupant of the condo unit.
+     * Retrieves the occupant information asynchronously using the condoId.
+     * Updates the occupantValue state with the fetched result.
+     * Executes once when the component mounts and whenever the condoId changes.
+     * @returns {void}
+     */
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -25,7 +67,6 @@ const CondoMgmtComponent = ({picture, unitNumber, parkingNumber, lockerNumber, c
         };
         fetchData();
     }, [condoId]);
-
 
     return (
         <div className="condo-details-container">
@@ -57,6 +98,11 @@ const CondoMgmtComponent = ({picture, unitNumber, parkingNumber, lockerNumber, c
     );
 };
 
+/**
+ * Defines the prop types for the CondoMgmtComponent.
+ * Specifies the expected types for each prop used in the component.
+ * @type {object} CondoMgmtComponent.propTypes - The prop types object for the CondoMgmtComponent.
+ */
 CondoMgmtComponent.propTypes = {
     picture: PropTypes.string,
     parkingNumber: PropTypes.string,
