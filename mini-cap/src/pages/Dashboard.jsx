@@ -15,6 +15,10 @@ import Pagination from "../components/Pagination";
 import "../styling/Pagination.css";
 
 
+/**
+ * Functional component representing the dashboard page.
+ * @returns {JSX.Element} - The JSX for the dashboard page.
+ */
 const Dashboard = () => {
   // State to represent whether the user has registered condos or not, since i dont have backend right now
   const [hasCondos, setHasCondos] = useState(false);
@@ -26,8 +30,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchCondos = async () => {
       try {
+        // Fetch condos for the user
         const condos = await getUserCondos(store("user"));
 
+         // Fetch and set picture for each condo
         await Promise.all(
           condos.map(async (condo) => {
             condoPicURL = await getCondoPicture(
@@ -38,7 +44,7 @@ const Dashboard = () => {
             return { ...condo };
           })
         );
-
+        // Update state based on whether user has condos or not
         if (condos.length > 0) {
           setHasCondos(true);
           setCondoDetails(condos);
@@ -50,10 +56,12 @@ const Dashboard = () => {
     fetchCondos();
   }, []);
 
+  // Function to toggle the registration popup
   const handlePopupToggle = () => {
     setShowPopup(!showPopup);
   };
 
+// Function to handle registering a condo
   const handleRegisterCondo = async (key) => {
     let msg = "";
     try {
@@ -73,7 +81,7 @@ const Dashboard = () => {
     //setHasCondos(true);
   };
 
-  
+   // Constants for pagination
   const condosPerPage = 4;
   const indexOfLastCondo = currentPage * condosPerPage;
   const indexOfFirstCondo = indexOfLastCondo - condosPerPage;

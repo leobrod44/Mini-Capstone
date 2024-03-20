@@ -1,7 +1,10 @@
 import React from "react";
 import logo from "../assets/Logo_BiggerWriting.png";
 
-
+/**
+ * Functional component representing the logo of the website.
+ * @returns {JSX.Element} - The JSX for the logo component.
+ */
 const Logo = () => {
     const logoStyle = {
         width: "140px", 

@@ -3,6 +3,12 @@ import PropTypes from "prop-types";
 import { Modal, Button } from "react-bootstrap";
 import "../styling/DeleteModal.css";
 
+/**
+ * Functional component representing a delete confirmation modal.
+ * @param {Object} props - The props object containing show, handleClose, handleDeleteItem, and message.
+ * @returns {JSX.Element} - The JSX for the delete modal.
+ */
+
 const DeleteModal = ({ show, handleClose, handleDeleteItem, message }) => {
     return (
         <Modal show={show} onHide={handleClose}>
@@ -31,11 +37,12 @@ const DeleteModal = ({ show, handleClose, handleDeleteItem, message }) => {
     );
 };
 
+// PropTypes for type-checking props
 DeleteModal.propTypes = {
-    show: PropTypes.bool.isRequired,
-    handleClose: PropTypes.func.isRequired,
-    handleDeleteItem: PropTypes.func.isRequired,
-    message: PropTypes.string.isRequired,
+    show: PropTypes.bool.isRequired, // Whether the modal should be shown
+    handleClose: PropTypes.func.isRequired, // Function to handle closing the modal
+    handleDeleteItem: PropTypes.func.isRequired,// Function to handle deleting the item
+    message: PropTypes.string.isRequired,  // Message to be displayed in the modal body
 };
 
 export default DeleteModal;
