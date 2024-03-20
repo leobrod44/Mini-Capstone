@@ -86,3 +86,9 @@ select
     cursor: pointer;
     width: 100%;
 }
+.add-condo-button:hover,
+.submit-condo-button:hover,
+.add-property-button:hover{
+  background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
+  color: #ffffff; /* Change text color on hover to white */
+}
