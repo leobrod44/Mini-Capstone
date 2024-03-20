@@ -584,7 +584,7 @@ export async function addLockers(propertyID, count, price) {
     // Retrieve the collection of amenities from the property
     const amenitiesColl = collection(propertyRef, "Amenities");
     // Create a query to filter documents based on the field value
-    const q = query(amenitiesColl, where("type", '==', "Lockers"));
+    const q = query(amenitiesColl, where("type", '==', "Locker"));
     // Fetch snapshots of documents that match the query
     const querySnapshot = await getDocs(q);
 
@@ -622,7 +622,7 @@ export async function addParkings(propertyID, count, price) {
     // Retrieve the collection of amenities from the property
     const amenitiesColl = collection(propertyRef, "Amenities");
     // Create a query to filter documents based on the field value
-    const q = query(amenitiesColl, where("type", '==', "Parkings"));
+    const q = query(amenitiesColl, where("type", '==', "Parking"));
     // Fetch snapshots of documents that match the query
     const querySnapshot = await getDocs(q);
 
@@ -677,11 +677,11 @@ export async function assignLocker(condoID) {
   if (availableLockers.length > 0) {
     //update locker document with condo info
     await updateDoc(availableLockers[0].ref, {
-      condo: docID,
+      condo: condoID,
       available: false
     });
     //update condo document with parking number
-    await updateDoc(docRef, {
+    await updateDoc(condoDocRef, {
       lockerNumber: availableLockers[0].data().number,
     });
   } else {
@@ -720,11 +720,11 @@ export async function assignParking(condoID) {
   if (availableParkings.length > 0) {
     //update parking document with condo info
     await updateDoc(availableParkings[0].ref, {
-      condo: docID,
+      condo: condoID,
       available: false
     });
     //update condo document with parking number
-    await updateDoc(docRef, {
+    await updateDoc(condoDocRef, {
       parkingNumber: availableParkings[0].data().number,
     });
   } else {
