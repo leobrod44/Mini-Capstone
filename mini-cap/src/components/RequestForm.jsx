@@ -19,7 +19,7 @@ import {getCondo} from "../backend/PropertyHandler";
  */
 const RequestForm = ({handleClickClose, condoInfo}) => {
     let { condoID } = useParams();
-    const [subject, setSubject] = useState("");
+    const [subject, setSubject] = useState("1.1");
     const [description, setDescription] = useState("");
     const [submitting, setSubmitting] = useState(false);
     const [notificationsActive, setNotificationsActive] = useState([]);
@@ -80,7 +80,7 @@ const RequestForm = ({handleClickClose, condoInfo}) => {
             toast.error("Request failed to submit for unexpected reasons")
             console.error(error);
         } finally {
-            setSubject("");
+            setSubject("1.1");
             setDescription("");
             setSubmitting(false); // Set submitting state back to false
         }
@@ -107,6 +107,7 @@ const RequestForm = ({handleClickClose, condoInfo}) => {
             <option value="3.1">Payment Invoice</option>
             <option value="3.2">Fee Inquiries</option>
             <option value="3.3">Insurance Coverage Details</option>
+            <option value="3.4">Tax Letter by Mail</option>
         </select>
         <label className="dropdown" htmlFor="description">Description:</label>
         <textarea id="description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter request description here..."></textarea>
