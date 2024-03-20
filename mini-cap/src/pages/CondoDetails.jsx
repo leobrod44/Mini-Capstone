@@ -104,6 +104,7 @@ export default function CondoDetails() {
     }
     setShow(false);
   };
+
   // Function to toggle popup visibility
   const handlePopupToggle = () => {
     setShowPopup(!showPopup);
@@ -454,53 +455,60 @@ export default function CondoDetails() {
                       )}
                     </div>
                   </div>
+                  <div>
+                    {/* Check if condo status is "Rented" */}
+                    {(condoDetails.status === "Owned" ||
+                      role === MANAGEMENT_COMPANY) && (
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <h5
+                            style={{
+                              paddingTop: "25px",
+                              paddingBottom: "5%",
+                              paddingLeft: "25%",
+                              color: "#2f2c9",
+                              marginRight: "auto",
+                            }}
+                          >
+                            Condo Requests
+                          </h5>
+                          <div>
+                            <button
+                              id="toggleButton"
+                              className="requests-button"
+                              onClick={toggleCondoRequests}
+                            >
+                              {showCondoRequests ? (
+                                <MdExpandLess />
+                              ) : (
+                                <MdExpandMore />
+                              )}
+                            </button>
+                          </div>
+                        </div>
 
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    <h5
-                      style={{
-                        paddingTop: "25px",
-                        paddingBottom: "5%",
-                        paddingLeft: "25%",
-                        color: "#2f2c9",
-                        marginRight: "auto",
-                      }}
-                    >
-                      Condo Requests
-                    </h5>
-                    <div>
-                      <button
-                        id="toggleButton"
-                        className="requests-button"
-                        onClick={toggleCondoRequests}
-                      >
-                        {showCondoRequests ? (
-                          <MdExpandLess />
-                        ) : (
-                          <MdExpandMore />
-                        )}{" "}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="other-info">
-                    {showCondoRequests &&
-                      (requests.length > 0 ? (
-                        requests.map((request, index) => (
-                          <CondoRequests
-                            key={index}
-                            type={request.type}
-                            notes={request.notes}
-                            role={role}
-                            step={request.step}
-                            condoId={condoId}
-                            requestId={request.requestID}
-                          />
-                        ))
-                      ) : (
-                        <p className="request-container">
-                          There are no current requests
-                        </p>
-                      ))}
+                        <div className="other-info">
+                          {showCondoRequests &&
+                            (requests.length > 0 ? (
+                              requests.map((request, index) => (
+                                <CondoRequests
+                                  key={index}
+                                  type={request.type}
+                                  notes={request.notes}
+                                  role={role}
+                                  step={request.step}
+                                  condoId={condoId}
+                                  requestId={request.requestID}
+                                />
+                              ))
+                            ) : (
+                              <p className="request-container">
+                                There are no current requests
+                              </p>
+                            ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div>
                     {role === MANAGEMENT_COMPANY && (
