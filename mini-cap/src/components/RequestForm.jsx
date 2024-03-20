@@ -7,6 +7,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import "../styling/RequestForm.css";
 import {getCondo} from "../backend/PropertyHandler";
 
+/**
+ * Represents a form component for submitting requests related to a condo.
+ * Receives properties to handle close action and condo information.
+ * Manages state for subject, description, submitting status, and active notifications.
+ * Checks for active notifications periodically and updates state accordingly.
+ * Handles form submission by sending a request with subject and description.
+ * @param {Function} handleClickClose - Function to handle closing the request form.
+ * @param {Object} condoInfo - Object containing condo information like property name and unit number.
+ * @returns {JSX.Element} The rendered RequestForm component.
+ */
 const RequestForm = ({handleClickClose, condoInfo}) => {
     let { condoID } = useParams();
     const [subject, setSubject] = useState("");
@@ -15,6 +25,13 @@ const RequestForm = ({handleClickClose, condoInfo}) => {
     const [notificationsActive, setNotificationsActive] = useState([]);
     const { propertyName, unitNumber } = condoInfo;
 
+    /**
+     * Checks for active notifications periodically and updates the notificationsActive state accordingly.
+     * If there are active notifications, sets notificationsActive state to true, otherwise sets it to false.
+     * Executes once when the component mounts and then at intervals of 1000 milliseconds.
+     * Clears the interval when the component is unmounted to avoid memory leaks.
+     * @returns {void}
+     */
     useEffect(() => {
         const checkNotifications = () => {
           const activeNotifications = [];
@@ -33,6 +50,19 @@ const RequestForm = ({handleClickClose, condoInfo}) => {
         return () => clearInterval(interval);
       }, []);
 
+    /**
+     * Handles the form submission event.
+     * Prevents the default form submission behavior.
+     * Sets the submitting state to true.
+     * Validates whether subject and description fields are filled.
+     * Displays an error toast if any field is empty.
+     * Retrieves condo information based on the condoID.
+     * Submits the request with the condoID, subject, and description.
+     * Displays a success toast if the request is submitted successfully.
+     * Clears the subject and description fields and sets the submitting state back to false.
+     * @param {Event} e - The form submission event object.
+     * @returns {void}
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSubmitting(true);
