@@ -8,6 +8,8 @@ import {
   getDoc,
   updateDoc,
   arrayUnion,
+    query,
+    where
 } from "firebase/firestore";
 import { cleanData, sortArray } from "./DataCleaner";
 import store from "storejs";
@@ -660,17 +662,42 @@ export async function getAmenities(propertyID) {
   }
 }
 
-//Provide: property id, number of lockers to create, price of a locker
-//Returns: nothing
+/**
+ * Adds a specified number of lockers to a property's amenities.
+ *
+ * @param {string} propertyID The ID of the property to which the lockers will be added.
+ * @param {number} count The number of lockers to add.
+ * @param {number} price The price of each locker.
+ * @returns {Promise<void>} A promise that resolves when the lockers are successfully added.
+ * @throws {Error} If an error occurs while adding the lockers.
+ */
 export async function addLockers(propertyID, count, price) {
-  console.log(
-    "Adding lockers to property: ",
-    propertyID,
-    " count: ",
-    count,
-    " price: ",
-    price
-  );
+  try {
+    const propertyRef = doc(db, "Property", propertyID);
+    // Retrieve the collection of amenities from the property
+    const amenitiesColl = collection(propertyRef, "Amenities");
+    // Create a query to filter documents based on the field value
+    const q = query(amenitiesColl, where("type", '==', "Lockers"));
+    // Fetch snapshots of documents that match the query
+    const querySnapshot = await getDocs(q);
+
+    var lockerNumber = querySnapshot.size + 1;
+    // Add all lockers in property
+    for(let i = 1; i<=count; i++){
+      await addDoc(amenitiesColl, {
+        available: true,
+        condo: "",
+        number: lockerNumber,
+        price: price,
+        type: "Locker"
+      });
+      lockerNumber++;
+    }
+
+  } catch (error) {
+    // If an error occurs, throw an error with a descriptive message
+    throw new Error("Error getting condos: " + error);
+  }
 }
 
 //Provide: property id, number of parking spots to create, price of a parking spot
