@@ -204,7 +204,7 @@ export async function getPropertyFiles(propertyID) {
         // Return null if an error occurs
         return null;
     }
-}//QPIOS5Tmww195XJyKlRM
+}
 
 
 /**
