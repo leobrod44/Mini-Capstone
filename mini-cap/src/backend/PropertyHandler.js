@@ -193,23 +193,29 @@ export async function addCondo(data, propertyID, propertyName) {
     const amenitiesSnapshot = await getDocs(amenitiesRef);
 
     if(data.parkingNumber){
-      let parkingAssigned = false;
       //assign condo to free parking in property
-      for (const doc of amenitiesSnapshot.docs) {
-        if(!parkingAssigned && doc.data().available == true && doc.data().type == "Parking"){
-          //update parking document with condo info
-          await updateDoc(doc.ref, {
-            condo: docID,
-            available: false
-          })
-          //update condo document with parking number
-          await updateDoc(docRef, {
-            parkingNumber: doc.data().number,
-          })
-          parkingAssigned = true;
-        }else if(parkingAssigned)
-          break;
+      var availableParkings = await Promise.all(amenitiesSnapshot.docs.map(async (doc) => {
+        if (doc.data().available == true && doc.data().type == "Parking") {
+          return doc;
+        }
+      }));
+
+      availableParkings = availableParkings.filter(doc => doc !== undefined);
+
+      if (availableParkings.length > 0) {
+        //update parking document with condo info
+        await updateDoc(availableParkings[0].ref, {
+          condo: docID,
+          available: false
+        });
+        //update condo document with parking number
+        await updateDoc(docRef, {
+          parkingNumber: availableParkings[0].data().number,
+        });
+      } else {
+        throw new Error("No available parking spots");
       }
+
     }else{
       await updateDoc(docRef, {
         parkingNumber: "No Parking",
@@ -217,23 +223,29 @@ export async function addCondo(data, propertyID, propertyName) {
     }
 
     if(data.lockerNumber){
-      let lockerAssigned = false;
       //assign condo to free locker in property
-      for (const doc of amenitiesSnapshot.docs) {
-        if(!lockerAssigned && doc.data().available == true && doc.data().type == "Locker"){
-          //update locker document with condo info
-          await updateDoc(doc.ref, {
-            condo: docID,
-            available: false
-          })
-          //update condo document with parking number
-          await updateDoc(docRef, {
-            lockerNumber: doc.data().number,
-          })
-          lockerAssigned = true;
-        }else if(lockerAssigned)
-          break;
+      let availableLockers = await Promise.all(amenitiesSnapshot.docs.map(async (doc) => {
+        if (doc.data().available == true && doc.data().type == "Locker") {
+          return doc;
+        }
+      }));
+
+      availableLockers = availableLockers.filter(doc => doc !== undefined);
+
+      if (availableLockers.length > 0) {
+        //update locker document with condo info
+        await updateDoc(availableLockers[0].ref, {
+          condo: docID,
+          available: false
+        });
+        //update condo document with parking number
+        await updateDoc(docRef, {
+          lockerNumber: availableLockers[0].data().number,
+        });
+      } else {
+        throw new Error("No available lockers");
       }
+
     }else{
       await updateDoc(docRef, {
         lockerNumber: "No Locker",
