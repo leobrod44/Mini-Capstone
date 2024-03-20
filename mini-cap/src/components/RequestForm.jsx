@@ -109,12 +109,12 @@ const RequestForm = ({handleClickClose, condoInfo}) => {
             <option value="3.3">Insurance Coverage Details</option>
             <option value="3.4">Tax Letter by Mail</option>
         </select>
-        <label className="dropdown" htmlFor="description">Description:</label>
-        <textarea id="description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter request description here..."></textarea>
+        <label className="dropdown" htmlFor="description" style={{paddingTop:"6%"}}>Description:</label>
+        <textarea id="description" name="description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter request description here..." style={{marginBottom:"5%"}}></textarea>
         <button type="button" className="cancel-button" onClick={handleClickClose} disabled={notificationsActive}>
             Cancel
         </button>
-        <button type="submit" className="submit-button" disabled={submitting}>
+        <button type="submit" className="submit-button" disabled={submitting} >
             {submitting ? "Submitting..." : "Submit"}
         </button>
         </form>
