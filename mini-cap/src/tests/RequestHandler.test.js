@@ -1,5 +1,5 @@
 import { ADMINISTRATIVE_STEPS } from '../backend/Constants';
-import { submitRequest, getRequests, updateRequest } from '../backend/RequestHandler';
+import {submitRequest, getRequests, updateRequest, assignWorker, getAssignedWorker} from '../backend/RequestHandler';
 import {doc, getDoc, getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs} from 'firebase/firestore';
 jest.mock('firebase/firestore', () => ({
     ...jest.requireActual('firebase/firestore'),
@@ -95,4 +95,53 @@ describe("request creation, fetching, and updating", () => {
         expect(ans).toBe(ADMINISTRATIVE_STEPS[1]);
         
     });
-});    
+});
+
+describe("workers assigning and getting", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('assignWorker: should assign a worker to a request in a condo', async () => {
+        const fakeRequestData = { condoID: 'fakeCondoId', requestID: 'fakeRequestId', type: 'Financial' };
+        const fakeCondoData = { property: 'fakePropertyId' };
+        const fakeWorkerData = { type: 'Financial' };
+        const fakeWorkerRef = { id: 'fakeWorkerId', ref: { id: 'fakeWorkerId' } };
+        const fakeWorkersSnapshot = { docs: [{ data: () => fakeWorkerData, ref: fakeWorkerRef }] };
+        const fakePropertyRef = { ref: { id: 'fakePropertyID' } };
+
+        doc.mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce({ exists: true, data: () => fakeCondoData }) })
+            .mockReturnValueOnce({ updateDoc: updateDoc.mockResolvedValueOnce() })
+            .mockReturnValueOnce(fakePropertyRef);
+        collection.mockReturnValueOnce({ getDocs: getDocs.mockResolvedValueOnce(fakeWorkersSnapshot) });
+
+        await assignWorker(fakeRequestData);
+
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeRequestData.condoID);
+        expect(getDoc).toHaveBeenCalled();
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Workers');
+        expect(getDocs).toHaveBeenCalled();
+        expect(updateDoc).toHaveBeenCalledWith(expect.anything(), { assignedWorkerID: fakeWorkerRef.id });
+    });
+
+    test('getAssignedWorker: should get the assigned worker for a request', async () => {
+        const fakeCondoID = 'fakeCondoId';
+        const fakeRequestID = 'fakeRequestId';
+        const fakeCondoData = { property: 'fakePropertyId' };
+        const fakeRequestData = { assignedWorkerID: 'fakeWorkerId' };
+        const fakeWorkerData = { type: 'Financial', name: 'John Doe' };
+
+        doc.mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce({ data: () => fakeCondoData }) })
+            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce({ data: () => fakeRequestData }) })
+            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce({ data: () => fakeWorkerData }) });
+
+        const result = await getAssignedWorker(fakeCondoID, fakeRequestID);
+
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoID);
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoID, 'Requests', fakeRequestID);
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakeCondoData.property, 'Workers', fakeRequestData.assignedWorkerID);
+        expect(getDoc).toHaveBeenCalledTimes(3);
+        expect(result).toEqual(fakeWorkerData);
+    });
+
+});

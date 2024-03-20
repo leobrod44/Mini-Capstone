@@ -8,6 +8,8 @@ import {
   getDoc,
   updateDoc,
   arrayUnion,
+    query,
+    where
 } from "firebase/firestore";
 import { cleanData, sortArray } from "./DataCleaner";
 import store from "storejs";
@@ -193,29 +195,7 @@ export async function addCondo(data, propertyID, propertyName) {
     const amenitiesSnapshot = await getDocs(amenitiesRef);
 
     if(data.parkingNumber){
-      //assign condo to free parking in property
-      var availableParkings = await Promise.all(amenitiesSnapshot.docs.map(async (doc) => {
-        if (doc.data().available == true && doc.data().type == "Parking") {
-          return doc;
-        }
-      }));
-
-      availableParkings = availableParkings.filter(doc => doc !== undefined);
-
-      if (availableParkings.length > 0) {
-        //update parking document with condo info
-        await updateDoc(availableParkings[0].ref, {
-          condo: docID,
-          available: false
-        });
-        //update condo document with parking number
-        await updateDoc(docRef, {
-          parkingNumber: availableParkings[0].data().number,
-        });
-      } else {
-        throw new Error("No available parking spots");
-      }
-
+      await assignParking(docID);
     }else{
       await updateDoc(docRef, {
         parkingNumber: "No Parking",
@@ -223,29 +203,7 @@ export async function addCondo(data, propertyID, propertyName) {
     }
 
     if(data.lockerNumber){
-      //assign condo to free locker in property
-      let availableLockers = await Promise.all(amenitiesSnapshot.docs.map(async (doc) => {
-        if (doc.data().available == true && doc.data().type == "Locker") {
-          return doc;
-        }
-      }));
-
-      availableLockers = availableLockers.filter(doc => doc !== undefined);
-
-      if (availableLockers.length > 0) {
-        //update locker document with condo info
-        await updateDoc(availableLockers[0].ref, {
-          condo: docID,
-          available: false
-        });
-        //update condo document with parking number
-        await updateDoc(docRef, {
-          lockerNumber: availableLockers[0].data().number,
-        });
-      } else {
-        throw new Error("No available lockers");
-      }
-
+      await assignLocker(docID);
     }else{
       await updateDoc(docRef, {
         lockerNumber: "No Locker",
@@ -332,27 +290,10 @@ export async function addProperty(data) {
     });
 
     //add all parking spots in new property
-    const amenitiesRef = collection(docRef, "Amenities");
-    for(let i = 1; i<=data.parkingCount; i++){
-      await addDoc(amenitiesRef, {
-        available: true,
-        condo: "",
-        number: i,
-        price: data.parkingCost,
-        type: "Parking"
-      });
-    }
+    await addParkings(docRef.id, data.parkingCount, data.parkingCost);
 
     //add all lockers in new property
-    for(let i = 1; i<=data.lockerCount; i++){
-      await addDoc(amenitiesRef, {
-        available: true,
-        condo: "",
-        number: i,
-        price: data.lockerCost,
-        type: "Locker"
-      });
-    }
+    await addLockers(docRef.id, data.lockerCount, data.lockerCost);
 
   } catch (error) {
     // If an error occurs during the process, throw an error with a descriptive message
@@ -598,62 +539,264 @@ const sampleIsPaid = {
 
 
 
-//Provide: property id
-//Returns: amenity array associated with a property
+/**
+ * Retrieves a list of amenities associated with a property.
+ *
+ * @param propertyID The ID of the property for which amenities are to be fetched.
+ * @return A list of amenities associated with the property.
+ * @throws Error If an error occurs while fetching amenities.
+ */
 export async function getAmenities(propertyID) {
-  return [sampleAmenity, sampleAmenity, sampleAmenity];
+  try {
+    const propertyRef = doc(db, "Property", propertyID);
+    // Retrieve the collection of amenities from the property
+    const amenitiesColl = collection(propertyRef, "Amenities");
+    // Fetch snapshots of amenities from the collection
+    const amenitiesSnap = await getDocs(amenitiesColl);
+
+    // Initialize an array to store amenities
+    var amenities = [];
+
+    // Iterate through each amenities snapshot
+    amenitiesSnap.forEach((doc) => {
+      amenities.push(doc.data());
+    });
+
+    return amenities;
+  } catch (error) {
+    // If an error occurs, throw an error with a descriptive message
+    throw new Error("Error getting condos: " + error);
+  }
 }
 
-//Provide: property id, number of lockers to create, price of a locker
-//Returns: nothing
+/**
+ * Adds a specified number of lockers to a property's amenities.
+ *
+ * @param {string} propertyID The ID of the property to which the lockers will be added.
+ * @param {number} count The number of lockers to add.
+ * @param {number} price The price of each locker.
+ * @returns {Promise<void>} A promise that resolves when the lockers are successfully added.
+ * @throws {Error} If an error occurs while adding the lockers.
+ */
 export async function addLockers(propertyID, count, price) {
-  console.log(
-    "Adding lockers to property: ",
-    propertyID,
-    " count: ",
-    count,
-    " price: ",
-    price
-  );
+  try {
+    const propertyRef = doc(db, "Property", propertyID);
+    // Retrieve the collection of amenities from the property
+    const amenitiesColl = collection(propertyRef, "Amenities");
+    // Create a query to filter documents based on the field value
+    const q = query(amenitiesColl, where("type", '==', "Locker"));
+    // Fetch snapshots of documents that match the query
+    const querySnapshot = await getDocs(q);
+
+    let lockerNumber = querySnapshot.size + 1;
+    // Add all lockers in property
+    for(let i = 1; i<=count; i++){
+      await addDoc(amenitiesColl, {
+        available: true,
+        condo: "",
+        number: lockerNumber,
+        price: price,
+        type: "Locker"
+      });
+      lockerNumber++;
+    }
+
+  } catch (error) {
+    // If an error occurs, throw an error with a descriptive message
+    throw new Error("Error getting condos: " + error);
+  }
 }
 
-//Provide: property id, number of parking spots to create, price of a parking spot
-//Returns: nothing
+/**
+ * Adds a specified number of parking spaces to a property's amenities.
+ *
+ * @param {string} propertyID The ID of the property to which the parking spaces will be added.
+ * @param {number} count The number of parking spaces to add.
+ * @param {number} price The price of each parking space.
+ * @returns {Promise<void>} A promise that resolves when the parking spaces are successfully added.
+ * @throws {Error} If an error occurs while adding the parking spaces.
+ */
 export async function addParkings(propertyID, count, price) {
-  console.log(
-    "Adding parking to property: ",
-    propertyID,
-    " count: ",
-    count,
-    " price: ",
-    price
-  );
+  try {
+    const propertyRef = doc(db, "Property", propertyID);
+    // Retrieve the collection of amenities from the property
+    const amenitiesColl = collection(propertyRef, "Amenities");
+    // Create a query to filter documents based on the field value
+    const q = query(amenitiesColl, where("type", '==', "Parking"));
+    // Fetch snapshots of documents that match the query
+    const querySnapshot = await getDocs(q);
+
+    let parkingNumber = querySnapshot.size + 1;
+    // Add all parking spaces in property
+    for(let i = 1; i<=count; i++){
+      await addDoc(amenitiesColl, {
+        available: true,
+        condo: "",
+        number: parkingNumber,
+        price: price,
+        type: "Parking"
+      });
+      parkingNumber++;
+    }
+
+  } catch (error) {
+    // If an error occurs, throw an error with a descriptive message
+    throw new Error("Error getting condos: " + error);
+  }
 }
 
-//Provide: condo id to assign a locker
-//Returns: nothing
+/**
+ * Assigns a locker to a condo based on availability.
+ *
+ * @param {string} condoID The ID of the condo to which a locker will be assigned.
+ * @returns {Promise<void>} A promise that resolves when the locker is successfully assigned.
+ * @throws {Error} If an error occurs while assigning the locker.
+ */
 export async function assignLocker(condoID) {
-  console.log("Assigning locker to condo: ", condoID);
+  // Get document reference for the specified condo ID
+  const condoDocRef = doc(db, "Condo", condoID);
+  // Fetch document snapshot
+  const condoDocSnap = await getDoc(condoDocRef);
+  const propertyID = condoDocSnap.data().property
+
+
+  const propertyRef = doc(db, "Property", propertyID);
+  // Fetch the snapshot of the property document
+  const amenitiesRef = collection(propertyRef, "Amenities");
+  const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+  //assign condo to free locker in property
+  let availableLockers = await Promise.all(amenitiesSnapshot.docs.map(async (doc) => {
+    if (doc.data().available == true && doc.data().type == "Locker") {
+      return doc;
+    }
+  }));
+
+  availableLockers = availableLockers.filter(doc => doc !== undefined);
+
+  if (availableLockers.length > 0) {
+    //update locker document with condo info
+    await updateDoc(availableLockers[0].ref, {
+      condo: condoID,
+      available: false
+    });
+    //update condo document with parking number
+    await updateDoc(condoDocRef, {
+      lockerNumber: availableLockers[0].data().number,
+    });
+  } else {
+    throw new Error("No available lockers");
+  }
 }
 
-//Provide: condo id to assign a parking spot
-//Returns: nothing
+/**
+ * Assigns a parking space to a condo based on availability.
+ *
+ * @param {string} condoID The ID of the condo to which a parking space will be assigned.
+ * @returns {Promise<void>} A promise that resolves when the parking space is successfully assigned.
+ * @throws {Error} If an error occurs while assigning the parking space.
+ */
 export async function assignParking(condoID) {
-  console.log("Assigning parking spot to condo: ", condoID);
+  // Get document reference for the specified condo ID
+  const condoDocRef = doc(db, "Condo", condoID);
+  // Fetch document snapshot
+  const condoDocSnap = await getDoc(condoDocRef);
+  const propertyID = condoDocSnap.data().property
+
+  const propertyRef = doc(db, "Property", propertyID);
+  // Fetch the snapshot of the property document
+  const amenitiesRef = collection(propertyRef, "Amenities");
+  const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+  //assign condo to free parking in property
+  var availableParkings = await Promise.all(amenitiesSnapshot.docs.map(async (doc) => {
+    if (doc.data().available == true && doc.data().type == "Parking") {
+      return doc;
+    }
+  }));
+
+  availableParkings = availableParkings.filter(doc => doc !== undefined);
+
+  if (availableParkings.length > 0) {
+    //update parking document with condo info
+    await updateDoc(availableParkings[0].ref, {
+      condo: condoID,
+      available: false
+    });
+    //update condo document with parking number
+    await updateDoc(condoDocRef, {
+      parkingNumber: availableParkings[0].data().number,
+    });
+  } else {
+    throw new Error("No available parking spots");
+  }
 }
 
-//Provide: condo id
-//Returns: locker amenity associated with the condo
+/**
+ * Retrieves the locker assigned to a condo.
+ *
+ * @param {string} condoID The ID of the condo for which to retrieve the assigned locker.
+ * @returns {Promise<Object>} A promise that resolves with the data of the assigned locker document.
+ * @throws {Error} If no associated locker is found.
+ */
 export async function getAssignedLocker(condoID) {
-  console.log("Getting assigned locker for condo: ", condoID);
-  return sampleAmenity;
+  const condoDocRef = doc(db, "Condo", condoID);
+  // Fetch document snapshot
+  const condoDocSnap = await getDoc(condoDocRef);
+  const propertyID = condoDocSnap.data().property
+
+  const propertyRef = doc(db, "Property", propertyID);
+  // Fetch the snapshot of the property document
+  const amenitiesRef = collection(propertyRef, "Amenities");
+  const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+  var assignedLockerArr = await Promise.all(amenitiesSnapshot.docs.map(async (doc) => {
+    if (doc.data().condo == condoID && doc.data().type == "Locker") {
+      return doc;
+    }
+  }));
+
+  assignedLockerArr = assignedLockerArr.filter(doc => doc !== undefined);
+
+  if (assignedLockerArr.length > 0) {
+    return assignedLockerArr[0].data();
+  } else {
+    throw new Error("No associated locker found");
+  }
+
 }
 
-//Provide: condo id
-//Returns: parking amenity associated with the condo
+/**
+ * Retrieves the parking space assigned to a condo.
+ *
+ * @param {string} condoID The ID of the condo for which to retrieve the assigned parking space.
+ * @returns {Promise<Object>} A promise that resolves with the data of the assigned parking space document.
+ * @throws {Error} If no associated parking space is found.
+ */
 export async function getAssignedParking(condoID) {
-  console.log("Getting assigned parking for condo: ", condoID);
-  return sampleAmenity;
+  const condoDocRef = doc(db, "Condo", condoID);
+  // Fetch document snapshot
+  const condoDocSnap = await getDoc(condoDocRef);
+  const propertyID = condoDocSnap.data().property
+
+  const propertyRef = doc(db, "Property", propertyID);
+  // Fetch the snapshot of the property document
+  const amenitiesRef = collection(propertyRef, "Amenities");
+  const amenitiesSnapshot = await getDocs(amenitiesRef);
+
+  var assignedParkingArr = await Promise.all(amenitiesSnapshot.docs.map(async (doc) => {
+    if (doc.data().condo == condoID && doc.data().type == "Parking") {
+      return doc;
+    }
+  }));
+
+  assignedParkingArr = assignedParkingArr.filter(doc => doc !== undefined);
+
+  if (assignedParkingArr.length > 0) {
+    return assignedParkingArr[0].data();
+  } else {
+    throw new Error("No associated parking found");
+  }
 }
 
 //Provide: property id, updated property JSON
@@ -710,6 +853,12 @@ export async function getCondoOccupant(condoId) {
   }
 }
 
+/**
+ * Calculates the fees for a condominium based on its amenities and status (rented or owned).
+ * Will return only monthly fees for a renter, and monthly and total fees for an owner
+ * @param {string} condoId - The ID of the condominium.
+ * @returns {Promise<{monthlyFees: number, totalFees: number}|null>} A promise that resolves with an object containing the monthly fees and total fees if successful, or null if there was an error.
+ */
 export async function calculateCondoFees(condoId) {
   try {
     // Retrieve the document reference for the specified condo ID from the "Condo" collection
