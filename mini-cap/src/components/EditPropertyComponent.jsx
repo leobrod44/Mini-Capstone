@@ -10,6 +10,11 @@ import { getProperties, updateProperty, deleteProperty } from "../backend/Proper
 import store from "storejs";
 import { PropTypes } from "prop-types";
 
+/**
+ * EditPropertyComponent - A component for editing property details.
+ * 
+ * @param {function} toggleEdit - Function to toggle edit mode.
+ */
 const EditPropertyComponent = ( {toggleEdit} ) => {
   const { propertyID } = useParams();
   const navigate = useNavigate();
@@ -28,6 +33,9 @@ const backgroundColor = '#f0f4f8';
 document.body.style.backgroundColor = backgroundColor;
 
 useEffect(() => {
+    /**
+    * Fetches property data from backend and updates the state.
+    */
     const fetchPropertyData = async () => {
       try {
         const company = store("user"); // Assuming you have the company information in user storage
@@ -51,13 +59,26 @@ useEffect(() => {
 
   const [previewPropertyImage, setPreviewPropertyImage] = useState(null);
   const [showDeleteModal, setShow] = useState(false);
+
+  /**
+    * Handles click event for deleting property.
+    */
   const handleClickDelete = () => {
       setShow(true);
   };
+
+  /**
+    * Handles close event for deleting property modal.
+    */
   const handleCloseDeleteModal = () => {
       setShow(false);
   };
 
+  /**
+   * Handles file change event for property picture.
+   * 
+   * @param {Object} e - Event object.
+   */
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
@@ -91,6 +112,11 @@ useEffect(() => {
     reader.readAsDataURL(file);
   };
 
+  /**
+   * Handles input change event for property details.
+   * 
+   * @param {Object} e - Event object.
+   */
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
   
@@ -109,6 +135,9 @@ useEffect(() => {
     });
   };
   
+  /**
+   * Handles form submission for updating property details.
+   */
   const handleSubmit = async () => {
   //validation that all required information is filled in
     if (
@@ -128,11 +157,12 @@ useEffect(() => {
     }catch(err){
       console.error(err);
     }
-
-    
     console.log("Edited:", property);
   };
 
+  /**
+   * Handles deletion of property.
+   */
   const handleDelete = async () => {
       try{
         await deleteProperty(propertyID);
