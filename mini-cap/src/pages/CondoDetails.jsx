@@ -52,7 +52,7 @@ export default function CondoDetails() {
   // State to track whether rent is paid
   const [isRentPaid, setIsRentPaid] = useState(false);
   const [editedDetails, setEditedDetails] = useState({});
-
+  const [isEditMode, setIsEditMode] = useState(false);
   useEffect(() => {
     const fetchCondo = async () => {
       try {

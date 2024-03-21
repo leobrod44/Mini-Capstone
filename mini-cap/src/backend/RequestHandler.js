@@ -154,7 +154,14 @@ export async function updateRequest(condoID, requestID) {
 
 
 
-//BACKEND ONLY
+/**
+ * Assigns a worker to a specific request in a condominium.
+ * @param {Object} requestData - The request data including the condo ID, request ID, and worker type.
+ * @param {string} requestData.condoID - The ID of the condominium.
+ * @param {string} requestData.requestID - The ID of the request.
+ * @param {string} requestData.type - The type of worker needed for the request.
+ * @returns {Promise<void|null>} A promise that resolves when the worker is assigned, or null if there was an error.
+ */
 export async function assignWorker(requestData) {
     try{
         // Retrieve the document reference for the specified condo ID from the "Condo" collection
@@ -188,9 +195,13 @@ export async function assignWorker(requestData) {
 
 }
 
-//BACKEND ONLY
+/**
+ * Retrieves the assigned worker for a specific request in a condominium.
+ * @param {string} condoID - The ID of the condominium.
+ * @param {string} requestID - The ID of the request.
+ * @returns {Promise<Object|null>} A promise that resolves with the assigned worker data (contains fields type and name), or null if there was an error.
+ */
 export async function getAssignedWorker(condoID, requestID) {
-
     try{
         // Retrieve the document reference for the specified condo ID from the "Condo" collection
         const condoRef = doc(db, "Condo", condoID);

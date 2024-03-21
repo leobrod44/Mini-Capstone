@@ -4,9 +4,17 @@ import {
     linkCondoToUser,
     sendCondoKey,
     storeCondoKey,
-    addCondo, addProperty, getProperties, getUserCondos, getCondos, getCondo, getCondoOccupant
+    addCondo,
+    addProperty,
+    getProperties,
+    getUserCondos,
+    getCondos,
+    getCondo,
+    getCondoOccupant,
+    calculateCondoFees,
+    getAmenities, addLockers, addParkings, assignLocker, assignParking, getAssignedLocker, getAssignedParking
 } from '../backend/PropertyHandler';
-import {doc, getDoc, getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs} from 'firebase/firestore';
+import {doc, getDoc, getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs, query, where} from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
 import { getStorage } from "firebase/storage";
 import {changePassword, updateCompanyInfo, updateUserInfo} from "../backend/UserHandler";
@@ -29,6 +37,8 @@ jest.mock('firebase/firestore', () => ({
     getDocs: jest.fn(),
     arrayUnion: jest.fn(),
     getCondo: jest.fn(),
+    query: jest.fn(),
+    where: jest.fn()
 }));
 jest.mock('firebase/storage', () => ({
     getStorage: jest.fn(),
@@ -496,4 +506,375 @@ describe("getCondoOccupant function", () => {
         expect(doc).toHaveBeenCalledWith(expect.anything(), "Condo", condoId);
         expect(getDoc).toHaveBeenCalledWith(fakeCondoDocRef);
     });
+});
+
+describe("financial property and condo tests", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('getCondoFees: should calculate fees for a rented condo', async () => {
+        const fakeCondoId = 'fakeCondoId';
+        const fakeCondoData = { status: 'Rented', property: 'fakePropertyId', unitPrice: 100 };
+        const fakeAmenityData = { condo: 'fakeCondoId', price: 50 };
+        const fakePropertyDoc = { exists: true };
+        const fakeAmenitiesSnapshot = { docs: [{ data: () => fakeAmenityData }] };
+
+        doc.mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce({ exists: true, data: () => fakeCondoData }) })
+            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc) })
+            .mockReturnValueOnce({ getDocs: getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot) });
+
+        const result = await calculateCondoFees(fakeCondoId);
+
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoId);
+        expect(getDoc).toHaveBeenCalledTimes(2);
+        expect(getDocs).toHaveBeenCalled();
+        expect(result).toEqual({ monthlyFees: 150, totalFees: null });
+    });
+
+    test('getCondoFees: test when condo document does not exist', async () => {
+        const fakeCondoId = 'fakeCondoId';
+        const fakeCondoData = { status: 'Rented', property: 'fakePropertyId', unitPrice: 100 };
+        const fakeAmenityData = { condo: 'fakeCondoId', price: 50 };
+        const fakePropertyDoc = { exists: true };
+        const fakeAmenitiesSnapshot = { docs: [{ data: () => fakeAmenityData }] };
+
+        doc.mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce({ exists: false, data: () => fakeCondoData }) })
+            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc) })
+            .mockReturnValueOnce({ getDocs: getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot) });
+
+        const result = await calculateCondoFees(fakeCondoId);
+
+        expect(result).toEqual(null);
+    });
+
+});
+
+describe("add and get amenities functions tests", () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('should retrieve a list of amenities for a property', async () => {
+        const fakePropertyID = 'fakePropertyId';
+        const fakeAmenities = [{ name: 'Gym', price: 50 }, { name: 'Pool', price: 25 }];
+        const fakeAmenitiesDocs = fakeAmenities.map((amenity) => ({ data: () => amenity }));
+        const fakeAmenitiesSnapshot = {
+            forEach: jest.fn((callback) => fakeAmenitiesDocs.forEach(callback)),
+        };
+
+        doc.mockReturnValueOnce({ collection: collection.mockReturnValueOnce({ getDocs: getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot) }) });
+
+        const result = await getAmenities(fakePropertyID);
+
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(getDocs).toHaveBeenCalled();
+        expect(result).toEqual(fakeAmenities);
+    });
+
+    test('should add lockers to a property', async () => {
+        const fakePropertyID = 'fakePropertyId';
+        const fakeAmenitiesColl = 'fakeAmenitiesCollection';
+        const fakeQuerySnapshot = { size: 0 };
+
+        doc.mockReturnValueOnce({ collection: collection.mockReturnValueOnce(fakeAmenitiesColl) });
+        query.mockReturnValueOnce({ where: where.mockReturnValueOnce({ getDocs: getDocs.mockResolvedValueOnce(fakeQuerySnapshot) }) });
+
+        await addLockers(fakePropertyID, 3, 50);
+
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(query).toHaveBeenCalledWith(fakeAmenitiesColl, { getDocs: getDocs.mockResolvedValueOnce(fakeQuerySnapshot) });
+        expect(where).toHaveBeenCalledWith("type", '==', "Locker");
+        expect(getDocs).toHaveBeenCalled();
+        expect(addDoc).toHaveBeenCalledTimes(3);
+        for (let i = 1; i <= 3; i++) {
+            expect(addDoc).toHaveBeenCalledWith(fakeAmenitiesColl, {
+                available: true,
+                condo: "",
+                number: i,
+                price: 50,
+                type: "Locker"
+            });
+        }
+    });
+
+    test('should add parkings to a property', async () => {
+        const fakePropertyID = 'fakePropertyId';
+        const fakeAmenitiesColl = 'fakeAmenitiesCollection';
+        const fakeQuerySnapshot = { size: 0 };
+
+        doc.mockReturnValueOnce({ collection: collection.mockReturnValueOnce(fakeAmenitiesColl) });
+        query.mockReturnValueOnce({ where: where.mockReturnValueOnce({ getDocs: getDocs.mockResolvedValueOnce(fakeQuerySnapshot) }) });
+
+        await addParkings(fakePropertyID, 3, 50);
+
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(query).toHaveBeenCalledWith(fakeAmenitiesColl, { getDocs: getDocs.mockResolvedValueOnce(fakeQuerySnapshot) });
+        expect(where).toHaveBeenCalledWith("type", '==', "Parking");
+        expect(getDocs).toHaveBeenCalled();
+        expect(addDoc).toHaveBeenCalledTimes(3);
+        for (let i = 1; i <= 3; i++) {
+            expect(addDoc).toHaveBeenCalledWith(fakeAmenitiesColl, {
+                available: true,
+                condo: "",
+                number: i,
+                price: 50,
+                type: "Parking"
+            });
+        }
+    });
+
+    test('should assign a locker to a condo', async () => {
+        const fakeCondoID = 'fakeCondoId';
+        const fakePropertyID = 'fakePropertyId';
+        const fakeCondoRef = 'fakeCondoRef';
+        const fakePropertyRef = 'fakePropertyRef';
+        const fakeLockerData = { available: true, type: 'Locker', number: 1 };
+
+        doc.mockReturnValueOnce(fakeCondoRef)
+            .mockReturnValueOnce(fakePropertyRef);
+
+        // Mock condo document snapshot
+        const fakeCondoDocSnapshot = { data: () => ({ property: fakePropertyID }) };
+        getDoc.mockResolvedValueOnce(fakeCondoDocSnapshot);
+
+        // Mock amenities snapshot with one available locker
+        const fakeAmenitiesSnapshot = {
+            docs: [{ data: () => fakeLockerData, ref: { update: jest.fn() } }],
+            forEach: jest.fn(),
+        };
+        getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot);
+
+        await assignLocker(fakeCondoID);
+
+        // Assertions
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoID);
+        expect(getDoc).toHaveBeenCalled();
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(getDocs).toHaveBeenCalled();
+        expect(updateDoc).toHaveBeenCalledWith(fakeAmenitiesSnapshot.docs[0].ref, {
+            condo: fakeCondoID,
+            available: false,
+        });
+    });
+
+    test('should throw an error if no available lockers', async () => {
+        const fakeCondoID = 'fakeCondoId';
+        const fakePropertyID = 'fakePropertyId';
+        const fakeCondoRef = 'fakeCondoRef';
+        const fakePropertyRef = 'fakePropertyRef';
+
+        doc.mockReturnValueOnce(fakeCondoRef)
+            .mockReturnValueOnce(fakePropertyRef);
+
+        // Mock condo document snapshot
+        const fakeCondoDocSnapshot = { data: () => ({ property: fakePropertyID }) };
+        getDoc.mockResolvedValueOnce(fakeCondoDocSnapshot);
+
+        // Mock amenities snapshot with no available lockers
+        const fakeAmenitiesSnapshot = {
+            docs: [{ data: () => ({ available: false }), ref: { update: jest.fn() } }],
+            forEach: jest.fn(),
+        };
+        getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot);
+
+        await expect(assignLocker(fakeCondoID)).rejects.toThrowError('No available lockers');
+
+        // Assertions
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoID);
+        expect(getDoc).toHaveBeenCalled();
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(getDocs).toHaveBeenCalled();
+        expect(updateDoc).not.toHaveBeenCalled();
+    });
+
+    test('should assign a parking to a condo', async () => {
+        const fakeCondoID = 'fakeCondoId';
+        const fakePropertyID = 'fakePropertyId';
+        const fakeCondoRef = 'fakeCondoRef';
+        const fakePropertyRef = 'fakePropertyRef';
+        const fakeLockerData = { available: true, type: 'Parking', number: 1 };
+
+        doc.mockReturnValueOnce(fakeCondoRef)
+            .mockReturnValueOnce(fakePropertyRef);
+
+        // Mock condo document snapshot
+        const fakeCondoDocSnapshot = { data: () => ({ property: fakePropertyID }) };
+        getDoc.mockResolvedValueOnce(fakeCondoDocSnapshot);
+
+        // Mock amenities snapshot with one available locker
+        const fakeAmenitiesSnapshot = {
+            docs: [{ data: () => fakeLockerData, ref: { update: jest.fn() } }],
+            forEach: jest.fn(),
+        };
+        getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot);
+
+        await assignParking(fakeCondoID);
+
+        // Assertions
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoID);
+        expect(getDoc).toHaveBeenCalled();
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(getDocs).toHaveBeenCalled();
+        expect(updateDoc).toHaveBeenCalledWith(fakeAmenitiesSnapshot.docs[0].ref, {
+            condo: fakeCondoID,
+            available: false,
+        });
+    });
+
+    test('should throw an error if no available parkings', async () => {
+        const fakeCondoID = 'fakeCondoId';
+        const fakePropertyID = 'fakePropertyId';
+        const fakeCondoRef = 'fakeCondoRef';
+        const fakePropertyRef = 'fakePropertyRef';
+
+        doc.mockReturnValueOnce(fakeCondoRef)
+            .mockReturnValueOnce(fakePropertyRef);
+
+        // Mock condo document snapshot
+        const fakeCondoDocSnapshot = { data: () => ({ property: fakePropertyID }) };
+        getDoc.mockResolvedValueOnce(fakeCondoDocSnapshot);
+
+        // Mock amenities snapshot with no available lockers
+        const fakeAmenitiesSnapshot = {
+            docs: [{ data: () => ({ available: false }), ref: { update: jest.fn() } }],
+            forEach: jest.fn(),
+        };
+        getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot);
+
+        await expect(assignParking(fakeCondoID)).rejects.toThrowError('No available parking spots');
+
+        // Assertions
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoID);
+        expect(getDoc).toHaveBeenCalled();
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(getDocs).toHaveBeenCalled();
+        expect(updateDoc).not.toHaveBeenCalled();
+    });
+
+    test('should retrieve the assigned locker for a condo', async () => {
+        const fakeCondoID = 'fakeCondoId';
+        const fakePropertyID = 'fakePropertyId';
+        const fakeAssignedLockerData = { condo: fakeCondoID, type: 'Locker', number: 1 };
+        const fakeCondoRef = 'fakeCondoRef';
+        const fakePropertyRef = 'fakePropertyRef';
+
+        doc.mockReturnValueOnce(fakeCondoRef)
+            .mockReturnValueOnce(fakePropertyRef);
+
+        // Mock condo document snapshot
+        const fakeCondoDocSnapshot = { data: () => ({ property: fakePropertyID }) };
+        getDoc.mockResolvedValueOnce(fakeCondoDocSnapshot);
+
+        // Mock amenities snapshot with the assigned locker
+        const fakeAmenitiesSnapshot = {
+            docs: [{ data: () => fakeAssignedLockerData }],
+            forEach: jest.fn(),
+        };
+        getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot);
+
+        const result = await getAssignedLocker(fakeCondoID);
+
+        // Assertions
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoID);
+        expect(getDoc).toHaveBeenCalled();
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(getDocs).toHaveBeenCalled();
+        expect(result).toEqual(fakeAssignedLockerData);
+    });
+
+    test('should throw an error if no associated locker is found', async () => {
+        const fakeCondoID = 'fakeCondoId';
+        const fakePropertyID = 'fakePropertyId';
+        const fakeCondoRef = 'fakeCondoRef';
+        const fakePropertyRef = 'fakePropertyRef';
+
+        doc.mockReturnValueOnce(fakeCondoRef)
+            .mockReturnValueOnce(fakePropertyRef);
+
+        // Mock condo document snapshot
+        const fakeCondoDocSnapshot = { data: () => ({ property: fakePropertyID }) };
+        getDoc.mockResolvedValueOnce(fakeCondoDocSnapshot);
+
+        // Mock amenities snapshot with no assigned lockers
+        const fakeAmenitiesSnapshot = { docs: [], forEach: jest.fn() };
+        getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot);
+
+        await expect(getAssignedLocker(fakeCondoID)).rejects.toThrowError('No associated locker found');
+
+        // Assertions
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoID);
+        expect(getDoc).toHaveBeenCalled();
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(getDocs).toHaveBeenCalled();
+    });
+
+    test('should retrieve the assigned parking for a condo', async () => {
+        const fakeCondoID = 'fakeCondoId';
+        const fakePropertyID = 'fakePropertyId';
+        const fakeAssignedParkingData = { condo: fakeCondoID, type: 'Parking', number: 1 };
+        const fakeCondoRef = 'fakeCondoRef';
+        const fakePropertyRef = 'fakePropertyRef';
+
+        doc.mockReturnValueOnce(fakeCondoRef)
+            .mockReturnValueOnce(fakePropertyRef);
+
+        // Mock condo document snapshot
+        const fakeCondoDocSnapshot = { data: () => ({ property: fakePropertyID }) };
+        getDoc.mockResolvedValueOnce(fakeCondoDocSnapshot);
+
+        // Mock amenities snapshot with the assigned locker
+        const fakeAmenitiesSnapshot = {
+            docs: [{ data: () => fakeAssignedParkingData }],
+            forEach: jest.fn(),
+        };
+        getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot);
+
+        const result = await getAssignedParking(fakeCondoID);
+
+        // Assertions
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoID);
+        expect(getDoc).toHaveBeenCalled();
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(getDocs).toHaveBeenCalled();
+        expect(result).toEqual(fakeAssignedParkingData);
+    });
+
+    test('should throw an error if no associated parking is found', async () => {
+        const fakeCondoID = 'fakeCondoId';
+        const fakePropertyID = 'fakePropertyId';
+        const fakeCondoRef = 'fakeCondoRef';
+        const fakePropertyRef = 'fakePropertyRef';
+
+        doc.mockReturnValueOnce(fakeCondoRef)
+            .mockReturnValueOnce(fakePropertyRef);
+
+        // Mock condo document snapshot
+        const fakeCondoDocSnapshot = { data: () => ({ property: fakePropertyID }) };
+        getDoc.mockResolvedValueOnce(fakeCondoDocSnapshot);
+
+        // Mock amenities snapshot with no assigned lockers
+        const fakeAmenitiesSnapshot = { docs: [], forEach: jest.fn() };
+        getDocs.mockResolvedValueOnce(fakeAmenitiesSnapshot);
+
+        await expect(getAssignedParking(fakeCondoID)).rejects.toThrowError('No associated parking found');
+
+        // Assertions
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoID);
+        expect(getDoc).toHaveBeenCalled();
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
+        expect(getDocs).toHaveBeenCalled();
+    });
+
 });
