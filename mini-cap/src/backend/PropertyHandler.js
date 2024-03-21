@@ -870,7 +870,7 @@ export async function calculateCondoFees(condoId) {
     const condoData = docSnap.data();
 
     let returnVals = {};
-    returnVals.rent = condoData.unitPrice;
+    returnVals.rent = parseFloat(condoData.unitPrice);
     returnVals.lockerPrice = 0;
     returnVals.parkingPrice = 0;
     //additional fees price is 0 for now
