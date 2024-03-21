@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { getUsersFiles } from "../backend/ImageHandler";
 import "../styling/FilesComponent.css"; // Import your custom styling for FilesComponent
+import store from "storejs";
 
-const FilesComponent = ({ userID }) => {
-    const [files, setFiles] = useState([]);
+const FilesComponent = () => {
+    const [properties, setProperties] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const userID = store("user"); // Get userID from local storage or context
 
     useEffect(() => {
         const fetchFiles = async () => {
@@ -15,15 +17,8 @@ const FilesComponent = ({ userID }) => {
                 if (userID) {
                     // Fetch files based on userID if provided
                     fetchedFiles = await getUsersFiles(userID);
-                } else {
-                    // Hardcoded default files if userID is not provided
-                    fetchedFiles = [
-                        { id: 1, fileName: "Property Deed", fileType: "pdf" },
-                        { id: 2, fileName: "Insurance Policy", fileType: "pdf" },
-                        { id: 3, fileName: "Rules and Regulations", fileType: "pdf" }
-                    ];
                 }
-                setFiles(fetchedFiles);
+                setProperties(fetchedFiles);
                 setLoading(false);
             } catch (error) {
                 setError(error.message);
@@ -34,14 +29,9 @@ const FilesComponent = ({ userID }) => {
         fetchFiles();
     }, [userID]);
 
-    // Handler to open modal with file content
     const handleOpenModal = (file) => {
-        setSelectedFile(file);
-    };
-
-    // Handler to close modal
-    const handleCloseModal = () => {
-        setSelectedFile(null);
+        // Define your logic for opening the modal here
+        console.log("Open modal for file:", file);
     };
 
     if (loading) {
@@ -51,43 +41,26 @@ const FilesComponent = ({ userID }) => {
     if (error) {
         return <div>Error: {error}</div>;
     }
+    const handleClick = (url) => {
+        window.open(url, "_blank");
+    };
+
 
     return (
         <div className="files-component-container">
-            <h2 className="files-component-title">Owner Documents</h2>
-            <ul className="files-component-list">
-                {files.map((file, index) => (
-                    <li
-                        key={index}
-                        onClick={() => handleOpenModal(file)}
-                        className="files-component-item"
-                    >
-                        {/* Render file details as needed */}
-                        <div className="files-component-icon">
-                            {file.fileType === "pdf" ? (
-                                <i className="far fa-file-pdf"></i>
-                            ) : (
-                                <i className="far fa-file"></i>
-                            )}
-                        </div>
-                        <div className="files-component-details">
-                            <p className="files-component-name">{file.fileName}</p>
-                            <p className="files-component-type">{file.fileType.toUpperCase()}</p>
-                        </div>
-                    </li>
-                ))}
-            </ul>
-
-            {/* Modal */}
-            {selectedFile && (
-                <div className="files-component-modal" onClick={handleCloseModal}>
-                    <div className="files-component-modal-content" onClick={(e) => e.stopPropagation()}>
-                        <h2>{selectedFile.fileName}</h2>
-                        {/* Display file content or additional details here */}
-                        <button className="files-component-close-btn" onClick={handleCloseModal}>Close</button>
-                    </div>
+            {properties.map((property, propertyIndex) => (
+                <div key={propertyIndex}>
+                    <h3>{property.property}</h3>
+                    <ul className="files-component-list">
+                        {property.files.map((file, index) => (
+                           <li><a href="#" onClick={() => handleClick(file.url)} className="underline">
+                           {file.name}
+                           </a>
+                          </li> 
+                        ))}
+                    </ul>
                 </div>
-            )}
+            ))}
         </div>
     );
 };
