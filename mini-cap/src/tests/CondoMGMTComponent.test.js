@@ -1,6 +1,7 @@
 import React from "react";
 import { render, fireEvent, screen, cleanup } from "@testing-library/react";
 import CondoComponent from "../components/CondoMGMTComponent.jsx";
+import { MemoryRouter } from 'react-router-dom';
 
 afterEach(()=>{
     cleanup();
@@ -278,4 +279,65 @@ test('Should call handlePopupToggle when "Send Key" button is clicked', () => {
   expect(handlePopupToggle).toHaveBeenCalled();
 });
 
+afterEach(() => {
+  cleanup();
+});
 
+test('Should not render profile picture of condo component', () => {
+  const condoDetails = {
+      picture: null,
+      parkingNumber: 'P101',
+      lockerNumber: 'L101',
+      property: 'Property Name',
+      squareFeet: '100',
+      unitNumber: '101',
+      unitPrice: '100000',
+      unitSize: '3.5'
+  };
+
+  render(
+    <MemoryRouter> {/* Wrap CondoComponent with MemoryRouter */}
+      <CondoComponent
+        {...condoDetails}
+      />
+    </MemoryRouter>
+  );
+  expect(screen.getByText(condoDetails.unitNumber)).toBeInTheDocument();
+  expect(screen.getByText('Unit Number: ' + condoDetails.unitNumber)).toBeInTheDocument();
+  expect(screen.queryByAltText('Profile')).not.toBeInTheDocument();
+});
+
+test('Toggling showPopup state when "Send Key" button is clicked', () => {
+  const condoDetails = {
+    picture: 'https://example.com/profile.jpg',
+    unitNumber: '101',
+    parkingNumber: 'P101',
+    lockerNumber: 'L101',
+    property: 'Property Name',
+    squareFeet: '100',
+    unitPrice: '100000',
+    unitSize: '3.5',
+    condoId: '123'
+  };
+
+  render(
+    <MemoryRouter>
+      <CondoComponent
+        {...condoDetails}
+      />
+    </MemoryRouter>
+  );
+
+  // Initially, showPopup should be false
+  expect(screen.queryByText('Send Your Condo Key')).not.toBeInTheDocument();
+
+  // Click on the "Send Key" button to toggle showPopup to true
+  fireEvent.click(screen.getByTestId('send-key-button'));
+
+  expect(screen.getByText('Send Your Condo Key')).toBeInTheDocument();
+
+  // Click again on the "Send Key" button to toggle showPopup back to false
+  fireEvent.click(screen.getByTestId('send-key-button'));
+
+  expect(screen.queryByText('Send Your Condo Key')).not.toBeInTheDocument();
+});

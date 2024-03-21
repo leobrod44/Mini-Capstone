@@ -80,7 +80,7 @@ const CondoMgmtComponent = ({picture, unitNumber, parkingNumber, lockerNumber, c
                 <div className='parking-send-key'>
                     {parkingNumber && <p>Parking Spot: {parkingNumber}</p>}
                     {occupantValue === "" && (
-                        <button className="details-button" onClick={handlePopupToggle}>
+                        <button className="details-button" onClick={handlePopupToggle} data-testid="send-key-button">
                             Send Key
                         </button>
                     )}

@@ -1,9 +1,8 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { navigate } from 'react-router-dom';
 import EditPropertyComponent from '../components/EditPropertyComponent';
-import { updateProperty, deleteProperty, getProperties } from '../backend/PropertyHandler';
+import { editProperty, deleteProperty, getProperties } from '../backend/PropertyHandler';
 import { toast } from "react-toastify";
 import { act } from 'react-dom/test-utils';
 import { MemoryRouter } from 'react-router-dom';
@@ -351,6 +350,4 @@ describe('EditPropertyComponent', () => {
     expect(getByText('My Property')).toBeInTheDocument(); // Assert that the component renders normally
   });
 
-  
-  
 });
