@@ -43,6 +43,9 @@ const CondoFilesPage = () => {
     const handleOpenModal = (file) => {
         setSelectedFile(file);
     };
+    const handleClick = (url) => {
+        window.open(url, "_blank");
+    };
 
     // Handler to close modal
     const handleCloseModal = () => {
@@ -67,9 +70,11 @@ const CondoFilesPage = () => {
                             <h4>Files associated with {propertyName}</h4>
                             <ul>
                                 {condoFiles.map((file, index) => (
-                                    <li key={index} onClick={() => handleOpenModal(file)}>
-                                        {file.fileName}
-                                    </li>
+                                   <li><a href="#" onClick={() => handleClick(file.url)} className="underline">
+                                    {file.name}
+                                    </a>
+                                   </li> 
+                                
                                 ))}
                             </ul>
                         </div>
