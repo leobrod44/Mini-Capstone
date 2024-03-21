@@ -17,7 +17,7 @@ import { PropTypes } from "prop-types";
 const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
   const { propertyID } = useParams();
   const navigate = useNavigate();
-  const [property, setProperty] = useState(propertyDetails);
+  const [property, setProperty] = useState(propertyDetails || []);
 
   const backgroundColor = "#f0f4f8";
   document.body.style.backgroundColor = backgroundColor;
