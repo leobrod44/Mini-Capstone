@@ -2,7 +2,7 @@ import { getStorage, uploadBytes, getDownloadURL, deleteObject, ref, listAll} fr
 import { initializeApp } from "firebase/app";
 import { firebaseConfig } from "./FirebaseConfig";
 import { RENTER_OWNER } from "./Constants";
-import {getCondo } from "./PropertyHandler";
+import {getCondo, getPropertyData } from "./PropertyHandler";
 import store from "storejs";
 import { getUserData } from "./UserHandler";
 initializeApp(firebaseConfig);
@@ -238,7 +238,8 @@ export async function getUsersFiles(userID) {
 
             var files = await Promise.all(properties.map(async property => {
                 var f = await getPropertyFiles(property);
-                return f;
+                var p = await getPropertyData(property);
+                return {property: p.propertyName, files: f};
             }));
 
             // Return the array of arrays of file URLs
