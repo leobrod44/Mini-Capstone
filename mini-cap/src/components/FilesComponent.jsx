@@ -50,15 +50,17 @@ const FilesComponent = () => {
         <div className="files-component-container">
             {properties.map((property, propertyIndex) => (
                 <div key={propertyIndex}>
-                    <h3>{property.property}</h3>
-                    <ul className="files-component-list">
-                        {property.files.map((file, index) => (
-                           <li><a href="#" onClick={() => handleClick(file.url)} className="underline">
-                           {file.name}
-                           </a>
-                          </li> 
-                        ))}
-                    </ul>
+                    <div key={propertyIndex} className="files-component-propertyUser">
+                        <h3>{property.property}</h3>
+                        <ul className="files-component-list">
+                            {property.files.map((file, index) => (
+                                <li><a href="#" onClick={() => handleClick(file.url)} className="underline">
+                                    {file.name}
+                                </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             ))}
         </div>

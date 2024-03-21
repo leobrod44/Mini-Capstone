@@ -37,6 +37,12 @@
   color: #888;
 }
 
+.files-component-propertyUser {
+  margin-top: 20px; /* Adjust as needed for spacing between properties */
+  border-top: 2px solid #333; /* Border to visually separate properties */
+  padding-top: 10px; /* Add padding for better spacing */
+}
+
 .files-component-modal {
   /* Your modal styles */
 }
