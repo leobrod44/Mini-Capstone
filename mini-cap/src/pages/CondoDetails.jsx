@@ -60,6 +60,7 @@ export default function CondoDetails() {
   const [editedDetails, setEditedDetails] = useState({});
   // State to manage edit mode
   const [isEditMode, setIsEditMode] = useState(false);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchCondo = async () => {
       try {
@@ -75,9 +76,12 @@ export default function CondoDetails() {
         condo.picture = condoPicURL;
         // Set condo details state
         setCondoDetails(condo);
+        
         // Retrieve company email
         setCompanyEmail(await getCompanyEmail(condoId));
+        setLoading(false);
       } catch (err) {
+        setLoading(false);
         console.error(err);
       }
     };
@@ -210,6 +214,9 @@ export default function CondoDetails() {
   const toggleRentPaid = () => {
     setIsRentPaid(!isRentPaid);
   };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="pageContainer">
