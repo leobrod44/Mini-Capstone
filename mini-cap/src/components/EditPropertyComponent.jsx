@@ -312,7 +312,7 @@ const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
 
         <div className="button-container">
           <button
-            className="cancel-button"
+            className="cancel-btn"
             type="button"
             onClick={() => toggleEdit()}
           >
