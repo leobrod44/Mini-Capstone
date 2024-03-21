@@ -880,10 +880,10 @@ export async function calculateCondoFees(condoId) {
           let tempData = doc.data();
           if(tempData.condo == condoId){
             if(tempData.type == "Locker")
-              returnVals.lockerPrice = tempData.price;
+              returnVals.lockerPrice = parseFloat(tempData.price);
             else
-              returnVals.parkingPrice = tempData.price;
-            amenitiesPrice += tempData.price;
+              returnVals.parkingPrice = parseFloat(tempData.price);
+            amenitiesPrice += parseFloat(tempData.price);
           }
         });
       } else {
@@ -891,7 +891,7 @@ export async function calculateCondoFees(condoId) {
         return null;
       }
 
-      let totalPrice = amenitiesPrice + condoData.unitPrice + returnVals.additionalFees;
+      let totalPrice = amenitiesPrice + returnVals.rent + returnVals.additionalFees;
       returnVals.totalPrice = totalPrice;
       returnVals.amenitiesPrice = amenitiesPrice;
 
