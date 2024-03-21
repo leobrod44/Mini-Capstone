@@ -1,9 +1,8 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { navigate } from 'react-router-dom';
 import EditPropertyComponent from '../components/EditPropertyComponent';
-import { updateProperty, deleteProperty, getProperties } from '../backend/PropertyHandler';
+import { editProperty, deleteProperty, getProperties } from '../backend/PropertyHandler';
 import { toast } from "react-toastify";
 import { act } from 'react-dom/test-utils';
 import { MemoryRouter } from 'react-router-dom';
@@ -318,21 +317,37 @@ describe('EditPropertyComponent', () => {
     },
   }));
   
+  jest.mock('../backend/PropertyHandler', () => ({
+    getProperties: jest.fn(),
+  }));
+  
+  // Mock the toast.error method
+  jest.mock('react-toastify', () => ({
+    ...jest.requireActual('react-toastify'),
+    toast: {
+      error: jest.fn(),
+    },
+  }));
+  
   test('displays error message when property is not found', async () => {
+    // Mock the scenario where no property is found
+    getProperties.mockResolvedValue([]);
+  
     // Render the component within MemoryRouter
     const { getByText } = render(
       <MemoryRouter initialEntries={['/edit-property/123']}>
-        <EditPropertyComponent />
+        <EditPropertyComponent toggleEdit={() => {}} />
       </MemoryRouter>
     );
   
     // Wait for the component to fetch properties
     await act(async () => {
-      await getProperties();
+      await Promise.resolve();
     });
   
-    // Check if the error message is displayed
-    expect(toast.error).toHaveBeenCalledWith("Error fetching property data");
+    // Check if the error toast message is displayed
+    expect(toast.error).toHaveBeenCalledWith('Property not found');
+    expect(getByText('My Property')).toBeInTheDocument(); // Assert that the component renders normally
   });
-  
+
 });
