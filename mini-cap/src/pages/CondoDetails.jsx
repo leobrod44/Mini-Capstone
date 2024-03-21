@@ -161,16 +161,6 @@ export default function CondoDetails() {
       return;
     }
 
-    // Validation for Unit Number
-    if (
-      !/^\d*$/.test(editedDetails.unitNumber) ||
-      parseInt(editedDetails.unitNumber, 10) <= 0 ||
-      parseInt(editedDetails.unitNumber, 10) > 999
-    ) {
-      toast.error("Unit Number must be a positive integer between 1 and 999");
-      return;
-    }
-
     // Validation for Square Feet
     if (
       !/^\d*$/.test(editedDetails.squareFeet) ||
