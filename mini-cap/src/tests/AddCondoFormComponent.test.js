@@ -48,7 +48,7 @@ describe("AddCondoFormComponent", () => {
     fireEvent.change(getByLabelText("Square Feet:"), { target: { value: "23sqft" } });
     fireEvent.change(getByLabelText ("Unit Size:"), { target: { value: "1.5" } });
    
-    fireEvent.change(getByLabelText("Parking Spot:"), {
+    fireEvent.change(getByLabelText("Parking:"), {
       target: { value: "P99" },
     });
     fireEvent.change(getByLabelText("Locker:"), {
@@ -129,7 +129,7 @@ it("should display toast error for empty fields on form submission", () => {
   fireEvent.change(getByLabelText("Square Feet:"), { target: { value: "23sqft" } });
   fireEvent.change(getByLabelText ("Unit Size:"), { target: { value: "1.5" } });
  
-  fireEvent.change(getByLabelText("Parking Spot:"), {
+  fireEvent.change(getByLabelText("Parking:"), {
     target: { value: "P99" },
   });
   fireEvent.change(getByLabelText("Locker:"), {
