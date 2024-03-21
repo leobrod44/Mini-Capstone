@@ -37,11 +37,7 @@ import {getPropertyPicture} from "./ImageHandler";
  * @returns {Promise<string|null>} A Promise that resolves with the ID of the submitted request if successful, or null if an error occurs.
  */
 export async function submitRequest(condoID, type, notes) {
-    // Check if the request type is valid
-    if (!TYPES.includes(type)) {
-        // Return null if the request type is invalid
-        return null;
-    }
+
     try {
         // Add a new request document to the condo's requests collection
         const docRef = await addDoc(collection(doc(db, 'Condo', condoID), 'Requests'), {
