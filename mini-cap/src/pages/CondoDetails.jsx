@@ -502,12 +502,11 @@ export default function CondoDetails() {
                           style={{
                             display: "flex",
                             alignItems: "center",
-                            paddingTop: "8%",
                           }}
                         >
                           <h5
                             style={{
-                              paddingTop: "25px",
+                              paddingTop: "8%",
                               paddingBottom: "5%",
                               paddingLeft: "25%",
                               color: "#2f2c9",
@@ -561,7 +560,7 @@ export default function CondoDetails() {
                                   <button
                                     className="modal-button"
                                     onClick={() => handleClickRequest()}
-                                    style={{ marginTop: "10%" }}
+                                    style={{ marginTop: "5%", marginBottom: "5%" }}
                                   >
                                     Create Request
                                   </button>
@@ -576,7 +575,7 @@ export default function CondoDetails() {
                   <div style={{ display: "flex", alignItems: "center" }}>
                     <h5
                       style={{
-                        paddingTop: "15%",
+                        paddingTop: "8%",
                         paddingBottom: "5%",
                         paddingLeft: "25%",
                         color: "#2f2c9",
