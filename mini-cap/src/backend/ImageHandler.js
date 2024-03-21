@@ -30,8 +30,6 @@ export async function getProfilePicture(email) {
         // Return the URL
         return url;
     } catch (err) {
-        // Log any errors that occur during the process
-        console.error(err);
         // Return null if profile picture URL cannot be retrieved
         return null;
     }
@@ -52,8 +50,6 @@ export async function getPropertyPicture(name) {
         // Return the URL
         return url;
     } catch (err) {
-        // Log any errors that occur during the process
-        console.error(err);
         // Return null if property picture URL cannot be retrieved
         return null;
     }
@@ -76,8 +72,6 @@ export async function getCondoPicture(id) {
         // Return the URL
         return url;
     } catch (err) {
-        // Log any errors that occur during the process
-        console.error(err);
         // Return null if condo picture URL cannot be retrieved
         return null;
     }
@@ -105,7 +99,7 @@ export async function updateUserPicture(email, photo){
             await uploadBytes(desertRef, photo);
         } catch (e) {
             // Log error if download URL cannot be retrieved or picture upload fails
-            console.error("Error getting download URL or uploading picture: ", e);
+            throw e
         }
     }
     catch(e){
@@ -156,10 +150,6 @@ export async function setPictureWithID(data, path, id){
             var r = ref(storage,path + id);
             // Upload picture data to the generated storage reference
             var pic = await uploadBytes(r, pictureData);
-
-            // Log the uploaded picture information
-            console.log("Uploaded picture: ", pic);
-
         }
     }
     catch(e){
@@ -182,17 +172,12 @@ export async function uploadFile(propertyID, file) {
         if(file){
             // Get the count of existing files for the property
             var count  = (await listAll(ref(storage, propertyFileRef +"/"+propertyID))).items.length;
-            // Log the count of existing files
-            console.log("Count of existing files: ", count);
             // Upload the file to the storage
-            var resp = await uploadBytes(ref(storage, propertyFileRef +"/"+propertyID+"/"+count), file);
-            // Log the response after uploading
-            console.log("Response after uploading: ", resp);
+            var resp = await uploadBytes(ref(storage, propertyFileRef +"/"+propertyID+"/"+file.name), file);
         }
     }
     catch(e){
-        // Log any errors that occur during the file upload process
-        console.log("Error uploading file to property: ", propertyID, file);
+        throw e;
     }
 }
 /**
@@ -210,13 +195,12 @@ export async function getPropertyFiles(propertyID) {
             // Get download URL for the item
             const url = await getDownloadURL(itemRef);
             // Return the URL
-            return url;
+
+            return {url: url, name: itemRef.name};
         }));
         // Return the array of file URLs
         return files;
     } catch(e) {
-        // Log any errors that occur during the process
-        console.log("Error getting property files: ", e);
         // Return null if an error occurs
         return null;
     }

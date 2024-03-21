@@ -29,6 +29,9 @@ const structure = {
         "unitSize": "",
         "parkingNumber": "",
         "lockerNumber": "",
+        "status": "",
+        "id": "",
+        "occupant": ""
     },
     "Request": {
         "requestID": "", 

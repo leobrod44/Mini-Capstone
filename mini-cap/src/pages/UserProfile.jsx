@@ -19,6 +19,11 @@ import { updateUserPicture, getProfilePicture } from "../backend/ImageHandler";
 import store from "storejs";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants";
 
+
+/**
+ * Functional component representing the user profile page.
+ * @returns {JSX.Element} User profile page component.
+ */
 const UserProfile = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [show, setShow] = useState(false);

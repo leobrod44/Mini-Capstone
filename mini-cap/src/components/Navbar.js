@@ -15,6 +15,12 @@ import { getProfilePicture } from "../backend/ImageHandler";
 import { getUserData, getCompanyData } from "../backend/UserHandler";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants"; // Role constants
 
+
+/**
+ * Functional component representing the navigation bar.
+ * @returns {JSX.Element} - The JSX for the navigation bar.
+ */
+
 const Navbar = () => {
   const navigate = useNavigate();
   const [role, setTheRole] = useState(""); // State to store user role
@@ -150,6 +156,10 @@ const Navbar = () => {
     </>
   );
 
+ /**
+   * Functional component representing the logout button.
+   * @returns {JSX.Element} - The JSX for the logout button.
+   */
   function LogoutBtn() {
     return (
       <li className={NavbarCSS.myDropdownItem}>
@@ -160,6 +170,11 @@ const Navbar = () => {
     );
   }
 
+  /**
+   * Functional component representing a dropdown item.
+   * @param {Object} props - The props object containing address, icon, and text.
+   * @returns {JSX.Element} - The JSX for the dropdown item.
+   */
   function DropdownItem(props) {
     return (
       <li className={NavbarCSS.myDropdownItem}>
@@ -172,7 +187,7 @@ const Navbar = () => {
 };
 
 
-
+// PropTypes for type-checking props
 Navbar.propTypes = {
   address: PropTypes.string,
   icon: PropTypes.string,
