@@ -128,18 +128,18 @@ const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
     if (
       !property.parkingCount ||
       property.parkingCount < 1 ||
-      property.parkingCount > 499
+      property.parkingCount > 30
     ) {
-      toast.error("Parking Count must be a number between 1 and 499");
+      toast.error("Parking Count must be a number between 1 and 30");
       return;
     }
 
     if (
       !property.lockerCount ||
       property.lockerCount < 1 ||
-      property.lockerCount > 499
+      property.lockerCount > 30
     ) {
-      toast.error("Locker Count must be a number between 1 and 499");
+      toast.error("Locker Count must be a number between 1 and 30");
       return;
     }
 

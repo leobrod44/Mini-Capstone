@@ -12,6 +12,7 @@ import FinancialDetails from "../components/FinancialDetails.jsx";
 import { getCondo, editCondo, deleteCondo } from "../backend/PropertyHandler";
 import { getCondoPicture } from "../backend/ImageHandler";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import store from "storejs";
 import { getCompanyEmail } from "../backend/UserHandler";
 import { MANAGEMENT_COMPANY } from "../backend/Constants";
@@ -653,6 +654,9 @@ export default function CondoDetails() {
           <Footer />
         </div>
       </>
+      <button onClick={() => toast.success("Test Success Message")}>
+        Test Toast
+      </button>
     </div>
   );
 }
