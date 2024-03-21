@@ -22,7 +22,11 @@ import { getRequests } from "../backend/RequestHandler";
 import { FaCheck, FaTimes } from "react-icons/fa"; // Import icons from react-icons library
 
 /**
- * Component for displaying details of a condo.
+ * CondoDetails Component
+ * This component is responsible for displaying the details of a condominium unit
+ * It allows management users to edit and delete condo details, and provides
+ * functionality for owners to make requests
+ * functionaliry for renters or owners to view their financial details
  * @returns {JSX.Element} The rendered CondoDetails component.
  */
 export default function CondoDetails() {
@@ -52,7 +56,9 @@ export default function CondoDetails() {
   const [showFinancialDetails, setShowFinancialDetails] = useState(false);
   // State to track whether rent is paid
   const [isRentPaid, setIsRentPaid] = useState(false);
+  // State to manage edited condo details
   const [editedDetails, setEditedDetails] = useState({});
+  // State to manage edit mode
   const [isEditMode, setIsEditMode] = useState(false);
   useEffect(() => {
     const fetchCondo = async () => {
