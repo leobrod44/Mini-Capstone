@@ -856,6 +856,12 @@ export async function calculateCondoFees(condoId) {
     // Extract condo data from the snapshot
     const condoData = docSnap.data();
 
+    let returnVals = {};
+    returnVals.rent = parseFloat(condoData.unitPrice);
+    returnVals.lockerPrice = 0;
+    returnVals.parkingPrice = 0;
+    //additional fees price is 0 for now
+    returnVals.additionalFees = 0;
     let amenitiesPrice = 0;
     // Check if the condo document exists
     if (docSnap.exists) {
@@ -872,22 +878,25 @@ export async function calculateCondoFees(condoId) {
         //Get all amenities for the condo and add their price
         amenitiesSnapshot.docs.map(async (doc) => {
           let tempData = doc.data();
-          if (tempData.condo == condoId) amenitiesPrice += tempData.price;
+          if(tempData.condo == condoId){
+            if(tempData.type == "Locker")
+              returnVals.lockerPrice = parseFloat(tempData.price);
+            else
+              returnVals.parkingPrice = parseFloat(tempData.price);
+            amenitiesPrice += parseFloat(tempData.price);
+          }
         });
       } else {
         // If the property document does not exist, return null
         return null;
       }
 
-      let totalPrice = amenitiesPrice + condoData.unitPrice;
+      let totalPrice = amenitiesPrice + returnVals.rent + returnVals.additionalFees;
+      returnVals.totalPrice = totalPrice;
+      returnVals.amenitiesPrice = amenitiesPrice;
 
-      //If rented: return price of amenities + price of condo per month
-      //If owned: return monthly price of amenities, and return total fees which are monthly + remaining condo payments
-      if (condoData.status == "Rented") {
-        return { monthlyFees: totalPrice, totalFees: null };
-      } else {
-        return { monthlyFees: amenitiesPrice, totalFees: totalPrice };
-      }
+      return returnVals;
+
     } else {
       // If the condo document does not exist, log a message and return null
       return null;
