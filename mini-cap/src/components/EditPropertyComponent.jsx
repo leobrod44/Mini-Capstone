@@ -108,6 +108,52 @@ const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Check for empty Property Name
+    if (property.propertyName.trim() === "") {
+      toast.error("Property Name cannot be empty");
+      return;
+    }
+
+    // Check for non-empty and valid Unit Count, Parking Count, and Locker Count
+    if (
+      !property.unitCount ||
+      property.unitCount < 1 ||
+      property.unitCount > 499
+    ) {
+      toast.error("Unit Count must be a number between 1 and 499");
+      return;
+    }
+
+    if (
+      !property.parkingCount ||
+      property.parkingCount < 1 ||
+      property.parkingCount > 499
+    ) {
+      toast.error("Parking Count must be a number between 1 and 499");
+      return;
+    }
+
+    if (
+      !property.lockerCount ||
+      property.lockerCount < 1 ||
+      property.lockerCount > 499
+    ) {
+      toast.error("Locker Count must be a number between 1 and 499");
+      return;
+    }
+
+    // Check for valid Parking Price and Locker Price
+    if (property.parkingCost < 0 || property.parkingCost > 149) {
+      toast.error("Parking Price must be between 0 and 149");
+      return;
+    }
+
+    if (property.lockerCost < 0 || property.lockerCost > 149) {
+      toast.error("Locker Price must be between 0 and 149");
+      return;
+    }
+
     try {
       const success = await editProperty(propertyID, property);
       if (success) {

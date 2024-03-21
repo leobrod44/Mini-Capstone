@@ -133,6 +133,36 @@ export default function CondoDetails() {
   };
 
   const handleSaveChanges = async () => {
+    // Check for empty Unit Number and Square Feet
+    if (!editedDetails.unitNumber.trim()) {
+      toast.error("Unit Number cannot be empty");
+      return;
+    }
+    if (!editedDetails.squareFeet.trim()) {
+      toast.error("Square Feet cannot be empty");
+      return;
+    }
+
+    // Validation for Unit Number
+    if (
+      !/^\d*$/.test(editedDetails.unitNumber) ||
+      parseInt(editedDetails.unitNumber, 10) <= 0 ||
+      parseInt(editedDetails.unitNumber, 10) > 999
+    ) {
+      toast.error("Unit Number must be a positive integer between 1 and 999");
+      return;
+    }
+
+    // Validation for Square Feet
+    if (
+      !/^\d*$/.test(editedDetails.squareFeet) ||
+      parseInt(editedDetails.squareFeet, 10) <= 0 ||
+      parseInt(editedDetails.squareFeet, 10) > 4999
+    ) {
+      toast.error("Square Feet must be a positive integer between 1 and 4999");
+      return;
+    }
+
     try {
       await editCondo(condoId, editedDetails);
       setIsEditMode(false);
@@ -192,77 +222,70 @@ export default function CondoDetails() {
             <div className="condo-details-container">
               {isEditMode ? (
                 <form className="condo-info">
-                  <div className="name-and-number">
-                    {picture && (
-                      <img
-                        src={picture}
-                        alt="Condo"
-                        className="profile-picture edit-mode-image"
-                      />
-                    )}
+                  <div className="edit-mode-image-container">
+                    <div className="name-and-number">
+                      {picture && (
+                        <img
+                          src={picture}
+                          alt="Condo"
+                          className="profile-picture edit-mode-image"
+                        />
+                      )}
+                    </div>
                   </div>
                   <h2 className="DB_title">{editedDetails.propertyName}</h2>
                   <div className="other-info">
-                    <div className="other-info1">
-                      <h5 className="other-info2">Unit Number</h5>
-                      <input
-                        type="text"
-                        className="edit-input"
-                        name="unitNumber"
-                        value={editedDetails.unitNumber}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="other-info1">
-                      <h5 className="other-info2">Square Feet</h5>
-                      <input
-                        type="text"
-                        className="edit-input"
-                        name="squareFeet"
-                        value={editedDetails.squareFeet}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="other-info1">
-                      <h5 className="other-info2">Unit Size</h5>
-                      <input
-                        type="text"
-                        className="edit-input"
-                        name="unitSize"
-                        value={editedDetails.unitSize}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="other-info1">
-                      <h5 className="other-info2">Parking Spot Number</h5>
-                      <input
-                        type="text"
-                        className="edit-input"
-                        name="parkingNumber"
-                        value={editedDetails.parkingNumber}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-                    <div className="other-info1">
-                      <h5 className="other-info2">Locker Number</h5>
-                      <input
-                        type="text"
-                        className="edit-input"
-                        name="lockerNumber"
-                        value={editedDetails.lockerNumber}
-                        onChange={handleInputChange}
-                      />
-                    </div>
-
-                    <div className="other-info1">
-                      <h5 className="other-info2">Unit Price</h5>
-                      <input
-                        type="text"
-                        className="edit-input"
-                        name="lockerNumber"
-                        value={editedDetails.unitPrice}
-                        onChange={handleInputChange}
-                      />
+                    <div
+                      className="edit-mode-fields"
+                      style={{ color: "#2f2c9b", fontSize: "20px" }}
+                    >
+                      <div className="input-group">
+                        <label htmlFor="unitNumber" className="field-label">
+                          Unit Number:
+                        </label>
+                        <input
+                          id="unitNumber"
+                          type="text"
+                          name="unitNumber"
+                          className="edit-input"
+                          value={editedDetails.unitNumber}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="input-group">
+                        <label htmlFor="squareFeet" className="field-label">
+                          Square Feet:
+                        </label>
+                        <input
+                          id="squareFeet"
+                          type="text"
+                          name="squareFeet"
+                          className="edit-input"
+                          value={editedDetails.squareFeet}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="input-group">
+                        <label htmlFor="unitSize" className="field-label">
+                          Unit Size:
+                        </label>
+                        <select
+                          id="unitSize"
+                          name="unitSize"
+                          className="edit-input"
+                          value={editedDetails.unitSize}
+                          onChange={handleInputChange}
+                        >
+                          <option value="" disabled style={{ color: "gray" }}>
+                            Select Unit Size
+                          </option>
+                          <option value="1.5">1 1/2</option>
+                          <option value="2.5">2 1/2</option>
+                          <option value="3.5">3 1/2</option>
+                          <option value="4.5">4 1/2</option>
+                          <option value="5.5">5 1/2</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
                   <div className="edit-buttons">
