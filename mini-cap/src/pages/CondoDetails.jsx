@@ -612,7 +612,12 @@ export default function CondoDetails() {
                   <div>
                     {role === MANAGEMENT_COMPANY && (
                       <>
-                        <button className="edit-button"> Edit</button>
+                        <button
+                          className="edit-button"
+                          onClick={toggleEditMode}
+                        >
+                          Edit
+                        </button>
                         <button
                           className="delete-button"
                           data-testid="delete-button-test"
