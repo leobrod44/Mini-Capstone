@@ -109,8 +109,8 @@ const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Check for empty Property Name
-    if (property.propertyName.trim() === "") {
+    // Check if property is defined and propertyName is not empty
+    if (!property || !property.propertyName || property.propertyName.trim() === "") {
       toast.error("Property Name cannot be empty");
       return;
     }
