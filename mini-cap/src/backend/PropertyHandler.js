@@ -869,6 +869,12 @@ export async function calculateCondoFees(condoId) {
     // Extract condo data from the snapshot
     const condoData = docSnap.data();
 
+    let returnVals = {};
+    returnVals.rent = condoData.unitPrice;
+    returnVals.lockerPrice = 0;
+    returnVals.parkingPrice = 0;
+    //additional fees price is 0 for now
+    returnVals.additionalFees = 0;
     let amenitiesPrice = 0;
     // Check if the condo document exists
     if (docSnap.exists) {
@@ -886,6 +892,10 @@ export async function calculateCondoFees(condoId) {
         amenitiesSnapshot.docs.map(async doc => {
           let tempData = doc.data();
           if(tempData.condo == condoId)
+            if(tempData.type == "Locker")
+              returnVals.lockerPrice = tempData.price;
+            else
+              returnVals.parkingPrice = tempData.price;
             amenitiesPrice += tempData.price;
         });
       } else {
@@ -893,15 +903,10 @@ export async function calculateCondoFees(condoId) {
         return null;
       }
 
-      let totalPrice = amenitiesPrice + condoData.unitPrice;
+      let totalPrice = amenitiesPrice + condoData.unitPrice + returnVals.additionalFees;
+      returnVals.totalPrice = totalPrice;
 
-      //If rented: return price of amenities + price of condo per month
-      //If owned: return monthly price of amenities, and return total fees which are monthly + remaining condo payments
-      if (condoData.status == "Rented"){
-        return {monthlyFees: totalPrice, totalFees: null};
-      } else {
-        return {monthlyFees: amenitiesPrice, totalFees: totalPrice};
-      }
+      return returnVals;
 
     } else {
       // If the condo document does not exist, log a message and return null
