@@ -18,7 +18,7 @@ import { getCondo } from "../backend/PropertyHandler";
  * @returns {JSX.Element} The rendered RequestForm component.
  */
 const RequestForm = ({ handleClickClose, condoInfo }) => {
-  const [subject, setSubject] = useState("1.1");
+  const [subject, setSubject] = useState("none");
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [notificationsActive, setNotificationsActive] = useState([]);
@@ -81,7 +81,7 @@ const RequestForm = ({ handleClickClose, condoInfo }) => {
       toast.error("Request failed to submit for unexpected reasons");
       console.error(error);
     } finally {
-      setSubject("1.1");
+      setSubject("none");
       setDescription("");
       setSubmitting(false); // Set submitting state back to false
     }
