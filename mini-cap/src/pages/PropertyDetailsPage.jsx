@@ -21,7 +21,6 @@ const PropertyDetailsPage = () => {
   const [propertyDetails, setPropertyDetails] = useState(null);
   const [hasCondos, setHasCondos] = useState(false);
   let [condoPicURL, setCondoPicURL] = useState(null);
-  const [showEdit, setShowEdit] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -67,6 +66,15 @@ const PropertyDetailsPage = () => {
     setPropertyDetails(updatedDetails);
   };
 
+  /**
+   * useState hook for managing the state of whether the edit mode is shown or not.
+   * @type {[boolean, function]} An array containing a boolean value representing the current state of showing edit mode,
+   * and a function to update that state.
+   */
+  const [showEdit, setShowEdit] = useState(true);
+  /**
+   * Function to toggle the edit mode state.
+   */
   const toggleEdit = () => {
     setShowEdit(!showEdit);
   };
