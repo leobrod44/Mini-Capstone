@@ -18,12 +18,11 @@ import { getCondo } from "../backend/PropertyHandler";
  * @returns {JSX.Element} The rendered RequestForm component.
  */
 const RequestForm = ({ handleClickClose, condoInfo }) => {
-  let { condoID } = useParams();
   const [subject, setSubject] = useState("1.1");
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [notificationsActive, setNotificationsActive] = useState([]);
-  const { propertyName, unitNumber } = condoInfo;
+  const { propertyName, unitNumber,id } = condoInfo;
 
   /**
    * Checks for active notifications periodically and updates the notificationsActive state accordingly.
@@ -71,11 +70,12 @@ const RequestForm = ({ handleClickClose, condoInfo }) => {
         toast.error("Please fill all fields");
         return;
       }
-      const condo = await getCondo(condoID);
-      const requestID = await submitRequest(condoID, subject, description);
+      const condo = await getCondo(id);
+      const requestID = await submitRequest(id, subject, description);
       toast.success("Request submitted successfully", {
         onClose: handleClickClose,
       });
+      handleClickClose();
       console.log("The request was submitted successfully");
     } catch (error) {
       toast.error("Request failed to submit for unexpected reasons");
@@ -104,16 +104,16 @@ const RequestForm = ({ handleClickClose, condoInfo }) => {
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
         >
-          <option value="1.1">Moving Request</option>
-          <option value="1.2">Request Access</option>
-          <option value="1.3">Report Violation</option>
-          <option value="2.1">Report Damage in Common Area</option>
-          <option value="2.2">Request Maintenance</option>
-          <option value="1.4">General Question</option>
-          <option value="3.1">Payment Invoice</option>
-          <option value="3.2">Fee Inquiries</option>
-          <option value="3.3">Insurance Coverage Details</option>
-          <option value="3.4">Tax Letter by Mail</option>
+          <option value="Moving Request">Moving Request</option>
+          <option value="Access Request">Request Access</option>
+          <option value="Violation Report">Report Violation</option>
+          <option value="General Question">General Question</option>
+          <option value="Damage Report">Report Damage in Common Area</option>
+          <option value="Maintenance Request">Request Maintenance</option>
+          <option value="Payment Invoice">Payment Invoice</option>
+          <option value="Fee Inquiry">Fee Inquiries</option>
+          <option value="Insurance">Insurance Coverage Details</option>
+          <option value="Taxes">Tax Letter by Mail</option>
         </select>
         <label
           className="dropdown"
