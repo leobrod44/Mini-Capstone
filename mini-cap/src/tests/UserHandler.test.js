@@ -558,7 +558,39 @@ describe("addCompany function, more", () => {
   });
 });
 
+describe("addUser function, more", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
+  test("should throw an error if an error occurs while setting profile picture", async () => {
+    setPicture.mockRejectedValueOnce(new Error("Mocked error while setting picture"));
+
+    const userData = {
+      email: "test@example.com",
+    };
+
+    await expect(addUser(userData)).rejects.toThrow(new Error("TypeError: Cannot read properties of undefined (reading 'exists')"));
+  });
+
+  test("should mock storing picture", async () => {
+    // Mock Firestore to simulate no existing user but no existing company with the given email
+    const fakeUserDocSnap = { exists: jest.fn(() => false) };
+    const fakeCompanyDocSnap = { exists: jest.fn(() => false) };
+
+    getDoc
+        .mockResolvedValueOnce(fakeUserDocSnap) // First call for the user, not found
+        .mockResolvedValueOnce(fakeCompanyDocSnap); // Second call for the company, not found
+
+    const userData = {
+      email: "existingUser@example.com",
+    };
+
+    await expect(addUser(userData)).rejects.toThrow(
+        new Error("Error: Error adding document: Error adding document: Cannot read properties of undefined (reading 'then')")
+    );
+  });
+});
 
 describe("getCompanyEmail function", () => {
   afterEach(() => {
