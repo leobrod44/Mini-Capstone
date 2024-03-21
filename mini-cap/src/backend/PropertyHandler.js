@@ -905,6 +905,7 @@ export async function calculateCondoFees(condoId) {
 
       let totalPrice = amenitiesPrice + condoData.unitPrice + returnVals.additionalFees;
       returnVals.totalPrice = totalPrice;
+      returnVals.amenitiesPrice = amenitiesPrice;
 
       return returnVals;
 
