@@ -136,7 +136,7 @@ export async function linkCondoToUser(email, key) {
     // Update condo status to "Rented"
     try{
         await updateDoc(doc(db, "Condo", data.condo), {
-        status: status,
+        status: status || "",
         occupant: data.email
       });
     } catch(e){
@@ -364,6 +364,7 @@ export async function getUserCondos(email) {
       const userRef = doc(db, "Users", email);
       const userSnap = await getDoc(userRef);
       const userData = userSnap.data();
+
       const rents = userData.rents;
       const owns = userData.owns;
       const condos = userData.owns.concat(userData.rents);

@@ -173,7 +173,7 @@ export async function uploadFile(propertyID, file) {
             // Get the count of existing files for the property
             var count  = (await listAll(ref(storage, propertyFileRef +"/"+propertyID))).items.length;
             // Upload the file to the storage
-            var resp = await uploadBytes(ref(storage, propertyFileRef +"/"+propertyID+"/"+count), file);
+            var resp = await uploadBytes(ref(storage, propertyFileRef +"/"+propertyID+"/"+file.name), file);
         }
     }
     catch(e){
@@ -195,7 +195,8 @@ export async function getPropertyFiles(propertyID) {
             // Get download URL for the item
             const url = await getDownloadURL(itemRef);
             // Return the URL
-            return url;
+
+            return {url: url, name: itemRef.name};
         }));
         // Return the array of file URLs
         return files;

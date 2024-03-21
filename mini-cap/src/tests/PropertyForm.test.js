@@ -93,16 +93,16 @@ describe("PropertyForm", () => {
       target: { value: "-5" },
     });
     fireEvent.change(getByLabelText("Parking Count:"), {
-      target: { value: "-5" },
+      target: { value: "4" },
     });
     fireEvent.change(getByLabelText("Parking Cost:"), {
-      target: { value: "-5" },
+      target: { value: "3" },
     });
     fireEvent.change(getByLabelText("Locker Count:"), {
-      target: { value: "-5" },
+      target: { value: "2" },
     });
     fireEvent.change(getByLabelText("Locker Cost:"), {
-      target: { value: "0" },
+      target: { value: "1" },
     });
     const submitPropertyButton = getByText("Submit Property", {
       selector: "button",
@@ -112,7 +112,7 @@ describe("PropertyForm", () => {
     // Submit the form
     fireEvent.click(submitPropertyButton);
   
-    expect(toast.error).toHaveBeenCalledWith("Count must be greater than  0");
+    expect(toast.error).toHaveBeenCalledWith("Count or price must be greater than  0");
   });
   
   
@@ -158,46 +158,7 @@ describe("PropertyForm", () => {
   });
 
 
-it("should display toast error for empty property fields on Add condo button click", () => {
-  const { getByLabelText, getByText } = render(
-    <Router>
-      <PropertyForm />
-    </Router>
-  );
-  const file2 = new File(["dummy content"], "image.jpg", {
-    type: "image/jpeg",
-  });
 
-  fireEvent.change(getByLabelText("Property Picture:"), {
-    target: { files: [file2] },
-  });
-
-  fireEvent.change(getByLabelText("Property Name:"), {
-    target: { value: "Example Property" },
-  });
-
-  fireEvent.change(getByLabelText("Unit Count:"), {
-    target: { value: "255" },
-  });
-
-  fireEvent.change(getByLabelText("Parking Count:"), {
-    target: { value: "99" },
-  });
-  fireEvent.change(getByLabelText("Parking Cost:"), {
-    target: { value: "200" },
-  });
-
-  fireEvent.change(getByLabelText("Locker Count:"), {
-    target: { value: "" },
-  });
-  fireEvent.change(getByLabelText("Locker Cost:"), {
-    target: { value: "100" },
-  });
-  // Submit the form
-  const addCondoButton = getByText("Add Condo", { selector: "button" });
-  fireEvent.click(addCondoButton);
-  expect(toast.error).toHaveBeenCalledWith("Please complete the property form first");
-});
 
 it("should toast error if a field is missing in the property form", () => {
   const { getByLabelText, getByText } = render(

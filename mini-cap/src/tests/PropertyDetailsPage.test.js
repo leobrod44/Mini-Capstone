@@ -14,10 +14,7 @@ jest.mock("../backend/ImageHandler", () => ({
 }));
 
 
-jest.mock("../backend/Fetcher", () => ({
-  getCondos: jest.fn(),
-  getCondoPicture: jest.fn(),
-}));
+
 // Mock the Header and Footer components
 jest.mock("../components/Header", () => () => <div>Header Mock</div>);
 jest.mock("../components/Footer", () => () => <div>Footer Mock</div>);
