@@ -3,10 +3,10 @@ import "../styling/FinancialDetails.css";
 import { FaCheck, FaTimes } from 'react-icons/fa'; // Import icons from react-icons library
 import { useParams } from "react-router-dom";
 import { MANAGEMENT_COMPANY } from "../backend/Constants";
-import { getFinanceDetails} from "../backend/PropertyHandler";
 import { getCondo } from '../backend/PropertyHandler';
 import { checkRentPaid } from '../backend/PropertyHandler';
 import store from "storejs";
+import { calculateCondoFees } from '../backend/PropertyHandler';
 
 /**
  * Represents a component for displaying and managing financial details of a condo.
@@ -20,14 +20,15 @@ import store from "storejs";
 const FinancialDetails = () => {
     let { condoId } = useParams();
     const [role, setTheRole] = useState("");
-    const [condoDetails, setCondoDetails] = useState(false);
+    const [condoDetails, setCondoDetails] = useState({});
     const [isRentPaid, setIsRentPaid] = useState(false); // State to track whether rent is paid
     const [fDetails, setFDetails] = useState({
-        BasePrice: 0,
-        ParkingPrice: 0,
-        LockerPrice: 0,
-        AdditionalPrice: 0,
-        TotalPrice: 0
+        rent: 0,
+        parkingPrice: 0,
+        lockerPrice: 0,
+        additionalFees: 0,
+        amenitiesPrice: 0,
+        totalPrice: 0
     });
 
     /**
@@ -43,7 +44,7 @@ const FinancialDetails = () => {
                 const condo = await getCondo(condoId);
                 setCondoDetails(condo);
             } catch (err) {
-                console.error(err);
+                console.error("Error fetching condo:", err);
             }
         };
         fetchCondo();
@@ -76,10 +77,10 @@ const FinancialDetails = () => {
     useEffect(() => {
         const fetchingFinanceDetails = async () => {
             try {
-                const financeDetails = await getFinanceDetails();
+                const financeDetails = await calculateCondoFees(condoId);
                 setFDetails(financeDetails);
             } catch (error) {
-                console.error(error);
+                console.error("Error fetching finance details:", error);
             }
         };
         fetchingFinanceDetails();
@@ -95,7 +96,7 @@ const FinancialDetails = () => {
             const rentPaid = await checkRentPaid();
             setIsRentPaid(rentPaid);
         } catch (error) {
-            console.error(error);
+            console.error("Error fetching isRentPaid:", error);
         }
     };
 
@@ -118,11 +119,12 @@ const FinancialDetails = () => {
      * @type {number} TotalPrice - The total price calculated based on all the financial details.
      */
     const {
-        BasePrice,
-        ParkingPrice,
-        LockerPrice,
-        AdditionalPrice,
-        TotalPrice
+        rent,
+        parkingPrice,
+        lockerPrice,
+        additionalFees,
+        amenitiesPrice,
+        totalPrice
     } = fDetails;
 
     /**
@@ -138,23 +140,27 @@ const FinancialDetails = () => {
         <div className="Financial-info">
             <div className="other-info1">
                 <div className="other-info2"><h5>Base Price:</h5></div>
-                <div className="textDetail">{BasePrice} $</div>
+                <div className="textDetail">{rent} $</div>
             </div>
             <div className="other-info1">
                 <div className="other-info2"><h5>Parking Price:</h5></div>
-                <div className="textDetail">{ParkingPrice} $</div>
+                <div className="textDetail">{parkingPrice} $</div>
             </div>
             <div className="other-info1">
                 <div className="other-info2"><h5>Locker Price:</h5></div>
-                <div className="textDetail">{LockerPrice} $</div>
+                <div className="textDetail">{lockerPrice} $</div>
+            </div>
+            <div className="other-info1">
+                <div className="other-info2"><h5>Total Amenity Fees:</h5></div>
+                <div className="textDetail">{amenitiesPrice} $</div>
             </div>
             <div className="other-info1">
                 <div className="other-info2"><h5>Additional Fees:</h5></div>
-                <div className="textDetail">{AdditionalPrice} $</div>
+                <div className="textDetail">{additionalFees} $</div>
             </div>
             <div className="other-info1">
                 <div className="other-info2"><h5>Total Unit Price:</h5></div>
-                <div className="textDetail">{TotalPrice} $</div>
+                <div className="textDetail">{totalPrice} $</div>
             </div>
             <br></br>
             <div className="other-info1">
