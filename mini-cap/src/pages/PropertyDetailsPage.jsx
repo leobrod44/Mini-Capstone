@@ -74,10 +74,21 @@ const PropertyDetailsPage = () => {
 
         <div className="buttons_container">
           {showEdit ? (
-            <div>
-              <button className="details-button" onClick={toggleEdit}>
-                Edit Property
-              </button>
+            <div className="top-button-container">
+              <div>
+                <button className="property-buttons" onClick={toggleEdit}>
+                  Edit Property
+                </button>
+              </div>
+              
+              <div>
+                <Link
+                className="property-link"
+                to={`/condo-files/${propertyID}/${propertyName}`}
+                >
+                  Add Property Files
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="edit_container">
@@ -88,12 +99,6 @@ const PropertyDetailsPage = () => {
 
         {showEdit && (
           <div>
-            <Link
-              className="details-button-condo-files"
-              to={`/condo-files/${propertyID}/${propertyName}`}
-            >
-              Add Property Files
-            </Link>
             {hasCondos ? (
               <div className="condo_list">
 

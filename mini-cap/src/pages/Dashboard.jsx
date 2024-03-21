@@ -17,6 +17,10 @@ import "../styling/Pagination.css";
 import { Link, useParams } from "react-router-dom";
 
 
+/**
+ * Functional component representing the dashboard page.
+ * @returns {JSX.Element} - The JSX for the dashboard page.
+ */
 const Dashboard = () => {
   const { userID } = useParams();
   // State to represent whether the user has registered condos or not, since i dont have backend right now
@@ -29,8 +33,10 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchCondos = async () => {
       try {
+        // Fetch condos for the user
         const condos = await getUserCondos(store("user"));
 
+        // Fetch and set picture for each condo
         await Promise.all(
           condos.map(async (condo) => {
             condoPicURL = await getCondoPicture(
@@ -41,7 +47,7 @@ const Dashboard = () => {
             return { ...condo };
           })
         );
-
+        // Update state based on whether user has condos or not
         if (condos.length > 0) {
           setHasCondos(true);
           setCondoDetails(condos);
@@ -53,10 +59,12 @@ const Dashboard = () => {
     fetchCondos();
   }, []);
 
+  // Function to toggle the registration popup
   const handlePopupToggle = () => {
     setShowPopup(!showPopup);
   };
 
+  // Function to handle registering a condo
   const handleRegisterCondo = async (key) => {
     let msg = "";
     try {
@@ -120,7 +128,7 @@ const Dashboard = () => {
                   data-testid="condo-component"
                 />
               ))}
-              <div className="pagination-container">
+              <div className="pagination-container" style={{ display: "flex", justifyContent: "center", width: "100%" }}>
                 <Pagination
                   itemsPerPage={condosPerPage}
                   totalItems={condoDetails.length}

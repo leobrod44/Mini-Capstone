@@ -39,7 +39,7 @@ import {getPropertyPicture} from "./ImageHandler";
 export async function submitRequest(condoID, type, notes) {
     // Check if the request type is valid
     if (!TYPES.includes(type)) {
-        console.error("Invalid request type");
+        // Return null if the request type is invalid
         return null;
     }
     try {
@@ -64,8 +64,6 @@ export async function submitRequest(condoID, type, notes) {
         return requestID;
         
     } catch(e) {
-        // Log any errors that occur during the process
-        console.error("Error submitting request: ", e);
         // Return null if an error occurs
         return null;
     }
@@ -101,8 +99,6 @@ export async function getRequests(condoID){
         // Return the array of requests
         return requests;
     } catch(e) {
-        // Log any errors that occur during the process
-        console.error("Error getting requests: ", e);
         // Return null if an error occurs
         return null;
     }
@@ -127,7 +123,7 @@ export async function updateRequest(condoID, requestID) {
         
         // Check if the request exists
         if (!requestDoc.exists()) {
-            console.error("Request does not exist");
+            // Return null if the request does not exist
             return null;
         }
         
@@ -145,40 +141,27 @@ export async function updateRequest(condoID, requestID) {
                 console.error("Error assigning worker: ", e);
             }
         }
-        
-        // Determine the type of steps based on the request type
-        let stepType;
-
-        if(requestData.type === "Administrative"){
-            stepType = ADMINISTRATIVE_STEPS;
-        } else if(requestData.type === "Financial"){
-            stepType = FINANCIAL_STEPS;
-        } else if(requestData.type === "Operational"){
-            stepType = OPERATIONAL_STEPS;
-        } else {
-            console.error("Invalid request type");
-        }
-
-        
         // Update the request document
         await updateDoc(requestRef, requestData);
-      
-        //  COMMENTED OUT THIS BECAUSE IN CONDOREQUESTSVIEW.JSX YOU CAN ONLY DO MAX 4 ADVANCES
-        // if(requestData.step >= stepType.length){
-        //     return "Completed"
-        // }
-        // else{
-            return requestData.step;
-        // }
+        // return step
+        return requestData.step;
+
     } catch (e) {
-        console.error("Error updating request: ", e);
-        return null;
+        // throw error
+         throw e;
     }
 }
 
 
 
-//BACKEND ONLY
+/**
+ * Assigns a worker to a specific request in a condominium.
+ * @param {Object} requestData - The request data including the condo ID, request ID, and worker type.
+ * @param {string} requestData.condoID - The ID of the condominium.
+ * @param {string} requestData.requestID - The ID of the request.
+ * @param {string} requestData.type - The type of worker needed for the request.
+ * @returns {Promise<void|null>} A promise that resolves when the worker is assigned, or null if there was an error.
+ */
 export async function assignWorker(requestData) {
     try{
         // Retrieve the document reference for the specified condo ID from the "Condo" collection
@@ -206,15 +189,19 @@ export async function assignWorker(requestData) {
         })
 
     } catch (e) {
-        console.error("Error assigning worker: ", e);
+        // Return null if an error occurs
         return null;
     }
 
 }
 
-//BACKEND ONLY
+/**
+ * Retrieves the assigned worker for a specific request in a condominium.
+ * @param {string} condoID - The ID of the condominium.
+ * @param {string} requestID - The ID of the request.
+ * @returns {Promise<Object|null>} A promise that resolves with the assigned worker data (contains fields type and name), or null if there was an error.
+ */
 export async function getAssignedWorker(condoID, requestID) {
-
     try{
         // Retrieve the document reference for the specified condo ID from the "Condo" collection
         const condoRef = doc(db, "Condo", condoID);
@@ -237,27 +224,25 @@ export async function getAssignedWorker(condoID, requestID) {
         return workerSnap.data();
 
     } catch (e) {
-        console.error("Error getting worker: ", e);
+        // Return null if an error occurs
         return null;
     }
-
-
 }
 
 //SPRINT 4
 
-//Provide: userID
-//Returns: array of new notifications containing message to display and path
-export async function getNotifications(userID){
+// //Provide: userID
+// //Returns: array of new notifications containing message to display and path
+// export async function getNotifications(userID){
 
     
-    //request update, event reminder
-    //provide message to display and path for when clicked
-}
+//     //request update, event reminder
+//     //provide message to display and path for when clicked
+// }
 
-//Provide: userID, requestID
-//Returns: nothing
-export async function setNotificationViewed(userID, notification){
+// //Provide: userID, requestID
+// //Returns: nothing
+// export async function setNotificationViewed(userID, notification){
 
-    //called when clicked on notificaton
-}
+//     //called when clicked on notificaton
+// }

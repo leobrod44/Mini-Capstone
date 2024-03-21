@@ -52,7 +52,13 @@ h3 {
   color: #382fb8;
   font-weight: bold;
 }
-
+.custom-checkbox {
+  width: 25px; /* Adjust size as needed */
+  height: 25px; /* Adjust size as needed */
+  margin-left: 20px; /* Adjust spacing as needed */
+  border: 2px solid #000; /* Black border */
+  border-radius: 5px; /* Sharp edges */
+}
 
 input,
 select
@@ -79,4 +85,10 @@ select
     font-size: 16px;
     cursor: pointer;
     width: 100%;
+}
+.add-condo-button:hover,
+.submit-condo-button:hover,
+.add-property-button:hover{
+  background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
+  color: #ffffff; /* Change text color on hover to white */
 }
