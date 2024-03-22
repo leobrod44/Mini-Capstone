@@ -1,4 +1,4 @@
-body{
+body {
   background-color: #f0f4f8;
 }
 h2,
@@ -61,17 +61,14 @@ h3 {
   font-weight: bold;
 }
 
-
 input,
-select
- {
+select {
   font-family: "Roboto", sans-serif;
   width: relative;
   padding: 10px;
   border: 1px solid #e1e1e1;
   border-radius: 4px;
   font-size: 16px;
-  
 }
 
 .add-condo-button,
@@ -84,19 +81,19 @@ select
   font-size: 16px;
   cursor: pointer;
   flex: 2;
-  margin-right: 10px /* Use flex property to distribute available space equally */
+  margin-right: 10px; /* Use flex property to distribute available space equally */
 }
-.submit-condo-button{
-    background-color: #382fb8;
-    color: #ffffff;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 100%;
+.submit-condo-button {
+  background-color: #382fb8;
+  color: #ffffff;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
 }
-.cancel-button{
+.cancel-btn {
   background-color: grey;
   color: #ffffff;
   padding: 10px;
@@ -107,7 +104,7 @@ select
   width: 50%;
   margin-right: 10px;
 }
-.cancel-button:hover{
+.cancel-btn:hover {
   background-color: darkgray;
 }
 
@@ -116,110 +113,106 @@ select
   background-color: #2f2c9b;
 }
 
-
-.delete-property-button{
+.delete-property-button {
   background-color: red;
   color: #ffffff;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 100%;
-    margin-right: 10px;
-    margin-top: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  margin-right: 10px;
+  margin-top: 10px;
 }
-.delete-property-button:hover{
+.delete-property-button:hover {
   background-color: #842029;
 }
 
 .condo-form {
-    background-color: #ffffff; /* Match the background color of the form */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 20px;
-    width: 100%;
-    max-width: 400px;
-  }
-  
-  .condo-form select {
-    margin-bottom: 20px;
-    color: #2f2c9b; /* Match the color of other text in the form */
-  }
-  
-  .condo-form input {
-    margin-bottom: 20px;
-    text-align: left;
-    color: #2f2c9b; /* Match the color of other text in the form */
-  }
-  
-  .condo-form input,
-  .condo-form select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #e1e1e1;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  .condo-form label {
-    display: flex;
-    margin-bottom: 6px;
-    color: #382fb8; /* Match the color of other headers in the form */
-    font-weight: bold;
-  }
-  
-  .condo-form img {
-    margin-top: 10px;
-    width: 100%;
-    height: auto;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-.condo-preview {
-    background-color: #ffffff; /* Match the background color of the form */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 10px;
-    margin: 10px 0;
-   
-  }
-  
-  .condo-preview h5 {
-    font-size: 1.2em;
-    color: #382fb8; /* Match the color of other headers in the form */
-    font-family: "Roboto", sans-serif;
-    font-weight: bold;
+  background-color: #ffffff; /* Match the background color of the form */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+}
 
-  }
-  
-  .condo-preview p {
-    margin-bottom: 5px;
-    color: #2f2c9b; /* Match the color of other text in the form */
-    font-family: "Roboto", sans-serif;
-    font-weight: bold;
-    display: flex; 
-  }
-  
-  .condo-preview img {
-    max-width: 50%;
-    height: auto;
-    margin-top: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    display: flex;
-  }
-  .custom-select {
-    width: 10%;
-    height: auto; 
-    display: flex;
-  }
-  .button-container {
-    display: flex;
-    justify-content: space-between; 
-    width: 103%;
-  }
-  .center-page.modal-open {
+.condo-form select {
+  margin-bottom: 20px;
+  color: #2f2c9b; /* Match the color of other text in the form */
+}
+
+.condo-form input {
+  margin-bottom: 20px;
+  text-align: left;
+  color: #2f2c9b; /* Match the color of other text in the form */
+}
+
+.condo-form input,
+.condo-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.condo-form label {
+  display: flex;
+  margin-bottom: 6px;
+  color: #382fb8; /* Match the color of other headers in the form */
+  font-weight: bold;
+}
+
+.condo-form img {
+  margin-top: 10px;
+  width: 100%;
+  height: auto;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.condo-preview {
+  background-color: #ffffff; /* Match the background color of the form */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.condo-preview h5 {
+  font-size: 1.2em;
+  color: #382fb8; /* Match the color of other headers in the form */
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+}
+
+.condo-preview p {
+  margin-bottom: 5px;
+  color: #2f2c9b; /* Match the color of other text in the form */
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  display: flex;
+}
+
+.condo-preview img {
+  max-width: 50%;
+  height: auto;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  display: flex;
+}
+.custom-select {
+  width: 10%;
+  height: auto;
+  display: flex;
+}
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 103%;
+}
+.center-page.modal-open {
   overflow: hidden; /* Hide the page content when the modal is open */
 }
-  

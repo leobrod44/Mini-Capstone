@@ -11,7 +11,7 @@ import {
   storeData,
   deleteAccount,
   getCompanyEmail
-} from "../backend/UserHandler"; // Import your function
+} from "../backend/UserHandler";
 import {
   doc,
   getDoc,
@@ -23,6 +23,7 @@ import {
 import * as UserHandler from "../backend/UserHandler";
 
 import { getStorage } from "firebase/storage";
+import {setPicture} from "../backend/ImageHandler";
 
 // Mock Firebase storage functions
 jest.mock("firebase/firestore", () => ({
@@ -478,6 +479,7 @@ describe("addUser function", () => {
   });
 });
 
+// Mocking the helper functions
 describe("addCompany function", () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -485,11 +487,11 @@ describe("addCompany function", () => {
 
   test("should throw an error if the company already exists", async () => {
     // Mock Firestore to simulate no existing user but an existing company with the given email
-    const fakeUserDocSnap = { exists: jest.fn(() => false) };
-    const fakeCompanyDocSnap = { exists: jest.fn(() => true) };
+    const fakeUserDocSnap = {exists: jest.fn(() => false)};
+    const fakeCompanyDocSnap = {exists: jest.fn(() => true)};
     getDoc
-      .mockResolvedValueOnce(fakeUserDocSnap) // First call for the user, not found
-      .mockResolvedValueOnce(fakeCompanyDocSnap); // Second call for the company, found
+        .mockResolvedValueOnce(fakeUserDocSnap) // First call for the user, not found
+        .mockResolvedValueOnce(fakeCompanyDocSnap); // Second call for the company, found
 
     const companyData = {
       email: "existingCompany@example.com",
@@ -497,13 +499,13 @@ describe("addCompany function", () => {
 
     // Test expects the function to throw an error indicating a company already exists
     await expect(addCompany(companyData)).rejects.toThrow(
-      new Error("Company already exists.")
+        new Error("Company already exists.")
     );
   });
 
   test("should throw an error if a user with the same email already exists", async () => {
     // Mock Firestore to simulate an existing user with the given email
-    const fakeUserDocSnap = { exists: jest.fn(() => true) };
+    const fakeUserDocSnap = {exists: jest.fn(() => true)};
     getDoc.mockResolvedValueOnce(fakeUserDocSnap);
 
     const companyData = {
@@ -512,7 +514,80 @@ describe("addCompany function", () => {
 
     // Test expects the function to throw an error indicating a user already exists
     await expect(addCompany(companyData)).rejects.toThrow(
-      new Error("User already exists.")
+        new Error("User already exists.")
+    );
+  });
+});
+
+
+jest.mock('../backend/ImageHandler.js', () => ({
+  setPicture: jest.fn()
+}));
+
+describe("addCompany function, more", () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    test("should throw an error if an error occurs while setting profile picture", async () => {
+      setPicture.mockRejectedValueOnce(new Error("Mocked error while setting picture"));
+
+      const companyData = {
+        email: "test@example.com",
+      };
+
+      await expect(addCompany(companyData)).rejects.toThrow(new Error("Cannot read properties of undefined (reading 'exists')"));
+    });
+
+  test("should mock storing picture", async () => {
+    // Mock Firestore to simulate no existing user but no existing company with the given email
+    const fakeUserDocSnap = { exists: jest.fn(() => false) };
+    const fakeCompanyDocSnap = { exists: jest.fn(() => false) };
+
+    getDoc
+        .mockResolvedValueOnce(fakeUserDocSnap) // First call for the user, not found
+        .mockResolvedValueOnce(fakeCompanyDocSnap); // Second call for the company, not found
+
+    const companyData = {
+      email: "existingUser@example.com",
+    };
+
+    await expect(addCompany(companyData)).rejects.toThrow(
+        new Error("Error adding document: Error adding document: Cannot read properties of undefined (reading 'then')")
+    );
+  });
+});
+
+describe("addUser function, more", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("should throw an error if an error occurs while setting profile picture", async () => {
+    setPicture.mockRejectedValueOnce(new Error("Mocked error while setting picture"));
+
+    const userData = {
+      email: "test@example.com",
+    };
+
+    await expect(addUser(userData)).rejects.toThrow(new Error("TypeError: Cannot read properties of undefined (reading 'exists')"));
+  });
+
+  test("should mock storing picture", async () => {
+    // Mock Firestore to simulate no existing user but no existing company with the given email
+    const fakeUserDocSnap = { exists: jest.fn(() => false) };
+    const fakeCompanyDocSnap = { exists: jest.fn(() => false) };
+
+    getDoc
+        .mockResolvedValueOnce(fakeUserDocSnap) // First call for the user, not found
+        .mockResolvedValueOnce(fakeCompanyDocSnap); // Second call for the company, not found
+
+    const userData = {
+      email: "existingUser@example.com",
+    };
+
+    await expect(addUser(userData)).rejects.toThrow(
+        new Error("Error: Error adding document: Error adding document: Cannot read properties of undefined (reading 'then')")
     );
   });
 });

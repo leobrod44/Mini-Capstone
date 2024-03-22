@@ -12,9 +12,29 @@ import {
     getCondo,
     getCondoOccupant,
     calculateCondoFees,
-    getAmenities, addLockers, addParkings, assignLocker, assignParking, getAssignedLocker, getAssignedParking
+    getAmenities,
+    addLockers,
+    addParkings,
+    assignLocker,
+    assignParking,
+    getAssignedLocker,
+    getAssignedParking,
+    editCondo,
+    editProperty, deleteCondo, deleteProperty
 } from '../backend/PropertyHandler';
-import {doc, getDoc, getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs, query, where} from 'firebase/firestore';
+import {
+    doc,
+    getDoc,
+    getFirestore,
+    collection,
+    addDoc,
+    updateDoc,
+    arrayUnion,
+    getDocs,
+    query,
+    where,
+    deleteDoc
+} from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
 import { getStorage } from "firebase/storage";
 import {changePassword, updateCompanyInfo, updateUserInfo} from "../backend/UserHandler";
@@ -38,7 +58,8 @@ jest.mock('firebase/firestore', () => ({
     arrayUnion: jest.fn(),
     getCondo: jest.fn(),
     query: jest.fn(),
-    where: jest.fn()
+    where: jest.fn(),
+    deleteDoc: jest.fn(),
 }));
 jest.mock('firebase/storage', () => ({
     getStorage: jest.fn(),
@@ -342,46 +363,49 @@ describe("getting condos and properties functions", () => {
     });
 
     test('getUserCondos: should return condos owned or rented by the user with pictures', async () => {
-        const fakeEmail = 'test@example.com';
-        const fakeUserDoc = { data: jest.fn(() => ({ email: fakeEmail, owns: ['condo1', 'condo2'], rents: ['condo3', 'condo4'] })) };
-        const fakeCondoDoc1 = { exists: jest.fn(() => true), data: jest.fn(() => ({ property: 'property1' })) };
-        const fakeCondoDoc2 = { exists: jest.fn(() => true), data: jest.fn(() => ({ property: 'property2' })) };
-        const fakeCondoDoc3 = { exists: jest.fn(() => true), data: jest.fn(() => ({ property: 'property2' })) };
-        const fakeCondoDoc4 = { exists: jest.fn(() => true), data: jest.fn(() => ({ property: 'property3' })) };
-        const fakePropertyDoc1 = { exists: jest.fn(() => true), data: jest.fn(() => ({ address: 'address1', propertyName: 'Property 1' })) };
-        const fakePropertyDoc2 = { exists: jest.fn(() => true), data: jest.fn(() => ({ address: 'address2', propertyName: 'Property 2' })) };
-        const fakePropertyDoc3 = { exists: jest.fn(() => true), data: jest.fn(() => ({ address: 'address3', propertyName: 'Property 3' })) };
-        const fakePropertyDoc4 = { exists: jest.fn(() => true), data: jest.fn(() => ({ address: 'address4', propertyName: 'Property 4' })) };
-
-        const fakeUserSnapshot = { docs: [fakeUserDoc] };
-        const fakeCondoSnapshots = [fakeCondoDoc1, fakeCondoDoc2];
-        const fakePropertySnapshots = [fakePropertyDoc1, fakePropertyDoc2];
-
-        collection.mockReturnValueOnce({ getDocs: getDocs.mockResolvedValueOnce(fakeUserSnapshot) });
-        doc.mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakeCondoDoc1) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakeCondoDoc2) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc1) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc2) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakeCondoDoc3) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakeCondoDoc4) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc3) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc4) });
-
-        const result = await getUserCondos(fakeEmail);
-
-        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Users');
-        expect(getDocs).toHaveBeenCalled();
-        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', 'condo1');
-        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', 'condo2');
-        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', 'property1');
-        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', 'property2');
-        expect(result).toEqual([
-            { property: 'address1', propertyName: 'Property 1', userType: 'Owner' },
-            { property: 'address2', propertyName: 'Property 2', userType: 'Owner' },
-            { property: 'address3', propertyName: 'Property 3', userType: 'Renter' },
-            { property: 'address4', propertyName: 'Property 4', userType: 'Renter' },
-        ]);
-    });
+        const fakeUserData = {
+            rents: ['rent1'],
+            owns: [],
+          };
+      
+          const fakeCondoData = [
+            { id: 'rent1', property: 'property1' },
+          ];
+      
+          const fakePropertyData = {
+            property1: { address: 'Address 1', propertyName: 'Property Name 1' },
+          };
+      
+          const expectedUserCondos = [
+            { id: 'rent1', userType: 'Renter', property: 'Address 1', propertyName: 'Property Name 1' },
+            { id: 'own1', userType: 'Owner', property: 'Address 2', propertyName: 'Property Name 2' },
+          ];
+      
+          const condoDoc1 = { exists: () => true, data: () => fakeCondoData[0] };
+          const propertyDoc1 = { exists: () => true, data: () => fakePropertyData.property1 };
+          const propertyDoc2 = { exists: () => true, data: () => fakePropertyData.property2 };
+      
+          doc.mockReturnValueOnce("user");
+          getDoc.mockResolvedValueOnce({ data: () => fakeUserData, exists: () => true});
+          doc.mockReturnValueOnce("condo");
+          getDoc.mockResolvedValueOnce({ data: () => condoDoc1, exists: () => true});
+          doc.mockReturnValueOnce("property");
+          getDoc.mockResolvedValueOnce({ data: () => fakePropertyData.property1, exists: () => true });
+          getDoc.mockResolvedValueOnce(propertyDoc1);
+          getDoc.mockResolvedValueOnce(propertyDoc2);
+      
+          const result = await getUserCondos('test@example.com');
+          expect(result).toEqual(expectedUserCondos);
+        });
+        test('should throw an error when fetching condos fails', async () => {
+            const errorMessage = 'Failed to fetch user condos';
+            doc.mockImplementationOnce(() => {
+              throw new Error(errorMessage);
+            });
+        
+            await expect(getUserCondos('test@example.com')).rejects.toThrowError(errorMessage);
+          });
+    
 
     test('getCondos: should return condos for a given property ID', async () => {
         const fakePropertyID = 'fakePropertyID';
@@ -875,6 +899,163 @@ describe("add and get amenities functions tests", () => {
         expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
         expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
         expect(getDocs).toHaveBeenCalled();
+    });
+
+});
+
+describe("modify and delete property/condo functions", () => {
+    afterEach(() => {
+        jest.clearAllMocks(); // Clear mock function calls after each test
+    });
+
+    test('should update condo data successfully', async () => {
+        const fakeCondoId = 'fakeCondoId';
+        const fakeDocRef = 'fakeDocRef';
+        const fakePassedData = 'fakePassedData';
+        const fakeCleanData = 'fakeCleanData';
+
+        doc.mockReturnValueOnce(fakeDocRef);
+        updateDoc.mockResolvedValueOnce();
+        cleanData.mockReturnValueOnce(fakeCleanData);
+
+        const result = await editCondo(fakeCondoId, fakePassedData);
+
+        expect(result).toBe(true); // Ensure the function returns true for success
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoId);
+        expect(updateDoc).toHaveBeenCalledWith(fakeDocRef, fakeCleanData);
+        // You can add more specific expectations based on your requirements
+    });
+
+    test('editCondo should throw error', async () => {
+        const fakeCondoId = 'fakeCondoId';
+        const fakeData = { /* Your fake data object here */ };
+
+        doc.mockImplementationOnce(() => {
+            throw new Error('Test error');
+        });
+
+        const result = await editCondo(fakeCondoId, fakeData);
+
+        expect(result).toBe(false);
+    });
+
+    test('should update property data successfully', async () => {
+        const fakePropertyId = 'fakePropertyId';
+        const fakeDocRef = 'fakeDocRef';
+        const fakePassedData = 'fakePassedData';
+        const fakeCleanData = 'fakeCleanData';
+
+        doc.mockReturnValueOnce(fakeDocRef);
+        updateDoc.mockResolvedValueOnce();
+        cleanData.mockReturnValueOnce(fakeCleanData);
+
+        const result = await editProperty(fakePropertyId, fakePassedData);
+
+        expect(result).toBe(true); // Ensure the function returns true for success
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyId);
+        expect(updateDoc).toHaveBeenCalledWith(fakeDocRef, fakeCleanData);
+        // You can add more specific expectations based on your requirements
+    });
+
+    test('editProperty should throw error', async () => {
+        const fakePropertyID = 'fakePropertyID';
+        const fakeData = { /* Your fake data object here */ };
+
+        doc.mockImplementationOnce(() => {
+            throw new Error('Test error');
+        });
+
+        const result = await editCondo(fakePropertyID, fakeData);
+
+        expect(result).toBe(false);
+    });
+
+    test('should delete a condo and update user information', async () => {
+        // Mock Firestore behavior for retrieving users who own the condo
+        const userSnapshot = [{ ref: { id: 'user1' }, data: () => ({ owns: ['condo1'] }) }];
+        const fakeDocRef = { id: 'condo1' };
+        getDocs.mockResolvedValueOnce(userSnapshot);
+        doc.mockReturnValueOnce(fakeDocRef);
+
+        // Mock Firestore behavior for updating user's ownership information
+        updateDoc.mockResolvedValueOnce(true);
+
+        // Mock Firestore behavior for deleting the condo
+        deleteDoc.mockResolvedValueOnce(true);
+
+        // Call the deleteCondo function
+        const result = await deleteCondo('condo1');
+
+        // Check if the function returns true
+        expect(result).toBe(true);
+
+        // Check if the Firestore methods were called correctly
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Users');
+        expect(where).toHaveBeenCalledWith('owns', 'array-contains', 'condo1');
+        expect(getDocs).toHaveBeenCalled();
+        expect(updateDoc).toHaveBeenCalledWith({ id: 'user1' }, { owns: [] });
+        expect(deleteDoc).toHaveBeenCalledWith(fakeDocRef);
+    });
+
+    test('should delete a pre and update user information', async () => {
+        // Mock Firestore behavior for retrieving users who own the condo
+        const userSnapshot = [{ ref: { id: 'user1' }, data: () => ({ owns: ['condo1'] }) }];
+        const fakeDocRef = { id: 'condo1' };
+        getDocs.mockResolvedValueOnce(userSnapshot);
+        doc.mockReturnValueOnce(fakeDocRef);
+
+        // Mock Firestore behavior for updating user's ownership information
+        updateDoc.mockResolvedValueOnce(true);
+
+        // Mock Firestore behavior for deleting the condo
+        deleteDoc.mockResolvedValueOnce(true);
+
+        // Call the deleteCondo function
+        const result = await deleteCondo('condo1');
+
+        // Check if the function returns true
+        expect(result).toBe(true);
+
+        // Check if the Firestore methods were called correctly
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Users');
+        expect(where).toHaveBeenCalledWith('owns', 'array-contains', 'condo1');
+        expect(getDocs).toHaveBeenCalled();
+        expect(updateDoc).toHaveBeenCalledWith({ id: 'user1' }, { owns: [] });
+        expect(deleteDoc).toHaveBeenCalledWith(fakeDocRef);
+    });
+
+    test('should delete a property and its associated condos', async () => {
+        // Mock Firestore behavior for deleting the property
+        deleteDoc.mockResolvedValueOnce(true);
+        const fakeCollection = jest.fn();
+        const fakeDocRef = { id: 'property1' };
+        const fakeWhereResult = "fakeWhere";
+
+        query.mockReturnValueOnce("fakeQueryResult");
+        doc.mockReturnValueOnce(fakeDocRef)
+            .mockReturnValueOnce(fakeDocRef);
+        collection.mockReturnValue(fakeCollection);
+        where.mockReturnValue(fakeWhereResult);
+
+        // Mock Firestore behavior for querying condos associated with the property
+        const condoSnapshot = [{ id: 'condo1' }];
+        getDocs.mockResolvedValueOnce(condoSnapshot);
+
+        // Mock Firestore behavior for deleting condos associated with the property
+        deleteDoc.mockResolvedValueOnce(true)
+            .mockResolvedValueOnce(true);
+
+        // Call the deleteProperty function
+        await deleteProperty('property1');
+
+        // Check if the Firestore methods were called correctly
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Condo');
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', 'property1');
+        expect(deleteDoc).toHaveBeenCalledWith({ id: 'property1' });
+        expect(query).toHaveBeenCalledWith(fakeCollection, fakeWhereResult);
+        expect(where).toHaveBeenCalledWith('property', '==', 'property1');
+        expect(getDocs).toHaveBeenCalled();
+        expect(deleteDoc).toHaveBeenCalledWith(fakeDocRef);
     });
 
 });

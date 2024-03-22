@@ -3,13 +3,12 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import AddCondoBtn from "../components/AddCondoBtn";
-import BackArrowBtn from "../components/BackArrowBtn";  // Import BackArrowBtn component
+import BackArrowBtn from "../components/BackArrowBtn"; // Import BackArrowBtn component
 import EditPropertyComponent from "../components/EditPropertyComponent";
 import "../index.css";
 import "../styling/PropertyDetailsPage.css";
 import CondoMgmtComponent from "../components/CondoMGMTComponent";
 import { getCondos, getPropertyData } from "../backend/PropertyHandler";
-//import { getCondos, getPropertyData } from "../backend/PropertyHandler";
 import { getCondoPicture } from "../backend/ImageHandler";
 import Pagination from "../components/Pagination";
 import "../styling/Pagination.css";
@@ -19,9 +18,9 @@ const PropertyDetailsPage = () => {
   // State to represent whether the user has registered condos or not, since i dont have backend right now
   const navigate = useNavigate();
   const [condoDetails, setCondoDetails] = useState([]);
+  const [propertyDetails, setPropertyDetails] = useState(null);
   const [hasCondos, setHasCondos] = useState(false);
   let [condoPicURL, setCondoPicURL] = useState(null);
-  const [showEdit, setShowEdit] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
@@ -50,6 +49,32 @@ const PropertyDetailsPage = () => {
     fetchCondos();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch property details
+        const fetchedPropertyDetails = await getPropertyData(propertyID);
+        setPropertyDetails(fetchedPropertyDetails);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchData();
+  }, [propertyID]);
+
+  const handlePropertyUpdate = (updatedDetails) => {
+    setPropertyDetails(updatedDetails);
+  };
+
+  /**
+   * useState hook for managing the state of whether the edit mode is shown or not.
+   * @type {[boolean, function]} An array containing a boolean value representing the current state of showing edit mode,
+   * and a function to update that state.
+   */
+  const [showEdit, setShowEdit] = useState(true);
+  /**
+   * Function to toggle the edit mode state.
+   */
   const toggleEdit = () => {
     setShowEdit(!showEdit);
   };
@@ -80,11 +105,11 @@ const PropertyDetailsPage = () => {
                   Edit Property
                 </button>
               </div>
-              
+
               <div>
                 <Link
-                className="property-link"
-                to={`/condo-files/${propertyID}/${propertyName}`}
+                  className="property-link"
+                  to={`/condo-files/${propertyID}/${propertyName}`}
                 >
                   Add Property Files
                 </Link>
@@ -92,7 +117,11 @@ const PropertyDetailsPage = () => {
             </div>
           ) : (
             <div className="edit_container">
-              <EditPropertyComponent toggleEdit={toggleEdit} />
+              <EditPropertyComponent
+                propertyDetails={propertyDetails}
+                onUpdate={handlePropertyUpdate}
+                toggleEdit={toggleEdit}
+              />
             </div>
           )}
         </div>
@@ -101,16 +130,20 @@ const PropertyDetailsPage = () => {
           <div>
             {hasCondos ? (
               <div className="condo_list">
-
                 {condosToDisplayPaginated.map((condo, index) => (
-                  <CondoMgmtComponent key={index} {...condo} condoId={condo.id} />
+                  <CondoMgmtComponent
+                    key={index}
+                    {...condo}
+                    condoId={condo.id}
+                  />
                 ))}
-
               </div>
             ) : (
               <div className="content_container">
                 <div className="white_card">
-                  <p className="card_title">You have not added any condos yet.</p>
+                  <p className="card_title">
+                    You have not added any condos yet.
+                  </p>
                   {/*<p className="button"> Add a condo</p>*/}
                   <Link
                     className="buttonDetails"
@@ -137,9 +170,9 @@ const PropertyDetailsPage = () => {
             onClick={() => navigate(`/add-condo/${propertyID}/${propertyName}`)}
           />
         )}
-      </div >
+      </div>
       <Footer />
-    </div >
+    </div>
   );
 };
 
