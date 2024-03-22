@@ -39,7 +39,7 @@ describe('CondoDetails Component', () => {
   };
 
   it('renders CondoDetails component with provided props', () => {
-    render(<CondoDetails {...condoDetailsProps} />);
+    render(<MemoryRouter><CondoDetails {...condoDetailsProps} /></MemoryRouter>);
     
     // Modify the assertion to look for part of the text or use a different approach
     expect(screen.getByText(/Sample Condo/)).toBeInTheDocument();
@@ -47,7 +47,7 @@ describe('CondoDetails Component', () => {
   });
 
   it('handles popup toggle correctly', async () => {
-    render(<CondoDetails {...condoDetailsProps} />);
+    render(<MemoryRouter><CondoDetails {...condoDetailsProps} /></MemoryRouter>);
     
     // Look for the button that triggers the popup
     const sendKeyButton = screen.getByText('Send Key');
@@ -66,7 +66,7 @@ describe('CondoDetails Component', () => {
 
 
   it('handles closing popup correctly', async () => {
-    render(<CondoDetails {...condoDetailsProps} />);
+    render(<MemoryRouter><CondoDetails {...condoDetailsProps} /></MemoryRouter>);
     
     // Look for the button that triggers the popup
     const sendKeyButton = screen.getByText('Send Key');
@@ -93,7 +93,7 @@ describe('CondoDetails Component', () => {
   });
 
   it('handles click delete correctly', () => {
-    render(<CondoDetails {...condoDetailsProps} />);
+    render(<MemoryRouter><CondoDetails {...condoDetailsProps} /></MemoryRouter>);
     
     // Trigger the click delete function
     userEvent.click(screen.getByText('Delete'));
@@ -104,7 +104,7 @@ describe('CondoDetails Component', () => {
 
 
   it('handles delete toggle correctly', () => {
-    render(<CondoDetails {...condoDetailsProps} />);
+    render(<MemoryRouter><CondoDetails {...condoDetailsProps} /></MemoryRouter>);
     
     // Trigger the delete toggle
     userEvent.click(screen.getByText('Delete'));
@@ -114,7 +114,7 @@ describe('CondoDetails Component', () => {
   });
 
   it('handles click delete correctly', () => {
-    render(<CondoDetails {...condoDetailsProps} />);
+    render(<MemoryRouter><CondoDetails {...condoDetailsProps} /></MemoryRouter>);
     
     // Trigger the click delete function
     userEvent.click(screen.getByText('Delete'));
@@ -125,23 +125,32 @@ describe('CondoDetails Component', () => {
 
 });
 test('renders CondoDetails without crashing', () => {
-  const { getByTestId } = render(<CondoDetails />);
+  const { getByTestId } = render(
+  <MemoryRouter>
+    <CondoDetails/>
+  </MemoryRouter>);
   expect(getByTestId('delete-button-test')).toBeInTheDocument();
 });
 
 test('setShow function is defined', () => {
-  const { getByTestId } = render(<CondoDetails />);
+  const { getByTestId } = render(
+  <MemoryRouter>
+    <CondoDetails/>
+  </MemoryRouter>);
   const deleteButton = getByTestId('delete-button-test');
 
   fireEvent.click(deleteButton); // Simulate a click event on the delete button
 
   const popup = getByTestId('popup-delete-test'); 
   expect(popup).toBeInTheDocument();
-});
+ });
 
 
 test('handleClose sets show to false', () => {
-  const { getByTestId } = render(<CondoDetails />);
+  const { getByTestId } = render
+  (<MemoryRouter>
+    <CondoDetails/>
+  </MemoryRouter>);
   const sendKeyButton = getByTestId('popup-delete-test');
 
   fireEvent.click(sendKeyButton); // Simulate a click event on the send key button to set show to true

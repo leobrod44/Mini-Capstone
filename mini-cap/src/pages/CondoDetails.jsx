@@ -360,6 +360,7 @@ export default function CondoDetails() {
                             {role === MANAGEMENT_COMPANY && (
                               <>
                                 <button
+                                  data-testid="popup-toggle-btn"
                                   className="sendkey-button"
                                   onClick={handlePopupToggle}
                                 >
@@ -634,7 +635,7 @@ export default function CondoDetails() {
                 </div>
               )}
             </div>
-            {showPopup && <Popup_SendKey handleClose={handlePopupToggle} />}
+            {showPopup && <Popup_SendKey data-testid="popup-send-key" handleClose={handlePopupToggle} />}
             <div data-testid="popup-delete-test">
               <DeleteModal
                 show={show}
