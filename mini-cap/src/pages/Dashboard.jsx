@@ -71,6 +71,7 @@ const Dashboard = () => {
       msg = await linkCondoToUser(store("user"), key);
     } catch (e) {
       console.log("Error adding condo: ", e);
+      msg=e;
     }
     if (msg === "Condo added!") {
       setTimeout(function () {
