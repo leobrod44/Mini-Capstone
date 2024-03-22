@@ -556,7 +556,7 @@ export default function CondoDetails() {
                               )}
 
                               {/* Code snippet to appear when status is "Owned" */}
-                              {status === "Owned" && (
+                              {status === "Owned" && role !== MANAGEMENT_COMPANY && (
                                 <div>
                                   <button
                                     className="modal-button"
