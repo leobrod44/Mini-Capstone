@@ -176,8 +176,8 @@
   font-size: 20px; 
 }
 
-
-.property-buttons:hover {
-  background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
-  color: #ffffff; /* Change text color on hover to white */
+.property-buttons:hover,
+.property-link:hover {
+  background-color: #7975d6;
+  color: #ffffff;
 }
