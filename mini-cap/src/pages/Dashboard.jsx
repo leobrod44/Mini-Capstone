@@ -103,7 +103,7 @@ const Dashboard = () => {
           <h3 className="DB_title"> Welcome to your Condo Dashboard ! </h3>
         </div>
         <Link
-          className="details-button-condo-files"
+          className="property-buttonsUF"
           to={`/view-files/${userID}`} // Pass userID to the ViewFilesPage
         >
           View My Files
