@@ -34,6 +34,10 @@ const FilesComponent = () => {
         console.log("Open modal for file:", file);
     };
 
+    const handleClick = (url) => {
+        window.open(url, "_blank");
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -41,23 +45,18 @@ const FilesComponent = () => {
     if (error) {
         return <div>Error: {error}</div>;
     }
-    const handleClick = (url) => {
-        window.open(url, "_blank");
-    };
-
 
     return (
         <div className="files-component-container">
-            {properties.map((property, propertyIndex) => (
+            {properties && properties.map((property, propertyIndex) => (
                 <div key={propertyIndex}>
                     <div key={propertyIndex} className="files-component-propertyUser">
                         <h3>{property.property}</h3>
                         <ul className="files-component-list">
                             {property.files.map((file, index) => (
-                                <li><a href="#" onClick={() => handleClick(file.url)} className="underline">
+                                <li key={index}><a href="#" onClick={() => handleClick(file.url)} className="underline">
                                     {file.name}
-                                </a>
-                                </li>
+                                </a></li>
                             ))}
                         </ul>
                     </div>
