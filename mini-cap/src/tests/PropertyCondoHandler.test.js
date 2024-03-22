@@ -12,9 +12,29 @@ import {
     getCondo,
     getCondoOccupant,
     calculateCondoFees,
-    getAmenities, addLockers, addParkings, assignLocker, assignParking, getAssignedLocker, getAssignedParking
+    getAmenities,
+    addLockers,
+    addParkings,
+    assignLocker,
+    assignParking,
+    getAssignedLocker,
+    getAssignedParking,
+    editCondo,
+    editProperty, deleteCondo, deleteProperty
 } from '../backend/PropertyHandler';
-import {doc, getDoc, getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs, query, where} from 'firebase/firestore';
+import {
+    doc,
+    getDoc,
+    getFirestore,
+    collection,
+    addDoc,
+    updateDoc,
+    arrayUnion,
+    getDocs,
+    query,
+    where,
+    deleteDoc
+} from 'firebase/firestore';
 import emailjs from '@emailjs/browser';
 import { getStorage } from "firebase/storage";
 import {changePassword, updateCompanyInfo, updateUserInfo} from "../backend/UserHandler";
@@ -38,7 +58,8 @@ jest.mock('firebase/firestore', () => ({
     arrayUnion: jest.fn(),
     getCondo: jest.fn(),
     query: jest.fn(),
-    where: jest.fn()
+    where: jest.fn(),
+    deleteDoc: jest.fn(),
 }));
 jest.mock('firebase/storage', () => ({
     getStorage: jest.fn(),
@@ -875,6 +896,163 @@ describe("add and get amenities functions tests", () => {
         expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyID);
         expect(collection).toHaveBeenCalledWith(expect.anything(), 'Amenities');
         expect(getDocs).toHaveBeenCalled();
+    });
+
+});
+
+describe("modify and delete property/condo functions", () => {
+    afterEach(() => {
+        jest.clearAllMocks(); // Clear mock function calls after each test
+    });
+
+    test('should update condo data successfully', async () => {
+        const fakeCondoId = 'fakeCondoId';
+        const fakeDocRef = 'fakeDocRef';
+        const fakePassedData = 'fakePassedData';
+        const fakeCleanData = 'fakeCleanData';
+
+        doc.mockReturnValueOnce(fakeDocRef);
+        updateDoc.mockResolvedValueOnce();
+        cleanData.mockReturnValueOnce(fakeCleanData);
+
+        const result = await editCondo(fakeCondoId, fakePassedData);
+
+        expect(result).toBe(true); // Ensure the function returns true for success
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', fakeCondoId);
+        expect(updateDoc).toHaveBeenCalledWith(fakeDocRef, fakeCleanData);
+        // You can add more specific expectations based on your requirements
+    });
+
+    test('editCondo should throw error', async () => {
+        const fakeCondoId = 'fakeCondoId';
+        const fakeData = { /* Your fake data object here */ };
+
+        doc.mockImplementationOnce(() => {
+            throw new Error('Test error');
+        });
+
+        const result = await editCondo(fakeCondoId, fakeData);
+
+        expect(result).toBe(false);
+    });
+
+    test('should update property data successfully', async () => {
+        const fakePropertyId = 'fakePropertyId';
+        const fakeDocRef = 'fakeDocRef';
+        const fakePassedData = 'fakePassedData';
+        const fakeCleanData = 'fakeCleanData';
+
+        doc.mockReturnValueOnce(fakeDocRef);
+        updateDoc.mockResolvedValueOnce();
+        cleanData.mockReturnValueOnce(fakeCleanData);
+
+        const result = await editProperty(fakePropertyId, fakePassedData);
+
+        expect(result).toBe(true); // Ensure the function returns true for success
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakePropertyId);
+        expect(updateDoc).toHaveBeenCalledWith(fakeDocRef, fakeCleanData);
+        // You can add more specific expectations based on your requirements
+    });
+
+    test('editProperty should throw error', async () => {
+        const fakePropertyID = 'fakePropertyID';
+        const fakeData = { /* Your fake data object here */ };
+
+        doc.mockImplementationOnce(() => {
+            throw new Error('Test error');
+        });
+
+        const result = await editCondo(fakePropertyID, fakeData);
+
+        expect(result).toBe(false);
+    });
+
+    test('should delete a condo and update user information', async () => {
+        // Mock Firestore behavior for retrieving users who own the condo
+        const userSnapshot = [{ ref: { id: 'user1' }, data: () => ({ owns: ['condo1'] }) }];
+        const fakeDocRef = { id: 'condo1' };
+        getDocs.mockResolvedValueOnce(userSnapshot);
+        doc.mockReturnValueOnce(fakeDocRef);
+
+        // Mock Firestore behavior for updating user's ownership information
+        updateDoc.mockResolvedValueOnce(true);
+
+        // Mock Firestore behavior for deleting the condo
+        deleteDoc.mockResolvedValueOnce(true);
+
+        // Call the deleteCondo function
+        const result = await deleteCondo('condo1');
+
+        // Check if the function returns true
+        expect(result).toBe(true);
+
+        // Check if the Firestore methods were called correctly
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Users');
+        expect(where).toHaveBeenCalledWith('owns', 'array-contains', 'condo1');
+        expect(getDocs).toHaveBeenCalled();
+        expect(updateDoc).toHaveBeenCalledWith({ id: 'user1' }, { owns: [] });
+        expect(deleteDoc).toHaveBeenCalledWith(fakeDocRef);
+    });
+
+    test('should delete a pre and update user information', async () => {
+        // Mock Firestore behavior for retrieving users who own the condo
+        const userSnapshot = [{ ref: { id: 'user1' }, data: () => ({ owns: ['condo1'] }) }];
+        const fakeDocRef = { id: 'condo1' };
+        getDocs.mockResolvedValueOnce(userSnapshot);
+        doc.mockReturnValueOnce(fakeDocRef);
+
+        // Mock Firestore behavior for updating user's ownership information
+        updateDoc.mockResolvedValueOnce(true);
+
+        // Mock Firestore behavior for deleting the condo
+        deleteDoc.mockResolvedValueOnce(true);
+
+        // Call the deleteCondo function
+        const result = await deleteCondo('condo1');
+
+        // Check if the function returns true
+        expect(result).toBe(true);
+
+        // Check if the Firestore methods were called correctly
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Users');
+        expect(where).toHaveBeenCalledWith('owns', 'array-contains', 'condo1');
+        expect(getDocs).toHaveBeenCalled();
+        expect(updateDoc).toHaveBeenCalledWith({ id: 'user1' }, { owns: [] });
+        expect(deleteDoc).toHaveBeenCalledWith(fakeDocRef);
+    });
+
+    test('should delete a property and its associated condos', async () => {
+        // Mock Firestore behavior for deleting the property
+        deleteDoc.mockResolvedValueOnce(true);
+        const fakeCollection = jest.fn();
+        const fakeDocRef = { id: 'property1' };
+        const fakeWhereResult = "fakeWhere";
+
+        query.mockReturnValueOnce("fakeQueryResult");
+        doc.mockReturnValueOnce(fakeDocRef)
+            .mockReturnValueOnce(fakeDocRef);
+        collection.mockReturnValue(fakeCollection);
+        where.mockReturnValue(fakeWhereResult);
+
+        // Mock Firestore behavior for querying condos associated with the property
+        const condoSnapshot = [{ id: 'condo1' }];
+        getDocs.mockResolvedValueOnce(condoSnapshot);
+
+        // Mock Firestore behavior for deleting condos associated with the property
+        deleteDoc.mockResolvedValueOnce(true)
+            .mockResolvedValueOnce(true);
+
+        // Call the deleteProperty function
+        await deleteProperty('property1');
+
+        // Check if the Firestore methods were called correctly
+        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Condo');
+        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', 'property1');
+        expect(deleteDoc).toHaveBeenCalledWith({ id: 'property1' });
+        expect(query).toHaveBeenCalledWith(fakeCollection, fakeWhereResult);
+        expect(where).toHaveBeenCalledWith('property', '==', 'property1');
+        expect(getDocs).toHaveBeenCalled();
+        expect(deleteDoc).toHaveBeenCalledWith(fakeDocRef);
     });
 
 });
