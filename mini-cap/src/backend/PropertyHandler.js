@@ -940,6 +940,17 @@ export async function editProperty(propertyId, data) {
   try {
     const propertyDocRef = doc(db, "Property", propertyId);
     const cleanedData = cleanData("Property", data);
+    var pictureData = data.picture;
+
+    // If picture data is provided, add the picture to storage
+    if (pictureData) {
+      try {
+        await setPictureWithID(data, propertyPictureRef, data["propertyName"]);
+      } catch (error) {
+        // If an error occurs while adding the picture, throw an error with a descriptive message
+        throw new Error("Error adding picture: " + error);
+      }
+    }
 
     // Update the property document with the cleaned data
     await updateDoc(propertyDocRef, cleanedData);
