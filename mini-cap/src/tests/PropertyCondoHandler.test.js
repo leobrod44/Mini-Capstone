@@ -363,46 +363,49 @@ describe("getting condos and properties functions", () => {
     });
 
     test('getUserCondos: should return condos owned or rented by the user with pictures', async () => {
-        const fakeEmail = 'test@example.com';
-        const fakeUserDoc = { data: jest.fn(() => ({ email: fakeEmail, owns: ['condo1', 'condo2'], rents: ['condo3', 'condo4'] })) };
-        const fakeCondoDoc1 = { exists: jest.fn(() => true), data: jest.fn(() => ({ property: 'property1' })) };
-        const fakeCondoDoc2 = { exists: jest.fn(() => true), data: jest.fn(() => ({ property: 'property2' })) };
-        const fakeCondoDoc3 = { exists: jest.fn(() => true), data: jest.fn(() => ({ property: 'property2' })) };
-        const fakeCondoDoc4 = { exists: jest.fn(() => true), data: jest.fn(() => ({ property: 'property3' })) };
-        const fakePropertyDoc1 = { exists: jest.fn(() => true), data: jest.fn(() => ({ address: 'address1', propertyName: 'Property 1' })) };
-        const fakePropertyDoc2 = { exists: jest.fn(() => true), data: jest.fn(() => ({ address: 'address2', propertyName: 'Property 2' })) };
-        const fakePropertyDoc3 = { exists: jest.fn(() => true), data: jest.fn(() => ({ address: 'address3', propertyName: 'Property 3' })) };
-        const fakePropertyDoc4 = { exists: jest.fn(() => true), data: jest.fn(() => ({ address: 'address4', propertyName: 'Property 4' })) };
-
-        const fakeUserSnapshot = { docs: [fakeUserDoc] };
-        const fakeCondoSnapshots = [fakeCondoDoc1, fakeCondoDoc2];
-        const fakePropertySnapshots = [fakePropertyDoc1, fakePropertyDoc2];
-
-        collection.mockReturnValueOnce({ getDocs: getDocs.mockResolvedValueOnce(fakeUserSnapshot) });
-        doc.mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakeCondoDoc1) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakeCondoDoc2) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc1) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc2) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakeCondoDoc3) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakeCondoDoc4) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc3) })
-            .mockReturnValueOnce({ getDoc: getDoc.mockResolvedValueOnce(fakePropertyDoc4) });
-
-        const result = await getUserCondos(fakeEmail);
-
-        expect(collection).toHaveBeenCalledWith(expect.anything(), 'Users');
-        expect(getDocs).toHaveBeenCalled();
-        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', 'condo1');
-        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Condo', 'condo2');
-        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', 'property1');
-        expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', 'property2');
-        expect(result).toEqual([
-            { property: 'address1', propertyName: 'Property 1', userType: 'Owner' },
-            { property: 'address2', propertyName: 'Property 2', userType: 'Owner' },
-            { property: 'address3', propertyName: 'Property 3', userType: 'Renter' },
-            { property: 'address4', propertyName: 'Property 4', userType: 'Renter' },
-        ]);
-    });
+        const fakeUserData = {
+            rents: ['rent1'],
+            owns: [],
+          };
+      
+          const fakeCondoData = [
+            { id: 'rent1', property: 'property1' },
+          ];
+      
+          const fakePropertyData = {
+            property1: { address: 'Address 1', propertyName: 'Property Name 1' },
+          };
+      
+          const expectedUserCondos = [
+            { id: 'rent1', userType: 'Renter', property: 'Address 1', propertyName: 'Property Name 1' },
+            { id: 'own1', userType: 'Owner', property: 'Address 2', propertyName: 'Property Name 2' },
+          ];
+      
+          const condoDoc1 = { exists: () => true, data: () => fakeCondoData[0] };
+          const propertyDoc1 = { exists: () => true, data: () => fakePropertyData.property1 };
+          const propertyDoc2 = { exists: () => true, data: () => fakePropertyData.property2 };
+      
+          doc.mockReturnValueOnce("user");
+          getDoc.mockResolvedValueOnce({ data: () => fakeUserData, exists: () => true});
+          doc.mockReturnValueOnce("condo");
+          getDoc.mockResolvedValueOnce({ data: () => condoDoc1, exists: () => true});
+          doc.mockReturnValueOnce("property");
+          getDoc.mockResolvedValueOnce({ data: () => fakePropertyData.property1, exists: () => true });
+          getDoc.mockResolvedValueOnce(propertyDoc1);
+          getDoc.mockResolvedValueOnce(propertyDoc2);
+      
+          const result = await getUserCondos('test@example.com');
+          expect(result).toEqual(expectedUserCondos);
+        });
+        test('should throw an error when fetching condos fails', async () => {
+            const errorMessage = 'Failed to fetch user condos';
+            doc.mockImplementationOnce(() => {
+              throw new Error(errorMessage);
+            });
+        
+            await expect(getUserCondos('test@example.com')).rejects.toThrowError(errorMessage);
+          });
+    
 
     test('getCondos: should return condos for a given property ID', async () => {
         const fakePropertyID = 'fakePropertyID';

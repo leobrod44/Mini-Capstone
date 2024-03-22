@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import EditPropertyComponent from '../components/EditPropertyComponent';
 import { editProperty, deleteProperty, getProperties } from '../backend/PropertyHandler';
@@ -349,5 +349,109 @@ describe('EditPropertyComponent', () => {
     expect(toast.error).toHaveBeenCalledWith('Property not found');
     expect(getByText('My Property')).toBeInTheDocument(); // Assert that the component renders normally
   });
+});
 
+
+describe('EditPropertyComponent', () => {
+  // Existing test cases...
+
+  test('filters properties based on propertyID', async () => {
+    const selectedProperty = {
+      propertyID: '123',
+      picture: null,
+      propertyName: 'Test Property',
+      address: 'Test Address',
+      unitCount: 5,
+      parkingCount: 10,
+      parkingCost: 50,
+      lockerCount: 3,
+      lockerCost: 20,
+    };
+    getProperties.mockResolvedValueOnce([
+      selectedProperty,
+      {
+        propertyID: '456',
+        picture: null,
+        propertyName: 'Another Property',
+        address: 'Another Address',
+        unitCount: 10,
+        parkingCount: 20,
+        parkingCost: 100,
+        lockerCount: 5,
+        lockerCost: 30,
+      },
+    ]);
+
+    const { getByText } = render(
+      <Router>
+        <EditPropertyComponent toggleEdit={() => {}} />
+      </Router>
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(setProperty).toHaveBeenCalledWith(selectedProperty);
+  });
+
+  test('sets preview property image', async () => {
+    const selectedProperty = {
+      propertyID: '123',
+      picture: 'test.jpg',
+      propertyName: 'Test Property',
+      address: 'Test Address',
+      unitCount: 5,
+      parkingCount: 10,
+      parkingCost: 50,
+      lockerCount: 3,
+      lockerCost: 20,
+    };
+    getProperties.mockResolvedValueOnce([selectedProperty]);
+
+    const { getByAltText } = render(
+      <Router>
+        <EditPropertyComponent toggleEdit={() => {}} />
+      </Router>
+    );
+
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(setPreviewPropertyImage).toHaveBeenCalledWith(selectedProperty.picture);
+  });
+
+  test('closes delete modal', async () => {
+    const { getByText } = render(
+      <Router>
+        <EditPropertyComponent toggleEdit={() => {}} />
+      </Router>
+    );
+
+    const closeButton = getByText('Close'); // Assuming the close button has text 'Close'
+    fireEvent.click(closeButton);
+
+    expect(setShow).toHaveBeenCalledWith(false);
+  });
+});
+
+test('handles property deletion', async () => {
+  const propertyID = '123';
+  deleteProperty.mockResolvedValueOnce(); // Mock successful deletion
+  
+  const { getByText } = render(
+    <Router>
+      <EditPropertyComponent toggleEdit={() => {}} />
+    </Router>
+  );
+
+  const deleteButton = getByText('Delete Property');
+  fireEvent.click(deleteButton);
+
+  await waitFor(() => {
+    expect(deleteProperty).toHaveBeenCalledWith(propertyID); // Ensure deleteProperty is called with the correct propertyID
+    expect(toast.success).toHaveBeenCalledWith('Property deleted successfully');
+    expect(navigate).toHaveBeenCalledWith('/MGMTDashboard');
+  });
 });
