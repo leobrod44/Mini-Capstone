@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import PropertyDetailsPage from "../pages/PropertyDetailsPage";
 import { toast } from "react-toastify";
@@ -18,9 +18,6 @@ jest.mock("../backend/ImageHandler", () => ({
 // Mock the Header and Footer components
 jest.mock("../components/Header", () => () => <div>Header Mock</div>);
 jest.mock("../components/Footer", () => () => <div>Footer Mock</div>);
-
-
-
 
 describe("PropertyDetailsPage component", () => {
 
@@ -128,5 +125,24 @@ describe("PropertyDetailsPage component", () => {
     expect(document.querySelectorAll('.condo_list img')[1].src).toBe(mockCondoPictureURL);
   });
 
+  test('toggleEdit toggles the value of showEdit', () => {
+    // Render PropertyDetailsPage inside MemoryRouter
+    const { getByText } = render(
+      <MemoryRouter>
+        <PropertyDetailsPage />
+      </MemoryRouter>
+    );
+
+    // Check initial state
+    const editButton = getByText('Edit Property');
+    expect(editButton).toBeInTheDocument();
+
+    // Trigger toggleEdit
+    fireEvent.click(editButton);
+
+    // Check if showEdit is toggled
+    const updatedEditButton = getByText('Cancel');
+    expect(updatedEditButton).toBeInTheDocument();
+  });
 
 })

@@ -20,8 +20,21 @@ export const OPERATIONAL_STEPS = [
     "Request In Progress",
     "Request Completed",
 ]
-export const TYPES = [
-    "Financial",
-    "Administrative",
-    "Operational",
+export const FINANCIAL_REQUESTS = [
+    "Payment Invoice",
+    "Fee Inquiry",
+    "Insurance",
+    "Taxes"
+]
+export const ADMINISTRATIVE_REQUESTS = [
+    "General Question",
+    "Violation Report",
+    "General Question"
+]
+export const OPERATIONAL_REQUESTS = [
+    "Moving Request",
+    "Access Request",
+    "Damage Report",
+    "Maintenance Request"
+    
 ]
