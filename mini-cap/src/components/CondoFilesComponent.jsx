@@ -37,6 +37,7 @@ const CondoFilesComponent = ({ condoID, condoFiles, setCondoFiles, onFileClick }
             // Add the uploaded files to the existing files
             setCondoFiles([...condoFiles, ...uploadedFiles]);
 
+            resetFileInputValue();
             // Reset files after uploading
             setFiles([]);
 
@@ -182,6 +183,7 @@ export const handleUploadClick = async (condoID, files, setFiles, setCondoFiles,
         // Add the uploaded files to the existing files
         setCondoFiles([...condoFiles, ...uploadedFiles]);
 
+        resetFileInputValue();
         // Reset files after uploading
         setFiles([]);
 

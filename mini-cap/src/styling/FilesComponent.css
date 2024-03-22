@@ -1,0 +1,56 @@
+.files-component-container {
+  text-align: center;
+}
+
+.files-component-title {
+  margin-bottom: 20px;
+}
+
+.files-component-list {
+  list-style: none;
+  padding: 0;
+}
+
+.files-component-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.files-component-icon {
+  flex: 0 0 40px;
+}
+
+.files-component-details {
+  flex-grow: 1;
+  text-align: left;
+  margin-left: 10px;
+}
+
+.files-component-name {
+  margin-bottom: 5px;
+}
+
+.files-component-type {
+  font-size: 12px;
+  color: #888;
+}
+
+.files-component-propertyUser {
+  margin-top: 20px; /* Adjust as needed for spacing between properties */
+  border-top: 2px solid #333; /* Border to visually separate properties */
+  padding-top: 10px; /* Add padding for better spacing */
+}
+
+.files-component-modal {
+  /* Your modal styles */
+}
+
+.files-component-modal-content {
+  /* Your modal content styles */
+}
+
+.files-component-close-btn {
+  /* Your close button styles */
+}

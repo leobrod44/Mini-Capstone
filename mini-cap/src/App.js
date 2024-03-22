@@ -14,6 +14,7 @@ import PropertyDetailsPage from "./pages/PropertyDetailsPage";
 import AddCondoForm from "./pages/AddCondoForm";
 import CondoDetails from "./pages/CondoDetails";
 import CondoFilesPage from "./pages/CondoFilesPage";
+import ViewFilesPage from "./pages/ViewFilesPage";
 
 function App() {
   return (
@@ -37,11 +38,12 @@ function App() {
           path="/add-condo/:propertyID/:propertyName"
           element={<AddCondoForm />}
         />
-        <Route path="/condo-details/:condoId" element={<CondoDetails />}  />
+        <Route path="/condo-details/:condoId" element={<CondoDetails />} />
         <Route
           path="/condo-files/:propertyID/:propertyName"
           element={<CondoFilesPage />}
         />
+        <Route path="/view-files/:userID" element={<ViewFilesPage />} />
       </Routes>
     </BrowserRouter>
   );

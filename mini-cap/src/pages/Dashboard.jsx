@@ -14,26 +14,29 @@ import { toast } from "react-toastify";
 import Pagination from "../components/Pagination";
 import "../styling/Pagination.css";
 
+import { Link, useParams } from "react-router-dom";
+
 
 /**
  * Functional component representing the dashboard page.
  * @returns {JSX.Element} - The JSX for the dashboard page.
  */
 const Dashboard = () => {
+  const { userID } = useParams();
   // State to represent whether the user has registered condos or not, since i dont have backend right now
   const [hasCondos, setHasCondos] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [condoDetails, setCondoDetails] = useState([]);
   let [condoPicURL, setCondoPicURL] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   useEffect(() => {
     const fetchCondos = async () => {
       try {
         // Fetch condos for the user
         const condos = await getUserCondos(store("user"));
 
-         // Fetch and set picture for each condo
+        // Fetch and set picture for each condo
         await Promise.all(
           condos.map(async (condo) => {
             condoPicURL = await getCondoPicture(
@@ -61,7 +64,7 @@ const Dashboard = () => {
     setShowPopup(!showPopup);
   };
 
-// Function to handle registering a condo
+  // Function to handle registering a condo
   const handleRegisterCondo = async (key) => {
     let msg = "";
     try {
@@ -81,7 +84,7 @@ const Dashboard = () => {
     //setHasCondos(true);
   };
 
-   // Constants for pagination
+
   const condosPerPage = 4;
   const indexOfLastCondo = currentPage * condosPerPage;
   const indexOfFirstCondo = indexOfLastCondo - condosPerPage;
@@ -99,6 +102,12 @@ const Dashboard = () => {
         <div className="title_container">
           <h3 className="DB_title"> Welcome to your Condo Dashboard ! </h3>
         </div>
+        <Link
+          className="property-buttonsUF"
+          to={`/view-files/${userID}`} // Pass userID to the ViewFilesPage
+        >
+          View My Files
+        </Link>
         <div className="content_container">
           {hasCondos ? (
             <div className="condo_list">
@@ -119,7 +128,7 @@ const Dashboard = () => {
                   data-testid="condo-component"
                 />
               ))}
-              <div className="pagination-container" style={{display:"flex", justifyContent:"center", width:"100%"}}>
+              <div className="pagination-container" style={{ display: "flex", justifyContent: "center", width: "100%" }}>
                 <Pagination
                   itemsPerPage={condosPerPage}
                   totalItems={condoDetails.length}
