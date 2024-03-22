@@ -425,7 +425,7 @@ export default function CondoDetails() {
                       <div className="other-info2">
                         <h5>Unit size: </h5>
                       </div>
-                      <div className="other-info2">{unitSize} sq ft</div>
+                      <div className="other-info2">{unitSize}</div>
                     </div>
                     <div className="other-info1">
                       <div className="other-info2">
