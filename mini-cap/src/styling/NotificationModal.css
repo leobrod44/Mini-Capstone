@@ -1,0 +1,43 @@
+.notification-modal {
+    position: absolute;
+    top: calc(100% + 10px); /* Position the modal below the notification icon */
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.8); /* White background with slight opacity */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Drop shadow for depth */
+    width: 300px; /* Adjust the width as needed */
+    max-height: 300px; /* Adjust the maximum height as needed */
+    overflow-y: auto; /* Enable vertical scrolling if needed */
+    z-index: 9999; /* Ensure the modal is on top of other content */
+  }
+  
+  .notification-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc; /* Add a border at the bottom for separation */
+  }
+  
+  .notification-list {
+    max-height: 60%; /* Adjust the height of the notification list */
+    overflow-y: auto;
+    padding: 0 20px;
+  }
+  
+  .notification-list::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .notification-list::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+  }
+  
+  .notification-list::-webkit-scrollbar-track {
+    background-color: #eee;
+  }
+  
+  .notification-modal.inactive {
+    display: none; /* Hide the modal when inactive */
+  }
+  
