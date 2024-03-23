@@ -1,23 +1,25 @@
-
 import React from "react";
 import { IoIosClose, IoIosWarning } from "react-icons/io";
-import "../styling/NotificationElement.css"
-
+import "../styling/NotificationElement.css";
 
 const NotificationElement = ({ notification, onClick, onClear }) => {
-  const { condoName, requestType, description, dateTime, clicked } = notification;
+  const { condoName, requestType, dateTime, clicked } = notification;
 
   return (
-    <div className="notification-element" onClick={onClick}>
+    <div
+      className={`notification-element ${clicked ? '' : 'not-clicked'}`}
+      onClick={onClick}
+    >
       <div className="notification-info">
         <div className="condo-name">{condoName}</div>
-        <div className="request-type">{requestType}</div>
-        <div className="description">{description}</div>
+          <IoIosClose className="clear-icon" onClick={onClear} />
+      </div>
+      <div className="icon-date-wrapper">
+      {clicked ? null : <IoIosWarning className="exclamation-icon" />}
+      <div className="date-time">{dateTime}</div>
       </div>
       <div className="notification-details">
-        {clicked ? null : <IoIosWarning className="exclamation-icon" />}
-        <div className="date-time">{dateTime}</div>
-        <IoIosClose className="clear-icon" onClick={onClear} />
+        <div className="request-type">{requestType}</div>
       </div>
     </div>
   );
