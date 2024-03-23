@@ -64,6 +64,36 @@ const Notification = () => {
           <div className="notification-header">
             <h2 className="notif-title">Notifications</h2>
           </div>
+          <NotificationElement
+        notification={{
+          condoName: "Unit XYZ",
+          requestType: "Maintenance Request",
+          dateTime: "2024-03-24 10:00 AM",
+          clicked: false
+        }}
+        onClick={handleNotificationClickInsideModal}
+        onClear={handleClearNotificationInsideModal}
+      />
+      <NotificationElement
+        notification={{
+          condoName: "Unit A456",
+          requestType: "Tax Form Request",
+          dateTime: "2024-03-18 9:00 AM",
+          clicked: false
+        }}
+        onClick={handleNotificationClickInsideModal}
+        onClear={handleClearNotificationInsideModal}
+      />
+      <NotificationElement
+        notification={{
+          condoName: "Unit B64",
+          requestType: "Report Damage",
+          dateTime: "2024-03-12 11:00 PM",
+          clicked: true
+        }}
+        onClick={handleNotificationClickInsideModal}
+        onClear={handleClearNotificationInsideModal}
+      />
            {notifications.length > 0 ? ( // Check if there are notifications
             <div className="notification-list">
               {notifications.map((notification, index) => (
@@ -78,10 +108,12 @@ const Notification = () => {
           ) : (
             <div className="no-notifications-msg">No new notifications.</div>
           )}
+         
           <div className="btn-div-notif"> 
           <button className="See-all" onClick={handleSeeAllInsideModal}>See All</button>
           </div>
         </div>
+        
     </div>
   );
 };
