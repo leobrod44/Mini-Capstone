@@ -1,26 +1,60 @@
 
 .notification-element{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column; /* Stack items vertically */
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
 
+.notification-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.condo-name{
+    font-weight: bold;
+    color:  #4540db;
+    margin-bottom: -15px; /* Adjust margin bottom as needed */
+}
+
+.request-type{
+    color: var(--primary-text-color);
+    font-size: 13px;
+    
 }
 
 
-.notification-info{}
+.notification-details{
+    display: flex;
+    align-items: center;
+}
 
-.condo-name{}
+.icon-date-wrapper {
+    display: flex;
+    align-items: center;
+  }
+.exclamation-icon{
+    color: orange;
+    margin-right: 5px;
+}
 
-.request-type{}
-
-.description{}
-
-
-
-.notification-details{}
+.date-time{
+    font-size: 0.8rem;
+    margin-right: 10px;
+    color:black;
+}
 
 
+.clear-icon{
+    cursor: pointer;
+    color:black;
+    height:30px;
+    width:30px;
+}
 
-.exclamation-icon{}
-
-.date-time{}
-
-
-.clear-icon{}
+.clear-icon:hover{
+    color:#8a8a8a;
+    transition: 0.3s;
+}
