@@ -94,5 +94,7 @@
 
   .btn-div-notif{
     padding-top:15%;
+    display: flex;
+    justify-content: center;
   }
   
