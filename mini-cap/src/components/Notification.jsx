@@ -8,6 +8,29 @@ const Notification = () => {
   const [open, setOpen] = useState(false); // State for managing dropdown menu visibility
   const menuRef = useRef(); // Ref for the menu for handling click outside to close the menu
 
+   // Constant list of notifications for testing purposes,
+ const constantNotifications = [
+  {
+    condoName: "Unit XYZ",
+    notifMsg: "Maintenance Request",
+    dateTime: "2024-03-24 10:00 AM",
+    clicked: false
+  },
+  {
+    condoName: "Unit A456",
+    notifMsg: "Tax Form Request",
+    dateTime: "2024-03-18 9:00 AM",
+    clicked: false
+  },
+  {
+    condoName: "Unit B64",
+    notifMsg: "Report Damage",
+    dateTime: "2024-03-12 11:00 PM",
+    clicked: true
+  }
+];
+
+
   const toggleMenu = () => {
     console.log("Current state before toggle:", open);
     setOpen(!open);
@@ -17,6 +40,8 @@ const Notification = () => {
   useEffect(() => {
     console.log("Current state:", open);
     document.addEventListener("click", handleClickOutside);
+    setNotifications(constantNotifications);
+    
     // Remove event listener when the component unmounts
     return () => {
       document.removeEventListener("click", handleClickOutside);
@@ -47,6 +72,7 @@ const Notification = () => {
   };
 
 
+
   /**
    * Functional component representing the notification icon.
    * @returns {JSX.Element} - The JSX for the notification icon.
@@ -64,36 +90,6 @@ const Notification = () => {
           <div className="notification-header">
             <h2 className="notif-title">Notifications</h2>
           </div>
-          <NotificationElement
-        notification={{
-          condoName: "Unit XYZ",
-          notifMsg: "Maintenance Request",
-          dateTime: "2024-03-24 10:00 AM",
-          clicked: false
-        }}
-        onClick={handleNotificationClickInsideModal}
-        onClear={handleClearNotificationInsideModal}
-      />
-      <NotificationElement
-        notification={{
-          condoName: "Unit A456",
-          notifMsg: "Tax Form Request",
-          dateTime: "2024-03-18 9:00 AM",
-          clicked: false
-        }}
-        onClick={handleNotificationClickInsideModal}
-        onClear={handleClearNotificationInsideModal}
-      />
-      <NotificationElement
-        notification={{
-          condoName: "Unit B64",
-          notifMsg: "Report Damage",
-          dateTime: "2024-03-12 11:00 PM",
-          clicked: true
-        }}
-        onClick={handleNotificationClickInsideModal}
-        onClear={handleClearNotificationInsideModal}
-      />
            {notifications.length > 0 ? ( // Check if there are notifications
             <div className="notification-list">
               {notifications.map((notification, index) => (
