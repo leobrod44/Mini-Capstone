@@ -227,18 +227,21 @@ export async function getAssignedWorker(condoID, requestID) {
 
 //SPRINT 4
 
-// //Provide: userID
-// //Returns: array of new notifications containing message to display and path
-// export async function getNotifications(userID){
+///Provide: userID
+//Returns: array of new notifications containing message to display and path
+export async function getNotifications(userID){
+    try {
+        const notificationCollection = collection(doc(db, 'Users', userID), 'Notifications');
+        const notificationSnapshot = await getDocs(notificationCollection);
+        var notifications = [];
+        await Promise.all(
+            notificationSnapshot.docs.map(async (doc) => {
+                var data = doc.data();
+                notifications.push(data);
+            }));
+        return sortArray(notifications, 'date');
+    } catch(e) {
+        console.error("Error getting notifications: ", e);
+    }
+}
 
-    
-//     //request update, event reminder
-//     //provide message to display and path for when clicked
-// }
-
-// //Provide: userID, requestID
-// //Returns: nothing
-// export async function setNotificationViewed(userID, notification){
-
-//     //called when clicked on notificaton
-// }
