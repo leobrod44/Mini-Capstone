@@ -12,7 +12,6 @@
 
 .notif:hover{
    color:#7975d6;
-  
 }
 
 .notification-header {
@@ -28,8 +27,6 @@
     color: var(--primary-text-color);
 }
 
-
-  
 .myDropdownNotif {
     position: absolute;
     top: 115px;

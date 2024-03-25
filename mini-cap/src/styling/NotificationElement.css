@@ -8,17 +8,17 @@
     width: 100%;
 }
 
-
 .notification-element:hover{
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column; 
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-    width: 100%;
-    background-color: #4540db28;
+    background-color: #4540db42;
 }
 
+  .notification-element.not-clicked {
+    background-color:  #4540db28;
+  }
+
+  .notification-element.not-clicked:hover{
+    background-color: #4540db42;
+}
 .notification-info{
     display: flex;
     justify-content: space-between;
@@ -34,9 +34,7 @@
 .unitNumber{
     color: var(--primary-text-color);
     font-size: 13px;
-    
 }
-
 
 .notification-details{
     display: flex;
@@ -47,6 +45,7 @@
     display: flex;
     align-items: center;
   }
+
 .exclamation-icon{
     color: #7975d6;
     margin-right: 5px;
@@ -57,7 +56,6 @@
     margin-right: 10px;
     color:black;
 }
-
 
 .clear-icon{
     cursor: pointer;

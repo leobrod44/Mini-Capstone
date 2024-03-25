@@ -7,7 +7,7 @@ const NotificationElement = ({ notification, onClick, onClear }) => {
 
   return (
     <div
-      className={`notification-element ${clicked ? '' : 'not-clicked'}`}
+      className={`notification-element ${clicked ? 'clicked' : 'not-clicked'}`}
       onClick={onClick}
     >
       <div className="notification-info">
