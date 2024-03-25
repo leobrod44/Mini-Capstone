@@ -2,10 +2,14 @@
 .notification-element{
     display: flex;
     justify-content: space-between;
-    flex-direction: column; /* Stack items vertically */
+    flex-direction: column; 
     padding: 10px;
     border-bottom: 1px solid #ccc;
+    width: 100%;
 }
+
+
+
 
 .notification-info{
     display: flex;
@@ -13,13 +17,13 @@
     align-items: center;
 }
 
-.condo-name{
+.notifMsg{
     font-weight: bold;
     color:  #4540db;
-    margin-bottom: -15px; /* Adjust margin bottom as needed */
+    font-size: 15px;
 }
 
-.request-type{
+.unitNumber{
     color: var(--primary-text-color);
     font-size: 13px;
     
