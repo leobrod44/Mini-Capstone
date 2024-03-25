@@ -245,3 +245,13 @@ export async function getNotifications(userID){
     }
 }
 
+//Provide: userID, requestID
+//Returns: nothing
+export async function setNotificationViewed(email, notificationID){
+    try {
+        const notificationRef = doc(collection(doc(db, 'Users', email), 'Notifications'), notificationID);
+        await updateDoc(notificationRef, { viewed: true });
+    } catch(e) {
+        console.error("Error setting notification viewed: ", e);
+    }
+}
