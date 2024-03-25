@@ -67,7 +67,7 @@ const Notification = () => {
           <NotificationElement
         notification={{
           condoName: "Unit XYZ",
-          requestType: "Maintenance Request",
+          notifMsg: "Maintenance Request",
           dateTime: "2024-03-24 10:00 AM",
           clicked: false
         }}
@@ -77,7 +77,7 @@ const Notification = () => {
       <NotificationElement
         notification={{
           condoName: "Unit A456",
-          requestType: "Tax Form Request",
+          notifMsg: "Tax Form Request",
           dateTime: "2024-03-18 9:00 AM",
           clicked: false
         }}
@@ -87,7 +87,7 @@ const Notification = () => {
       <NotificationElement
         notification={{
           condoName: "Unit B64",
-          requestType: "Report Damage",
+          notifMsg: "Report Damage",
           dateTime: "2024-03-12 11:00 PM",
           clicked: true
         }}
