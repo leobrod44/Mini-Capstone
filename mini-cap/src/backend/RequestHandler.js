@@ -255,3 +255,19 @@ export async function setNotificationViewed(email, notificationID){
         console.error("Error setting notification viewed: ", e);
     }
 }
+
+export async function addRequestNotification(destinatiorType, email, requestData){
+    try {
+        var collectionRef = destinatiorType == 0 ? "Users" : "Company";
+        const docRef = await addDoc(collection(doc(db, collectionRef, email), 'Notifications'), {
+            type: requestData.type,
+            message: requestData.notes,
+            path: '/condo-details/${requestData.condoID}',
+            date: new Date().toISOString(),
+            viewed: false
+        });
+        return docRef.id;
+    } catch(e) {
+        console.error("Error adding notification: ", e);
+    }
+}
