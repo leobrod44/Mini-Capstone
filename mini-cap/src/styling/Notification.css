@@ -94,4 +94,25 @@
     display: flex;
     justify-content: center;
   }
-  
+
+  .notification-list{
+    padding-right: 3%;
+  }
+  .notification-list::-webkit-scrollbar {
+  width: 10px; /* Width of the scrollbar */
+}
+
+.notification-list::-webkit-scrollbar-track {
+  background: #cdcce9;  /* Color of the scrollbar track */
+}
+
+.notification-list::-webkit-scrollbar-thumb {
+  background: #7975d6;
+  border-radius: 5px; 
+  transition: 0.3s;
+}
+
+.notification-list::-webkit-scrollbar-thumb:hover {
+  background: #4540db; 
+  transition: 0.3s;
+}

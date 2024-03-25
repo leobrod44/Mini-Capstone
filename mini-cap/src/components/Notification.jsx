@@ -33,7 +33,7 @@ const Notification = () => {
       condoName: "Unit A456",
       notifMsg: "Tax Form Request",
       dateTime: "2024-03-18 9:00 AM",
-      clicked: false,
+      clicked: true,
     },
     {
       condoName: "Unit B64",
@@ -45,7 +45,7 @@ const Notification = () => {
       condoName: "Unit A456",
       notifMsg: "Tax Form Request",
       dateTime: "2024-03-18 9:00 AM",
-      clicked: false,
+      clicked: true,
     },
     {
       condoName: "Unit B64",
@@ -86,7 +86,9 @@ const Notification = () => {
   };
 
   // Function to handle clearing a notification
-  const handleClearNotificationInsideModal = (notification) => {};
+  const handleClearNotificationInsideModal = (notification) => {
+    
+  };
 
   // Function to handle clicking on "See All" button
   const handleSeeAllInsideModal = () => {
@@ -111,7 +113,10 @@ const Notification = () => {
           <h2 className="notif-title">Notifications</h2>
         </div>
         {notifications.length > 0 ? ( // Check if there are notifications
-          <div className="notification-list">
+          <div 
+          className="notification-list"
+          style={{ maxHeight: showAll ? '450px' : 'auto', overflowY: 'auto' }}
+          >
             {notifications
               .slice(0, showAll ? notifications.length : 3)
               .map((notification, index) => (
