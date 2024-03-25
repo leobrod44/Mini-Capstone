@@ -9,7 +9,15 @@
 }
 
 
-
+.notification-element:hover{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column; 
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+    background-color: #4540db28;
+}
 
 .notification-info{
     display: flex;
