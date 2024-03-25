@@ -3,7 +3,7 @@ import { IoIosClose, IoIosWarning } from "react-icons/io";
 import "../styling/NotificationElement.css";
 
 const NotificationElement = ({ notification, onClick, onClear }) => {
-  const { condoName, requestType, dateTime, clicked } = notification;
+  const { condoName, notifMsg, dateTime, clicked } = notification;
 
   return (
     <div
@@ -11,7 +11,7 @@ const NotificationElement = ({ notification, onClick, onClear }) => {
       onClick={onClick}
     >
       <div className="notification-info">
-        <div className="condo-name">{condoName}</div>
+        <div className="notifMsg">{notifMsg}</div>
           <IoIosClose className="clear-icon" onClick={onClear} />
       </div>
       <div className="icon-date-wrapper">
@@ -19,7 +19,7 @@ const NotificationElement = ({ notification, onClick, onClear }) => {
       <div className="date-time">{dateTime}</div>
       </div>
       <div className="notification-details">
-        <div className="request-type">{requestType}</div>
+        <div className="unitNumber">{condoName}</div>
       </div>
     </div>
   );
