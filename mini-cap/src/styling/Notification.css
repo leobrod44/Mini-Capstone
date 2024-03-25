@@ -37,7 +37,7 @@
     background-color: #fff;
     border-radius: var(--border-radius);
     padding: 10px 20px;
-    width: 220px;
+    width: auto;
     z-index: 999;
   }
   
