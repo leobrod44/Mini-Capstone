@@ -139,7 +139,7 @@ export async function updateRequest(condoID, requestID) {
         await updateDoc(requestRef, requestData);
 
         // If it's the first step, assign a worker
-        if(requestData.step === 1){
+        if(requestData.step === 2){
             try{
                 await assignWorker(requestData);
             } catch(e){
