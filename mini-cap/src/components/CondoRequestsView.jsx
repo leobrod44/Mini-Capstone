@@ -26,12 +26,14 @@ const CondoRequestsView = ({ role, type, notes, step, condoId, requestId }) => {
      */
     const handleAdvance = async () => {
         // Ensure that the request is not already in the final step
-        if (currentStep < 4) {
+        if (currentStep < 3) {
             // Call the backend function to update the request status
             let newStep = await updateRequest(condoId, requestId);
             console.log(newStep);
             // Update the current step with the new step returned from the backend
             setCurrentStep(newStep);
+
+            //send notification
         }
     };
 
@@ -48,10 +50,10 @@ const CondoRequestsView = ({ role, type, notes, step, condoId, requestId }) => {
             <div className="tracker-container">
                 <div className="other-info2"><h5>Status:</h5></div>
                 <div className="progressive-tracker">
-                    {[1, 2, 3, 4].map((stepNumber) => (
+                    {[0, 1, 2, 3].map((stepNumber) => (
                         <div className="tracker-element" key={stepNumber}>
                             <div className={`step ${currentStep === stepNumber ? 'active' : currentStep > stepNumber ? 'completed' : ''}`}></div>
-                            <div className="step-label">{stepNumber === 1 ? 'Submitted' : stepNumber === 2 ? 'Received' : stepNumber === 3 ? 'In Progress' : 'Complete'}</div>
+                            <div className="step-label">{stepNumber === 0 ? 'Submitted' : stepNumber === 1 ? 'Received' : stepNumber === 2 ? 'In Progress' : 'Complete'}</div>
                         </div>
                     ))}
                 </div>
