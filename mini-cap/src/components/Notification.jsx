@@ -12,7 +12,7 @@ const Notification = () => {
   const menuRef = useRef(); // Ref for the menu for handling click outside to close the menu
   const [showAll, setShowAll] = useState(false);
   const userID = store("user"); // Get userID from local storage or context
-  
+
   // Navigation hook
   const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ const Notification = () => {
     const fetchNotifications = async () => {
       try {
         const fetchedNotifications = await getNotifications(userID);
-        console.log("user ID is :"+ userID);
+        console.log("user ID is :" + userID);
         setNotifications(fetchedNotifications);
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -55,13 +55,10 @@ const Notification = () => {
     // Here, assuming each notification has an 'id', you can navigate to a specific notification's page
   };
 
-
-
   // Function to handle clicking on "See All" button
   const handleSeeAllInsideModal = () => {
     setShowAll((prevState) => !prevState); // Toggle the showAll state
   };
-
 
   return (
     <div className="notification-container" ref={menuRef}>
@@ -77,9 +74,9 @@ const Notification = () => {
           <h2 className="notif-title">Notifications</h2>
         </div>
         {notifications.length > 0 ? ( // Check if there are notifications
-          <div 
-          className="notification-list"
-          style={{ maxHeight: showAll ? '450px' : 'auto', overflowY: 'auto' }}
+          <div
+            className="notification-list"
+            style={{ maxHeight: showAll ? "450px" : "auto", overflowY: "auto" }}
           >
             {notifications
               .slice(0, showAll ? notifications.length : 3)
@@ -96,12 +93,13 @@ const Notification = () => {
         ) : (
           <div className="no-notifications-msg">No new notifications.</div>
         )}
-
-        <div className="btn-div-notif">
-          <button className="See-all" onClick={handleSeeAllInsideModal}>
-            {showAll ? "Hide" : "See All"}
-          </button>
-        </div>
+        {notifications.length > 3 && ( // Conditionally render the "See All" button
+          <div className="btn-div-notif">
+            <button className="See-all" onClick={handleSeeAllInsideModal}>
+              {showAll ? "Hide" : "See All"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
