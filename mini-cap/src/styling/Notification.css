@@ -36,6 +36,7 @@
     padding: 10px 20px;
     width: auto;
     z-index: 999;
+    min-height:130px
   }
   
   .myDropdownNotif::before {
