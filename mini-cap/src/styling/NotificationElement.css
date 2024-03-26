@@ -9,15 +9,15 @@
 }
 
 .notification-element:hover{
-    background-color: #4540db42;
+    background-color: #4540db28;
 }
 
   .notification-element.not-clicked {
-    background-color:  #4540db28;
+    background-color:   #4540db13;
   }
 
   .notification-element.not-clicked:hover{
-    background-color: #4540db42;
+    background-color: #4540db28;
 }
 .notification-info{
     display: flex;
