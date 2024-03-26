@@ -4,11 +4,15 @@ import Footer from "../components/Footer.jsx";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import { useState } from 'react';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
+import Pagination from "../components/Pagination";
+import "../styling/Pagination.css";
 
 import "../styling/Reservations.css";
 
 const Reservations = () => {
     const [visibleFacilities, setVisibleFacilities] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
+    const condosPerPage = 4; // Adjust as needed
     const condos = [
         {
             id: 1,
@@ -34,10 +38,11 @@ const Reservations = () => {
             ],
             reservations: [
                
-                // other reservations...
+                // no reserv
               ],
         },
         // More condos...
+        
     ];
 
     const toggleFacilities = (id) => {
@@ -46,7 +51,15 @@ const Reservations = () => {
             [id]: !prevState[id],
         }));
     };
-
+   
+    const indexOfLastCondo = currentPage * condosPerPage;
+    const indexOfFirstCondo = indexOfLastCondo - condosPerPage;
+  
+    const condosToDisplayPaginated = condos.slice(
+      indexOfFirstCondo,
+      indexOfLastCondo
+    );
+  
     return (
         <div>
             <Header />
@@ -54,7 +67,8 @@ const Reservations = () => {
             <h2 style={{ textAlign: 'center', fontSize: '32px', margin: '20px 0' }}>My Reservations</h2>
 
 
-            {condos.map((condo, index) => ( 
+            {condosToDisplayPaginated.map((condo, index) => ( 
+
                <div key={condo.id} className="reserve-container">
               <h3 style={{ marginBottom: '20px' }}>Unit Number: {condo.unitNumber}</h3>
               <h2>Upcoming Reservations</h2>
@@ -94,6 +108,14 @@ const Reservations = () => {
                     {index < condos.length - 1 && <hr />}
                 </div>
             ))}
+             <div className="pagination-container">
+                <Pagination
+                    itemsPerPage={condosPerPage}
+                    totalItems={condos.length}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                />
+            </div>
             <Footer />
         </div>
     );
