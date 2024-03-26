@@ -15,7 +15,7 @@ const formatDate = (datetime) => {
 
 
 const NotificationElement = ({ notification, onClick }) => {
-  const { condoName, message, date, viewed } = notification;
+  const { condoName, type, date, viewed } = notification;
 
   const formattedDate = formatDate(date);
   return (
@@ -24,7 +24,7 @@ const NotificationElement = ({ notification, onClick }) => {
       onClick={onClick}
     >
       <div className="notification-info">
-        <div className="notifMsg">{message}</div>
+        <div className="notifMsg">{type}</div>
       </div>
       <div className="icon-date-wrapper">
       {viewed ? null : <IoIosWarning className="exclamation-icon" />}
