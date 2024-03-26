@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import NotificationElement from "./NotificationElement";
 import { getNotifications } from "../backend/RequestHandler";
+import { setNotificationViewed } from "../backend/RequestHandler";
 import store from "storejs";
 
 const Notification = () => {
@@ -12,22 +13,16 @@ const Notification = () => {
   const menuRef = useRef(); // Ref for the menu for handling click outside to close the menu
   const [showAll, setShowAll] = useState(false);
   const userID = store("user"); // Get userID from local storage or context
-
-  // Navigation hook
   const navigate = useNavigate();
 
   const toggleMenu = () => {
-    console.log("Current state before toggle:", open);
     setOpen(!open);
-    console.log("Current state after toggle:", open);
   };
 
   useEffect(() => {
-    console.log("Current state:", open);
     const fetchNotifications = async () => {
       try {
         const fetchedNotifications = await getNotifications(userID);
-        console.log("user ID is :" + userID);
         setNotifications(fetchedNotifications);
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -50,9 +45,15 @@ const Notification = () => {
   };
 
   // Function to handle clicking on a notification
-  const handleNotificationClickInsideModal = (notification) => {
-    // Navigate to the page or route associated with the notification
-    // Here, assuming each notification has an 'id', you can navigate to a specific notification's page
+  const handleNotificationClickInsideModal = async (notification) => {
+    try {
+      await setNotificationViewed(userID, notification.id);
+      console.log("changing the notification view element status for user " +userID + " and notif number " + notification.id);
+      // Navigate the user to a new area after setting notification as viewed
+      // navigate('/new-area');
+    } catch (error) {
+      console.error("Error setting notification viewed:", error);
+    }
   };
 
   // Function to handle clicking on "See All" button
