@@ -44,7 +44,7 @@ export async function submitRequest(condoID, type, notes) {
         var r = {
             type: type,
             notes: notes,
-            step: 0,
+            step: 1,
             viewed: false,
             condoID: condoID,
             requestID: null,
@@ -131,8 +131,7 @@ export async function updateRequest(condoID, requestID) {
         
         // Get the data of the request
         const requestData = requestDoc.data();
-        // Increment the step of the request
-        requestData.step += 1;
+
 
 
         // Update the request document
@@ -150,6 +149,10 @@ export async function updateRequest(condoID, requestID) {
             var userEmail = (await getCondo(condoID)).occupant;
             await addRequestNotification(0, userEmail, requestData);
         }
+
+        // Increment the step of the request
+        requestData.step += 1;
+
         return requestData.step;
 
     } catch (e) {

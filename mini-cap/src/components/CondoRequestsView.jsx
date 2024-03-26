@@ -32,6 +32,8 @@ const CondoRequestsView = ({ role, type, notes, step, condoId, requestId }) => {
             console.log(newStep);
             // Update the current step with the new step returned from the backend
             setCurrentStep(newStep);
+
+            //send notification
         }
     };
 
@@ -57,7 +59,7 @@ const CondoRequestsView = ({ role, type, notes, step, condoId, requestId }) => {
                 </div>
             </div>
             <div className="button-container">
-                {role === MANAGEMENT_COMPANY && (
+                {role === MANAGEMENT_COMPANY && currentStep < 4 && (
                     <div>
                         <button className="tracker-button" onClick={handleAdvance} data-testid="advance-button">Advance</button>
                     </div>
