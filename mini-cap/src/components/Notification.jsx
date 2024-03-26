@@ -6,6 +6,7 @@ import NotificationElement from "./NotificationElement";
 import { getNotifications } from "../backend/RequestHandler";
 import { setNotificationViewed } from "../backend/RequestHandler";
 import store from "storejs";
+import { Link } from "react-router-dom";
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
@@ -61,6 +62,7 @@ const navigateToDestination = (notification) => {
   try {
   if (notification.path) {
     navigate(notification.path);
+    window.location.reload();
   } else {
     console.error("Notification does not have a path specified:", notification);
   }
