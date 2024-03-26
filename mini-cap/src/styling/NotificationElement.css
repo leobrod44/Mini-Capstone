@@ -57,14 +57,3 @@
     color:black;
 }
 
-.clear-icon{
-    cursor: pointer;
-    color:black;
-    height:30px;
-    width:30px;
-}
-
-.clear-icon:hover{
-    color:#8a8a8a;
-    transition: 0.3s;
-}

@@ -12,7 +12,6 @@ const NotificationElement = ({ notification, onClick, onClear }) => {
     >
       <div className="notification-info">
         <div className="notifMsg">{notifMsg}</div>
-          <IoIosClose className="clear-icon" onClick={onClear} />
       </div>
       <div className="icon-date-wrapper">
       {clicked ? null : <IoIosWarning className="exclamation-icon" />}

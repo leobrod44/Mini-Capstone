@@ -85,10 +85,7 @@ const Notification = () => {
     // Here, assuming each notification has an 'id', you can navigate to a specific notification's page
   };
 
-  // Function to handle clearing a notification
-  const handleClearNotificationInsideModal = (notification) => {
-    
-  };
+
 
   // Function to handle clicking on "See All" button
   const handleSeeAllInsideModal = () => {
@@ -125,9 +122,6 @@ const Notification = () => {
                   notification={notification}
                   onClick={() =>
                     handleNotificationClickInsideModal(notification)
-                  }
-                  onClear={() =>
-                    handleClearNotificationInsideModal(notification)
                   }
                 />
               ))}
