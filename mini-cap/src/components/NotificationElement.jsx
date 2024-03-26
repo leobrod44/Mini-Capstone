@@ -14,7 +14,7 @@ const formatDate = (datetime) => {
 };
 
 
-const NotificationElement = ({ notification, onClick, onClear }) => {
+const NotificationElement = ({ notification, onClick }) => {
   const { condoName, message, date, viewed } = notification;
 
   const formattedDate = formatDate(date);
