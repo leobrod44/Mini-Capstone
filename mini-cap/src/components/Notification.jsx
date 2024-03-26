@@ -47,10 +47,9 @@ const Notification = () => {
   // Function to handle clicking on a notification
   const handleNotificationClickInsideModal = async (notification) => {
     try {
-      await setNotificationViewed(userID, notification.id);
+      await setNotificationViewed(userID, notification);
       console.log("changing the notification view element status for user " +userID + " and notif number " + notification.id);
-      // Navigate the user to a new area after setting notification as viewed
-      // navigate('/new-area');
+      navigate(notification.path);
     } catch (error) {
       console.error("Error setting notification viewed:", error);
     }
