@@ -98,6 +98,7 @@ const navigateToDestination = (notification) => {
               .slice(0, showAll ? notifications.length : 3)
               .map((notification, index) => (
                 <NotificationElement
+                data-testid="notification-element"
                   key={index}
                   notification={notification}
                   onClick={() =>
