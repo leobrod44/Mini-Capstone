@@ -15,10 +15,12 @@ const Notification = () => {
   const userID = store("user"); // Get userID from local storage or context
   const navigate = useNavigate();
 
+    // Function to toggle menu visibility
   const toggleMenu = () => {
     setOpen(!open);
   };
 
+  // Function to fetch notifications from backend
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -35,7 +37,7 @@ const Notification = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [open, userID]); // Log the state whenever it changes
+  }, [open, userID]); 
 
   // Function to handle clicking outside the modal
   const handleClickOutside = (event) => {
@@ -48,12 +50,24 @@ const Notification = () => {
   const handleNotificationClickInsideModal = async (notification) => {
     try {
       await setNotificationViewed(userID, notification);
-      console.log("changing the notification view element status for user " +userID + " and notif number " + notification.id);
-      navigate(notification.path);
+      navigateToDestination(notification);
     } catch (error) {
       console.error("Error setting notification viewed:", error);
     }
   };
+
+  // Function to navigate to the destination specified in the notification
+const navigateToDestination = (notification) => {
+  try {
+  if (notification.path) {
+    navigate(notification.path);
+  } else {
+    console.error("Notification does not have a path specified:", notification);
+  }
+} catch (error) {
+    console.error("Error during navigation:", error);
+  }
+};
 
   // Function to handle clicking on "See All" button
   const handleSeeAllInsideModal = () => {

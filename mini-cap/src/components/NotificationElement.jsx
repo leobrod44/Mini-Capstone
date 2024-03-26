@@ -1,8 +1,8 @@
 import React from "react";
-import { IoIosClose, IoIosWarning } from "react-icons/io";
+import { IoIosWarning } from "react-icons/io";
 import "../styling/NotificationElement.css";
 
-
+// Function to format date and time
 const formatDate = (datetime) => {
   const date = new Date(datetime);
   const year = date.getFullYear();
@@ -13,9 +13,15 @@ const formatDate = (datetime) => {
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 };
 
-
+/**
+ * Component for rendering a single notification element.
+ *
+ * @param {Object} notification - The notification object containing details of the notification.
+ * @param {Function} onClick - The function to be called when the notification element is clicked.
+ * @returns {JSX.Element} - The JSX element representing the notification element.
+ */
 const NotificationElement = ({ notification, onClick }) => {
-  const { condoName, type, date, viewed } = notification;
+  const {id, condoName, type, date, viewed } = notification;
 
   const formattedDate = formatDate(date);
   return (
