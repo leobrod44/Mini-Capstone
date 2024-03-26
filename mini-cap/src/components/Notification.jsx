@@ -1,59 +1,20 @@
 import "../styling/Notification.css";
 import { IoIosNotifications } from "react-icons/io";
 import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import NotificationElement from "./NotificationElement";
+import { getNotifications } from "../backend/RequestHandler";
+import store from "storejs";
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false); // State for managing dropdown menu visibility
   const menuRef = useRef(); // Ref for the menu for handling click outside to close the menu
   const [showAll, setShowAll] = useState(false);
-
-  // Constant list of notifications for testing purposes,
-  const constantNotifications = [
-    {
-      condoName: "Unit XYZ",
-      notifMsg: "Maintenance Request",
-      dateTime: "2024-03-24 10:00 AM",
-      clicked: false,
-    },
-    {
-      condoName: "Unit A456",
-      notifMsg: "Tax Form Request",
-      dateTime: "2024-03-18 9:00 AM",
-      clicked: false,
-    },
-    {
-      condoName: "Unit B64",
-      notifMsg: "Report Damage",
-      dateTime: "2024-03-12 11:00 PM",
-      clicked: true,
-    },
-    {
-      condoName: "Unit A456",
-      notifMsg: "Tax Form Request",
-      dateTime: "2024-03-18 9:00 AM",
-      clicked: true,
-    },
-    {
-      condoName: "Unit B64",
-      notifMsg: "Report Damage",
-      dateTime: "2024-03-12 11:00 PM",
-      clicked: true,
-    },
-    {
-      condoName: "Unit A456",
-      notifMsg: "Tax Form Request",
-      dateTime: "2024-03-18 9:00 AM",
-      clicked: true,
-    },
-    {
-      condoName: "Unit B64",
-      notifMsg: "Report Damage",
-      dateTime: "2024-03-12 11:00 PM",
-      clicked: true,
-    },
-  ];
+  const userID = store("user"); // Get userID from local storage or context
+  
+  // Navigation hook
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     console.log("Current state before toggle:", open);
@@ -63,14 +24,23 @@ const Notification = () => {
 
   useEffect(() => {
     console.log("Current state:", open);
-    document.addEventListener("click", handleClickOutside);
-    setNotifications(constantNotifications);
+    const fetchNotifications = async () => {
+      try {
+        const fetchedNotifications = await getNotifications(userID);
+        console.log("user ID is :"+ userID);
+        setNotifications(fetchedNotifications);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
 
-    // Remove event listener when the component unmounts
+    fetchNotifications();
+
+    document.addEventListener("click", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [open]); // Log the state whenever it changes
+  }, [open, userID]); // Log the state whenever it changes
 
   // Function to handle clicking outside the modal
   const handleClickOutside = (event) => {
@@ -92,10 +62,7 @@ const Notification = () => {
     setShowAll((prevState) => !prevState); // Toggle the showAll state
   };
 
-  /**
-   * Functional component representing the notification icon.
-   * @returns {JSX.Element} - The JSX for the notification icon.
-   */
+
   return (
     <div className="notification-container" ref={menuRef}>
       <div className="notif-wrapper">
