@@ -44,7 +44,7 @@ export async function submitRequest(condoID, type, notes) {
         var r = {
             type: type,
             notes: notes,
-            step: 0,
+            step: 1,
             viewed: false,
             condoID: condoID,
             requestID: null,
