@@ -59,7 +59,7 @@ const CondoRequestsView = ({ role, type, notes, step, condoId, requestId }) => {
                 </div>
             </div>
             <div className="button-container">
-                {role === MANAGEMENT_COMPANY && (
+                {role === MANAGEMENT_COMPANY && currentStep < 3 && (
                     <div>
                         <button className="tracker-button" onClick={handleAdvance} data-testid="advance-button">Advance</button>
                     </div>
