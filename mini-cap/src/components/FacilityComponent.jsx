@@ -6,7 +6,7 @@ import  { useState } from "react";
 const FacilityComponent = ({facilityTitle, facilityDescription}) => {
 
     return (
-        <div className="component-container">
+        <div className="facility-component-container">
             <div className="facility-title">Facility Component{facilityTitle}</div>
             <div className="facility-description">Little Facility Description{facilityDescription}</div>
             <button className='make-reservation-button'>Make Reservation</button>
