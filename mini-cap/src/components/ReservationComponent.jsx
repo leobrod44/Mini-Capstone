@@ -4,7 +4,7 @@ import "../styling/FacilityComponent.css";
 import  { useState } from "react";
 import DeleteModal from "../components/DeleteModal";
 
-const ReservationComponent = () => {
+const ReservationComponent = ({facilityTitle, facilityDescription, reservationDate}) => {
 
     const [showDeleteModal, setShow] = useState(false);
     const handleClickDelete = () => {
@@ -25,9 +25,9 @@ const ReservationComponent = () => {
                 integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
                 crossOrigin="anonymous"
             />
-            <div className="facility-title">Reservation Component</div>
-            <div className="facility-description">Little Description</div>
-            <div className="facility-description">Date and Time</div>
+            <div className="facility-title">Reservation Component{facilityTitle}</div>
+            <div className="facility-description">Little Description{facilityDescription}</div>
+            <div className="facility-description">Date and Time{reservationDate}</div>
             <button className="close-button" onClick={() => handleClickDelete()}>×</button>
             <DeleteModal
                 show={showDeleteModal}
@@ -40,5 +40,10 @@ const ReservationComponent = () => {
     );
 };
 
+ReservationComponent.propTypes = {
+    facilityTitle: PropTypes.string,
+    facilityDescription: PropTypes.string,
+    reservationDate: PropTypes.string
+};
 
 export default ReservationComponent;
