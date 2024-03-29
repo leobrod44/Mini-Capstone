@@ -58,18 +58,20 @@ export default function PropertyFacilities() {
             <p>
               Hours: {mockFacility.startHour} - {mockFacility.endHour}
             </p>
-            <button
-              className="edit-button"
-              onClick={() => handleEditFacility(mockFacility)}
-            >
-              Edit
-            </button>
-            <button
-              className="edit-button delete-button"
-              onClick={() => handleDeleteFacility(mockFacility.id)}
-            >
-              Delete
-            </button>
+            <div className="button-group">
+              <button
+                className="edit-button delete-button"
+                onClick={() => handleDeleteFacility(mockFacility.id)}
+              >
+                Delete
+              </button>
+              <button
+                className="edit-button"
+                onClick={() => handleEditFacility(mockFacility)}
+              >
+                Edit
+              </button>
+            </div>
           </div>
         )}
         {/* Edit mode form */}
