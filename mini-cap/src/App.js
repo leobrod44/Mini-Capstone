@@ -15,7 +15,7 @@ import AddCondoForm from "./pages/AddCondoForm";
 import CondoDetails from "./pages/CondoDetails";
 import CondoFilesPage from "./pages/CondoFilesPage";
 import ViewFilesPage from "./pages/ViewFilesPage";
-
+import PropertyFacilities from "./pages/PropertyFacilities";
 function App() {
   return (
     <BrowserRouter>
@@ -44,6 +44,7 @@ function App() {
           element={<CondoFilesPage />}
         />
         <Route path="/view-files/:userID" element={<ViewFilesPage />} />
+        <Route path="/facilities" element={<PropertyFacilities />} />
       </Routes>
     </BrowserRouter>
   );
