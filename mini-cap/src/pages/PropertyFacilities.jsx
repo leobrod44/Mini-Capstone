@@ -16,8 +16,8 @@ export default function PropertyFacilities() {
   };
 
   const handleEditFacility = (facility) => {
-    setCurrentFacility(facility);
-    setIsEditMode(true);
+    /* setCurrentFacility(facility);
+    setIsEditMode(true); */
   };
 
   const handleSaveFacility = (facility) => {
@@ -75,29 +75,6 @@ export default function PropertyFacilities() {
           </div>
         )}
         {/* Edit mode form */}
-        {isEditMode && currentFacility && (
-          <div className="edit-facility-form">
-            <input
-              type="text"
-              value={currentFacility.name}
-              // ... more attributes and other form elements
-            />
-            <button
-              className="facility-action-button"
-              type="button"
-              onClick={() => handleSaveFacility(currentFacility)}
-            >
-              Save
-            </button>
-            <button
-              className="facility-action-button"
-              type="button"
-              onClick={handleCancelEdit}
-            >
-              Cancel
-            </button>
-          </div>
-        )}
       </div>
       <Footer />
     </div>
