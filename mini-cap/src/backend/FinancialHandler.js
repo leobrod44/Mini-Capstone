@@ -33,9 +33,33 @@ export async function payRent(condoID) {
 }
 
 
-//Returns: Boolean
-export async function checkRentPaid() {
-    return sampleIsPaid;
+
+/**
+ * Checks whether rent has been paid for a condominium.
+ * @param {string} condoID - The ID of the condominium.
+ * @returns {Promise<boolean>} A promise that resolves with a boolean indicating whether rent has been paid.
+ * @throws {Error} Throws an error if there was an issue checking the rentPaid field.
+ */
+export async function checkRentPaid(condoID) {
+    try {
+        // Get document reference for the specified condo ID
+        const condoDocRef = doc(db, "Condo", condoID);
+        // Fetch document snapshot
+        const condoDocSnap = await getDoc(condoDocRef);
+
+        // Check if condo document exists
+        if (condoDocSnap.exists) {
+            if (condoDocSnap.data().hasOwnProperty("rentPaid"))
+                return false;
+            else
+                return condoDocSnap.data().rentPaid;
+        } else {
+            throw new Error("Condo doc not found in checkRentPaid");
+        }
+    } catch (error) {
+        // Throw error to propagate it up the call stack
+        throw error;
+    }
 }
 
 /**

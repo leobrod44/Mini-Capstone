@@ -92,7 +92,7 @@ const FinancialDetails = () => {
      */
     const setRentPaidStatus = async () => {
         try {
-            const rentPaid = await checkRentPaid();
+            const rentPaid = await checkRentPaid(condoId);
             setIsRentPaid(rentPaid);
         } catch (error) {
             console.error("Error fetching isRentPaid:", error);
