@@ -12,12 +12,6 @@ const Notification = () => {
     const [unviewedCount, setUnviewedCount] = useState(0);
 
     /**
-     * State variable to hold the notifications data.
-     * @type {[Array<NotificationData>, React.Dispatch<React.SetStateAction<Array<NotificationData>>>]}
-     */
-    const [notifications, setNotifications] = useState([]);
-
-    /**
      * Destructures the `userID` parameter from the URL parameters.
      * @type {object}
      */
@@ -31,10 +25,8 @@ const Notification = () => {
       // Fetch notifications for the current user
       const fetchNotifications = async () => {
         try {
-            
-            const fetchedNotifications = await getNotifications(userID);
-            const unviewedNotifications = fetchedNotifications.filter(notification => !notification.viewed);
-            setNotifications(unviewedNotifications);
+            const notifs = await getNotifications(userID);
+            const unviewedNotifications = notifs.filter(notification => !notification.viewed);
             setUnviewedCount(unviewedNotifications.length);
         } catch (error) {
             console.error('Error fetching notifications:', error);
@@ -51,7 +43,7 @@ const Notification = () => {
     return (
         <div className="notif-wrapper">
         { unviewedCount > 0 &&(
-            <div className="notifPopup">{unviewedCount}</div>
+            <div className="notifPopup" data-testid="popup">{unviewedCount}</div>
         )}
         <IoIosNotifications className="notif" data-testid="notification-icon"/>
         </div>
