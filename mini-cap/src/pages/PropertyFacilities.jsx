@@ -4,24 +4,32 @@ import Footer from "../components/Footer.jsx";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import "../index.css";
 import "../styling/PropertyFacilities.css";
+import FacilityForm from "../components/FacilityForm";
 
 export default function PropertyFacilities() {
   const [facilities, setFacilities] = useState([]); // This will hold your facilities data
   const [isEditMode, setIsEditMode] = useState(false); // To toggle between edit mode and view mode
   const [currentFacility, setCurrentFacility] = useState(null); // To keep track of the facility being edited
 
-  // Handlers for CRUD operations (these can be empty or with console.log for now)
   const handleAddFacility = () => {
-    console.log("Add facility logic here");
+    setCurrentFacility(null);
+    setIsEditMode(true);
   };
 
   const handleEditFacility = (facility) => {
-    /* setCurrentFacility(facility);
-    setIsEditMode(true); */
+    setCurrentFacility(facility);
+    setIsEditMode(true);
   };
 
   const handleSaveFacility = (facility) => {
-    console.log("Save facility logic here");
+    if (currentFacility) {
+      // Update existing facility
+      console.log("Update facility logic here");
+    } else {
+      // Add new facility
+      console.log("Add new facility logic here");
+    }
+    setIsEditMode(false);
   };
 
   const handleDeleteFacility = (facilityId) => {
@@ -44,14 +52,31 @@ export default function PropertyFacilities() {
   return (
     <div className="pageContainer">
       <Header />
-      <BackArrowBtn /> {/* Include BackArrowBtn here */}
+      <BackArrowBtn />
+
       <h3 className="facilities-title">Property Facilities</h3>
       <div className="facilities-container">
-        <button className="facility-action-button" onClick={handleAddFacility}>
-          Add Facility
-        </button>
-        {/* Temporary rendering of a single facility */}
         {!isEditMode && (
+          <>
+            <button
+              className="facility-action-button"
+              onClick={handleAddFacility}
+            >
+              Add Facility
+            </button>
+          </>
+        )}
+        {/* Conditional rendering based on edit mode */}
+        {isEditMode ? (
+          // Render the FacilityForm when in edit mode
+          <FacilityForm
+            onSave={handleSaveFacility}
+            onCancel={handleCancelEdit}
+            facility={currentFacility}
+            isEditing={currentFacility !== null}
+          />
+        ) : (
+          // This is the temporary rendering of a single facility
           <div className="facility-card">
             <h5>{mockFacility.name}</h5>
             <p>{mockFacility.description}</p>
@@ -74,7 +99,6 @@ export default function PropertyFacilities() {
             </div>
           </div>
         )}
-        {/* Edit mode form */}
       </div>
       <Footer />
     </div>
