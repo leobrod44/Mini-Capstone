@@ -9,10 +9,6 @@
     margin-right: 150px;
 }
 
-.notif-wrapper:hover .notif {
-    color:#7975d6;
-}
-
 .notifPopup {
     width: 14px;
     height: 14px;
@@ -27,6 +23,10 @@
     align-items: center;
     color: white;
     font-size: 10px;
+}
+
+.notif-wrapper:hover .notif {
+    color:#7975d6;
 }
 
 .notif-wrapper:hover .notifPopup {
