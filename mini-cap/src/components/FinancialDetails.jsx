@@ -4,9 +4,8 @@ import { FaCheck, FaTimes } from 'react-icons/fa'; // Import icons from react-ic
 import { useParams } from "react-router-dom";
 import { MANAGEMENT_COMPANY } from "../backend/Constants";
 import { getCondo } from '../backend/PropertyHandler';
-import { checkRentPaid } from '../backend/PropertyHandler';
 import store from "storejs";
-import { calculateCondoFees } from '../backend/PropertyHandler';
+import {calculateCondoFees, checkRentPaid} from "../backend/FinancialHandler";
 
 /**
  * Represents a component for displaying and managing financial details of a condo.

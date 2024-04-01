@@ -1,22 +1,8 @@
-import { getFirestore } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
-import {
-    getDocs,
-    collection,
-    doc,
-    addDoc,
-    getDoc,
-    updateDoc,
-    deleteDoc,
-    arrayUnion,
-    query,
-    where,
-} from "firebase/firestore";
-import { cleanData, sortArray } from "./DataCleaner";
-import store from "storejs";
+import {collection, doc, getDoc, getDocs, getFirestore, updateDoc} from "firebase/firestore";
+import {initializeApp} from "firebase/app";
 import emailjs from "@emailjs/browser";
-import { firebaseConfig } from "./FirebaseConfig";
-import { setPictureWithID, getPropertyPicture } from "./ImageHandler";
+import {firebaseConfig} from "./FirebaseConfig";
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const condoPictureRef = "condoPictures/";
@@ -43,5 +29,78 @@ export async function payRent(condoID) {
     } catch (error) {
         // If an error occurs during the process, throw an error with a descriptive message
         throw new Error("Error paying rent: " + error);
+    }
+}
+
+
+//Returns: Boolean
+export async function checkRentPaid() {
+    return sampleIsPaid;
+}
+
+/**
+ * Calculates the fees for a condominium based on its amenities and status (rented or owned).
+ * Will return only monthly fees for a renter, and monthly and total fees for an owner
+ * @param {string} condoId - The ID of the condominium.
+ * @returns {Promise<{monthlyFees: number, totalFees: number}|null>} A promise that resolves with an object containing the monthly fees and total fees if successful, or null if there was an error.
+ */
+export async function calculateCondoFees(condoId) {
+    try {
+        // Retrieve the document reference for the specified condo ID from the "Condo" collection
+        const docRef = doc(db, "Condo", condoId);
+        // Fetch the snapshot of the condo document
+        const docSnap = await getDoc(docRef);
+
+        // Extract condo data from the snapshot
+        const condoData = docSnap.data();
+
+        let returnVals = {};
+        returnVals.rent = parseFloat(condoData.unitPrice);
+        returnVals.lockerPrice = 0;
+        returnVals.parkingPrice = 0;
+        //additional fees price is 0 for now
+        returnVals.additionalFees = 0;
+        let amenitiesPrice = 0;
+        // Check if the condo document exists
+        if (docSnap.exists) {
+            // Retrieve the document reference for the property associated with the condo
+            const propertyDocRef = doc(db, "Property", condoData.property);
+            // Fetch the snapshot of the property document
+            const propertyDoc = await getDoc(propertyDocRef);
+
+            // Check if the property document exists
+            if (propertyDoc.exists) {
+                const amenitiesCollection = collection(propertyDocRef, "Amenities");
+                const amenitiesSnapshot = await getDocs(amenitiesCollection);
+
+                //Get all amenities for the condo and add their price
+                amenitiesSnapshot.docs.map(async (doc) => {
+                    let tempData = doc.data();
+                    if (tempData.condo == condoId) {
+                        if (tempData.type == "Locker")
+                            returnVals.lockerPrice = parseFloat(tempData.price);
+                        else
+                            returnVals.parkingPrice = parseFloat(tempData.price);
+                        amenitiesPrice += parseFloat(tempData.price);
+                    }
+                });
+            } else {
+                // If the property document does not exist, return null
+                return null;
+            }
+
+            let totalPrice = amenitiesPrice + returnVals.rent + returnVals.additionalFees;
+            returnVals.totalPrice = totalPrice;
+            returnVals.amenitiesPrice = amenitiesPrice;
+
+            return returnVals;
+
+        } else {
+            // If the condo document does not exist, log a message and return null
+            return null;
+        }
+    } catch (error) {
+        // Rethrow the error to propagate it up the call stack
+        throw error;
     }
 }
