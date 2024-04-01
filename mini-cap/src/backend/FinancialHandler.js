@@ -28,7 +28,7 @@ export async function payRent(condoID) {
 
     } catch (error) {
         // If an error occurs during the process, throw an error with a descriptive message
-        throw new Error("Error paying rent: " + error);
+        throw new Error(error);
     }
 }
 
