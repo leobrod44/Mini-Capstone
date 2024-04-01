@@ -3,8 +3,12 @@
     width: 50px;
     color:  #4540db;
     transition: color 0.3s; /* Smooth background color transition on hover */
-   }
-   
+}
+
+.notif:hover {
+    color:#7975d6;
+}
+
 .notif-wrapper{
     margin-right: 150px;
 }
@@ -23,12 +27,4 @@
     align-items: center;
     color: white;
     font-size: 10px;
-}
-
-.notif-wrapper:hover .notif {
-    color:#7975d6;
-}
-
-.notif-wrapper:hover .notifPopup {
-    background-color: rgb(234, 129, 129);
 }
