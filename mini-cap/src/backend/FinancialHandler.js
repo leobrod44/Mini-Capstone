@@ -49,7 +49,7 @@ export async function checkRentPaid(condoID) {
 
         // Check if condo document exists
         if (condoDocSnap.exists) {
-            if (condoDocSnap.data().hasOwnProperty("rentPaid"))
+            if (!condoDocSnap.data().hasOwnProperty("rentPaid"))
                 return false;
             else
                 return condoDocSnap.data().rentPaid;
