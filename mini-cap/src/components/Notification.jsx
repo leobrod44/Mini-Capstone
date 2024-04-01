@@ -10,6 +10,7 @@ const Notification = () => {
  */
     return (
         <div className="notif-wrapper">
+        <div className="notifPopup"></div>
         <IoIosNotifications className="notif" data-testid="notification-icon"/>
         </div>
     );

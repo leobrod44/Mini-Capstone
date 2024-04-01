@@ -7,10 +7,28 @@
    
 .notif-wrapper{
     margin-right: 150px;
-
 }
 
-.notif:hover{
-   color:#7975d6;
-  
+.notif-wrapper:hover .notif {
+    color:#7975d6;
+}
+
+.notifPopup {
+    width: 14px;
+    height: 14px;
+    background-color: rgb(238, 90, 90);
+    border-radius: 50%;
+    position: absolute;
+    top: 50px;
+    right: 177px;
+    font-size:xx-small;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 10px;
+}
+
+.notif-wrapper:hover .notifPopup {
+    background-color: rgb(234, 129, 129);
 }
