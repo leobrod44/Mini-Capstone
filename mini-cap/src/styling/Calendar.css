@@ -3,9 +3,13 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 70vh; /* Optional: Adjust the height as needed */
+  height: 100vh; /* Optional: Adjust the height as needed */
 }
 
 .content-calendar-container {
   text-align: center;
+}
+
+.react-calendar__tile--unavailable {
+  background-color: red;
 }
