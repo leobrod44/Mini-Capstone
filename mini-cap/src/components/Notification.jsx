@@ -4,9 +4,22 @@ import React, { useState, useEffect, useRef } from "react";
 import { getNotifications } from "../backend/RequestHandler";
 
 const Notification = () => {
+    /**
+     * State variable to hold the count of unviewed notifications.
+     * @type {[number, React.Dispatch<React.SetStateAction<number>>]}
+     */
     const [unviewedCount, setUnviewedCount] = useState(0);
+
+    /**
+     * State variable to hold the notifications data.
+     * @type {[Array<NotificationData>, React.Dispatch<React.SetStateAction<Array<NotificationData>>>]}
+     */
     const [notifications, setNotifications] = useState([]);
   
+    /**
+     * Effect hook to fetch notifications for the current user when the component mounts.
+     * Updates the notifications state and the unviewedCount state based on the fetched notifications.
+     */
     useEffect(() => {
       // Fetch notifications for the current user
       const fetchNotifications = async () => {
