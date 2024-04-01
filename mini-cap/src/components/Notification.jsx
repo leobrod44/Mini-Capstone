@@ -6,7 +6,6 @@ import NotificationElement from "./NotificationElement";
 import { getNotifications } from "../backend/RequestHandler";
 import { setNotificationViewed } from "../backend/RequestHandler";
 import store from "storejs";
-import { Link } from "react-router-dom";
 
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
