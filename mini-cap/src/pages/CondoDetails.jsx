@@ -20,7 +20,7 @@ import CondoRequests from "../components/CondoRequestsView.jsx";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { getRequests } from "../backend/RequestHandler";
 import { FaCheck, FaTimes } from "react-icons/fa";
-import {generateFinancialReport} from "../backend/FinancialHandler"; // Import icons from react-icons library
+import {generateFinancialReport} from "../backend/FinancialReportHandler"; // Import icons from react-icons library
 
 /**
  * CondoDetails Component
