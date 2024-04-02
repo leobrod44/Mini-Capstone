@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../index.css";
 import "../styling/FacilityForm.css";
+import { addFacility } from "../backend/FacilityHandler";
 
 const FacilityForm = ({ onSave, onCancel, facility, isEditing }) => {
   const [formData, setFormData] = useState({
@@ -27,7 +28,7 @@ const FacilityForm = ({ onSave, onCancel, facility, isEditing }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Basic validation for the description
@@ -44,6 +45,13 @@ const FacilityForm = ({ onSave, onCancel, facility, isEditing }) => {
     };
 
     onSave(dataToSave);
+    try {
+
+      await addFacility(dataToSave);
+    } catch (e) {
+      console.error(e);
+    }
+
   };
 
   return (
