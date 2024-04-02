@@ -52,6 +52,19 @@ const structure = {
         "date": "",
         "type": "",
         "viewed": ""
+    },
+    "Facility": {
+        "propertyID": "",
+        "facilityType": "",
+        "dailyAvailabilities": "",
+        "blockSize": ""
+    },
+    "Reservation": {
+        "userID": "",
+        "propertyID": "",
+        "facilityID": "",
+        "date": "",
+        "index": "",
     }
 }
 
