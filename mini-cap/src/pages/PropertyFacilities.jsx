@@ -74,6 +74,7 @@ export default function PropertyFacilities() {
             onCancel={handleCancelEdit}
             facility={currentFacility}
             isEditing={currentFacility !== null}
+            data-testid="facility-form"
           />
         ) : (
           // This is the temporary rendering of a single facility

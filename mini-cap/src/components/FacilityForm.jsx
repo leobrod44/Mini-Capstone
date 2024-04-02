@@ -6,17 +6,15 @@ const FacilityForm = ({ onSave, onCancel, facility, isEditing }) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    startHour: "",
-    endHour: "",
   });
+
+  const facilityNames = ["Gym", "Spa", "Pool"];
 
   useEffect(() => {
     if (facility) {
       setFormData({
-        title: facility.name, // The property should be 'name', based on your mock data
+        title: facility.name,
         description: facility.description,
-        startHour: facility.startHour,
-        endHour: facility.endHour,
       });
     }
   }, [facility]);
@@ -31,35 +29,44 @@ const FacilityForm = ({ onSave, onCancel, facility, isEditing }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
-  };
 
-  // Generate time slots for the dropdowns
-  const generateTimeSlots = () => {
-    const slots = [];
-    for (let i = 0; i < 24; i++) {
-      const hour = i.toString().padStart(2, "0");
-      slots.push(`${hour}:00`, `${hour}:30`);
+    // Basic validation for the description
+    if (!formData.description.trim()) {
+      alert("Description cannot be empty.");
+      return;
     }
-    return slots;
-  };
 
-  const timeSlots = generateTimeSlots();
+    // Include fixed start and end times
+    const dataToSave = {
+      ...formData,
+      startHour: "08:00",
+      endHour: "22:00",
+    };
+
+    onSave(dataToSave);
+  };
 
   return (
     <div className="facility-form">
-      <h3>
-        {isEditing ? "Property - Edit Facility" : "Property - New Facility"}
-      </h3>
+      <h3>{isEditing ? "Edit Facility" : "New Facility"}</h3>
       <form onSubmit={handleSubmit}>
         <label>
           Title:
-          <input
-            type="text"
+          <select
             name="title"
             value={formData.title}
             onChange={handleChange}
-          />
+            required
+          >
+            <option value="" disabled>
+              Select a Facility
+            </option>
+            {facilityNames.map((name) => (
+              <option key={name} value={name}>
+                {name}
+              </option>
+            ))}
+          </select>
         </label>
         <label>
           Description:
@@ -67,35 +74,8 @@ const FacilityForm = ({ onSave, onCancel, facility, isEditing }) => {
             name="description"
             value={formData.description}
             onChange={handleChange}
+            required
           />
-        </label>
-        <label>
-          Available Start Time:
-          <select
-            name="startHour"
-            value={formData.startHour}
-            onChange={handleChange}
-          >
-            {timeSlots.map((slot) => (
-              <option key={slot} value={slot}>
-                {slot}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Available End Time:
-          <select
-            name="endHour"
-            value={formData.endHour}
-            onChange={handleChange}
-          >
-            {timeSlots.map((slot) => (
-              <option key={slot} value={slot}>
-                {slot}
-              </option>
-            ))}
-          </select>
         </label>
         <div className="form-button-group">
           <button type="submit" className="edit-button">
