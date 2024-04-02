@@ -1,0 +1,72 @@
+h2,
+h3, h5 {
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  position: relative;
+  margin-bottom: 3px;
+  color: #2f2c9b;
+}
+.reservations-page-container{
+ 
+  background-color: #f4f4f4;
+  padding-top: 50px;
+}
+.reservations-container {
+    margin-bottom: 20px;
+  }
+  
+  .reservation {
+    background-color: white; /* Light grey background */
+    border-radius: 4px;
+    padding: 5px;
+    margin-bottom: 10px; /* Space between reservations */
+    width: 90%;
+  }
+  
+  .reservation p {
+    margin: 5px 0; /* Reduce margin for each paragraph to compact the display */
+    text-align: center
+  }
+ 
+.reserve-container {
+    background-color: white; /* Card background */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    margin: 20px auto; /* Center the card with some margin around it */
+    max-width: 600px; /* Maximum width of the card */
+    padding: 20px; /* Padding inside the card */
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.facilities-button {
+    font-family: "Roboto", sans-serif; /* Add Roboto as the font family */
+    font-weight: 400;
+    font-size: 30px; /* Chosen font size */
+    background-color: #4540db; /* Chosen background color from signup2 branch */
+    color: #fff; /* Assuming var(--white) is white, replaced with #fff */
+    border: none; /* No border */
+    border-radius: 4px; /* Chosen border-radius */
+    cursor: pointer; /* Hand cursor on hover */
+    transition: all 0.3s ease; /* Example transition */
+    display: inline-flex;; /* Display style */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Added box-shadow for consistency */
+    height: 30px;
+    width: 30px;
+    float: right;
+    
+  }
+  
+  .facilities-button:hover {
+    background-color: #7975d6; /* Change background color on hover to the lighter lilac color */
+    color: #ffffff; /* Change text color on hover to white */  }
+  
+    .facilities-header {
+        display: flex;
+        align-items: center; /* Align items vertically */
+        justify-content: space-between; /* Spreads the child elements apart */
+        padding: 0 15px; /* Adjusts padding as needed */
+      }
+  

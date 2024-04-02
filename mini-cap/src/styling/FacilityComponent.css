@@ -4,6 +4,7 @@
     color:#2f2c9b;
     font-size: 15px;
     font-weight: 500;
+    margin-top: 12px; 
   }
 
   .facility-description{
@@ -33,15 +34,16 @@
     border-radius: 8px;
     padding: 14px;
     height: auto;
-    max-width: 400px;
+    
     display: flex;
     flex-direction: column;
     position: relative;
     margin: auto;
     margin-bottom: 20px;
     margin-top: 10px;
-    width: 200%;
-    right: 50%;
+    max-width: 400px;
+    width: 100%;
+    
   }
 
   .make-reservation-button{
@@ -63,6 +65,7 @@
   .close-button{
     position: absolute;
     top: 8px;
+    margin-bottom: 20px;
     right: 8px;
     width: 25px;
     height: 25px;

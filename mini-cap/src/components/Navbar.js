@@ -142,7 +142,7 @@ const Navbar = () => {
                 )}
                 {role === RENTER_OWNER && (
                   <DropdownItem
-                    address={"/reservations"}
+                    address={"/my-reservations"}
                     icon={<FaCalendarAlt />}
                     text={"Reservations"}
                   />
