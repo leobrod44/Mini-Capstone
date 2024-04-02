@@ -6,8 +6,9 @@ import { useState } from 'react';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import Pagination from "../components/Pagination";
 import "../styling/Pagination.css";
-
 import "../styling/Reservations.css";
+import ReservationComponent from "../components/ReservationComponent.jsx";
+import FacilityComponent from "../components/FacilityComponent.jsx"
 
 const Reservations = () => {
     const [visibleFacilities, setVisibleFacilities] = useState({});
@@ -64,6 +65,7 @@ const Reservations = () => {
         <div>
             <Header />
             <BackArrowBtn />
+            < div className="reservations-page-container">
             <h2 style={{ textAlign: 'center', fontSize: '32px', margin: '20px 0' }}>My Reservations</h2>
 
 
@@ -71,21 +73,15 @@ const Reservations = () => {
 
                <div key={condo.id} className="reserve-container">
               <h3 style={{ marginBottom: '20px' }}>Unit Number: {condo.unitNumber}</h3>
-              <h2>Upcoming Reservations</h2>
-    {condo.reservations && condo.reservations.length > 0 ? ( // Check if reservations exist and have entries
-      <div className="reservations-container">
-        {condo.reservations.map((reservation) => (
-          <div key={reservation.id} className="reservation">
-            <p><strong>Date:</strong> {reservation.date}</p>
-            <p><strong>Description:</strong> {reservation.description}</p>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <p>No upcoming reservations.</p> // Display this message if there are no reservations
-    )}
+              <h5>Upcoming Reservations</h5>
+              <div className="reservation">
+              {condo.reservations && condo.reservations.length > 0 ? (
+                        <ReservationComponent reservations={condo.reservations} />
+                    ) : (
+                        <p>No upcoming reservations.</p> // Display this message if there are no reservations
+                    )}
 
-
+                </div>
                     <div className="facilities-header">
                         
                     <h5 style={{ marginRight: '20px' }}>Show Condo Facilities</h5>
@@ -96,19 +92,15 @@ const Reservations = () => {
                             {visibleFacilities[condo.id] ? <MdExpandLess /> : <MdExpandMore />}
                         </button>
                     </div>
+                    
                     {visibleFacilities[condo.id] && (
-                        <ul>
-                            {condo.facilities.map(facility => (
-                                <li key={facility.id}>
-                                    {facility.name} <button onClick={() => alert(`Reserving ${facility.name}`)}>Reserve</button>
-                                </li>
-                            ))}
-                        </ul>
+                        <FacilityComponent facilities={condo.facilities}  />
                     )}
                     {index < condos.length - 1 && <hr />}
                 </div>
+               
             ))}
-             <div className="pagination-container">
+            <div className="pagination-container" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                 <Pagination
                     itemsPerPage={condosPerPage}
                     totalItems={condos.length}
@@ -116,12 +108,12 @@ const Reservations = () => {
                     setCurrentPage={setCurrentPage}
                 />
             </div>
+            </div>
             <Footer />
         </div>
     );
+
 };
-
-
     
 
 export default Reservations;
