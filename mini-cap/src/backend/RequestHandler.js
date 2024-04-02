@@ -276,8 +276,12 @@ export async function addRequestNotification(destinatiorType, email, requestData
             date: new Date().toISOString(),
             viewed: false
         });
-         return docRef.id;
+        // Update notification document with its own ID
+        await updateDoc(docRef, {
+          id: docRef.id,
+        });
+        return docRef.id;
     } catch(e) {
-        console.error("Error adding notification: ", e);
+        throw e;
     }
 }
