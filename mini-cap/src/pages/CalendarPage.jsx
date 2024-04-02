@@ -7,11 +7,12 @@ import "../index.css";
 import 'react-calendar/dist/Calendar.css'; // Import default styles
 import "../styling/Calendar.css";
 
-const CalendarPage = () => {
+const CalendarPage = ({ totalAvailableSlots }) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [reservationStatus, setReservationStatus] = useState(null);
     const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
     const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+    const [reservedTimeSlots, setReservedTimeSlots] = useState([]);
 
     useEffect(() => {
         // Fetch available time slots for the selected date
@@ -45,24 +46,67 @@ const CalendarPage = () => {
         }
     };
 
-
-    // Mock function to fetch available time slots for the selected date
     const fetchTimeSlots = async (date) => {
         // Perform logic to fetch available time slots for the given date
         // Here, we'll simulate fetching available time slots for demonstration purposes
         // You should replace this with your own logic
+        const slotDate = new Date(date);
+        slotDate.setHours(0, 0, 0, 0);
+
         const availableTimeSlots = [
             "09:00 AM - 10:00 AM",
             "10:30 AM - 11:30 AM",
             "01:00 PM - 02:00 PM",
             "03:00 PM - 04:00 PM",
         ];
-        return availableTimeSlots;
+
+        // Filter out reserved time slots for the selected date
+        const reservedTimeSlotsForDate = reservedTimeSlots.filter(slot => {
+            const slotDate = new Date(slot.date);
+            return slotDate.toDateString() === date.toDateString();
+        });
+
+        // Filter available time slots based on reserved time slots for the selected date
+        const filteredTimeSlots = availableTimeSlots.filter(timeSlot => !reservedTimeSlotsForDate.find(slot => slot.startTime === timeSlot.split(' - ')[0]));
+
+        return filteredTimeSlots;
     };
 
     // Function to handle time slot selection
     const handleTimeSlotChange = (event) => {
         setSelectedTimeSlot(event.target.value);
+    };
+
+    // Function to handle reservation
+    const handleReservation = () => {
+        if (!selectedTimeSlot) {
+            console.error("No time slot selected for reservation.");
+            return;
+        }
+
+        const [startTime, endTime] = selectedTimeSlot.split(' - ');
+        const reservationDateTime = new Date(selectedDate);
+        reservationDateTime.setHours(0, 0, 0, 0);
+
+        // Check if the selected time slot is already reserved for the selected date
+        const isTimeSlotReserved = reservedTimeSlots.some(slot => {
+            return slot.date.getTime() === reservationDateTime.getTime() &&
+                slot.startTime === startTime && slot.endTime === endTime;
+        });
+
+        if (isTimeSlotReserved) {
+            console.error("This time slot is already reserved.");
+            return;
+        }
+
+        // Add the selected time slot to reserved list
+        const newReservedTimeSlot = { date: reservationDateTime, startTime, endTime };
+        setReservedTimeSlots([...reservedTimeSlots, newReservedTimeSlot]);
+
+        // Update reservation status to 'reserved'
+        setReservationStatus("reserved");
+
+        console.log("Reservation confirmed for time slot:", selectedTimeSlot);
     };
 
     // Render reservation status message based on the reservationStatus state
@@ -81,6 +125,12 @@ const CalendarPage = () => {
                                 <option key={index} value={timeSlot}>{timeSlot}</option>
                             ))}
                         </select>
+                        {selectedTimeSlot && reservedTimeSlots.includes(selectedTimeSlot) && (
+                            <p>This time slot is already reserved.</p>
+                        )}
+                        {selectedTimeSlot && !reservedTimeSlots.includes(selectedTimeSlot) && (
+                            <button className="button-reserved" onClick={handleReservation}>Confirm Reservation</button>
+                        )}
                     </div>
                 );
             case "unavailable":
@@ -92,17 +142,35 @@ const CalendarPage = () => {
         }
     };
 
-
-    // Function to determine the class name for each calendar tile
     const tileClassName = ({ date }) => {
-        // Check if the date is in the past
+        // Count the number of time slots reserved for the date
+        const reservedSlotsForDate = reservedTimeSlots.filter(slot => {
+            const slotDate = new Date(slot.date);
+            return slotDate.toDateString() === date.toDateString();
+        });
+        const numberOfReservedSlots = reservedSlotsForDate.length;
+
+        // Check if the selected date is in the past
         const today = new Date();
         today.setHours(0, 0, 0, 0); // Set time to midnight
-        if (date < today || availableTimeSlots.length === 0) {
-            // If the date is in the past or no available time slots, return 'unavailable' class
+        const isPastDate = date < today;
+
+        if (isPastDate) {
+            // If the date is in the past, return the appropriate class
             return 'react-calendar__tile--unavailable';
         }
-        // Return 'available' class for future dates with available time slots
+
+        if (numberOfReservedSlots > 0) {
+            // If there are reserved slots for the date, return the appropriate class
+            if (numberOfReservedSlots === 4) {
+                // If all time slots are reserved for the date, highlight in red
+                return 'react-calendar__tile--all';
+            }
+            // If some time slots are reserved but not all, return a different class
+            return 'react-calendar__tile--selected';
+        }
+
+        // Return 'available' class for dates with no reserved slots
         return 'available';
     };
 
@@ -128,3 +196,5 @@ const CalendarPage = () => {
 };
 
 export default CalendarPage;
+
+

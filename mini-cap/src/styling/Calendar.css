@@ -13,3 +13,26 @@
 .react-calendar__tile--unavailable {
   background-color: red;
 }
+.react-calendar__tile--selected {
+  background-color: orange;
+}
+
+.react-calendar__tile--all {
+  background-color: red;
+}
+
+.button-reserved {
+  background-color: #4540db;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 5%;
+}
+
+.button-reserved:hover {
+  background-color: #7975d6;
+}
