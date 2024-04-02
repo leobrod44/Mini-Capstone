@@ -76,7 +76,7 @@ export default function CondoDetails() {
         condo.picture = condoPicURL;
         // Set condo details state
         setCondoDetails(condo);
-        
+
         // Retrieve company email
         setCompanyEmail(await getCompanyEmail(condoId));
         setLoading(false);
@@ -556,17 +556,21 @@ export default function CondoDetails() {
                               )}
 
                               {/* Code snippet to appear when status is "Owned" */}
-                              {status === "Owned" && role !== MANAGEMENT_COMPANY && (
-                                <div>
-                                  <button
-                                    className="modal-button"
-                                    onClick={() => handleClickRequest()}
-                                    style={{ marginTop: "5%", marginBottom: "5%" }}
-                                  >
-                                    Create Request
-                                  </button>
-                                </div>
-                              )}
+                              {status === "Owned" &&
+                                role !== MANAGEMENT_COMPANY && (
+                                  <div>
+                                    <button
+                                      className="modal-button"
+                                      onClick={() => handleClickRequest()}
+                                      style={{
+                                        marginTop: "5%",
+                                        marginBottom: "5%",
+                                      }}
+                                    >
+                                      Create Request
+                                    </button>
+                                  </div>
+                                )}
                             </>
                           )}
                         </div>
@@ -635,7 +639,12 @@ export default function CondoDetails() {
                 </div>
               )}
             </div>
-            {showPopup && <Popup_SendKey data-testid="popup-send-key" handleClose={handlePopupToggle} />}
+            {showPopup && (
+              <Popup_SendKey
+                data-testid="popup-send-key"
+                handleClose={handlePopupToggle}
+              />
+            )}
             <div data-testid="popup-delete-test">
               <DeleteModal
                 show={show}
