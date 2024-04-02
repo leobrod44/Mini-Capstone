@@ -48,8 +48,10 @@ const structure = {
     },
     "Notification":{
         "message": "",
-        "path":""
-
+        "path":"",
+        "date": "",
+        "type": "",
+        "viewed": ""
     }
 }
 

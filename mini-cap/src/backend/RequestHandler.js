@@ -9,8 +9,10 @@ import {
     updateDoc, arrayUnion
 } from "firebase/firestore";
 import { firebaseConfig } from "./FirebaseConfig";
+import store from "storejs";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+import { sortArray } from "./DataCleaner";
 
 const sampleRequest = {
     "requestID": "1",
@@ -20,7 +22,7 @@ const sampleRequest = {
     "step": 1,
     "viewed": false,
   }
-  import { getCondo } from "./PropertyHandler";
+  import { getCondo, getPropertyData } from "./PropertyHandler";
 import {ADMINISTRATIVE_STEPS, FINANCIAL_STEPS, OPERATIONAL_STEPS, TYPES} from "./Constants";
 import { cleanData } from "./DataCleaner";
 import {getPropertyPicture} from "./ImageHandler";
@@ -39,8 +41,7 @@ import {getPropertyPicture} from "./ImageHandler";
 export async function submitRequest(condoID, type, notes) {
 
     try {
-        // Add a new request document to the condo's requests collection
-        const docRef = await addDoc(collection(doc(db, 'Condo', condoID), 'Requests'), {
+        var r = {
             type: type,
             notes: notes,
             step: 0,
@@ -48,13 +49,18 @@ export async function submitRequest(condoID, type, notes) {
             condoID: condoID,
             requestID: null,
             assignedWorkerID: ""
-        });
+        }
+        // Add a new request document to the condo's requests collection
+        const docRef = await addDoc(collection(doc(db, 'Condo', condoID), 'Requests'), r);
         // Get the ID of the newly added request document
         const requestID = docRef.id;
 
         // Update the request document with its own ID
         await updateDoc(docRef, { requestID: requestID });
+        var condo = await getCondo(condoID);
+        var property = await getPropertyData(condo.property);
 
+        await addRequestNotification(1,property.companyOwner, r);
 
         // Return the ID of the submitted request
         return requestID;
@@ -128,7 +134,10 @@ export async function updateRequest(condoID, requestID) {
         // Increment the step of the request
         requestData.step += 1;
 
-        
+
+        // Update the request document
+        await updateDoc(requestRef, requestData);
+
         // If it's the first step, assign a worker
         if(requestData.step === 1){
             try{
@@ -137,9 +146,10 @@ export async function updateRequest(condoID, requestID) {
                 console.error("Error assigning worker: ", e);
             }
         }
-        // Update the request document
-        await updateDoc(requestRef, requestData);
-        // return step
+        else{
+            var userEmail = (await getCondo(condoID)).occupant;
+            await addRequestNotification(0, userEmail, requestData);
+        }
         return requestData.step;
 
     } catch (e) {
@@ -227,18 +237,47 @@ export async function getAssignedWorker(condoID, requestID) {
 
 //SPRINT 4
 
-// //Provide: userID
-// //Returns: array of new notifications containing message to display and path
-// export async function getNotifications(userID){
+///Provide: userID
+//Returns: array of new notifications containing message to display and path
+export async function getNotifications(userID){
+    try {
+        const notificationCollection = collection(doc(db, 'Users', userID), 'Notifications');
+        const notificationSnapshot = await getDocs(notificationCollection);
+        var notifications = [];
+        await Promise.all(
+            notificationSnapshot.docs.map(async (doc) => {
+                var data = doc.data();
+                notifications.push(data);
+            }));
+        return sortArray(notifications, 'date');
+    } catch(e) {
+        console.error("Error getting notifications: ", e);
+    }
+}
 
-    
-//     //request update, event reminder
-//     //provide message to display and path for when clicked
-// }
+//Provide: userID, requestID
+//Returns: nothing
+export async function setNotificationViewed(email, notificationID){
+    try {
+        const notificationRef = doc(collection(doc(db, 'Users', email), 'Notifications'), notificationID);
+        await updateDoc(notificationRef, { viewed: true });
+    } catch(e) {
+        console.error("Error setting notification viewed: ", e);
+    }
+}
 
-// //Provide: userID, requestID
-// //Returns: nothing
-// export async function setNotificationViewed(userID, notification){
-
-//     //called when clicked on notificaton
-// }
+export async function addRequestNotification(destinatiorType, email, requestData){
+    try {
+        var collectionRef = destinatiorType == 0 ? "Users" : "Company";
+        const docRef = await addDoc(collection(doc(db, collectionRef, email), 'Notifications'), {
+            type: requestData.type,
+            message: requestData.notes,
+            path: `/condo-details/${requestData.condoID}`,
+            date: new Date().toISOString(),
+            viewed: false
+        });
+         return docRef.id;
+    } catch(e) {
+        console.error("Error adding notification: ", e);
+    }
+}
