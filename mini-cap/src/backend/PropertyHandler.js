@@ -1,22 +1,22 @@
-import { getFirestore } from "firebase/firestore";
-import { initializeApp } from "firebase/app";
 import {
-  getDocs,
-  collection,
-  doc,
   addDoc,
-  getDoc,
-  updateDoc,
+  collection,
   deleteDoc,
-  arrayUnion,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
   query,
-  where,
+  updateDoc,
+  where
 } from "firebase/firestore";
-import { cleanData, sortArray } from "./DataCleaner";
+import {initializeApp} from "firebase/app";
+import {cleanData, sortArray} from "./DataCleaner";
 import store from "storejs";
 import emailjs from "@emailjs/browser";
-import { firebaseConfig } from "./FirebaseConfig";
-import { setPictureWithID, getPropertyPicture } from "./ImageHandler";
+import {firebaseConfig} from "./FirebaseConfig";
+import {getPropertyPicture, setPictureWithID} from "./ImageHandler";
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const condoPictureRef = "condoPictures/";
@@ -516,17 +516,6 @@ const sampleAmenity = {
   unitNumber: 1,
 };
 
-const sampleFinacialDetails = {
-  BasePrice: 100,
-  ParkingPrice: 10,
-  LockerPrice: 10,
-  AdditionalFees: 0,
-  TotalPrice: 120,
-};
-
-const sampleIsPaid = {
-  RentPaid: true,
-};
 
 /**
  * Retrieves a list of amenities associated with a property.
@@ -798,17 +787,6 @@ export async function updateProperty(propertyID, data) {
   console.log("Updating property: ", propertyID, data);
 }
 
-//Provide: condoID
-//Returns: fees associated to the condo
-export async function getFinanceDetails() {
-  return sampleFinacialDetails;
-}
-
-//Provide: condoID
-//Returns: Boolean
-export async function checkRentPaid() {
-  return sampleIsPaid;
-}
 //returns the occupant email or empty string for the condo
 
 /**
@@ -836,73 +814,6 @@ export async function getCondoOccupant(condoId) {
     }
   } catch (error) {
     // Throw error to propagate it up the call stack
-    throw error;
-  }
-}
-
-/**
- * Calculates the fees for a condominium based on its amenities and status (rented or owned).
- * Will return only monthly fees for a renter, and monthly and total fees for an owner
- * @param {string} condoId - The ID of the condominium.
- * @returns {Promise<{monthlyFees: number, totalFees: number}|null>} A promise that resolves with an object containing the monthly fees and total fees if successful, or null if there was an error.
- */
-export async function calculateCondoFees(condoId) {
-  try {
-    // Retrieve the document reference for the specified condo ID from the "Condo" collection
-    const docRef = doc(db, "Condo", condoId);
-    // Fetch the snapshot of the condo document
-    const docSnap = await getDoc(docRef);
-
-    // Extract condo data from the snapshot
-    const condoData = docSnap.data();
-
-    let returnVals = {};
-    returnVals.rent = parseFloat(condoData.unitPrice);
-    returnVals.lockerPrice = 0;
-    returnVals.parkingPrice = 0;
-    //additional fees price is 0 for now
-    returnVals.additionalFees = 0;
-    let amenitiesPrice = 0;
-    // Check if the condo document exists
-    if (docSnap.exists) {
-      // Retrieve the document reference for the property associated with the condo
-      const propertyDocRef = doc(db, "Property", condoData.property);
-      // Fetch the snapshot of the property document
-      const propertyDoc = await getDoc(propertyDocRef);
-
-      // Check if the property document exists
-      if (propertyDoc.exists) {
-        const amenitiesCollection = collection(propertyDocRef, "Amenities");
-        const amenitiesSnapshot = await getDocs(amenitiesCollection);
-
-        //Get all amenities for the condo and add their price
-        amenitiesSnapshot.docs.map(async (doc) => {
-          let tempData = doc.data();
-          if(tempData.condo == condoId){
-            if(tempData.type == "Locker")
-              returnVals.lockerPrice = parseFloat(tempData.price);
-            else
-              returnVals.parkingPrice = parseFloat(tempData.price);
-            amenitiesPrice += parseFloat(tempData.price);
-          }
-        });
-      } else {
-        // If the property document does not exist, return null
-        return null;
-      }
-
-      let totalPrice = amenitiesPrice + returnVals.rent + returnVals.additionalFees;
-      returnVals.totalPrice = totalPrice;
-      returnVals.amenitiesPrice = amenitiesPrice;
-
-      return returnVals;
-
-    } else {
-      // If the condo document does not exist, log a message and return null
-      return null;
-    }
-  } catch (error) {
-    // Rethrow the error to propagate it up the call stack
     throw error;
   }
 }

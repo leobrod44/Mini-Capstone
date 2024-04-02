@@ -16,6 +16,10 @@ import CondoDetails from "./pages/CondoDetails";
 import CondoFilesPage from "./pages/CondoFilesPage";
 import ViewFilesPage from "./pages/ViewFilesPage";
 
+import Reservations from "./pages/Reservations";
+import CalendarPage from "./pages/CalendarPage";
+import PropertyFacilities from "./pages/PropertyFacilities";
+
 function App() {
   return (
     <BrowserRouter>
@@ -27,6 +31,7 @@ function App() {
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/mgmtdashboard" element={<MGMTDashboard />} />
+        <Route path="/my-reservations" element={<Reservations />} />
         <Route
           path="/propertydetailspage/:propertyID/:propertyName"
           element={<PropertyDetailsPage />}
@@ -44,6 +49,11 @@ function App() {
           element={<CondoFilesPage />}
         />
         <Route path="/view-files/:userID" element={<ViewFilesPage />} />
+
+        <Route path="/calendar" element={<CalendarPage />} />
+
+        <Route path="/facilities" element={<PropertyFacilities />} />
+
       </Routes>
     </BrowserRouter>
   );
