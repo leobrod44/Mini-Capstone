@@ -130,6 +130,12 @@ export async function calculateCondoFees(condoId) {
     }
 }
 
+/**
+ * Generates a financial report for a condominium, including details on rent payment and fees.
+ * @param {string} condoID - The ID of the condominium.
+ * @returns {Promise<void>} A promise that resolves when the financial report is generated.
+ * @throws {Error} Throws an error if there was an issue generating the report.
+ */
 export async function generateFinancialReport(condoID) {
     try{
         const financialDetails = await calculateCondoFees(condoID);
