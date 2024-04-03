@@ -2,6 +2,7 @@ import {collection, doc,addDoc, getDoc, getDocs, getFirestore, updateDoc} from "
 import {initializeApp} from "firebase/app";
 import {firebaseConfig} from "./FirebaseConfig";
 import { getPropertyData, getUserCondos } from "./PropertyHandler";
+import { addReservationNotification } from "./RequestHandler";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -115,6 +116,7 @@ export async function makeReservation(reservation) {
                 reservations: [path]
             });
         }
+        await addReservationNotification(reservation.userID, reservation);
     } catch (error) {
         throw error;
     }
@@ -253,48 +255,49 @@ export async function getPropertiesJoinReservationAndFacilities(userID) {
     }
 }
 
-/**
- * Retrieves reservation updates for a specific user.
- * 
- * @param {string} userID - The ID of the user for whom reservation updates are being retrieved.
- * 
- * @returns {Promise<Array>} A promise that resolves with an array of reservation update objects associated with the specified user.
- * @throws {Error} If there is an error retrieving the reservation updates.
- */
-export async function getReservationUpdates(userID) {
-    try {
-        // Get user document reference
-        const userRef = doc(db, "Users", userID);
-        const userDoc = await getDoc(userRef);
+// /**
+//  * Retrieves reservation updates for a specific user.
+//  * 
+//  * @param {string} userID - The ID of the user for whom reservation updates are being retrieved.
+//  * 
+//  * @returns {Promise<Array>} A promise that resolves with an array of reservation update objects associated with the specified user.
+//  * @throws {Error} If there is an error retrieving the reservation updates.
+//  */
+// export async function getReservationUpdates(userID) {
+//     try {
+//         // Get user document reference
+//         const userRef = doc(db, "Users", userID);
+//         const userDoc = await getDoc(userRef);
         
-        // Get reservations associated with the user
-        const reservations = userDoc.data().reservations;
+//         // Get reservations associated with the user
+//         const reservations = userDoc.data().reservations;
         
-        // Get reservation updates
-        var reservationsData = await Promise.all(reservations.map(async (reservation) => {
-            // Get document for each reservation
-            var docu = await getDoc(doc(db, reservation));
-            
-            // Check if reservation date is in the future
-            if (docu.data().date >= new Date()) {
-                // Get facility document
-                var facility = await getDoc(doc(db, "Facility", docu.data().facilityID));
+//         // Get reservation updates
+//         var reservationsData = await Promise.all(reservations.map(async (reservation) => {
+//             // Get document for each reservation
+//             var docu = await getDoc(doc(db, reservation));
+//             var date = docu.data().date;
+//             var currentDate = (new Date()).getDate();
+//             // Check if reservation date is in the future
+//             if (date >= currentDate) {
+//                 // Get facility document
+//                 var r = (await getDoc(doc(db, reservation))).data();
                 
-                // Construct new notification object
-                const newNotification = {
-                    message: reservation.startTime + "-" + reservation.endTime,
-                    path: "my-reservations",
-                    date: reservation.date,
-                    type: facility.data().type,
-                    viewed: false
-                };
+//                 // Construct new notification object
+//                 const newNotification = {
+//                     message: r.startTime + "-" + r.endTime,
+//                     path: "my-reservations",
+//                     date: new Date().toDateString(),
+//                     type: facility.data().type,
+//                     viewed: false
+//                 };
                 
-                return newNotification;
-            }
-        }));
-        
-        return reservationsData;
-    } catch (error) {
-        throw error;
-    }
-}
+//                 return newNotification;
+//             }
+//         }));
+//         reservationsData = reservationsData.filter(Boolean);
+//         return reservationsData;
+//     } catch (error) {
+//         throw error;
+//     }
+// }
