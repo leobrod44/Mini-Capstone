@@ -377,7 +377,7 @@ export default function CondoDetails() {
                                 </button>
                               </>
                             )}
-                            <div><button className="sendkey-button" onClick={handleGenerateReport}>Generate Report</button></div>
+                            <div><button className="generate-report-button" onClick={handleGenerateReport}>Generate Report</button></div>
                           </div>
                         </>
                       )}
