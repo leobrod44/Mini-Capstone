@@ -3,8 +3,12 @@
     width: 50px;
     color:  #4540db;
     transition: color 0.3s; /* Smooth background color transition on hover */
-   }
-   
+}
+
+.notif:hover {
+    color:#7975d6;
+}
+
 .notif-wrapper{
     margin-right: 150px;
     position: relative; 
@@ -117,4 +121,22 @@
 .notification-list::-webkit-scrollbar-thumb:hover {
   background: #4540db; 
   transition: 0.3s;
+  
+}
+
+.notifPopup {
+    width: 14px;
+    height: 14px;
+    background-color: rgb(238, 90, 90);
+    border-radius: 50%;
+    position: absolute;
+    top: 50px;
+    right: 177px;
+    font-size:xx-small;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 10px;
+
 }

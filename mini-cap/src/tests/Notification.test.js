@@ -29,6 +29,17 @@ describe("Notification Component", () => {
   afterEach(() => {
     localStorage.removeItem("user");
     localStorage.removeItem("role");
+
+import { getNotifications } from "../backend/RequestHandler";
+
+jest.mock("../backend/RequestHandler", () => ({
+  getNotifications: jest.fn()
+}));
+
+describe("Notification Component", () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+
   });
 
   it("renders notification icon", () => {
@@ -176,5 +187,33 @@ it("renders 'See All' button only when there are more than 3 notifications", asy
       const seeAllButton = screen.queryByText("See All");
       expect(seeAllButton).not.toBeInTheDocument();
     }
+  });
+});
+
+  it("renders notification popup with correct count", async () => {
+    const mockNotifications = [
+      { viewed: false },
+      { viewed: false },
+      { viewed: true }
+    ];
+    getNotifications.mockResolvedValue(mockNotifications);
+
+    render(<Notification />);
+    const notificationPop = await screen.findByTestId("popup");
+    expect(notificationPop).toBeInTheDocument();
+    expect(notificationPop).toHaveTextContent("2");
+  });
+
+  it("does not render notification popup when unviewedCount is 0", async () => {
+    const mockNotifications = [
+      { viewed: true },
+      { viewed: true },
+      { viewed: true }
+    ];
+    getNotifications.mockResolvedValue(mockNotifications);
+
+    render(<Notification />);
+    const notificationPop = screen.queryByTestId("popup");
+    expect(notificationPop).not.toBeInTheDocument();
   });
 });

@@ -46,8 +46,8 @@ body {
     font-size: 15px; 
     font-family: Roboto, Arial, Helvetica, sans-serif;
   }
+
   .header-right {
     display: flex;
     align-items: center;
 }
-

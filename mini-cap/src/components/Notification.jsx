@@ -26,6 +26,10 @@ const Notification = () => {
       try {
         const fetchedNotifications = await getNotifications(userID);
         setNotifications(fetchedNotifications);
+        
+        //doms code
+        const unviewedNotifications = notifs.filter(notification => !notification.viewed);
+            setUnviewedCount(unviewedNotifications.length);
       } catch (error) {
         console.error("Error fetching notifications:", error);
       }
@@ -45,6 +49,13 @@ const Notification = () => {
       setOpen(false); // Close the modal if clicked outside
     }
   };
+
+    /**
+     * State variable to hold the count of unviewed notifications.
+     * @type {[number, React.Dispatch<React.SetStateAction<number>>]}
+     */
+    const [unviewedCount, setUnviewedCount] = useState(0);
+
 
   // Function to handle clicking on a notification
   const handleNotificationClickInsideModal = async (notification) => {
@@ -78,6 +89,9 @@ const navigateToDestination = (notification) => {
   return (
     <div className="notification-container" ref={menuRef}>
       <div className="notif-wrapper">
+         { unviewedCount > 0 &&(
+            <div className="notifPopup" data-testid="popup">{unviewedCount}</div>
+        )}
         <IoIosNotifications
           className="notif"
           data-testid="notification-icon"
