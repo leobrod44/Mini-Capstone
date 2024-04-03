@@ -15,12 +15,8 @@ import AddCondoForm from "./pages/AddCondoForm";
 import CondoDetails from "./pages/CondoDetails";
 import CondoFilesPage from "./pages/CondoFilesPage";
 import ViewFilesPage from "./pages/ViewFilesPage";
-<<<<<<< HEAD
 import Reservations from "./pages/Reservations";
-
-=======
 import PropertyFacilities from "./pages/PropertyFacilities";
->>>>>>> main
 function App() {
   return (
     <BrowserRouter>
