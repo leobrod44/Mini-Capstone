@@ -21,6 +21,7 @@ import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { getRequests } from "../backend/RequestHandler";
 import { FaCheck, FaTimes } from "react-icons/fa";
 import {generateFinancialReport} from "../backend/FinancialReportHandler"; // Import icons from react-icons library
+import { checkRentPaid } from "../backend/FinancialHandler.js";
 
 /**
  * CondoDetails Component
@@ -211,10 +212,20 @@ export default function CondoDetails() {
     setShowFinancialDetails(!showFinancialDetails);
   };
 
-  // Function to toggle rent paid status
-  const toggleRentPaid = () => {
-    setIsRentPaid(!isRentPaid);
-  };
+  //Function to check paid status
+  useEffect(() => {
+    const setRentPaidStatus = async () => {
+      try {
+        const rentPaid = await checkRentPaid(condoId);
+        setIsRentPaid(rentPaid);
+      } catch (error) {
+        console.error("Error fetching isRentPaid:", error);
+      }
+    };
+
+    setRentPaidStatus();
+  }, [condoId]);
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -665,12 +676,6 @@ export default function CondoDetails() {
             </div>
           </div>
         </div>
-        {role !== MANAGEMENT_COMPANY && (
-          <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
-        )}
-        {role === MANAGEMENT_COMPANY && status !== "Vacant" && (
-          <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
-        )}
         {!displayForm && <BackArrowBtn />}
         <div style={{ zIndex: 1, position: "relative" }}>
           <Footer />
