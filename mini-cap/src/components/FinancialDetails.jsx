@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { MANAGEMENT_COMPANY } from "../backend/Constants";
 import { getCondo } from '../backend/PropertyHandler';
 import store from "storejs";
-import {calculateCondoFees, checkRentPaid} from "../backend/FinancialHandler";
+import {calculateCondoFees, payRent, checkRentPaid} from "../backend/FinancialHandler";
 
 /**
  * Represents a component for displaying and managing financial details of a condo.
@@ -20,7 +20,7 @@ const FinancialDetails = () => {
     let { condoId } = useParams();
     const [role, setTheRole] = useState("");
     const [condoDetails, setCondoDetails] = useState({});
-    const [isRentPaid, setIsRentPaid] = useState(false); // State to track whether rent is paid
+    const [isRentPaid, setIsRentPaid] = useState(false); 
     const [fDetails, setFDetails] = useState({
         rent: 0,
         parkingPrice: 0,
@@ -59,14 +59,14 @@ const FinancialDetails = () => {
         status
     } = condoDetails;
 
-    /**
-     * Toggles the rent payment status state between true and false.
-     * If rent is currently paid, it sets the state to unpaid, and vice versa.
-     * @returns {void}
-     */
-    const toggleRentPaid = () => {
-        setIsRentPaid(!isRentPaid);
-    };
+    const PayRent = async () => {
+        try{
+            const pay = await payRent(condoId);
+        }
+        catch (error) {
+            console.error("Error paying the rent", error);
+        }
+    }
 
     /**
      * Fetches financial details asynchronously and updates the financial details state.
@@ -176,7 +176,7 @@ const FinancialDetails = () => {
                     </>
                 )}
             </div>
-            <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
+            <button onClick={PayRent} className='PayingRent'>Pay Rent</button>
         </div>
     );
 };
