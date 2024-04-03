@@ -26,6 +26,7 @@ const sampleRequest = {
 import {ADMINISTRATIVE_STEPS, FINANCIAL_STEPS, OPERATIONAL_STEPS, TYPES} from "./Constants";
 import { cleanData } from "./DataCleaner";
 import {getPropertyPicture} from "./ImageHandler";
+import { getReservationUpdates } from "./FacilityHandler";
 
 //Sprint 3
 
@@ -249,6 +250,7 @@ export async function getNotifications(userID){
                 var data = doc.data();
                 notifications.push(data);
             }));
+        var updates = await getReservationUpdates(userID);
         return sortArray(notifications, 'date');
     } catch(e) {
         console.error("Error getting notifications: ", e);
