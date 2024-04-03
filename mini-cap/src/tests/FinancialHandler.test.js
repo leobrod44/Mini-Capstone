@@ -42,10 +42,6 @@ import {cleanData} from "../backend/DataCleaner";
 import {getPropertyPicture, setPictureWithID} from "../backend/ImageHandler";
 import {calculateCondoFees, checkRentPaid, payRent} from "../backend/FinancialHandler";
 
-
-const financialHandler = require('../backend/FinancialHandler');
-
-
 // Mock Firebase storage functions
 jest.mock('firebase/firestore', () => ({
     getFirestore: jest.fn(() => 'mockedDb'),

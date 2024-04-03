@@ -11,6 +11,7 @@ emailjs.init({
     publicKey: "Gw4N_w4eDx939VEBl",
 });
 
+
 /**
  * Updates the rentPaid field of a condominium to mark that rent has been paid.
  * @param {string} condoID - The ID of the condominium.
@@ -31,8 +32,6 @@ export async function payRent(condoID) {
         throw new Error(error);
     }
 }
-
-
 
 /**
  * Checks whether rent has been paid for a condominium.
@@ -128,3 +127,4 @@ export async function calculateCondoFees(condoId) {
         throw error;
     }
 }
+

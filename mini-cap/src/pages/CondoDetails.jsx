@@ -19,7 +19,8 @@ import { MANAGEMENT_COMPANY } from "../backend/Constants";
 import CondoRequests from "../components/CondoRequestsView.jsx";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { getRequests } from "../backend/RequestHandler";
-import { FaCheck, FaTimes } from "react-icons/fa"; // Import icons from react-icons library
+import { FaCheck, FaTimes } from "react-icons/fa";
+import {generateFinancialReport} from "../backend/FinancialReportHandler"; // Import icons from react-icons library
 
 /**
  * CondoDetails Component
@@ -218,6 +219,14 @@ export default function CondoDetails() {
     return <div>Loading...</div>;
   }
 
+  const handleGenerateReport = async () => {
+    try {
+      await generateFinancialReport(condoId);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <div className="pageContainer">
       <>
@@ -368,6 +377,7 @@ export default function CondoDetails() {
                                 </button>
                               </>
                             )}
+                            <div><button className="sendkey-button" onClick={handleGenerateReport}>Generate Report</button></div>
                           </div>
                         </>
                       )}
