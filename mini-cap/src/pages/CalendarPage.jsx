@@ -6,6 +6,7 @@ import Calendar from 'react-calendar';
 import "../index.css";
 import 'react-calendar/dist/Calendar.css'; // Import default styles
 import "../styling/Calendar.css";
+import { getMonthlyReservations, makeReservation } from "../backend/FacilityHandler";
 
 const CalendarPage = ({ totalAvailableSlots }) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -78,12 +79,12 @@ const CalendarPage = ({ totalAvailableSlots }) => {
     };
 
     // Function to handle reservation
-    const handleReservation = () => {
+    const handleReservation = async () => {
         if (!selectedTimeSlot) {
             console.error("No time slot selected for reservation.");
             return;
         }
-
+        
         const [startTime, endTime] = selectedTimeSlot.split(' - ');
         const reservationDateTime = new Date(selectedDate);
         reservationDateTime.setHours(0, 0, 0, 0);
@@ -98,8 +99,38 @@ const CalendarPage = ({ totalAvailableSlots }) => {
             console.error("This time slot is already reserved.");
             return;
         }
+        //Backend functions, put them where appropriate
+        try{
+            //missing these values
+            var userID = "leobrod44@gmail.com"
+            var facilityID = "QhxkTBqDpzJdalTvD92S"
+            var propertyID = "QPIOS5Tmww195XJyKlRM"
 
-        // Add the selected time slot to reserved list
+            await makeReservation(
+                {
+                    month: reservationDateTime.getMonth(),
+                    date:reservationDateTime.getDate(), 
+                    startTime, 
+                    endTime, 
+                    userID, 
+                    facilityID,
+                    propertyID
+                });
+        }
+        catch(e){
+            console.error(e);
+        }
+        
+        // this returns a json with each date of the month as a key and any existing reservations as start time values
+        const reservations =  await getMonthlyReservations(propertyID,facilityID,reservationDateTime.getMonth());
+       
+        //ex:
+        // 13:['10:30 AM']
+        // 16:['10:30 AM']
+        // 18:['09:00 AM']
+        // 19:['10:30 AM', '09:00 AM']
+        //you can use this to check if the date is reserved
+        
         const newReservedTimeSlot = { date: reservationDateTime, startTime, endTime };
         setReservedTimeSlots([...reservedTimeSlots, newReservedTimeSlot]);
 

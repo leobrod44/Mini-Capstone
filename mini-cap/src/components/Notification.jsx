@@ -28,7 +28,7 @@ const Notification = () => {
         setNotifications(fetchedNotifications);
         
         //doms code
-        const unviewedNotifications = notifs.filter(notification => !notification.viewed);
+        const unviewedNotifications = fetchedNotifications.filter(notification => !notification.viewed);
             setUnviewedCount(unviewedNotifications.length);
       } catch (error) {
         console.error("Error fetching notifications:", error);
@@ -60,7 +60,7 @@ const Notification = () => {
   // Function to handle clicking on a notification
   const handleNotificationClickInsideModal = async (notification) => {
     try {
-      await setNotificationViewed(userID, notification);
+      await setNotificationViewed(userID, notification.id);
       navigateToDestination(notification);
     } catch (error) {
       console.error("Error setting notification viewed:", error);

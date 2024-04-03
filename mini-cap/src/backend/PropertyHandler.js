@@ -376,7 +376,7 @@ export async function getUserCondos(email) {
         const propertyDoc = await getDoc(propertyDocRef);
 
         if (propertyDoc.exists()) {
-          condoData.property = propertyDoc.data().address;
+          condoData.property = propertyDoc.id;
           condoData.propertyName = propertyDoc.data().propertyName;
           return condoData;
         } else return null;
