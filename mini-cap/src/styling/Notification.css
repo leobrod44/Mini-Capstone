@@ -125,18 +125,17 @@
 }
 
 .notifPopup {
-    width: 14px;
-    height: 14px;
-    background-color: rgb(238, 90, 90);
-    border-radius: 50%;
-    position: absolute;
-    top: 50px;
-    right: 177px;
-    font-size:xx-small;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 10px;
-
+  width: 14px;
+  height: 14px;
+  background-color: rgb(238, 90, 90);
+  border-radius: 50%;
+  position:relative;
+  top: 18px;
+  right: -30px;
+  font-size:xx-small;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 10px;
 }

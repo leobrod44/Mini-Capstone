@@ -115,7 +115,7 @@ const navigateToDestination = (notification) => {
                   key={index}
                   notification={notification}
                   onClick={() =>
-                    handleNotificationClickInsideModal(notification)
+                  handleNotificationClickInsideModal(notification)
                   }
                 />
               ))}
