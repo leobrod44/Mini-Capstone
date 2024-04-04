@@ -16,7 +16,7 @@ import {calculateCondoFees, payRent, checkRentPaid} from "../backend/FinancialHa
  * Temporarily allows toggling the rent payment status.
  * @returns {JSX.Element} The rendered FinancialDetails component.
  */
-const FinancialDetails = () => {
+const FinancialDetails = ({onRentStatusChange}) => {
     let { condoId } = useParams();
     const [role, setTheRole] = useState("");
     const [condoDetails, setCondoDetails] = useState({});
@@ -62,6 +62,9 @@ const FinancialDetails = () => {
     const PayRent = async () => {
         try{
             const pay = await payRent(condoId);
+            const payed = await checkRentPaid(condoId)
+            setIsRentPaid(payed);
+            onRentStatusChange(payed);
         }
         catch (error) {
             console.error("Error paying the rent", error);

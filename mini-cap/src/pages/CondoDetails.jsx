@@ -226,6 +226,10 @@ export default function CondoDetails() {
     setRentPaidStatus();
   }, [condoId]);
 
+  const handleRentStatusChange = (rentPaid) => {
+    setIsRentPaid(rentPaid);
+  };
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -625,7 +629,7 @@ export default function CondoDetails() {
                     </div>
                   </div>
                   <div className="other-info">
-                    {showFinancialDetails && <FinancialDetails />}
+                    {showFinancialDetails && <FinancialDetails onRentStatusChange={handleRentStatusChange}/>}
                   </div>
                   <div
                     id="modal"
