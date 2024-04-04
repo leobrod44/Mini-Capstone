@@ -20,7 +20,7 @@ const FinancialDetails = ({onRentStatusChange}) => {
     let { condoId } = useParams();
     const [role, setTheRole] = useState("");
     const [condoDetails, setCondoDetails] = useState({});
-    const [isRentPaid, setIsRentPaid] = useState(false); 
+    const [isRentPaid, setIsRentPaid] = useState(false);
     const [fDetails, setFDetails] = useState({
         rent: 0,
         parkingPrice: 0,
@@ -59,6 +59,11 @@ const FinancialDetails = ({onRentStatusChange}) => {
         status
     } = condoDetails;
 
+    /**
+     * Attempts to pay the rent for the current condo.
+     * Updates the rent payment status and triggers the onRentStatusChange callback.
+     * @returns {void}
+     */
     const PayRent = async () => {
         try{
             const pay = await payRent(condoId);
