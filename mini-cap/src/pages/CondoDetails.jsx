@@ -212,7 +212,7 @@ export default function CondoDetails() {
     setShowFinancialDetails(!showFinancialDetails);
   };
 
-  //Function to check paid status
+  // Function to check paid status
   useEffect(() => {
     const setRentPaidStatus = async () => {
       try {
@@ -226,6 +226,7 @@ export default function CondoDetails() {
     setRentPaidStatus();
   }, [condoId]);
 
+  // Handles the status change originating from Financial Details component
   const handleRentStatusChange = (rentPaid) => {
     setIsRentPaid(rentPaid);
   };
