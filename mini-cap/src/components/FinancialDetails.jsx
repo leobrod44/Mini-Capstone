@@ -39,6 +39,7 @@ const FinancialDetails = ({onRentStatusChange}) => {
     useEffect(() => {
         const fetchCondo = async () => {
             try {
+                console.log("condoId:", condoId);
                 setTheRole(store("role"));
                 const condo = await getCondo(condoId);
                 setCondoDetails(condo);
@@ -172,7 +173,7 @@ const FinancialDetails = ({onRentStatusChange}) => {
             <br></br>
             <div className="other-info1">
                 <span className="FinanceText">Rent Paid: </span>
-                <span className="textDetail">{getRentPaymentStatus()}</span>
+                <span className="textDetail" data-testid="rent-payment-status">{getRentPaymentStatus()}</span>
                 {role !== MANAGEMENT_COMPANY && (
                     <>
                         {isRentPaid ? <FaCheck className="green-check" /> : <FaTimes className="red-cross" />}
