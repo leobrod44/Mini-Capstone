@@ -14,6 +14,20 @@
     position: relative; 
 }
 
+.notifPopup {
+  width: 20px;
+  height: 20px;
+  background-color: rgb(238, 90, 90);
+  border-radius: 50%;
+  position: absolute;
+  font-size: small;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  margin-left:50%;
+}
+
 .notif:hover{
    color:#7975d6;
 }
@@ -122,21 +136,4 @@
   background: #4540db; 
   transition: 0.3s;
   
-}
-
-.notifPopup {
-    width: 14px;
-    height: 14px;
-    background-color: rgb(238, 90, 90);
-    border-radius: 50%;
-    position: absolute;
-    top: 50px;
-    right: 177px;
-    font-size:xx-small;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 10px;
-
 }
