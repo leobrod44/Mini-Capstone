@@ -7,6 +7,7 @@ import { getNotifications } from "../backend/RequestHandler";
 import { setNotificationViewed } from "../backend/RequestHandler";
 import store from "storejs";
 
+// Notification component function
 const Notification = () => {
   const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false); // State for managing dropdown menu visibility
@@ -15,7 +16,7 @@ const Notification = () => {
   const userID = store("user"); // Get userID from local storage or context
   const navigate = useNavigate();
 
-    // Function to toggle menu visibility
+  // Function to toggle menu visibility
   const toggleMenu = () => {
     setOpen(!open);
   };
@@ -24,12 +25,14 @@ const Notification = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const fetchedNotifications = await getNotifications(userID);
-        setNotifications(fetchedNotifications);
-        
-        //doms code
-        const unviewedNotifications = fetchedNotifications.filter(notification => !notification.viewed);
-            setUnviewedCount(unviewedNotifications.length);
+        const fetchedNotifications = await getNotifications(userID); //Fetch notifications for the user
+        setNotifications(fetchedNotifications);  // Update notifications state with fetched notifications
+
+        /// Calculate count of unviewed notifications
+        const unviewedNotifications = fetchedNotifications.filter(
+          (notification) => !notification.viewed
+        );
+        setUnviewedCount(unviewedNotifications.length);
       } catch (error) {
         console.error("Error fetching notifications:", error);
       }
@@ -37,11 +40,12 @@ const Notification = () => {
 
     fetchNotifications();
 
+    // Event listener to handle clicks outside the dropdown menu
     document.addEventListener("click", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, [open, userID]); 
+  }, [open, userID]);// Dependency array to re-fetch notifications when 'open' state or userID changes
 
   // Function to handle clicking outside the modal
   const handleClickOutside = (event) => {
@@ -50,47 +54,53 @@ const Notification = () => {
     }
   };
 
-    /**
-     * State variable to hold the count of unviewed notifications.
-     * @type {[number, React.Dispatch<React.SetStateAction<number>>]}
-     */
-    const [unviewedCount, setUnviewedCount] = useState(0);
-
+  /**
+   * State variable to hold the count of unviewed notifications.
+   * @type {[number, React.Dispatch<React.SetStateAction<number>>]}
+   */
+  const [unviewedCount, setUnviewedCount] = useState(0);
 
   // Function to handle clicking on a notification
   const handleNotificationClickInsideModal = async (notification) => {
     try {
-      await setNotificationViewed(userID, notification.id);
-      navigateToDestination(notification);
+      await setNotificationViewed(userID, notification.id);// Mark notification as viewed
+      navigateToDestination(notification);// Navigate to the destination specified in the notification
     } catch (error) {
       console.error("Error setting notification viewed:", error);
     }
   };
 
   // Function to navigate to the destination specified in the notification
-const navigateToDestination = (notification) => {
-  try {
-  if (notification.path) {
-    navigate(notification.path);
-    window.location.reload();
-  } else {
-    console.error("Notification does not have a path specified:", notification);
-  }
-} catch (error) {
-    console.error("Error during navigation:", error);
-  }
-};
+  const navigateToDestination = (notification) => {
+    try {
+      if (notification.path) {
+        navigate(notification.path);// Navigate to the specified path
+        window.location.reload();// Reload the page after navigation
+      } else {
+        console.error(
+          "Notification does not have a path specified:",
+          notification
+        );
+      }
+    } catch (error) {
+      console.error("Error during navigation:", error);
+    }
+  };
 
   // Function to handle clicking on "See All" button
   const handleSeeAllInsideModal = () => {
     setShowAll((prevState) => !prevState); // Toggle the showAll state
   };
 
+
+  // JSX rendering
   return (
     <div className="notification-container" ref={menuRef}>
       <div className="notif-wrapper">
-         { unviewedCount > 0 &&(
-            <div className="notifPopup" data-testid="popup">{unviewedCount}</div>
+        {unviewedCount > 0 && (
+          <div className="notifPopup" data-testid="popup">
+            {unviewedCount}
+          </div>
         )}
         <IoIosNotifications
           className="notif"
@@ -111,7 +121,7 @@ const navigateToDestination = (notification) => {
               .slice(0, showAll ? notifications.length : 3)
               .map((notification, index) => (
                 <NotificationElement
-                data-testid="notification-element"
+                  data-testid="notification-element"
                   key={index}
                   notification={notification}
                   onClick={() =>
