@@ -114,6 +114,14 @@ const PropertyDetailsPage = () => {
                   Add Property Files
                 </Link>
               </div>
+              <div>
+                <Link
+                  className="property-buttons" // Using the same class for consistent styling
+                  to={`/facilities/${propertyID}/${propertyName}`} // Construct the path for the Facility Page
+                >
+                  Facilities
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="edit_container">

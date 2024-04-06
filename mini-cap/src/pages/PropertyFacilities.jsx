@@ -1,15 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
 import "../index.css";
 import "../styling/PropertyFacilities.css";
 import FacilityForm from "../components/FacilityForm";
+import { getFacilities, deleteFacility } from "../backend/FacilityHandler";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function PropertyFacilities() {
-  const [facilities, setFacilities] = useState([]); // This will hold your facilities data
-  const [isEditMode, setIsEditMode] = useState(false); // To toggle between edit mode and view mode
-  const [currentFacility, setCurrentFacility] = useState(null); // To keep track of the facility being edited
+  const { propertyID } = useParams();
+  const [facilities, setFacilities] = useState([]);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [currentFacility, setCurrentFacility] = useState(null);
+
+  useEffect(() => {
+    const fetchFacilities = async () => {
+      try {
+        const facilitiesData = await getFacilities(propertyID);
+        // Map the Firestore documents to your state structure
+        const mappedFacilities = facilitiesData.map((doc) => ({
+          id: doc.id,
+          type: doc.type,
+          description: doc.description,
+          startHour: "08:00",
+          endHour: "22:00",
+        }));
+        console.log("Facilities:", mappedFacilities);
+        setFacilities(mappedFacilities);
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch facilities.");
+      }
+    };
+    fetchFacilities();
+  }, [propertyID]);
 
   const handleAddFacility = () => {
     setCurrentFacility(null);
@@ -17,36 +43,48 @@ export default function PropertyFacilities() {
   };
 
   const handleEditFacility = (facility) => {
+    console.log("Editing facility with ID:", facility.id); // Log the facility ID
     setCurrentFacility(facility);
     setIsEditMode(true);
   };
 
-  const handleSaveFacility = (facility) => {
-    if (currentFacility) {
-      // Update existing facility
-      console.log("Update facility logic here");
-    } else {
-      // Add new facility
-      console.log("Add new facility logic here");
-    }
+  const handleSaveFacility = async () => {
     setIsEditMode(false);
-  };
-
-  const handleDeleteFacility = (facilityId) => {
-    console.log("Delete facility logic here");
+    // Fetch the updated list of facilities
+    try {
+      const updatedFacilities = await getFacilities(propertyID);
+      setFacilities(
+        updatedFacilities.map((doc) => ({
+          id: doc.id,
+          type: doc.type,
+          description: doc.description,
+          startHour: "08:00",
+          endHour: "22:00",
+        }))
+      );
+      //toast.success("Facility updated successfully!");
+    } catch (error) {
+      console.error("Error fetching updated facilities:", error);
+      toast.error("Failed to fetch updated facilities.");
+    }
   };
 
   const handleCancelEdit = () => {
     setIsEditMode(false);
   };
 
-  // Temporary mock facility for display
-  const mockFacility = {
-    id: 1,
-    name: "Gym",
-    description: "Apes together... strong.",
-    startHour: "06:00",
-    endHour: "22:00",
+  const handleDeleteFacility = async (facilityId) => {
+    console.log("Deleting facility with facilityID:", facilityId); // Log the facilityId
+    try {
+      await deleteFacility(propertyID, facilityId);
+      toast.success("Facility deleted successfully!");
+      setFacilities(
+        facilities.filter((facility) => facility.id !== facilityId)
+      );
+    } catch (error) {
+      console.error("Error deleting facility:", error);
+      toast.error("Failed to delete facility.");
+    }
   };
 
   return (
@@ -64,44 +102,45 @@ export default function PropertyFacilities() {
             >
               Add Facility
             </button>
+            {facilities.map((facility) => (
+              <div key={facility.id} className="facility-card">
+                <h5>{facility.type}</h5>{" "}
+                {/* Use the type field from Firestore */}
+                <p>{facility.description}</p>
+                <p>
+                  Hours: {facility.startHour} - {facility.endHour}
+                </p>
+                <div className="button-group">
+                  <button
+                    className="edit-button delete-button"
+                    onClick={() => handleDeleteFacility(facility.id)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="edit-button"
+                    onClick={() => handleEditFacility(facility)}
+                  >
+                    Edit
+                  </button>
+                </div>
+              </div>
+            ))}
           </>
         )}
-        {/* Conditional rendering based on edit mode */}
-        {isEditMode ? (
-          // Render the FacilityForm when in edit mode
+        {isEditMode && (
           <FacilityForm
             onSave={handleSaveFacility}
             onCancel={handleCancelEdit}
             facility={currentFacility}
             isEditing={currentFacility !== null}
+            propertyID={propertyID}
             data-testid="facility-form"
           />
-        ) : (
-          // This is the temporary rendering of a single facility
-          <div className="facility-card">
-            <h5>{mockFacility.name}</h5>
-            <p>{mockFacility.description}</p>
-            <p>
-              Hours: {mockFacility.startHour} - {mockFacility.endHour}
-            </p>
-            <div className="button-group">
-              <button
-                className="edit-button delete-button"
-                onClick={() => handleDeleteFacility(mockFacility.id)}
-              >
-                Delete
-              </button>
-              <button
-                className="edit-button"
-                onClick={() => handleEditFacility(mockFacility)}
-              >
-                Edit
-              </button>
-            </div>
-          </div>
         )}
       </div>
       <Footer />
+      <ToastContainer />
     </div>
   );
 }

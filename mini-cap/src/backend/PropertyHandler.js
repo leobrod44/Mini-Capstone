@@ -8,14 +8,14 @@ import {
   getFirestore,
   query,
   updateDoc,
-  where
+  where,
 } from "firebase/firestore";
-import {initializeApp} from "firebase/app";
-import {cleanData, sortArray} from "./DataCleaner";
+import { initializeApp } from "firebase/app";
+import { cleanData, sortArray } from "./DataCleaner";
 import store from "storejs";
 import emailjs from "@emailjs/browser";
-import {firebaseConfig} from "./FirebaseConfig";
-import {getPropertyPicture, setPictureWithID} from "./ImageHandler";
+import { firebaseConfig } from "./FirebaseConfig";
+import { getPropertyPicture, setPictureWithID } from "./ImageHandler";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -515,7 +515,6 @@ const sampleAmenity = {
   price: 100,
   unitNumber: 1,
 };
-
 
 /**
  * Retrieves a list of amenities associated with a property.
