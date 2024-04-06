@@ -113,7 +113,7 @@ export default function PropertyFacilities() {
                 <div className="button-group">
                   <button
                     className="edit-button delete-button"
-                    onClick={() => handleDeleteFacility(facility.id)}
+                    //onClick={() => handleDeleteFacility(facility.id)}
                   >
                     Delete
                   </button>

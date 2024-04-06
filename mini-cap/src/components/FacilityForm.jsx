@@ -99,7 +99,7 @@ const FacilityForm = ({
           />
         </label>
         <div className="form-button-group">
-          <button type="submit" className="edit-button">
+          <button type="button" className="edit-button">
             Save
           </button>
           <button type="button" onClick={onCancel} className="delete-button">
