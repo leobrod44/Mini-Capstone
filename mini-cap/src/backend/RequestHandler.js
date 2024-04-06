@@ -10,9 +10,15 @@ import {
 } from "firebase/firestore";
 import { firebaseConfig } from "./FirebaseConfig";
 import store from "storejs";
+import { getCondo, getPropertyData } from "./PropertyHandler";
+import {ADMINISTRATIVE_STEPS, FINANCIAL_STEPS, MANAGEMENT_COMPANY, OPERATIONAL_STEPS, TYPES} from "./Constants";
+import { cleanData } from "./DataCleaner";
+import {getPropertyPicture} from "./ImageHandler";
+import { getReservationUpdates } from "./FacilityHandler";
+import { sortArray } from "./DataCleaner";
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-import { sortArray } from "./DataCleaner";
+
 
 const sampleRequest = {
     "requestID": "1",
@@ -22,10 +28,6 @@ const sampleRequest = {
     "step": 1,
     "viewed": false,
   }
-  import { getCondo, getPropertyData } from "./PropertyHandler";
-import {ADMINISTRATIVE_STEPS, FINANCIAL_STEPS, OPERATIONAL_STEPS, TYPES} from "./Constants";
-import { cleanData } from "./DataCleaner";
-import {getPropertyPicture} from "./ImageHandler";
 
 //Sprint 3
 
@@ -145,6 +147,7 @@ export async function updateRequest(condoID, requestID) {
             } catch(e){
                 console.error("Error assigning worker: ", e);
             }
+            await addRequestNotification(1, userEmail, requestData);
         }
         else{
             var userEmail = (await getCondo(condoID)).occupant;
@@ -241,15 +244,24 @@ export async function getAssignedWorker(condoID, requestID) {
 //Returns: array of new notifications containing message to display and path
 export async function getNotifications(userID){
     try {
-        const notificationCollection = collection(doc(db, 'Users', userID), 'Notifications');
+        var role  = store("role")==MANAGEMENT_COMPANY ? "Company" : "Users";
+        const notificationCollection = collection(doc(db, role, userID), 'Notifications');
         const notificationSnapshot = await getDocs(notificationCollection);
-        var notifications = [];
-        await Promise.all(
-            notificationSnapshot.docs.map(async (doc) => {
+        var notifications = notificationSnapshot.docs.map( (doc) => {
                 var data = doc.data();
-                notifications.push(data);
-            }));
-        return sortArray(notifications, 'date');
+                if(data.isReservation){
+                    var current = new Date().getDate();
+                    var date = new Date(data.date).getDate();
+                    if(current == date || current+1 == date){
+                        return data;
+                    }
+                }
+                else{
+                    return data;
+                }
+            });
+        notifications = notifications.filter(notification => notification != null);
+        return sortArray(notifications, 'date').reverse();
     } catch(e) {
         console.error("Error getting notifications: ", e);
     }
@@ -274,9 +286,30 @@ export async function addRequestNotification(destinatiorType, email, requestData
             message: requestData.notes,
             path: `/condo-details/${requestData.condoID}`,
             date: new Date().toISOString(),
-            viewed: false
+            viewed: false,
+            isReservation: false
         });
-         return docRef.id;
+        await updateDoc(docRef, { id: docRef.id });
+        return docRef.id;
+    } catch(e) {
+        console.error("Error adding notification: ", e);
+    }
+}
+export async function addReservationNotification(email, reservationData){
+    try {
+
+        var facility = await getDoc(doc(db, `Property/${reservationData.propertyID}/Facilities/${reservationData.facilityID}`));
+
+        const docRef = await addDoc(collection(doc(db, 'Users', email), 'Notifications'), {
+            message: reservationData.startTime + "-" + reservationData.endTime,
+            path: "/my-reservations",
+            date: (new Date(2024, reservationData.month, reservationData.date, 0, 0, 0, 0).toISOString()),
+            type: facility.data().type,
+            viewed: false,
+            isReservation: true
+        });
+        await updateDoc(docRef, { id: docRef.id });
+        return docRef.id;
     } catch(e) {
         console.error("Error adding notification: ", e);
     }

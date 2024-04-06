@@ -1,0 +1,59 @@
+
+.notification-element{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column; 
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    width: 100%;
+}
+
+.notification-element:hover{
+    background-color: #4540db28;
+}
+
+  .notification-element.not-clicked {
+    background-color:   #4540db13;
+  }
+
+  .notification-element.not-clicked:hover{
+    background-color: #4540db28;
+}
+.notification-info{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notifMsg{
+    font-weight: bold;
+    color:  #4540db;
+    font-size: 15px;
+}
+
+.unitNumber{
+    color: var(--primary-text-color);
+    font-size: 13px;
+}
+
+.notification-details{
+    display: flex;
+    align-items: center;
+}
+
+.icon-date-wrapper {
+    display: flex;
+    align-items: center;
+  }
+
+.exclamation-icon{
+    color: #7975d6;
+    margin-right: 5px;
+}
+
+.date-time{
+    font-size: 0.8rem;
+    margin-right: 10px;
+    color:black;
+}
+
