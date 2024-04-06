@@ -7,6 +7,7 @@ import "../index.css";
 import "../styling/PropertyFacilities.css";
 import FacilityForm from "../components/FacilityForm";
 import { getFacilities, deleteFacility } from "../backend/FacilityHandler";
+import { getPropertyData } from "../backend/PropertyHandler";
 import { toast, ToastContainer } from "react-toastify";
 
 export default function PropertyFacilities() {
@@ -14,6 +15,7 @@ export default function PropertyFacilities() {
   const [facilities, setFacilities] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentFacility, setCurrentFacility] = useState(null);
+  const [propertyName, setPropertyName] = useState(""); // State to store the property name
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -35,6 +37,21 @@ export default function PropertyFacilities() {
       }
     };
     fetchFacilities();
+  }, [propertyID]);
+
+  useEffect(() => {
+    const fetchPropertyName = async () => {
+      try {
+        const propertyData = await getPropertyData(propertyID);
+        if (propertyData) {
+          setPropertyName(propertyData.propertyName); // Assuming the property name is stored under the key 'name'
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to fetch property name.");
+      }
+    };
+    fetchPropertyName();
   }, [propertyID]);
 
   const handleAddFacility = () => {
@@ -92,40 +109,55 @@ export default function PropertyFacilities() {
       <Header />
       <BackArrowBtn />
 
-      <h3 className="facilities-title">Property Facilities</h3>
+      <h3 className="facilities-title">{propertyName} Facilities</h3>
       <div className="facilities-container">
         {!isEditMode && (
           <>
-            <button
-              className="facility-action-button"
-              onClick={handleAddFacility}
-            >
-              Add Facility
-            </button>
-            {facilities.map((facility) => (
-              <div key={facility.id} className="facility-card">
-                <h5>{facility.type}</h5>{" "}
-                {/* Use the type field from Firestore */}
-                <p>{facility.description}</p>
-                <p>
-                  Hours: {facility.startHour} - {facility.endHour}
+            {facilities.length === 0 ? (
+              <div className="facility-card no-facilities-card">
+                <p className="no-facilities-text">
+                  You have not added any facilities yet.
                 </p>
-                <div className="button-group">
-                  <button
-                    className="edit-button delete-button"
-                    //onClick={() => handleDeleteFacility(facility.id)}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    className="edit-button"
-                    onClick={() => handleEditFacility(facility)}
-                  >
-                    Edit
-                  </button>
-                </div>
+                <button
+                  className="facility-action-button"
+                  onClick={handleAddFacility}
+                >
+                  Add Facility
+                </button>
               </div>
-            ))}
+            ) : (
+              <>
+                <button
+                  className="facility-action-button"
+                  onClick={handleAddFacility}
+                >
+                  Add Facility
+                </button>
+                {facilities.map((facility) => (
+                  <div key={facility.id} className="facility-card">
+                    <h5>{facility.type}</h5>
+                    <p>{facility.description}</p>
+                    <p>
+                      Hours: {facility.startHour} - {facility.endHour}
+                    </p>
+                    <div className="button-group">
+                      <button
+                        className="edit-button delete-button"
+                        onClick={() => handleDeleteFacility(facility.id)}
+                      >
+                        Delete
+                      </button>
+                      <button
+                        className="edit-button"
+                        onClick={() => handleEditFacility(facility)}
+                      >
+                        Edit
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
           </>
         )}
         {isEditMode && (

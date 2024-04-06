@@ -50,7 +50,7 @@ const FacilityForm = ({
 
     try {
       if (isEditing) {
-        const result = await editFacility(facility.id, facilityData);
+        const result = await editFacility(facility.id, facilityData); // Make sure facility.id is correct
         if (result.success) {
           toast.success(result.message);
         } else {

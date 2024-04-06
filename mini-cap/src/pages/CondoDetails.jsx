@@ -20,7 +20,7 @@ import CondoRequests from "../components/CondoRequestsView.jsx";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { getRequests } from "../backend/RequestHandler";
 import { FaCheck, FaTimes } from "react-icons/fa";
-import {generateFinancialReport} from "../backend/FinancialReportHandler"; // Import icons from react-icons library
+import { generateFinancialReport } from "../backend/FinancialReportHandler"; // Import icons from react-icons library
 
 /**
  * CondoDetails Component
@@ -377,7 +377,14 @@ export default function CondoDetails() {
                                 </button>
                               </>
                             )}
-                            <div><button className="generate-report-button" onClick={handleGenerateReport}>Generate Report</button></div>
+                            <div>
+                              <button
+                                className="generate-report-button"
+                                onClick={handleGenerateReport}
+                              >
+                                Generate Report
+                              </button>
+                            </div>
                           </div>
                         </>
                       )}
@@ -676,9 +683,6 @@ export default function CondoDetails() {
           <Footer />
         </div>
       </>
-      <button onClick={() => toast.success("Test Success Message")}>
-        Test Toast
-      </button>
     </div>
   );
 }

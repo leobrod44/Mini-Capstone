@@ -267,8 +267,11 @@ export async function getFacilities(propertyID) {
     var facilities = [];
 
     // Process facility documents
-    facilityCollection.forEach((doc) => {
-      facilities.push(doc.data());
+    facilityCollection.forEach((docSnapshot) => {
+      facilities.push({
+        id: docSnapshot.id, // Add the ID of the document here
+        ...docSnapshot.data(), // Spread the document data
+      });
     });
 
     return facilities;

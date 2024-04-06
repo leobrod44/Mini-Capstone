@@ -116,8 +116,8 @@ const PropertyDetailsPage = () => {
               </div>
               <div>
                 <Link
-                  className="property-buttons" // Using the same class for consistent styling
-                  to={`/facilities/${propertyID}/${propertyName}`} // Construct the path for the Facility Page
+                  className="property-buttons centered-text-button"
+                  to={`/facilities/${propertyID}/${propertyName}`}
                 >
                   Facilities
                 </Link>
