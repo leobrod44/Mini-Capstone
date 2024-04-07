@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
 import "../index.css";
 import "../styling/FacilityForm.css";
-import { addFacility } from "../backend/FacilityHandler";
+import { addFacility, editFacility } from "../backend/FacilityHandler";
+import { toast } from "react-toastify";
 
-const FacilityForm = ({ onSave, onCancel, facility, isEditing }) => {
+const FacilityForm = ({
+  onSave,
+  onCancel,
+  facility,
+  isEditing,
+  propertyID,
+}) => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -30,28 +37,34 @@ const FacilityForm = ({ onSave, onCancel, facility, isEditing }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Basic validation for the description
-    if (!formData.description.trim()) {
-      alert("Description cannot be empty.");
+    if (!formData.title || !formData.description) {
+      toast.error("Please fill in all fields.");
       return;
     }
 
-    // Include fixed start and end times
-    const dataToSave = {
-      ...formData,
-      startHour: "08:00",
-      endHour: "22:00",
+    const facilityData = {
+      title: formData.title,
+      description: formData.description,
+      propertyID,
     };
 
-    onSave(dataToSave);
     try {
-
-      await addFacility(dataToSave);
-    } catch (e) {
-      console.error(e);
+      if (isEditing) {
+        const result = await editFacility(facility.id, facilityData); // Make sure facility.id is correct
+        if (result.success) {
+          toast.success(result.message);
+        } else {
+          toast.error(result.message);
+        }
+      } else {
+        await addFacility(facilityData);
+        toast.success("Facility added successfully!");
+      }
+      onSave();
+    } catch (error) {
+      console.error("Error saving facility:", error);
+      toast.error("Failed to save facility.");
     }
-
   };
 
   return (

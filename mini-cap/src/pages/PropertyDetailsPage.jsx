@@ -114,6 +114,14 @@ const PropertyDetailsPage = () => {
                   Add Property Files
                 </Link>
               </div>
+              <div>
+                <Link
+                  className="property-buttons centered-text-button"
+                  to={`/facilities/${propertyID}/${propertyName}`}
+                >
+                  Facilities
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="edit_container">
