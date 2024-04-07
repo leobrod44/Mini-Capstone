@@ -102,7 +102,7 @@
   margin-bottom: 30px;
 }
 
-.top-button-container{
+.top-button-container {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -152,19 +152,19 @@
 .property-link {
   font-family: "Roboto", sans-serif;
   font-weight: 400;
-  font-size: 20px; 
+  font-size: 20px;
   background-color: #4540db;
-  color: #fff; 
-  border: none; 
+  color: #fff;
+  border: none;
   border-radius: 4px;
-  cursor: pointer; 
-  transition: all 0.3s ease; 
-  display: inline-block; 
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   height: 36px;
   width: 150px;
-  flex:1;
+  flex: 1;
   margin-right: 25px;
   margin-left: 25px;
 }
@@ -173,11 +173,18 @@
   display: inline-block;
   line-height: 36px;
   width: 200px;
-  font-size: 20px; 
+  font-size: 20px;
 }
 
 .property-buttons:hover,
 .property-link:hover {
   background-color: #7975d6;
   color: #ffffff;
+}
+
+.centered-text-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none; /* Removes underline from links */
 }

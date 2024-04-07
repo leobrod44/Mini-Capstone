@@ -128,3 +128,18 @@
   justify-content: center;
   gap: 150px; /* Adjust the gap between buttons as needed */
 }
+
+.no-facilities-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-top: 20px; /* Added margin-top for spacing */
+  text-align: center; /* Centers text */
+  width: 100%; /* Adjust width as necessary */
+}
+
+.no-facilities-text {
+  color: #2f2c9b !important; /* Adjust the shade of purple as needed */
+  font-weight: bold; /* Makes the font bolder */
+}
