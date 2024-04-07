@@ -49,11 +49,11 @@ function App() {
           element={<CondoFilesPage />}
         />
         <Route path="/view-files/:userID" element={<ViewFilesPage />} />
-
         <Route path="/calendar" element={<CalendarPage />} />
-
-        <Route path="/facilities" element={<PropertyFacilities />} />
-
+        <Route
+          path="/facilities/:propertyID/:propertyName"
+          element={<PropertyFacilities />}
+        />
       </Routes>
     </BrowserRouter>
   );
