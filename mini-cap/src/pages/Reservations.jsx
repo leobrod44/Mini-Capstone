@@ -2,13 +2,17 @@ import React from "react";
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
 import BackArrowBtn from "../components/BackArrowBtn.jsx";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import Pagination from "../components/Pagination";
 import "../styling/Pagination.css";
 import "../styling/Reservations.css";
 import ReservationComponent from "../components/ReservationComponent.jsx";
 import FacilityComponent from "../components/FacilityComponent.jsx"
+import store from "storejs";
+import { getUserCondos } from "../backend/PropertyHandler.js";
+import { getUsersProperty } from "../backend/ImageHandler";
+import { getFacilities } from "../backend/FacilityHandler";
 
 const Reservations = () => {
     const [visibleFacilities, setVisibleFacilities] = useState({});
@@ -60,6 +64,31 @@ const Reservations = () => {
       indexOfFirstCondo,
       indexOfLastCondo
     );
+
+    ////
+    const  [properties, setProperties] = useState([]);
+
+    useEffect(() => {
+        const fetchProperties = async () => {
+        try {
+            // Fetch properties for the user
+            const userCondos = await getUserCondos(store("user"));
+            const properties = await getUsersProperty(userCondos);
+            await Promise.all(
+            properties.map(async (property) => {
+                return { ...property };
+            })
+            );
+            setProperties(properties);
+            console.log("PROPERTIES THAT HAVE BEEN FETCHED:", properties);
+        } catch (err) {
+            console.error(err);
+        }
+        };
+        fetchProperties();
+    }, []);
+
+
   
     return (
         <div>
@@ -73,7 +102,7 @@ const Reservations = () => {
 
                <div key={condo.id} className="reserve-container">
               <h3 style={{ marginBottom: '20px' }}>Unit Number: {condo.unitNumber}</h3>
-              <h5>Upcoming Reservations</h5>
+              <h5>Upcoming Reservations {store("user")}</h5>
               <div className="reservation">
               {condo.reservations && condo.reservations.length > 0 ? (
                         <ReservationComponent reservations={condo.reservations} />
