@@ -10,7 +10,7 @@ import "../styling/Reservations.css";
 import ReservationComponent from "../components/ReservationComponent.jsx";
 import FacilityComponent from "../components/FacilityComponent.jsx"
 import store from "storejs";
-import { getUserCondos } from "../backend/PropertyHandler.js";
+import { getUserCondos, getPropertyData } from "../backend/PropertyHandler.js";
 import { getUsersProperty } from "../backend/ImageHandler";
 import { getFacilities } from "../backend/FacilityHandler";
 
@@ -67,20 +67,25 @@ const Reservations = () => {
 
     ////
     const  [properties, setProperties] = useState([]);
+    const  [propertyIDs, setPropertyIDs] = useState([]);
 
     useEffect(() => {
         const fetchProperties = async () => {
         try {
             // Fetch properties for the user
             const userCondos = await getUserCondos(store("user"));
-            const properties = await getUsersProperty(userCondos);
-            await Promise.all(
-            properties.map(async (property) => {
-                return { ...property };
-            })
-            );
+            const propertyIDs = await getUsersProperty(userCondos);
+            setPropertyIDs(propertyIDs);
+            
+            const propertyDataPromises = propertyIDs.map(async (propertyID) => {
+                return getPropertyData(propertyID);
+            });
+
+            // Wait for all property data to be fetched
+            const properties = await Promise.all(propertyDataPromises);
             setProperties(properties);
             console.log("PROPERTIES THAT HAVE BEEN FETCHED:", properties);
+            console.log("PROPERTY IDS THAT HAVE BEEN FETCHED:", propertyIDs);
         } catch (err) {
             console.error(err);
         }
@@ -107,7 +112,6 @@ const Reservations = () => {
             <BackArrowBtn />
             < div className="reservations-page-container">
             <h2 style={{ textAlign: 'center', fontSize: '32px', margin: '20px 0' }}>My Reservations</h2>
-
 
             {condosToDisplayPaginated.map((condo, index) => ( 
 
