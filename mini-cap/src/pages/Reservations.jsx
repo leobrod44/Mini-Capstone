@@ -88,7 +88,18 @@ const Reservations = () => {
         fetchProperties();
     }, []);
 
+    const [facilities, setFacilities] = useState([]);
 
+    const fetchFacilities = async (propertyID) => {
+    try {
+        // Fetch facilities for the properties
+        const facilities = await getFacilities(propertyID);
+        setFacilities(facilities);
+        console.log("FACILITIES FOR PROPERTY:", facilities);
+    } catch (err) {
+        console.error(err);
+    }
+    };
   
     return (
         <div>
