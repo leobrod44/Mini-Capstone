@@ -9,6 +9,7 @@ import FacilityForm from "../components/FacilityForm";
 import { getFacilities, deleteFacility } from "../backend/FacilityHandler";
 import { getPropertyData } from "../backend/PropertyHandler";
 import { toast, ToastContainer } from "react-toastify";
+import Pagination from "../components/Pagination";
 
 export default function PropertyFacilities() {
   const { propertyID } = useParams();
@@ -16,6 +17,8 @@ export default function PropertyFacilities() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [currentFacility, setCurrentFacility] = useState(null);
   const [propertyName, setPropertyName] = useState(""); // State to store the property name
+  const [currentPage, setCurrentPage] = useState(1);
+  const facilitiesPerPage = 4;
 
   useEffect(() => {
     const fetchFacilities = async () => {
@@ -53,6 +56,13 @@ export default function PropertyFacilities() {
     };
     fetchPropertyName();
   }, [propertyID]);
+
+  const indexOfLastFacility = currentPage * facilitiesPerPage;
+  const indexOfFirstFacility = indexOfLastFacility - facilitiesPerPage;
+  const currentFacilities = facilities.slice(
+    indexOfFirstFacility,
+    indexOfLastFacility
+  );
 
   const handleAddFacility = () => {
     setCurrentFacility(null);
@@ -133,7 +143,7 @@ export default function PropertyFacilities() {
                 >
                   Add Facility
                 </button>
-                {facilities.map((facility) => (
+                {currentFacilities.map((facility) => (
                   <div key={facility.id} className="facility-card">
                     <h5>{facility.type}</h5>
                     <p>{facility.description}</p>
@@ -170,6 +180,14 @@ export default function PropertyFacilities() {
             data-testid="facility-form"
           />
         )}
+        <div className="pagination-container">
+          <Pagination
+            itemsPerPage={facilitiesPerPage}
+            totalItems={facilities.length}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </div>
       </div>
       <Footer />
       <ToastContainer />
