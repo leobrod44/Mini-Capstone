@@ -14,6 +14,11 @@ const CalendarPage = ({ totalAvailableSlots, propertyID, facilityID }) => {
     const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
     const [reservedTimeSlots, setReservedTimeSlots] = useState([]);
 
+    // Calculate min and max date
+    const currentYear = new Date().getFullYear();
+    const maxDate = new Date(currentYear, 11, 31);
+    const minDate = new Date(currentYear, 0, 1);
+
     useEffect(() => {
         // Fetch available time slots for the selected date
         fetchAvailableTimeSlots(selectedDate);
@@ -286,6 +291,8 @@ const CalendarPage = ({ totalAvailableSlots, propertyID, facilityID }) => {
                             value={selectedDate}
                             tileClassName={tileClassName} 
                             onActiveStartDateChange={handleViewChange}
+                            maxDate={maxDate}
+                            minDate={minDate}
                         />
                     </div>
                     <div className="calendar-container">
