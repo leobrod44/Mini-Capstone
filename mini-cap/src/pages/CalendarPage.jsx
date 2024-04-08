@@ -4,28 +4,43 @@ import Footer from "../components/Footer";
 import BackArrowBtn from "../components/BackArrowBtn";
 import Calendar from 'react-calendar';
 import "../index.css";
-import 'react-calendar/dist/Calendar.css'; // Import default styles
 import "../styling/Calendar.css";
 import { getMonthlyReservations, makeReservation } from "../backend/FacilityHandler";
 
-const CalendarPage = ({ totalAvailableSlots }) => {
+const CalendarPage = ({ totalAvailableSlots, propertyID, facilityID }) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [reservationStatus, setReservationStatus] = useState(null);
     const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
-    const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+    const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
     const [reservedTimeSlots, setReservedTimeSlots] = useState([]);
 
     useEffect(() => {
         // Fetch available time slots for the selected date
         fetchAvailableTimeSlots(selectedDate);
     }, [selectedDate]);
+    useEffect(() => {
+        // Fetch reservations for the selected month when component mounts or page is refreshed
+        fetchReservationsForMonth(selectedDate);
+    }, []);
 
-    // Function to handle date selection
+    /**
+     * Function to handle date selection
+    */
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
+    /**
+     * Function to handle month change
+    */
+    const handleViewChange = ({ activeStartDate }) => {
+        // Convert activeStartDate to a Date object if it's not already
+        const newDate = activeStartDate instanceof Date ? activeStartDate : new Date(activeStartDate);
+        fetchReservationsForMonth(newDate);
+    };
 
-    // Function to fetch available time slots for the selected date
+    /**
+     * Function to fetch available time slots for the selected date
+    */
     const fetchAvailableTimeSlots = async (date) => {
         // Check if the selected date is in the past
         const today = new Date();
@@ -36,9 +51,13 @@ const CalendarPage = ({ totalAvailableSlots }) => {
             return; // Exit the function early
         }
 
-        // Mock function to fetch available time slots (replace with your own implementation)
         try {
             const timeSlots = await fetchTimeSlots(date);
+            if (timeSlots.length === 0) {
+                // If no available slots, set reservationStatus to 'unavailable'
+                setReservationStatus("reserved");
+                return;
+            }
             setAvailableTimeSlots(timeSlots);
             setReservationStatus("available");
         } catch (error) {
@@ -47,38 +66,84 @@ const CalendarPage = ({ totalAvailableSlots }) => {
         }
     };
 
+    /**
+     * Function to fetch available time slots for the given date
+    */
     const fetchTimeSlots = async (date) => {
-        // Perform logic to fetch available time slots for the given date
-        // Here, we'll simulate fetching available time slots for demonstration purposes
-        // You should replace this with your own logic
         const slotDate = new Date(date);
         slotDate.setHours(0, 0, 0, 0);
 
-        const availableTimeSlots = [
+        // temp: change this once we configure how this is passed to the page
+        var facilityID = "QhxkTBqDpzJdalTvD92S"
+        var propertyID = "QPIOS5Tmww195XJyKlRM"
+
+        // this returns a json with each date of the month as a key and any existing reservations as start time values
+        const reservations = await getMonthlyReservations(propertyID, facilityID, slotDate.getMonth());
+
+        // Extract reservation times for the selected date
+        const reservedTimeSlotsForDate = reservations[slotDate.getDate()] || [];
+        // TODO: will this always be hard coded?
+        const defaultTimeSlots = [
             "09:00 AM - 10:00 AM",
             "10:30 AM - 11:30 AM",
             "01:00 PM - 02:00 PM",
             "03:00 PM - 04:00 PM",
         ];
 
-        // Filter out reserved time slots for the selected date
-        const reservedTimeSlotsForDate = reservedTimeSlots.filter(slot => {
-            const slotDate = new Date(slot.date);
-            return slotDate.toDateString() === date.toDateString();
-        });
-
         // Filter available time slots based on reserved time slots for the selected date
-        const filteredTimeSlots = availableTimeSlots.filter(timeSlot => !reservedTimeSlotsForDate.find(slot => slot.startTime === timeSlot.split(' - ')[0]));
+        const filteredTimeSlots = defaultTimeSlots.filter(timeSlot => !reservedTimeSlotsForDate.includes(timeSlot.split(' - ')[0]));
 
         return filteredTimeSlots;
     };
 
-    // Function to handle time slot selection
+    /**
+     * Function to update reservation slots for the displayed month
+    */
+    const fetchReservationsForMonth = async (date) => {
+        // temp: change this once we configure how this is passed to the page
+        var facilityID = "QhxkTBqDpzJdalTvD92S"
+        var propertyID = "QPIOS5Tmww195XJyKlRM"
+        try {
+            const reservations = await getMonthlyReservations(propertyID, facilityID, date.getMonth());
+            const reservedSlots = [];
+
+            const numberOfDaysInMonth = (new Date(date.getFullYear(), date.getMonth() + 1, 0)).getDate();
+            // Iterate over the reservations for each date in the month
+            for (var i = 0; i < numberOfDaysInMonth; i++) {
+                const slots = reservations[i] || [];
+                const currentDate = i;
+
+                if (slots !== []) {
+                    // Iterate over the time slots for the current date
+                   slots.forEach(slot => {
+                        const newReservedTimeSlot = {
+                            date: currentDate,
+                            month: date.getMonth(),
+                            startTime: slot.split(' - ')[0]
+                        };
+                        reservedSlots.push(newReservedTimeSlot);
+                    });
+                }
+                
+            }
+
+            // Update the reservedTimeSlots state with the new reservations
+            setReservedTimeSlots(reservedSlots);
+        } catch (error) {
+            console.error("Error fetching reservations:", error);
+        }
+    };
+
+    /**
+     * Function to handle time slot selection
+    */
     const handleTimeSlotChange = (event) => {
         setSelectedTimeSlot(event.target.value);
     };
 
-    // Function to handle reservation
+    /**
+     * Function to handle reservation
+    */
     const handleReservation = async () => {
         if (!selectedTimeSlot) {
             console.error("No time slot selected for reservation.");
@@ -91,17 +156,16 @@ const CalendarPage = ({ totalAvailableSlots }) => {
 
         // Check if the selected time slot is already reserved for the selected date
         const isTimeSlotReserved = reservedTimeSlots.some(slot => {
-            return slot.date.getTime() === reservationDateTime.getTime() &&
-                slot.startTime === startTime && slot.endTime === endTime;
+            return slot.date === reservationDateTime.date && slot.split(' - ')[0] === startTime;
         });
-
+        
         if (isTimeSlotReserved) {
             console.error("This time slot is already reserved.");
             return;
         }
-        //Backend functions, put them where appropriate
+
         try{
-            //missing these values
+            // temp: change this once we configure how this is passed to the page
             var userID = "leobrod44@gmail.com"
             var facilityID = "QhxkTBqDpzJdalTvD92S"
             var propertyID = "QPIOS5Tmww195XJyKlRM"
@@ -116,31 +180,25 @@ const CalendarPage = ({ totalAvailableSlots }) => {
                     facilityID,
                     propertyID
                 });
+
+            // Update reservation status to 'reserved'
+            setReservationStatus("reserved");
+            // Update ReservedTimeSlots to include new reservation
+            const newReservedTimeSlot = { date: reservationDateTime, startTime, endTime };
+            setReservedTimeSlots([...reservedTimeSlots, newReservedTimeSlot]);
+
+            console.log("Reservation confirmed for time slot:", selectedTimeSlot);
         }
         catch(e){
             console.error(e);
         }
-        
-        // this returns a json with each date of the month as a key and any existing reservations as start time values
-        const reservations =  await getMonthlyReservations(propertyID,facilityID,reservationDateTime.getMonth());
-       
-        //ex:
-        // 13:['10:30 AM']
-        // 16:['10:30 AM']
-        // 18:['09:00 AM']
-        // 19:['10:30 AM', '09:00 AM']
-        //you can use this to check if the date is reserved
-        
-        const newReservedTimeSlot = { date: reservationDateTime, startTime, endTime };
-        setReservedTimeSlots([...reservedTimeSlots, newReservedTimeSlot]);
 
-        // Update reservation status to 'reserved'
-        setReservationStatus("reserved");
-
-        console.log("Reservation confirmed for time slot:", selectedTimeSlot);
     };
 
-    // Render reservation status message based on the reservationStatus state
+    // 
+    /**
+     * Function to render reservation status message based on the reservationStatus state
+    */
     const renderReservationStatusMessage = () => {
         switch (reservationStatus) {
             case "reserved":
@@ -173,13 +231,12 @@ const CalendarPage = ({ totalAvailableSlots }) => {
         }
     };
 
+    /**
+     * Function to handle tile colour based on date and reservations available
+    */
     const tileClassName = ({ date }) => {
-        // Count the number of time slots reserved for the date
-        const reservedSlotsForDate = reservedTimeSlots.filter(slot => {
-            const slotDate = new Date(slot.date);
-            return slotDate.toDateString() === date.toDateString();
-        });
-        const numberOfReservedSlots = reservedSlotsForDate.length;
+        // temp value for testing
+        const totalAvailableSlots = 4;
 
         // Check if the selected date is in the past
         const today = new Date();
@@ -191,18 +248,29 @@ const CalendarPage = ({ totalAvailableSlots }) => {
             return 'react-calendar__tile--unavailable';
         }
 
-        if (numberOfReservedSlots > 0) {
-            // If there are reserved slots for the date, return the appropriate class
-            if (numberOfReservedSlots === 4) {
-                // If all time slots are reserved for the date, highlight in red
-                return 'react-calendar__tile--all';
+        // Count the number of time slots reserved for the date
+        const reservedSlotsForDate = reservedTimeSlots.filter(slot => {
+            const slotYear = date.getFullYear(); 
+            const slotMonth = slot.month ;
+            if (date.getMonth() !== slotMonth) {
+                return false; // Skip reservations from other months
             }
-            // If some time slots are reserved but not all, return a different class
-            return 'react-calendar__tile--selected';
+
+            // Create a new Date object for the reservation date using the year, month, and day of the month
+            const reservationDate = new Date(slotYear, slotMonth, slot.date);
+
+            // Now compare the reservationDate with the selected date to filter reservations for that specific date
+            return reservationDate.toDateString() === date.toDateString();
+        });
+        const numberOfReservedSlots = reservedSlotsForDate.length;
+
+        // check if any slots left
+        if (numberOfReservedSlots < totalAvailableSlots) {
+            return 'available';
         }
 
-        // Return 'available' class for dates with no reserved slots
-        return 'available';
+        // no slots left
+        return 'react-calendar__tile--all';
     };
 
     return (
@@ -212,11 +280,11 @@ const CalendarPage = ({ totalAvailableSlots }) => {
                 <BackArrowBtn /> {/* Include BackArrowBtn here */}
                 <div className="content-calendar-container">
                     <h1>Reservations</h1>
-                    {/* Pass the handleDateChange function to the onChange prop */}
                     <Calendar
                         onChange={handleDateChange}
-                        value={selectedDate} // Set the selected date
-                        tileClassName={tileClassName} // Add tileClassName function
+                        value={selectedDate}
+                        tileClassName={tileClassName} 
+                        onActiveStartDateChange={handleViewChange}
                     />
                     {renderReservationStatusMessage()}
                 </div>
