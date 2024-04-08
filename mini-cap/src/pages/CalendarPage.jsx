@@ -279,14 +279,18 @@ const CalendarPage = ({ totalAvailableSlots, propertyID, facilityID }) => {
             <div className="calendar-page-container">
                 <BackArrowBtn /> {/* Include BackArrowBtn here */}
                 <div className="content-calendar-container">
-                    <h1>Reservations</h1>
-                    <Calendar
-                        onChange={handleDateChange}
-                        value={selectedDate}
-                        tileClassName={tileClassName} 
-                        onActiveStartDateChange={handleViewChange}
-                    />
-                    {renderReservationStatusMessage()}
+                    <h1 className="calendar-page-title">Make A Reservation For facility.Name</h1>
+                    <div className="calendar-container">
+                        <Calendar
+                            onChange={handleDateChange}
+                            value={selectedDate}
+                            tileClassName={tileClassName} 
+                            onActiveStartDateChange={handleViewChange}
+                        />
+                    </div>
+                    <div className="calendar-container">
+                        {renderReservationStatusMessage()}
+                    </div>
                 </div>
             </div>
             <Footer />
