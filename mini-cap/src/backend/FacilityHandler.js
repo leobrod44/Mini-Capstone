@@ -61,7 +61,7 @@ export async function addFacility(facility) {
       dailyAvailabilities: dailyAvailabilities,
       blockSize: blockSize,
     });
-
+    await updateDoc(docRef, { id: docRef.id });
     return docRef;
   } catch (error) {
     throw error;
