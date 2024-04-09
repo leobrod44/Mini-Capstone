@@ -11,8 +11,8 @@ const FacilityComponent = ({
 }) => {
   return (
     <div className="facility-component-container">
-      <div className="facility-type"> Facility {type}</div>
-      <div className="facility-description"> Description{description}</div>
+      <div className="facility-type"> Facility: {type}</div>
+      <div className="facility-description"> Description: {description}</div>
       <button className="make-reservation-button">Make Reservation</button>
     </div>
   );
