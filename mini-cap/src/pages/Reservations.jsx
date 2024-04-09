@@ -18,8 +18,8 @@ const Reservations = () => {
   const [visibleFacilities, setVisibleFacilities] = useState({});
   const [facilities, setFacilities] = useState([]);
   const [showFacilities, setShowFacilities] = useState(false);
-
-  ////
+  const [currentPage, setCurrentPage] = useState(1);
+  const propertiesPerPage = 4; // Adjust as needed
   const [properties, setProperties] = useState([]);
   const [propertyIDs, setPropertyIDs] = useState([]);
 
@@ -75,7 +75,13 @@ const Reservations = () => {
       [propertyId]: !prevState[propertyId],
     }));
   };
+  const indexOfLastProperty = currentPage * propertiesPerPage;
+  const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
 
+  const propertiesToDisplayPaginated = properties.slice(
+    indexOfFirstProperty,
+    indexOfLastProperty
+  );
   return (
     <div className="pageContainer">
       <Header />
@@ -85,7 +91,7 @@ const Reservations = () => {
           My Reservations
         </h2>
 
-        {properties.map((property) => (
+        {propertiesToDisplayPaginated.map((property, index) => (
           <div key={property.id} className="reserve-container">
             <h3>Property {property.propertyName}</h3>
             <ReservationComponent propertyId={property.id} />
@@ -115,8 +121,20 @@ const Reservations = () => {
               ) : (
                 <p>No available facilities</p>
               ))}
+            {index < property.length - 1 && <hr />}
           </div>
         ))}
+        <div
+          className="pagination-container"
+          style={{ display: "flex", justifyContent: "center", width: "100%" }}
+        >
+          <Pagination
+            itemsPerPage={propertiesPerPage}
+            totalItems={properties.length}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </div>
       </div>
       <Footer />
     </div>
