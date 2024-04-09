@@ -1,16 +1,15 @@
-  .facility-title{
+.facility-title{
     font-family: "Roboto", sans-serif;
     position: relative;
-    margin-bottom: 3px;
-    margin-left: 10px;
     color:#2f2c9b;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: 500;
+    margin-top: 12px; 
   }
 
   .facility-description{
     font-family: "Roboto", sans-serif;
-    margin-left: 10px;
+    font-size: 12px;
     color:grey;
   }
 
@@ -18,27 +17,43 @@
     background-color: #ffffff;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
-    padding: 13px;
+    padding: 14px;
     height: auto;
     width: 100%;
     max-width: 400px;
     display: flex;
     flex-direction: column;
-    margin-top:5%;
-    margin-bottom:5%;
     position: relative;
+    margin: auto;
+    margin-bottom: 20px;
+  }
+
+  .facility-component-container{
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 14px;
+    height: auto;
+    
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin: auto;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    max-width: 400px;
+    width: 100%;
+    
   }
 
   .make-reservation-button{
     background-color: #382fb8;
     color: #ffffff;
-    margin-left: 10px;
     margin-top: 5%;
-    margin-bottom: 10px;
     padding: 5px;
     border: none;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 12px;
     cursor: pointer;
     width: 40%;
     height: fit-content;
@@ -50,6 +65,7 @@
   .close-button{
     position: absolute;
     top: 8px;
+    margin-bottom: 20px;
     right: 8px;
     width: 25px;
     height: 25px;
@@ -61,6 +77,8 @@
     line-height: 16px;
     text-align: center;
     color: red;
+    outline: none;
+    user-select: none;
   }
   .close-button:hover {
     color: #aaa; /* Slightly paler color on hover */

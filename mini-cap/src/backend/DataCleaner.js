@@ -52,7 +52,14 @@ const structure = {
         "date": "",
         "type": "",
         "viewed": ""
-    }
+    },
+    "Facility": {
+        "propertyID": "",
+        "type": "",
+        "description": "",
+        "dailyAvailabilities": "",
+        "blockSize": "",
+    },
 }
 
 

@@ -251,3 +251,26 @@ export async function getUsersFiles(userID) {
     }
 }
 
+export async function getUsersProperty(userCondos) {
+    try {
+        // Check if the user is a management company
+        if(store("role") != RENTER_OWNER){
+            throw new Error("Management companies would not use this function.");
+        } else if(store("role") == ""){
+            // Check if the user is not logged in
+            throw new Error("User is not logged in");
+        } else {
+  
+            var condos = userCondos;
+  
+            // Extract unique property IDs from the owned condos
+            var properties = Array.from(new Set(condos.map(c => c.property)
+            ));
+  
+            return properties;
+        }
+    } catch (e) {
+        // Throw error if any errors occur during the process
+        throw e;
+    }
+  }

@@ -19,7 +19,9 @@ import { MANAGEMENT_COMPANY } from "../backend/Constants";
 import CondoRequests from "../components/CondoRequestsView.jsx";
 import { MdExpandLess, MdExpandMore } from "react-icons/md";
 import { getRequests } from "../backend/RequestHandler";
-import { FaCheck, FaTimes } from "react-icons/fa"; // Import icons from react-icons library
+import { FaCheck, FaTimes } from "react-icons/fa";
+import { generateFinancialReport} from "../backend/FinancialReportHandler"; // Import icons from react-icons library
+import { checkRentPaid } from "../backend/FinancialHandler.js";
 
 /**
  * CondoDetails Component
@@ -76,7 +78,7 @@ export default function CondoDetails() {
         condo.picture = condoPicURL;
         // Set condo details state
         setCondoDetails(condo);
-        
+
         // Retrieve company email
         setCompanyEmail(await getCompanyEmail(condoId));
         setLoading(false);
@@ -210,13 +212,36 @@ export default function CondoDetails() {
     setShowFinancialDetails(!showFinancialDetails);
   };
 
-  // Function to toggle rent paid status
-  const toggleRentPaid = () => {
-    setIsRentPaid(!isRentPaid);
+  // Function to check paid status
+  useEffect(() => {
+    const setRentPaidStatus = async () => {
+      try {
+        const rentPaid = await checkRentPaid(condoId);
+        setIsRentPaid(rentPaid);
+      } catch (error) {
+        console.error("Error fetching isRentPaid:", error);
+      }
+    };
+
+    setRentPaidStatus();
+  }, [condoId]);
+
+  // Handles the status change originating from Financial Details component
+  const handleRentStatusChange = (rentPaid) => {
+    setIsRentPaid(rentPaid);
   };
+
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  const handleGenerateReport = async () => {
+    try {
+      await generateFinancialReport(condoId);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <div className="pageContainer">
@@ -368,6 +393,14 @@ export default function CondoDetails() {
                                 </button>
                               </>
                             )}
+                            <div>
+                              <button
+                                className="generate-report-button"
+                                onClick={handleGenerateReport}
+                              >
+                                Generate Report
+                              </button>
+                            </div>
                           </div>
                         </>
                       )}
@@ -556,17 +589,21 @@ export default function CondoDetails() {
                               )}
 
                               {/* Code snippet to appear when status is "Owned" */}
-                              {status === "Owned" && role !== MANAGEMENT_COMPANY && (
-                                <div>
-                                  <button
-                                    className="modal-button"
-                                    onClick={() => handleClickRequest()}
-                                    style={{ marginTop: "5%", marginBottom: "5%" }}
-                                  >
-                                    Create Request
-                                  </button>
-                                </div>
-                              )}
+                              {status === "Owned" &&
+                                role !== MANAGEMENT_COMPANY && (
+                                  <div>
+                                    <button
+                                      className="modal-button"
+                                      onClick={() => handleClickRequest()}
+                                      style={{
+                                        marginTop: "5%",
+                                        marginBottom: "5%",
+                                      }}
+                                    >
+                                      Create Request
+                                    </button>
+                                  </div>
+                                )}
                             </>
                           )}
                         </div>
@@ -600,7 +637,7 @@ export default function CondoDetails() {
                     </div>
                   </div>
                   <div className="other-info">
-                    {showFinancialDetails && <FinancialDetails />}
+                    {showFinancialDetails && <FinancialDetails onRentStatusChange={handleRentStatusChange}/>}
                   </div>
                   <div
                     id="modal"
@@ -635,7 +672,12 @@ export default function CondoDetails() {
                 </div>
               )}
             </div>
-            {showPopup && <Popup_SendKey data-testid="popup-send-key" handleClose={handlePopupToggle} />}
+            {showPopup && (
+              <Popup_SendKey
+                data-testid="popup-send-key"
+                handleClose={handlePopupToggle}
+              />
+            )}
             <div data-testid="popup-delete-test">
               <DeleteModal
                 show={show}
@@ -646,20 +688,11 @@ export default function CondoDetails() {
             </div>
           </div>
         </div>
-        {role !== MANAGEMENT_COMPANY && (
-          <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
-        )}
-        {role === MANAGEMENT_COMPANY && status !== "Vacant" && (
-          <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
-        )}
         {!displayForm && <BackArrowBtn />}
         <div style={{ zIndex: 1, position: "relative" }}>
           <Footer />
         </div>
       </>
-      <button onClick={() => toast.success("Test Success Message")}>
-        Test Toast
-      </button>
     </div>
   );
 }

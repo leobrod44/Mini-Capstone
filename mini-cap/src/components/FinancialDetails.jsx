@@ -4,9 +4,8 @@ import { FaCheck, FaTimes } from 'react-icons/fa'; // Import icons from react-ic
 import { useParams } from "react-router-dom";
 import { MANAGEMENT_COMPANY } from "../backend/Constants";
 import { getCondo } from '../backend/PropertyHandler';
-import { checkRentPaid } from '../backend/PropertyHandler';
 import store from "storejs";
-import { calculateCondoFees } from '../backend/PropertyHandler';
+import {calculateCondoFees, payRent, checkRentPaid} from "../backend/FinancialHandler";
 
 /**
  * Represents a component for displaying and managing financial details of a condo.
@@ -17,11 +16,11 @@ import { calculateCondoFees } from '../backend/PropertyHandler';
  * Temporarily allows toggling the rent payment status.
  * @returns {JSX.Element} The rendered FinancialDetails component.
  */
-const FinancialDetails = () => {
+const FinancialDetails = ({onRentStatusChange}) => {
     let { condoId } = useParams();
     const [role, setTheRole] = useState("");
     const [condoDetails, setCondoDetails] = useState({});
-    const [isRentPaid, setIsRentPaid] = useState(false); // State to track whether rent is paid
+    const [isRentPaid, setIsRentPaid] = useState(false);
     const [fDetails, setFDetails] = useState({
         rent: 0,
         parkingPrice: 0,
@@ -40,6 +39,7 @@ const FinancialDetails = () => {
     useEffect(() => {
         const fetchCondo = async () => {
             try {
+                console.log("condoId:", condoId);
                 setTheRole(store("role"));
                 const condo = await getCondo(condoId);
                 setCondoDetails(condo);
@@ -61,13 +61,21 @@ const FinancialDetails = () => {
     } = condoDetails;
 
     /**
-     * Toggles the rent payment status state between true and false.
-     * If rent is currently paid, it sets the state to unpaid, and vice versa.
+     * Attempts to pay the rent for the current condo.
+     * Updates the rent payment status and triggers the onRentStatusChange callback.
      * @returns {void}
      */
-    const toggleRentPaid = () => {
-        setIsRentPaid(!isRentPaid);
-    };
+    const PayRent = async () => {
+        try{
+            const pay = await payRent(condoId);
+            const payed = await checkRentPaid(condoId)
+            setIsRentPaid(payed);
+            onRentStatusChange(payed);
+        }
+        catch (error) {
+            console.error("Error paying the rent", error);
+        }
+    }
 
     /**
      * Fetches financial details asynchronously and updates the financial details state.
@@ -93,7 +101,7 @@ const FinancialDetails = () => {
      */
     const setRentPaidStatus = async () => {
         try {
-            const rentPaid = await checkRentPaid();
+            const rentPaid = await checkRentPaid(condoId);
             setIsRentPaid(rentPaid);
         } catch (error) {
             console.error("Error fetching isRentPaid:", error);
@@ -165,7 +173,7 @@ const FinancialDetails = () => {
             <br></br>
             <div className="other-info1">
                 <span className="FinanceText">Rent Paid: </span>
-                <span className="textDetail">{getRentPaymentStatus()}</span>
+                <span className="textDetail" data-testid="rent-payment-status">{getRentPaymentStatus()}</span>
                 {role !== MANAGEMENT_COMPANY && (
                     <>
                         {isRentPaid ? <FaCheck className="green-check" /> : <FaTimes className="red-cross" />}
@@ -177,7 +185,7 @@ const FinancialDetails = () => {
                     </>
                 )}
             </div>
-            <button onClick={toggleRentPaid}>Toggle Rent Paid</button>
+            <button onClick={PayRent} className='PayingRent'>Pay Rent</button>
         </div>
     );
 };

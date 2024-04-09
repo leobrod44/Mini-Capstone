@@ -5,21 +5,28 @@ h3, h5 {
   margin-bottom: 3px;
   color: #2f2c9b;
 }
-
+.reservations-page-container{
+ 
+  background-color: #f4f4f4;
+  padding-top: 50px;
+}
 .reservations-container {
     margin-bottom: 20px;
   }
   
   .reservation {
-    background-color: #f2f2f2; /* Light grey background */
+    background-color: white; /* Light grey background */
     border-radius: 4px;
-    padding: 10px;
+    padding: 5px;
     margin-bottom: 10px; /* Space between reservations */
+    width: 90%;
   }
   
   .reservation p {
     margin: 5px 0; /* Reduce margin for each paragraph to compact the display */
+    text-align: center
   }
+ 
 .reserve-container {
     background-color: white; /* Card background */
     border-radius: 8px; /* Rounded corners */
@@ -62,3 +69,4 @@ h3, h5 {
         justify-content: space-between; /* Spreads the child elements apart */
         padding: 0 15px; /* Adjusts padding as needed */
       }
+  

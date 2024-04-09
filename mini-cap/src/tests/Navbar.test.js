@@ -20,10 +20,6 @@ jest.mock("react-router-dom", () => ({
 jest.mock('../backend/ImageHandler');
 jest.mock('../backend/UserHandler');
 jest.mock('../backend/PropertyHandler');
-jest.mock("../backend/Fetcher", () => ({
-  getProfilePicture: jest.fn().mockResolvedValue("profile-pic-url"),
-  getCompanyData: jest.fn().mockResolvedValue({ companyName: "Test Company" }),
-}));
 
 const MANAGEMENT_COMPANY = 'mgmt';
 const RENTER_OWNER = 'renter/owner';
@@ -182,4 +178,45 @@ describe("Navbar Component", () => {
     });
   });
   
+});
+describe("Navbar Component", () => {
+  it('fetches and sets profile picture URL and company name for MANAGEMENT_COMPANY role', async () => {
+    localStorage.setItem('role', 'MANAGEMENT_COMPANY');
+
+    render(
+      <BrowserRouter>
+        <Navbar />
+      </BrowserRouter>
+    );
+
+    // Ensure that setProfilePicUrl and setCompanyName are called
+    await act(async () => {
+      expect(screen.getByTestId('user-pfp')).toBeInTheDocument();
+      expect(screen.getByText('My Profile')).toBeInTheDocument();
+      expect(screen.getByText('My properties')).toBeInTheDocument();
+      expect(screen.getByText('Logout')).toBeInTheDocument();
+    });
+
+    // Ensure that getCompanyData is called with the correct user ID
+    expect(getCompanyData).toHaveBeenCalledWith('exampleUserId');
+  });
+
+  it('fetches and sets profile picture URL and first name for RENTER_OWNER role', async () => {
+    localStorage.setItem('role', 'RENTER_OWNER');
+
+    render(
+      <BrowserRouter>
+        <Navbar />
+      </BrowserRouter>
+    );
+
+    // Ensure that setProfilePicUrl and setFirstName are called
+    await act(async () => {
+      expect(screen.getByTestId('user-pfp')).toBeInTheDocument();
+      expect(screen.getByText('Logout')).toBeInTheDocument();
+    });
+
+    // Ensure that getUserData is called with the correct user ID
+    expect(getUserData).toHaveBeenCalledWith('exampleUserId');
+  });
 });

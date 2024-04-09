@@ -11,7 +11,6 @@ import {
     getCondos,
     getCondo,
     getCondoOccupant,
-    calculateCondoFees,
     getAmenities,
     addLockers,
     addParkings,
@@ -41,6 +40,7 @@ import {changePassword, updateCompanyInfo, updateUserInfo} from "../backend/User
 import store from "storejs";
 import {cleanData} from "../backend/DataCleaner";
 import {getPropertyPicture, setPictureWithID} from "../backend/ImageHandler";
+import {calculateCondoFees} from "../backend/FinancialHandler";
 
 
 const PropertyHandler = require('../backend/PropertyHandler');
