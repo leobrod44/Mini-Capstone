@@ -102,6 +102,19 @@ const Reservations = () => {
                     )}
                 </button>
                 </div>
+                {/*{visibleFacilities[property.propertyName] &&
+                (facilities[property.propertyName] &&
+                facilities[property.propertyName].length > 0 ? (
+                    facilities[property.propertyName].map((facility, index) => (
+                    <FacilityComponent
+                        key={index}
+                        type={facility.type}
+                        description={facility.description}
+                    />
+                    ))
+                ) : (
+                    <p>No available facilities</p>
+                ))} */}
                 {facilities && Object.entries(facilities)[index] && Object.entries(facilities)[index][1] && (
                 Object.entries(facilities)[index][1].map((facility, facilityIndex) => (
                     <div key={facilityIndex}>
