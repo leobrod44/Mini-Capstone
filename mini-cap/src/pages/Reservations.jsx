@@ -91,10 +91,10 @@ const Reservations = () => {
           My Reservations
         </h2>
 
-        {propertiesToDisplayPaginated.map((property, index) => (
+        {properties.map((property, index) => (
           <div key={property.id} className="reserve-container">
             <h3>Property {property.propertyName}</h3>
-            <ReservationComponent propertyId={property.id} />
+            <ReservationComponent />
             <div className="facilities-header">
               <h5 style={{ marginRight: "20px" }}>Show Property Facilities</h5>
               <button
@@ -108,20 +108,25 @@ const Reservations = () => {
                 )}
               </button>
             </div>
-            {visibleFacilities[property.propertyName] &&
-              (facilities[property.propertyName] &&
-              facilities[property.propertyName].length > 0 ? (
-                facilities[property.propertyName].map((facility, index) => (
-                  <FacilityComponent
-                    key={index}
-                    type={facility.type}
-                    description={facility.description}
-                  />
-                ))
-              ) : (
-                <p>No available facilities</p>
-              ))}
-            {index < property.length - 1 && <hr />}
+            {facilities &&
+              Object.entries(facilities)[index] &&
+              Object.entries(facilities)[index][1] &&
+              Object.entries(facilities)[index][1].map(
+                (facility, facilityIndex) => (
+                  <div key={facilityIndex}>
+                    <FacilityComponent
+                      type={facility.type}
+                      description={facility.description}
+                    />
+                    {console.log(
+                      "--facility name: " +
+                        facility.type +
+                        " description: " +
+                        facility.description
+                    )}
+                  </div>
+                )
+              )}
           </div>
         ))}
         <div
