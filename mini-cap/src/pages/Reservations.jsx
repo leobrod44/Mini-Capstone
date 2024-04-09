@@ -77,7 +77,7 @@ const Reservations = () => {
   };
 
   return (
-    <div>
+    <div className="pageContainer">
       <Header />
       <BackArrowBtn />
       <div className="reservations-page-container">
@@ -86,46 +86,44 @@ const Reservations = () => {
         </h2>
 
         {properties.map((property, index) => (
-            <div key={property.id} className="reserve-container">
-                <h3>Property {property.propertyName}</h3>
-                <ReservationComponent propertyId={property.id} />
-                <div className="facilities-header">
-                <h5 style={{ marginRight: "20px" }}>Show Property Facilities</h5>
-                <button
-                    className="facilities-button"
-                    onClick={() => toggleFacilities(property.propertyName)}
-                >
-                    {visibleFacilities[property.id] ? (
-                    <MdExpandLess />
-                    ) : (
-                    <MdExpandMore />
-                    )}
-                </button>
-                </div>
-                {/*{visibleFacilities[property.propertyName] &&
-                (facilities[property.propertyName] &&
-                facilities[property.propertyName].length > 0 ? (
-                    facilities[property.propertyName].map((facility, index) => (
-                    <FacilityComponent
-                        key={index}
-                        type={facility.type}
-                        description={facility.description}
-                    />
-                    ))
+          <div key={property.id} className="reserve-container">
+            <h3>Property {property.propertyName}</h3>
+            <ReservationComponent />
+            <div className="facilities-header">
+              <h5 style={{ marginRight: "20px" }}>Show Property Facilities</h5>
+              <button
+                className="facilities-button"
+                onClick={() => toggleFacilities(property.propertyName)}
+              >
+                {visibleFacilities[property.id] ? (
+                  <MdExpandLess />
                 ) : (
-                    <p>No available facilities</p>
-                ))} */}
-                {facilities && Object.entries(facilities)[index] && Object.entries(facilities)[index][1] && (
-                Object.entries(facilities)[index][1].map((facility, facilityIndex) => (
-                    <div key={facilityIndex}>
-                    <FacilityComponent type={facility.type} description={facility.description}/>
-                    {console.log("--facility name: " + facility.type + " description: " + facility.description)}
-                    </div>
-                ))
+                  <MdExpandMore />
                 )}
+              </button>
             </div>
-            ))}
-        </div>
+            {facilities &&
+              Object.entries(facilities)[index] &&
+              Object.entries(facilities)[index][1] &&
+              Object.entries(facilities)[index][1].map(
+                (facility, facilityIndex) => (
+                  <div key={facilityIndex}>
+                    <FacilityComponent
+                      type={facility.type}
+                      description={facility.description}
+                    />
+                    {console.log(
+                      "--facility name: " +
+                        facility.type +
+                        " description: " +
+                        facility.description
+                    )}
+                  </div>
+                )
+              )}
+          </div>
+        ))}
+      </div>
       <Footer />
     </div>
   );
