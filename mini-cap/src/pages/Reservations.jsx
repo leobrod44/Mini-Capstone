@@ -18,7 +18,6 @@ const Reservations = () => {
   const [visibleFacilities, setVisibleFacilities] = useState({});
   const [facilities, setFacilities] = useState([]);
   const [showFacilities, setShowFacilities] = useState(false);
-  const toggleFacilities = () => setShowFacilities(!showFacilities);
 
   ////
   const [properties, setProperties] = useState([]);
@@ -70,6 +69,13 @@ const Reservations = () => {
     }
   }, [propertyIDs]);
 
+  const toggleFacilities = (propertyId) => {
+    setVisibleFacilities((prevState) => ({
+      ...prevState,
+      [propertyId]: !prevState[propertyId],
+    }));
+  };
+
   return (
     <div>
       <Header />
@@ -82,15 +88,33 @@ const Reservations = () => {
         {properties.map((property) => (
           <div key={property.id} className="reserve-container">
             <h3>Property {property.propertyName}</h3>
-            {/* Render ReservationComponent for the current property */}
             <ReservationComponent propertyId={property.id} />
             <div className="facilities-header">
               <h5 style={{ marginRight: "20px" }}>Show Property Facilities</h5>
-              <button className="facilities-button " onClick={toggleFacilities}>
-                {showFacilities ? <MdExpandLess /> : <MdExpandMore />}
+              <button
+                className="facilities-button"
+                onClick={() => toggleFacilities(property.propertyName)}
+              >
+                {visibleFacilities[property.id] ? (
+                  <MdExpandLess />
+                ) : (
+                  <MdExpandMore />
+                )}
               </button>
             </div>
-            {showFacilities && <FacilityComponent propertyID={property.id} />}
+            {visibleFacilities[property.propertyName] &&
+              (facilities[property.propertyName] &&
+              facilities[property.propertyName].length > 0 ? (
+                facilities[property.propertyName].map((facility, index) => (
+                  <FacilityComponent
+                    key={index}
+                    type={facility.type}
+                    description={facility.description}
+                  />
+                ))
+              ) : (
+                <p>No available facilities</p>
+              ))}
           </div>
         ))}
       </div>
