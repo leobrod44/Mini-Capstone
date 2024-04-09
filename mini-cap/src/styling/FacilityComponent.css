@@ -55,6 +55,7 @@
     cursor: pointer;
     width: 40%;
     height: fit-content;
+    text-align: center;
   }
   .make-reservation-button:hover{
     background-color: #2f2c9b;

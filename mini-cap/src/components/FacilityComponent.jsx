@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import "../styling/FacilityComponent.css";
-import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const FacilityComponent = ({
   type,
@@ -13,7 +13,7 @@ const FacilityComponent = ({
     <div className="facility-component-container">
       <div className="facility-type"> Facility: {type}</div>
       <div className="facility-description"> Description: {description}</div>
-      <button className="make-reservation-button">Make Reservation</button>
+      <Link to="/calendar" className="make-reservation-button">Make Reservation</Link>
     </div>
   );
 };
