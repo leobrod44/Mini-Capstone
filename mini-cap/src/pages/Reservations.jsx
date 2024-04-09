@@ -77,7 +77,7 @@ const Reservations = () => {
   };
 
   return (
-    <div>
+    <div className="pageContainer">
       <Header />
       <BackArrowBtn />
       <div className="reservations-page-container">
