@@ -97,10 +97,7 @@ const CalendarPage = ({ totalAvailableSlots }) => {
         const slotDate = new Date(date);
         slotDate.setHours(0, 0, 0, 0);
 
-        // temp: change this once we configure how this is passed to the page
-        var facilityID = "QhxkTBqDpzJdalTvD92S"
-        var propertyID = "QPIOS5Tmww195XJyKlRM"
-
+       
         // this returns a json with each date of the month as a key and any existing reservations as start time values
         const reservations = await getMonthlyReservations(propertyID, facilityID, slotDate.getMonth());
 
@@ -128,9 +125,6 @@ const CalendarPage = ({ totalAvailableSlots }) => {
      * Function to update reservation slots for the displayed month
     */
     const fetchReservationsForMonth = async (date) => {
-        // temp: change this once we configure how this is passed to the page
-        var facilityID = "QhxkTBqDpzJdalTvD92S"
-        var propertyID = "QPIOS5Tmww195XJyKlRM"
         try {
             const reservations = await getMonthlyReservations(propertyID, facilityID, date.getMonth());
             const reservedSlots = [];
@@ -193,11 +187,6 @@ const CalendarPage = ({ totalAvailableSlots }) => {
         }
 
         try{
-            // temp: change this once we configure how this is passed to the page
-            var userID = "leobrod44@gmail.com"
-            var facilityID = "QhxkTBqDpzJdalTvD92S"
-            var propertyID = "QPIOS5Tmww195XJyKlRM"
-
             await makeReservation(
                 {
                     month: reservationDateTime.getMonth(),
