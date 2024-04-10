@@ -219,13 +219,13 @@ const CalendarPage = ({ totalAvailableSlots }) => {
     const renderReservationStatusMessage = () => {
         switch (reservationStatus) {
             case "reserved":
-                return <p>This date is already reserved.</p>;
+                return <p>This date is fully reserved.</p>;
             case "available":
                 return (
                     <div>
                         <p>This date is available.</p>
                         <p>Please select a time slot:</p>
-                        <select value={selectedTimeSlot} onChange={handleTimeSlotChange}>
+                        <select value={selectedTimeSlot} onChange={handleTimeSlotChange} >
                             <option value="">Select a time slot</option>
                             {availableTimeSlots.map((timeSlot, index) => (
                                 <option key={index} value={timeSlot}>{timeSlot}</option>
