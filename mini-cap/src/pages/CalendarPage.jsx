@@ -224,8 +224,9 @@ const CalendarPage = ({ totalAvailableSlots }) => {
                 return (
                     <div>
                         <p>This date is available.</p>
-                        <p>Please select a time slot:</p>
-                        <select value={selectedTimeSlot} onChange={handleTimeSlotChange} >
+                        <div style={{backgroundColor:"white", height:"auto", width:"350px", display: "flex", flexDirection: "column", alignItems: "center", marginBottom: "30px"}}>
+                        <label className="signup" style={{paddingTop:"20px", color:"#4540db", fontSize:"16px"}}>Please select a time slot:</label>
+                        <select value={selectedTimeSlot} onChange={handleTimeSlotChange} style={{width:"auto"}}>
                             <option value="">Select a time slot</option>
                             {availableTimeSlots.map((timeSlot, index) => (
                                 <option key={index} value={timeSlot}>{timeSlot}</option>
@@ -235,8 +236,9 @@ const CalendarPage = ({ totalAvailableSlots }) => {
                             <p>This time slot is already reserved.</p>
                         )}
                         {selectedTimeSlot && !reservedTimeSlots.includes(selectedTimeSlot) && (
-                            <button className="button-reserved" onClick={handleReservation}>Confirm Reservation</button>
+                            <button className="button-reserved" onClick={handleReservation} style={{display:"block", marginBottom:"20px"}}>Confirm Reservation</button>
                         )}
+                    </div>
                     </div>
                 );
             case "unavailable":
