@@ -69,12 +69,6 @@ const Reservations = () => {
     }
   }, [propertyIDs]);
 
-  const toggleFacilities = (propertyId) => {
-    setVisibleFacilities((prevState) => ({
-      ...prevState,
-      [propertyId]: !prevState[propertyId],
-    }));
-  };
   const indexOfLastProperty = currentPage * propertiesPerPage;
   const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
 
@@ -95,40 +89,32 @@ const Reservations = () => {
           <div key={property.id} className="reserve-container">
             <h3>Property {property.propertyName}</h3>
             <ReservationComponent />
-            <div className="facilities-header">
-              <h5 style={{ marginRight: "20px" }}>Show Property Facilities</h5>
-              <button
-                className="facilities-button"
-                onClick={() => toggleFacilities(property.propertyName)}
-              >
-                {visibleFacilities[property.id] ? (
-                  <MdExpandLess />
-                ) : (
-                  <MdExpandMore />
+            <div className="facilities-card">
+              <div className="facilities-header">
+                <h4 style={{ marginRight: "20px" }}> Property Facilities</h4>
+              </div>
+              {facilities &&
+                Object.entries(facilities)[index] &&
+                Object.entries(facilities)[index][1] &&
+                Object.entries(facilities)[index][1].map(
+                  (facility, facilityIndex) => (
+                    <div key={facilityIndex}>
+                      <FacilityComponent
+                        type={facility.type}
+                        description={facility.description}
+                        id={facility.id}
+                        propertyID={facility.propertyID}
+                      />
+                      {console.log(
+                        "--facility name: " +
+                          facility.type +
+                          " description: " +
+                          facility.description
+                      )}
+                    </div>
+                  )
                 )}
-              </button>
             </div>
-            {facilities &&
-              Object.entries(facilities)[index] &&
-              Object.entries(facilities)[index][1] &&
-              Object.entries(facilities)[index][1].map(
-                (facility, facilityIndex) => (
-                  <div key={facilityIndex}>
-                    <FacilityComponent
-                      type={facility.type}
-                      description={facility.description}
-                      id={facility.id}
-                      propertyID={facility.propertyID}
-                    />
-                    {console.log(
-                      "--facility name: " +
-                        facility.type +
-                        " description: " +
-                        facility.description
-                    )}
-                  </div>
-                )
-              )}
           </div>
         ))}
         <div
