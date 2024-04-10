@@ -15,7 +15,7 @@ const FacilityComponent = ({
     <div className="facility-component-container">
       <div className="facility-type"> Facility: {type}</div>
       <div className="facility-description"> Description: {description}</div>
-      <Link to={`/calendar?propertyID=${propertyID}&facilityID=${id}&facilityType=${type}`} className="make-reservation-button">Make Reservation</Link>
+      <Link to={`/calendar?propertyID=${propertyID}&facilityID=${id}&facilityType=${type}&desc=${description}`} className="make-reservation-button">Make Reservation</Link>
     </div>
   );
 };
