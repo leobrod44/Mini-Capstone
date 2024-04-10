@@ -19,6 +19,7 @@ const CalendarPage = () => {
     const queryParams = new URLSearchParams(location.search);
     const propertyID = queryParams.get('propertyID');
     const facilityID = queryParams.get('facilityID');
+    const facilityType = queryParams.get('facilityType');
 
     const maxAvailableSlots = 9;
 
@@ -288,7 +289,7 @@ const CalendarPage = () => {
     return (
         <div>
             <Header />
-            <h1 className="calendar-page-title" style={{textAlign:"center", paddingTop:"50px", paddingBottom:"50px"}}>Make A Reservation For facility.type</h1>
+            <h1 className="calendar-page-title" style={{textAlign:"center", paddingTop:"50px", paddingBottom:"50px"}}>Make A Reservation For {facilityType}</h1>
             <div className="calendar-page-container">
                 <BackArrowBtn /> {/* Include BackArrowBtn here */}
                 <div className="content-calendar-container">
