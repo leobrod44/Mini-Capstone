@@ -91,11 +91,13 @@ const Reservations = () => {
             <ReservationComponent />
             <div className="facilities-card">
               <div className="facilities-header">
-                <h4 style={{ marginRight: "20px" }}> Property Facilities</h4>
+                <h4 style={{ marginRight: "20px" }}>
+                  {property.propertyName}'s Facilities
+                </h4>
               </div>
               {facilities &&
-                Object.entries(facilities)[index] &&
-                Object.entries(facilities)[index][1] &&
+              Object.entries(facilities)[index] &&
+              Object.entries(facilities)[index][1].length > 0 ? (
                 Object.entries(facilities)[index][1].map(
                   (facility, facilityIndex) => (
                     <div key={facilityIndex}>
@@ -113,7 +115,10 @@ const Reservations = () => {
                       )}
                     </div>
                   )
-                )}
+                )
+              ) : (
+                <p>No facilities available</p>
+              )}
             </div>
           </div>
         ))}
@@ -133,5 +138,4 @@ const Reservations = () => {
     </div>
   );
 };
-
 export default Reservations;
