@@ -6,8 +6,27 @@ import Calendar from 'react-calendar';
 import "../index.css";
 import "../styling/Calendar.css";
 import { getMonthlyReservations, makeReservation } from "../backend/FacilityHandler";
+import { useLocation } from 'react-router-dom';
+import store from "storejs";
 
-const CalendarPage = ({ totalAvailableSlots, propertyID, facilityID }) => {
+
+const CalendarPage = ({ totalAvailableSlots }) => {
+
+    //get the user 
+    const userID= store("user");
+    console.log("the user id is "+ userID);
+
+    //get the property and facilityid using the url
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const propertyID = queryParams.get('propertyID');
+    const facilityID = queryParams.get('facilityID');
+
+    //verify in console that its getting the correct ids
+
+    console.log("property id is : "+ propertyID);
+    console.log("facility id is : "+ facilityID);
+
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [reservationStatus, setReservationStatus] = useState(null);
     const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
