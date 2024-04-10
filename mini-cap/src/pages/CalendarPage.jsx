@@ -288,10 +288,11 @@ const CalendarPage = () => {
     return (
         <div>
             <Header />
+            <h1 className="calendar-page-title" style={{textAlign:"center", paddingTop:"50px", paddingBottom:"50px"}}>Make A Reservation For facility.type</h1>
             <div className="calendar-page-container">
                 <BackArrowBtn /> {/* Include BackArrowBtn here */}
                 <div className="content-calendar-container">
-                    <h1 className="calendar-page-title">Make A Reservation For facility.type</h1>
+                  
                     <div className="calendar-container">
                         <Calendar
                             onChange={handleDateChange}
