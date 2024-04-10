@@ -8,7 +8,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh; /* Optional: Adjust the height as needed */
 }
 
 .content-calendar-container {
