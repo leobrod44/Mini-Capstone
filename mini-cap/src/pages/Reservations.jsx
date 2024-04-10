@@ -117,6 +117,8 @@ const Reservations = () => {
                     <FacilityComponent
                       type={facility.type}
                       description={facility.description}
+                      id={facility.id}
+                      propertyID={facility.propertyID}
                     />
                     {console.log(
                       "--facility name: " +

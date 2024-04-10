@@ -8,12 +8,14 @@ const FacilityComponent = ({
   description,
   dailyAvailabilities,
   blockSize,
+  propertyID,
+  id
 }) => {
   return (
     <div className="facility-component-container">
       <div className="facility-type"> Facility: {type}</div>
       <div className="facility-description"> Description: {description}</div>
-      <Link to="/calendar" className="make-reservation-button">Make Reservation</Link>
+      <Link to={`/calendar?propertyID=${propertyID}}&facilityID=${id}`} className="make-reservation-button">Make Reservation</Link>
     </div>
   );
 };
