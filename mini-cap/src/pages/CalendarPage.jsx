@@ -10,22 +10,17 @@ import { useLocation } from 'react-router-dom';
 import store from "storejs";
 
 
-const CalendarPage = ({ totalAvailableSlots }) => {
+const CalendarPage = () => {
 
     //get the user 
     const userID= store("user");
-    console.log("the user id is "+ userID);
-
     //get the property and facilityid using the url
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const propertyID = queryParams.get('propertyID');
     const facilityID = queryParams.get('facilityID');
 
-    //verify in console that its getting the correct ids
-
-    console.log("property id is : "+ propertyID);
-    console.log("facility id is : "+ facilityID);
+    const maxAvailableSlots = 9;
 
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [reservationStatus, setReservationStatus] = useState(null);
@@ -103,12 +98,13 @@ const CalendarPage = ({ totalAvailableSlots }) => {
 
         // Extract reservation times for the selected date
         const reservedTimeSlotsForDate = reservations[slotDate.getDate()] || [];
-        // TODO: will this always be hard coded?
+
         const defaultTimeSlots = [
             "08:00 AM - 09:00 AM",
             "09:00 AM - 10:00 AM",
             "10:00 AM - 11:00 AM",
             "11:00 AM - 12:00 PM",
+            "12:00 PM - 01:00 PM",
             "01:00 PM - 02:00 PM",
             "02:00 PM - 03:00 PM",
             "03:00 PM - 04:00 PM",
@@ -252,9 +248,6 @@ const CalendarPage = ({ totalAvailableSlots }) => {
      * Function to handle tile colour based on date and reservations available
     */
     const tileClassName = ({ date }) => {
-        // temp value for testing
-        const totalAvailableSlots = 4;
-
         // Check if the selected date is in the past
         const today = new Date();
         today.setHours(0, 0, 0, 0); // Set time to midnight
@@ -282,7 +275,7 @@ const CalendarPage = ({ totalAvailableSlots }) => {
         const numberOfReservedSlots = reservedSlotsForDate.length;
 
         // check if any slots left
-        if (numberOfReservedSlots < totalAvailableSlots) {
+        if (numberOfReservedSlots < maxAvailableSlots) {
             return 'available';
         }
 
