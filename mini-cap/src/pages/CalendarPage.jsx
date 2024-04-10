@@ -240,7 +240,7 @@ const CalendarPage = ({ totalAvailableSlots }) => {
                     </div>
                 );
             case "unavailable":
-                return <p>Data is unavailable for past dates.</p>;
+                return <p style={{fontWeight:"bolder"}}>Data is unavailable for past dates.</p>;
             case "error":
                 return <p>There was an error fetching available time slots.</p>;
             default:
@@ -296,7 +296,7 @@ const CalendarPage = ({ totalAvailableSlots }) => {
             <div className="calendar-page-container">
                 <BackArrowBtn /> {/* Include BackArrowBtn here */}
                 <div className="content-calendar-container">
-                    <h1 className="calendar-page-title">Make A Reservation For facility.Name</h1>
+                    <h1 className="calendar-page-title">Make A Reservation For facility.type</h1>
                     <div className="calendar-container">
                         <Calendar
                             onChange={handleDateChange}
