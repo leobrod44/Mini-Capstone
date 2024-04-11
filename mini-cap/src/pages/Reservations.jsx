@@ -74,7 +74,7 @@ const Reservations = () => {
 
   
   useEffect(() => {
-    const getPropertiesJoinReservationsAndFacilities = async () => {
+    const fetchReservationsAndFacilities = async () => {
       try {
         const propertiesWithReservationsAndFacilities = await getPropertiesJoinReservationAndFacilities(store("user"));
         setReservations(propertiesWithReservationsAndFacilities);
@@ -93,8 +93,8 @@ const Reservations = () => {
         );
       }
     };
-    getPropertiesJoinReservationsAndFacilities();
-  }, [reservations]);
+    fetchReservationsAndFacilities();
+  }, []);  
 
 
 
@@ -115,32 +115,27 @@ const Reservations = () => {
         </h2>
 
         {properties.map((property, index) => (
-          <div key={property.id} className="reserve-container">
+          <div key={property.propertyID} className="reserve-container">
             <h3>Property {property.propertyName}</h3>
-            
-              {facilities &&
-              reservations[index].reservations &&
-              reservations[index].reservations.length > 0 ? (
-                reservations[index].reservations.map(
-                  (reservation, reservationIndex) => (
-                    <div key={reservationIndex}>
-                      <ReservationComponent
-                        
-                        facilityTitle={reservation.facilityID} 
-                        startTime={reservation.startTime}
-                        endTime={reservation.endTime}
-                        date={reservation.date}
-                        month={reservation.month}
-                      />
-                      {console.log(
-                       "temp"
-                      )}
-                    </div>
-                  )
+
+            {reservations && reservations[index]?.reservations?.length > 0 ? (
+              reservations[index].reservations.map(
+                (reservation, reservationIndex) => (
+                  <div key={reservationIndex}>
+                    <ReservationComponent
+                      facilityTitle={reservation.facilityID}
+                      startTime={reservation.startTime}
+                      endTime={reservation.endTime}
+                      date={reservation.date}
+                      month={reservation.month}
+                    />
+                    {console.log("temp")}
+                  </div>
                 )
-              ) : (
-                <p>No Reservations made yet</p>
-              )}
+              )
+            ) : (
+              <p>No Reservations made yet</p>
+            )}
 
             <ReservationComponent />
             <div className="facilities-card">
