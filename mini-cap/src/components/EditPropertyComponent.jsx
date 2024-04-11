@@ -1,3 +1,14 @@
+/**
+ * EditPropertyComponent.jsx
+ * 
+ * Component for editing property details.
+ * 
+ * @summary Component for editing property details.
+ * @description This component provides a form to edit property details including name, address, unit count, parking count, locker count, etc.
+ * It allows users to upload a property picture, edit property details, and delete the property.
+ * 
+ * @file This file defines the EditPropertyComponent component.
+ */
 import { React, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -14,6 +25,15 @@ import {
 import store from "storejs";
 import { PropTypes } from "prop-types";
 
+/**
+ * EditPropertyComponent
+ * 
+ * @param {object} propertyDetails - Details of the property to be edited.
+ * @param {function} onUpdate - Function to update the property details.
+ * @param {function} toggleEdit - Function to toggle the edit mode.
+ * 
+ * @returns {JSX.Element} EditPropertyComponent JSX markup.
+ */
 const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
   const { propertyID } = useParams();
   const navigate = useNavigate();
@@ -46,15 +66,21 @@ const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
     fetchPropertyData();
   }, [propertyID, navigate]);
 
+  // State for previewing property image
   const [previewPropertyImage, setPreviewPropertyImage] = useState(null);
   const [showDeleteModal, setShow] = useState(false);
+  
+  // Function to handle click on delete button
   const handleClickDelete = () => {
     setShow(true);
   };
+
+  // Function to close delete modal
   const handleCloseDeleteModal = () => {
     setShow(false);
   };
 
+  // Function to handle file change
   const handleFileChange = (e) => {
     const file = e.target.files[0];
 
@@ -88,6 +114,7 @@ const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
     reader.readAsDataURL(file);
   };
 
+  // Function to handle input change
   const handleInputChange = (e) => {
     const { name, value, type } = e.target;
 
@@ -106,6 +133,7 @@ const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
     });
   };
 
+  // Function to handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -169,6 +197,7 @@ const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
     }
   };
 
+  // Function to handle property deletion
   const handleDelete = async () => {
     try {
       await deleteProperty(propertyID);
@@ -344,7 +373,10 @@ const EditPropertyComponent = ({ propertyDetails, onUpdate, toggleEdit }) => {
   );
 };
 
+// Prop type validation for EditPropertyComponent
 EditPropertyComponent.propTypes = {
+  propertyDetails: PropTypes.object,
+  onUpdate: PropTypes.func.isRequired,
   toggleEdit: PropTypes.func.isRequired,
 };
 
