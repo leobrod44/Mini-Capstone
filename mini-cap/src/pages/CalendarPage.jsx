@@ -380,22 +380,23 @@ const CalendarPage = () => {
           alignItems: "center",
         }}
       >
-         
         <p
           style={{
-            textAlign: "center", 
-            display:"block",
-            margin: "0 auto", 
-            maxWidth: "80%", 
-            paddingTop: "20px", 
-            paddingBottom: "20px", 
+            textAlign: "center",
+            display: "block",
+            margin: "0 auto",
+            maxWidth: "80%",
+            paddingTop: "20px",
+            paddingBottom: "20px",
           }}
         >
-          
-          <span style={{ color:"#4540db", fontWeight:"bold", marginRight:"5px"}}>NOTE:</span>
+          <span
+            style={{ color: "#4540db", fontWeight: "bold", marginRight: "5px" }}
+          >
+            NOTE:
+          </span>
           {description}{" "}
         </p>
-    
       </div>
       <div className="calendar-page-container">
         <BackArrowBtn /> {/* Include BackArrowBtn here */}

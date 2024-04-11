@@ -1,8 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
 import "../styling/FacilityComponent.css";
-import  { useState } from "react";
-import DeleteModal from "../components/DeleteModal";
 
 /**
  * ReservationComponent displays information about a reservation.
@@ -14,27 +12,44 @@ import DeleteModal from "../components/DeleteModal";
  * @param {number} props.month - The month index (0-11) of the reservation.
  * @returns {JSX.Element} A React component displaying reservation information.
  */
-const ReservationComponent = ({facilityType, startTime, endTime, date, month}) => {
-    // Array of month names for displaying the month of the reservation
-    const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
 
-    // Get the month name based on the month number
-    const reservationMonth = monthNames[month];
+const ReservationComponent = ({
+  facilityType,
+  startTime,
+  endTime,
+  date,
+  month,
+}) => {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-    return (
-        <div className="component-container">
-            {/* Display the facility title */}
-            <div className="facility-title">Upcoming Reservation: {facilityType}</div>
-            <div className="facility-description"></div>
-            {/* Display the date of the reservation */}
-            <div>Date: {reservationMonth} {date} </div>
-            {/* Display the time range of the reservation */}
-            <div>Time: {startTime} - {endTime}</div>
-        </div>
-    );
+  // Get the month name based on the month number
+  const reservationMonth = monthNames[month];
+
+  return (
+    <div className="component-container">
+      <div className="facility-title">Upcoming Reservation: {facilityType}</div>
+      <div className="facility-description"></div>
+      <div>
+        Date: {reservationMonth} {date}{" "}
+      </div>
+      <div>
+        Time: {startTime} - {endTime}
+      </div>
+    </div>
+  );
 };
 
 // PropTypes for type checking the props passed to ReservationComponent
