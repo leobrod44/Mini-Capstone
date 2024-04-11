@@ -1,21 +1,27 @@
-import React, {useEffect} from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
 import "../styling/FacilityComponent.css";
-import  { useState } from "react";
+import { Link } from "react-router-dom";
 
-const FacilityComponent = ({facilityTitle, facilityDescription}) => {
-
-    return (
-        <div className="facility-component-container">
-            <div className="facility-title">Facility Component{facilityTitle}</div>
-            <div className="facility-description">Little Facility Description{facilityDescription}</div>
-            <button className='make-reservation-button'>Make Reservation</button>
-        </div>
-    );
+const FacilityComponent = ({
+  type,
+  description,
+  dailyAvailabilities,
+  blockSize,
+  propertyID,
+  id
+}) => {
+  return (
+    <div className="facility-component-container">
+      <div className="facility-type"> Facility: {type}</div>
+      <div className="facility-description"> Description: {description}</div>
+      <Link to={`/calendar?propertyID=${propertyID}&facilityID=${id}&facilityType=${type}&desc=${description}`} className="make-reservation-button">Make Reservation</Link>
+    </div>
+  );
 };
 
 FacilityComponent.propTypes = {
-    facilityTitle: PropTypes.string,
-    facilityDescription: PropTypes.string,
+  type: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
 };
 export default FacilityComponent;

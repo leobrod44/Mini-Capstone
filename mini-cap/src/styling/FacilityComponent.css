@@ -1,8 +1,17 @@
-.facility-title{
+  .facility-type{
     font-family: "Roboto", sans-serif;
     position: relative;
     color:#2f2c9b;
     font-size: 15px;
+    font-weight: 500;
+    margin-top: 12px; 
+  }
+
+  .facility-title{
+    font-family: "Roboto", sans-serif;
+    position: relative;
+    color:#2f2c9b;
+    font-size: 16px;
     font-weight: 500;
     margin-top: 12px; 
   }
@@ -19,8 +28,7 @@
     border-radius: 8px;
     padding: 14px;
     height: auto;
-    width: 100%;
-    max-width: 400px;
+    width: 400px;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -34,17 +42,15 @@
     border-radius: 8px;
     padding: 14px;
     height: auto;
-    
     display: flex;
     flex-direction: column;
     position: relative;
     margin: auto;
     margin-bottom: 20px;
     margin-top: 10px;
-    max-width: 400px;
-    width: 100%;
-    
+    width: 400px;
   }
+
 
   .make-reservation-button{
     background-color: #382fb8;
@@ -57,6 +63,7 @@
     cursor: pointer;
     width: 40%;
     height: fit-content;
+    text-align: center;
   }
   .make-reservation-button:hover{
     background-color: #2f2c9b;

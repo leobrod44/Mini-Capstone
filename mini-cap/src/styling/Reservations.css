@@ -5,9 +5,16 @@ h3, h5 {
   margin-bottom: 3px;
   color: #2f2c9b;
 }
+h4{
+  font-family: Roboto, Arial, Helvetica, sans-serif;
+  position: relative;
+  margin-bottom: 3px;
+  color: #2f2c9b; 
+  font-weight: bold;
+}
 .reservations-page-container{
  
-  background-color: #f4f4f4;
+  background-color: #f0f4f8;
   padding-top: 50px;
 }
 .reservations-container {
@@ -26,7 +33,18 @@ h3, h5 {
     margin: 5px 0; /* Reduce margin for each paragraph to compact the display */
     text-align: center
   }
- 
+ .facilities-card {
+  background-color: white; /* Card background */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  margin: 20px auto; /* Center the card with some margin around it */
+  max-width: 600px; /* Maximum width of the card */
+  padding: 20px; /* Padding inside the card */
+  display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+ }
 .reserve-container {
     background-color: white; /* Card background */
     border-radius: 8px; /* Rounded corners */

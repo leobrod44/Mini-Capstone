@@ -61,7 +61,7 @@ export async function addFacility(facility) {
       dailyAvailabilities: dailyAvailabilities,
       blockSize: blockSize,
     });
-
+    await updateDoc(docRef, { id: docRef.id });
     return docRef;
   } catch (error) {
     throw error;
@@ -324,8 +324,11 @@ export async function getPropertiesJoinReservationAndFacilities(userID) {
         property.reservations = await Promise.all(
           reservations.map(async (reservation) => {
             if (reservation.split("/")[1] == property.id) {
-              var docu = await getDoc(doc(db, reservation));
-              return docu.data();
+              var docu = (await getDoc(doc(db, reservation))).data();
+              docu.month = reservation.split("/")[4];
+              docu.facilityID = reservation.split("/")[3];
+              docu.facilityType = property.facilities.find(id => id.id === docu.facilityID).type;
+              return docu;
             }
           })
         );

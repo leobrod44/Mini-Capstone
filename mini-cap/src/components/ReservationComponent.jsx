@@ -1,49 +1,52 @@
-import React, {useEffect} from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
 import "../styling/FacilityComponent.css";
-import  { useState } from "react";
-import DeleteModal from "../components/DeleteModal";
 
-const ReservationComponent = ({facilityTitle, facilityDescription, reservationDate}) => {
+const ReservationComponent = ({
+  facilityType,
+  startTime,
+  endTime,
+  date,
+  month,
+}) => {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-    const [showDeleteModal, setShow] = useState(false);
-    const handleClickDelete = () => {
-        setShow(true);
-    };
-    const handleCloseDeleteModal = () => {
-        setShow(false);
-    };
-    const handleDelete = async () => {
-        console.log("Reservation Delete Called")
-    };
+  // Get the month name based on the month number
+  const reservationMonth = monthNames[month];
 
-    return (
-        <div className="component-container">
-            <link
-                rel="stylesheet"
-                href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-                integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-                crossOrigin="anonymous"
-            />
-            <div className="facility-title">Reservation Component{facilityTitle}</div>
-            <div className="facility-description">Little Description{facilityDescription}</div>
-            <div className="facility-description">Date and Time{reservationDate}</div>
-            <button className="close-button" onClick={() => handleClickDelete()}>×</button>
-            <DeleteModal
-                show={showDeleteModal}
-                handleClose={handleCloseDeleteModal}
-                message="Are you sure you want to delete this Reservation?"
-                handleDeleteItem={handleDelete}
-            />
-        </div>
-        
-    );
+  return (
+    <div className="component-container">
+      <div className="facility-title">Upcoming Reservation: {facilityType}</div>
+      <div className="facility-description"></div>
+      <div>
+        Date: {reservationMonth} {date}{" "}
+      </div>
+      <div>
+        Time: {startTime} - {endTime}
+      </div>
+    </div>
+  );
 };
 
 ReservationComponent.propTypes = {
-    facilityTitle: PropTypes.string,
-    facilityDescription: PropTypes.string,
-    reservationDate: PropTypes.string
+  facilityTitle: PropTypes.string,
+  date: PropTypes.string,
+  month: PropTypes.number,
+  startTime: PropTypes.string,
+  endTime: PropTypes.string,
 };
 
 export default ReservationComponent;
