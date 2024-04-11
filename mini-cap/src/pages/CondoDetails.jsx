@@ -393,14 +393,6 @@ export default function CondoDetails() {
                                 </button>
                               </>
                             )}
-                            <div>
-                              <button
-                                className="generate-report-button"
-                                onClick={handleGenerateReport}
-                              >
-                                Generate Report
-                              </button>
-                            </div>
                           </div>
                         </>
                       )}
@@ -414,6 +406,19 @@ export default function CondoDetails() {
                           <div className={`user-tag owner`}>{status}</div>
                         </>
                       )}
+                      {role === MANAGEMENT_COMPANY && (
+                          <>
+                            <div>
+                              <button
+                                  className="generate-report-button"
+                                  onClick={handleGenerateReport}
+                              >
+                                Generate Report
+                              </button>
+                            </div>
+                          </>
+                      )}
+
                     </div>
                   </div>
                   <div className="other-info">
