@@ -1,6 +1,8 @@
 import { ADMINISTRATIVE_STEPS } from '../backend/Constants';
-import {submitRequest, getRequests, updateRequest, assignWorker, getAssignedWorker} from '../backend/RequestHandler';
+import {submitRequest, getRequests, updateRequest, assignWorker, getAssignedWorker,getNotifications,setNotificationViewed,addReservationNotification,addRequestNotification} from '../backend/RequestHandler';
 import {doc, getDoc, getFirestore, collection, addDoc, updateDoc, arrayUnion, getDocs} from 'firebase/firestore';
+import { MANAGMENT_COMPANY } from '../backend/Constants'; // Assuming this constant is defined somewhere
+
 jest.mock('firebase/firestore', () => ({
     ...jest.requireActual('firebase/firestore'),
     addDoc: jest.fn(),
@@ -142,6 +144,127 @@ describe("workers assigning and getting", () => {
         expect(doc).toHaveBeenCalledWith(expect.anything(), 'Property', fakeCondoData.property, 'Workers', fakeRequestData.assignedWorkerID);
         expect(getDoc).toHaveBeenCalledTimes(3);
         expect(result).toEqual(fakeWorkerData);
+    });
+
+});
+
+describe('getNotifications function', () => {
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('should fetch and filter notifications correctly', async () => {
+        const mockUserID = 'mockUserID';
+        const mockNotificationData = [
+            { data: () => ({ isReservation: true, date: new Date() }) },
+            { data: () => ({ isReservation: true, date: new Date(Date.now() + 86400000) }) },
+            { data: () => ({ isReservation: false }) },
+        ];
+        const fakeDoc = jest.fn();
+        const fakeCollection = jest.fn();
+        const fakeNotificationSnapshot = { docs: mockNotificationData };
+        collection.mockReturnValue(fakeCollection);
+        doc.mockReturnValue(fakeDoc);
+        getDocs.mockResolvedValueOnce(fakeNotificationSnapshot);
+
+        const notifications = await getNotifications(mockUserID);
+
+        expect(collection).toHaveBeenCalledWith(fakeDoc,  'Notifications');
+        expect(getDocs).toHaveBeenCalledWith(fakeCollection);
+        expect(notifications).toHaveLength(3); // Two notifications should pass the filtering condition
+ 
+    });
+    test('should set notification viewed correctly', async () => {
+        const mockEmail = 'mockEmail';
+        const mockNotificationID = 'mockNotificationID';
+        const fakeDoc = jest.fn();
+        const fakeCollection = jest.fn();
+        const fakeNotificationRef = jest.fn();
+        collection.mockReturnValue(fakeCollection);
+        doc.mockReturnValue(fakeDoc);
+        doc.mockReturnValue(fakeNotificationRef);
+
+        await setNotificationViewed(mockEmail, mockNotificationID);
+
+        expect(collection).toHaveBeenCalledWith(fakeDoc,  'Notifications');
+        expect(doc).toHaveBeenCalledWith(fakeCollection, mockNotificationID);
+        expect(updateDoc).toHaveBeenCalledWith(fakeNotificationRef, { viewed: true });
+    });
+    test('should add a reservation notification correctly', async () => {
+        const mockEmail = 'mockEmail';
+        const mockReservationData = {
+            propertyID: 'mockPropertyID',
+            facilityID: 'mockFacilityID',
+            startTime: '08:00',
+            endTime: '10:00',
+            month: 3,
+            date: 12,
+        };
+        const mockFacilityData = {
+            type: 'mockFacilityType',
+        };
+        const mockDocRef = { id: 'mockDocRefID' };
+        const fakeDoc = jest.fn();
+        const fakePropertyFacilityDoc = jest.fn();
+        const fakeCollection = jest.fn();
+        const fakeNotificationCollection = jest.fn();
+        const fakeNotificationDocRef = jest.fn();
+
+        doc.mockReturnValueOnce(fakePropertyFacilityDoc);
+        getDoc.mockResolvedValueOnce({ data: () => mockFacilityData });
+        collection.mockReturnValueOnce(fakeCollection);
+        collection.mockReturnValueOnce(fakeNotificationCollection);
+        addDoc.mockResolvedValueOnce(mockDocRef);
+        updateDoc.mockResolvedValueOnce();
+
+        const notificationID = await addReservationNotification(mockEmail, mockReservationData);
+
+        expect(doc).toHaveBeenCalledWith(fakeDoc, `Property/${mockReservationData.propertyID}/Facilities/${mockReservationData.facilityID}`);
+        expect(getDoc).toHaveBeenCalledWith(fakePropertyFacilityDoc);
+        expect(collection).toHaveBeenCalledWith(fakeDoc, 'Users', mockEmail, 'Notifications');
+        expect(addDoc).toHaveBeenCalledWith(fakeNotificationCollection, {
+            message: `${mockReservationData.startTime}-${mockReservationData.endTime}`,
+            path: '/my-reservations',
+            date: (new Date(2024, mockReservationData.month, mockReservationData.date, 0, 0, 0, 0).toISOString()),
+            type: mockFacilityData.type,
+            viewed: false,
+            isReservation: true,
+        });
+        expect(updateDoc).toHaveBeenCalledWith(fakeNotificationDocRef, { id: mockDocRef.id });
+        expect(notificationID).toBe(mockDocRef.id);
+    });
+    test('should add a request notification correctly for Users', async () => {
+        const mockDestinatiorType = 0; // Assuming 0 is for Users
+        const mockEmail = 'mockEmail';
+        const mockRequestData = {
+            type: 'mockRequestType',
+            notes: 'mockRequestNotes',
+            condoID: 'mockCondoID',
+        };
+        const mockDocRef = { id: 'mockDocRefID' };
+        const fakeDoc = jest.fn();
+        const fakeCollection = jest.fn();
+        const fakeNotificationCollection = jest.fn();
+        const fakeNotificationDocRef = jest.fn();
+
+        collection.mockReturnValueOnce(fakeCollection);
+        collection.mockReturnValueOnce(fakeNotificationCollection);
+        addDoc.mockResolvedValueOnce(mockDocRef);
+        updateDoc.mockResolvedValueOnce();
+
+        const notificationID = await addRequestNotification(mockDestinatiorType, mockEmail, mockRequestData);
+
+        expect(collection).toHaveBeenCalledWith(fakeDoc, 'Users', mockEmail, 'Notifications');
+        expect(addDoc).toHaveBeenCalledWith(fakeNotificationCollection, {
+            type: mockRequestData.type,
+            message: mockRequestData.notes,
+            path: `/condo-details/${mockRequestData.condoID}`,
+            date: expect.any(String),
+            viewed: false,
+            isReservation: false,
+        });
+        expect(updateDoc).toHaveBeenCalledWith(fakeNotificationDocRef, { id: mockDocRef.id });
+        expect(notificationID).toBe(mockDocRef.id);
     });
 
 });

@@ -242,33 +242,46 @@ export async function getAssignedWorker(condoID, requestID) {
 }
 
 //SPRINT 4
-
-///Provide: userID
-//Returns: array of new notifications containing message to display and path
+/**
+ * Retrieves notifications for a user based on their role.
+ * @param {string} userID - The ID of the user.
+ * @returns {Array} - An array of notifications sorted by date in descending order.
+ * @throws {Error} - If an error occurs while fetching notifications.
+ */
 export async function getNotifications(userID){
     try {
-        var role  = store("role")==MANAGEMENT_COMPANY ? "Company" : "Users";
+        // Determine the role of the user
+        var role = store("role") === MANAGEMENT_COMPANY ? "Company" : "Users";
+
+        // Get the notification collection based on the user's role and ID
         const notificationCollection = collection(doc(db, role, userID), 'Notifications');
+
+        // Retrieve the snapshot of notifications
         const notificationSnapshot = await getDocs(notificationCollection);
-        var notifications = notificationSnapshot.docs.map( (doc) => {
-                var data = doc.data();
-                if(data.isReservation){
-                    var current = new Date().getDate();
-                    var date = new Date(data.date).getDate();
-                    if(current == date || current+1 == date){
-                        return data;
-                    }
-                }
-                else{
+
+        // Map the notification documents and filter based on the current or next day for reservation notifications
+        var notifications = notificationSnapshot.docs.map((doc) => {
+            var data = doc.data();
+            if(data.isReservation){
+                var current = new Date().getDate();
+                var date = new Date(data.date).getDate();
+                if(current === date || current + 1 === date){
                     return data;
                 }
-            });
-        notifications = notifications.filter(notification => notification != null);
-        return sortArray(notifications, 'date').reverse();
+            }
+            else{
+                return data;
+            }
+        });
+
+        // Remove null values and sort the notifications by date in descending order
+        notifications = notifications.filter(notification => notification !== null);
+        return sortArray(notifications, 'date').reverse(); // Return the sorted notifications
     } catch(e) {
         console.error("Error getting notifications: ", e);
     }
 }
+
 
 //Provide: userID, requestID
 //Returns: nothing
@@ -282,10 +295,22 @@ export async function setNotificationViewed(email, notificationID){
     }
 }
 
+/**
+ * Adds a request notification for a user or a company.
+ * @param {number} destinatiorType - The type of the destination (0 for Users, 1 for Company).
+ * @param {string} email - The email address of the recipient.
+ * @param {Object} requestData - The request data including type, notes, and condoID.
+ * @returns {string} - The ID of the added notification document.
+ * @throws {Error} - If an error occurs while adding the notification.
+ */
 export async function addRequestNotification(destinatiorType, email, requestData){
     try {
-        var collectionRef = destinatiorType == 0 ? "Users" : "Company";
+        // Determine the collection reference based on destinatiorType
+        var collectionRef = destinatiorType === 0 ? "Users" : "Company";
+
+        // Add the request notification document
         const docRef = await addDoc(collection(doc(db, collectionRef, email), 'Notifications'), {
+            // Notification details
             type: requestData.type,
             message: requestData.notes,
             path: `/condo-details/${requestData.condoID}`,
@@ -293,18 +318,31 @@ export async function addRequestNotification(destinatiorType, email, requestData
             viewed: false,
             isReservation: false
         });
+
+        // Update the document with its own ID
         await updateDoc(docRef, { id: docRef.id });
-        return docRef.id;
+
+        return docRef.id; // Return the ID of the added notification document
     } catch(e) {
         console.error("Error adding notification: ", e);
     }
 }
+
+/**
+ * Adds a reservation notification for a user.
+ * @param {string} email - The email address of the user.
+ * @param {Object} reservationData - The reservation data including propertyID, facilityID, startTime, endTime, month, and date.
+ * @returns {string} - The ID of the added notification document.
+ * @throws {Error} - If an error occurs while adding the notification.
+ */
 export async function addReservationNotification(email, reservationData){
     try {
-
+        // Retrieve facility data
         var facility = await getDoc(doc(db, `Property/${reservationData.propertyID}/Facilities/${reservationData.facilityID}`));
 
+        // Add the reservation notification document
         const docRef = await addDoc(collection(doc(db, 'Users', email), 'Notifications'), {
+            // Notification details
             message: reservationData.startTime + "-" + reservationData.endTime,
             path: "/my-reservations",
             date: (new Date(2024, reservationData.month, reservationData.date, 0, 0, 0, 0).toISOString()),
@@ -312,8 +350,11 @@ export async function addReservationNotification(email, reservationData){
             viewed: false,
             isReservation: true
         });
+
+        // Update the document with its own ID
         await updateDoc(docRef, { id: docRef.id });
-        return docRef.id;
+
+        return docRef.id; // Return the ID of the added notification document
     } catch(e) {
         console.error("Error adding notification: ", e);
     }
