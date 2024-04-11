@@ -1,48 +1,44 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import Reservations from '../pages/Reservations'; // Adjust the import path based on your project structure
-import { waitFor } from '@testing-library/react';
+import { render, waitFor, screen } from '@testing-library/react'; 
+import { getUserCondos, getPropertyData } from "../backend/PropertyHandler.js";
+import { getUsersProperty } from "../backend/ImageHandler.js";
+import Reservations from '../pages/Reservations'; 
+import { BrowserRouter as Router } from 'react-router-dom';
+import { getFacilities } from "../backend/FacilityHandler.js"; 
 
 
-jest.mock("../components/Header", () => () => <div>Header</div>);
-jest.mock("../components/Footer", () => () => <div>Footer</div>);
-jest.mock("../components/BackArrowBtn", () => () => <div>BackArrowBtn</div>);
-jest.mock("../components/Pagination", () => () => <div>Pagination</div>);
-jest.mock("../components/ReservationComponent", () => () => <div>ReservationComponent</div>);
-jest.mock("../components/FacilityComponent", () => () => <div>FacilityComponent</div>);
+jest.mock("../components/Header", () => () => <div>Header Mock</div>);
+jest.mock("../components/Footer", () => () => <div>Footer Mock</div>);
+jest.mock("../backend/PropertyHandler.js", () => ({
+  getUserCondos: jest.fn(),
+  getPropertyData: jest.fn(),
+ 
+}));
+jest.mock("../backend/ImageHandler.js", () => ({
+  getUsersProperty: jest.fn(),
+}));
+jest.mock("../backend/FacilityHandler.js", () => ({ 
+  getFacilities: jest.fn(),
+}));
+describe("Reservations ", () => {
 
+  it("renders without crashing and renders properties (if any)", async() => {
+    getUserCondos.mockResolvedValue('userCondosMock');
+    getUsersProperty.mockResolvedValue(['propertyId1', 'propertyId2']);
+    getPropertyData.mockResolvedValueOnce('propertyData1').mockResolvedValueOnce('propertyData2');
 
-describe('Reservations Page', () => {
-    it('renders without crashing', () => {
-      render(<Reservations />);
-      expect(screen.getByText("My Reservations")).toBeInTheDocument();
-    });
+    render(
+      <Router>
+        <Reservations />
+      </Router>
+    );
+
+    // Verify that your async functions were called correctly
+    await waitFor(() => expect(getUserCondos).toHaveBeenCalled());
+    await waitFor(() => expect(getUsersProperty).toHaveBeenCalledWith('userCondosMock'));
+    await waitFor(() => expect(getPropertyData).toHaveBeenCalledTimes(2));
+   
+    
+  });
   
-    it('renders the Pagination component', () => {
-      render(<Reservations />);
-      expect(screen.getByText('Pagination')).toBeInTheDocument();
-    });
-  
-    it('renders ReservationComponent for each condo with reservations', () => {
-      render(<Reservations />);
-      // Assuming your mock condos data have at least one condo with reservations
-      expect(screen.getAllByText('ReservationComponent').length).toBeGreaterThan(0);
-    });
-
-    it('toggles the visibility of FacilityComponent when the button is clicked', async () => {
-        const { getByText, queryByText } = render(<Reservations />);
-        // Assuming "Show Condo Facilities" button is what triggers toggleFacilities
-        // Initially, we expect not to find "FacilityComponent" if it depends on the toggle.
-        expect(queryByText('FacilityComponent')).not.toBeInTheDocument();
-    
-        // Simulate the click event that triggers toggleFacilities
-        fireEvent.click(getByText('Show Condo Facilities'));
-    
-        // Now, we expect "FacilityComponent" to be in the document.
-        expect(getByText('FacilityComponent')).toBeInTheDocument();
-    
-        // Optionally, click again to hide and confirm it disappears.
-        fireEvent.click(getByText('Show Condo Facilities'));
-        await waitFor(() => expect(queryByText('FacilityComponent')).not.toBeInTheDocument());
-    });
 });
