@@ -123,7 +123,7 @@ const Reservations = () => {
                 (reservation, reservationIndex) => (
                   <div key={reservationIndex}>
                     <ReservationComponent
-                      facilityTitle={reservation.facilityID}
+                      facilityType={reservation.facilityType}
                       startTime={reservation.startTime}
                       endTime={reservation.endTime}
                       date={reservation.date}

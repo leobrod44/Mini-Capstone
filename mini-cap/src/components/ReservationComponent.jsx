@@ -5,13 +5,20 @@ import  { useState } from "react";
 import DeleteModal from "../components/DeleteModal";
 import { propTypes } from 'react-bootstrap/esm/Image';
 
-const ReservationComponent = ({facilityTitle, startTime, endTime, date, month}) => {
-    
+const ReservationComponent = ({facilityType, startTime, endTime, date, month}) => {
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    // Get the month name based on the month number
+    const reservationMonth = monthNames[month];
+
     return (
         <div className="component-container">
-            <div className="facility-title">Upcoming Reservation:{facilityTitle}</div>
+            <div className="facility-title">Upcoming Reservation: {facilityType}</div>
             <div className="facility-description"></div>
-            <div>Date: {date} </div>
+            <div>Date: {reservationMonth} {date} </div>
             <div>Time: {startTime} - {endTime}</div>
         </div>
         
@@ -21,7 +28,7 @@ const ReservationComponent = ({facilityTitle, startTime, endTime, date, month}) 
 ReservationComponent.propTypes = {
     facilityTitle: PropTypes.string,
     date: PropTypes.string,
-    month: PropTypes.string,
+    month: PropTypes.number,
     startTime: PropTypes.string,
     endTime: PropTypes.string
 };
