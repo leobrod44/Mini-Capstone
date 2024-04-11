@@ -45,6 +45,7 @@ h5 {
   display: flex;
   justify-content: space-between;
   padding-bottom: 10px;
+  flex-direction: column;
 }
 
 .other-info1 {
