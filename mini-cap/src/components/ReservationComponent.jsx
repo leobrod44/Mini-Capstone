@@ -2,6 +2,17 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import "../styling/FacilityComponent.css";
 
+/**
+ * ReservationComponent displays information about a reservation.
+ * @param {object} props - The properties passed to the component.
+ * @param {string} props.facilityType - The type of facility for the reservation.
+ * @param {string} props.startTime - The start time of the reservation.
+ * @param {string} props.endTime - The end time of the reservation.
+ * @param {string} props.date - The date of the reservation.
+ * @param {number} props.month - The month index (0-11) of the reservation.
+ * @returns {JSX.Element} A React component displaying reservation information.
+ */
+
 const ReservationComponent = ({
   facilityType,
   startTime,
@@ -41,12 +52,13 @@ const ReservationComponent = ({
   );
 };
 
+// PropTypes for type checking the props passed to ReservationComponent
 ReservationComponent.propTypes = {
-  facilityTitle: PropTypes.string,
-  date: PropTypes.string,
-  month: PropTypes.number,
-  startTime: PropTypes.string,
-  endTime: PropTypes.string,
+    facilityType: PropTypes.string.isRequired, // Facility type is a required string
+    date: PropTypes.string.isRequired, // Date is a required string
+    month: PropTypes.number.isRequired, // Month is a required number
+    startTime: PropTypes.string.isRequired, // Start time is a required string
+    endTime: PropTypes.string.isRequired // End time is a required string
 };
 
 export default ReservationComponent;

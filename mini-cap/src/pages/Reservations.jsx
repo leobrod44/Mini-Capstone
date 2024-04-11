@@ -43,6 +43,10 @@ const Reservations = () => {
   // No parameters are taken as it uses data from local storage and state.
   // No return value as it updates the component's state directly.
   useEffect(() => {
+    /**
+   * Fetch properties for the user and set them in state.
+   * @returns {Promise<void>} A Promise that resolves when properties are fetched and set.
+   */
     const fetchProperties = async () => {
       try {
         // Fetch properties for the user
@@ -71,6 +75,10 @@ const Reservations = () => {
   // Uses the `getFacilities` function from backend services to fetch facilities for each property ID.
   // Updates the `facilities` state with the results, keyed by property ID for easy access.
   useEffect(() => {
+    /**
+   * Fetch facilities for each property asynchronously.
+   * @returns {Promise<void>} A Promise that resolves when all facilities are fetched and set.
+   */
     const fetchFacilitiesForProperties = async () => {
       try {
         // Initialize an object to hold facilities data keyed by property ID
