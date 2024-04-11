@@ -26,6 +26,7 @@
   margin-top: 20px; /* Added margin-top for spacing */
   width: 100%; /* Adjust width as necessary */
   transition: box-shadow 0.3s ease-in-out;
+  margin-bottom: 40px; /* Increase the bottom margin */
 }
 
 .facility-card:hover {
@@ -142,4 +143,8 @@
 .no-facilities-text {
   color: #2f2c9b !important; /* Adjust the shade of purple as needed */
   font-weight: bold; /* Makes the font bolder */
+}
+.pagination-container {
+  /* existing styles */
+  padding-top: 40px; /* Add top padding */
 }
