@@ -12,7 +12,7 @@ import FacilityComponent from "../components/FacilityComponent.jsx";
 import store from "storejs";
 import { getUserCondos, getPropertyData } from "../backend/PropertyHandler.js";
 import { getUsersProperty } from "../backend/ImageHandler.js";
-import { getFacilities } from "../backend/FacilityHandler";
+import { getFacilities, getPropertiesJoinReservationAndFacilities } from "../backend/FacilityHandler";
 
 const Reservations = () => {
   const [visibleFacilities, setVisibleFacilities] = useState({});
@@ -22,6 +22,8 @@ const Reservations = () => {
   const propertiesPerPage = 4; // Adjust as needed
   const [properties, setProperties] = useState([]);
   const [propertyIDs, setPropertyIDs] = useState([]);
+  const [ reservations, setReservations] = useState([]);
+
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -69,12 +71,30 @@ const Reservations = () => {
     }
   }, [propertyIDs]);
 
-  const toggleFacilities = (propertyId) => {
-    setVisibleFacilities((prevState) => ({
-      ...prevState,
-      [propertyId]: !prevState[propertyId],
-    }));
-  };
+
+  
+  useEffect(() => {
+    const getPropertiesJoinReservationsAndFacilities = async () => {
+      try {
+        const propertiesWithReservationsAndFacilities =
+          await getPropertiesJoinReservationAndFacilities(store("user"));
+        setReservations(propertiesWithReservationsAndFacilities);
+        console.log(
+          "Properties with reservations and facilities:",
+          propertiesWithReservationsAndFacilities
+        );
+      } catch (error) {
+        console.error(
+          "Failed to fetch properties with reservations and facilities:",
+          error
+        );
+      }
+    };
+   getPropertiesJoinReservationsAndFacilities();
+  }, []);
+
+
+
   const indexOfLastProperty = currentPage * propertiesPerPage;
   const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
 
@@ -91,37 +111,42 @@ const Reservations = () => {
           My Reservations
         </h2>
 
-        {propertiesToDisplayPaginated.map((property, index) => (
+        {properties.map((property, index) => (
           <div key={property.id} className="reserve-container">
             <h3>Property {property.propertyName}</h3>
-            <ReservationComponent propertyId={property.id} />
-            <div className="facilities-header">
-              <h5 style={{ marginRight: "20px" }}>Show Property Facilities</h5>
-              <button
-                className="facilities-button"
-                onClick={() => toggleFacilities(property.propertyName)}
-              >
-                {visibleFacilities[property.id] ? (
-                  <MdExpandLess />
-                ) : (
-                  <MdExpandMore />
-                )}
-              </button>
-            </div>
-            {visibleFacilities[property.propertyName] &&
-              (facilities[property.propertyName] &&
-              facilities[property.propertyName].length > 0 ? (
-                facilities[property.propertyName].map((facility, index) => (
-                  <FacilityComponent
-                    key={index}
-                    type={facility.type}
-                    description={facility.description}
-                  />
-                ))
+        
+            <ReservationComponent />
+            <div className="facilities-card">
+              <div className="facilities-header">
+                <h4 style={{ marginRight: "20px" }}>
+                  {property.propertyName}'s Facilities
+                </h4>
+              </div>
+              {facilities &&
+              Object.entries(facilities)[index] &&
+              Object.entries(facilities)[index][1].length > 0 ? (
+                Object.entries(facilities)[index][1].map(
+                  (facility, facilityIndex) => (
+                    <div key={facilityIndex}>
+                      <FacilityComponent
+                        type={facility.type}
+                        description={facility.description}
+                        id={facility.id}
+                        propertyID={facility.propertyID}
+                      />
+                      {console.log(
+                        "--facility name: " +
+                          facility.type +
+                          " description: " +
+                          facility.description
+                      )}
+                    </div>
+                  )
+                )
               ) : (
-                <p>No available facilities</p>
-              ))}
-            {index < property.length - 1 && <hr />}
+                <p>No facilities available</p>
+              )}
+            </div>
           </div>
         ))}
         <div
@@ -140,5 +165,4 @@ const Reservations = () => {
     </div>
   );
 };
-
 export default Reservations;
