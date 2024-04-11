@@ -26,6 +26,10 @@ const Reservations = () => {
 
 
   useEffect(() => {
+    /**
+   * Fetch properties for the user and set them in state.
+   * @returns {Promise<void>} A Promise that resolves when properties are fetched and set.
+   */
     const fetchProperties = async () => {
       try {
         // Fetch properties for the user
@@ -49,6 +53,10 @@ const Reservations = () => {
     fetchProperties();
   }, []);
   useEffect(() => {
+    /**
+   * Fetch facilities for each property asynchronously.
+   * @returns {Promise<void>} A Promise that resolves when all facilities are fetched and set.
+   */
     const fetchFacilitiesForProperties = async () => {
       try {
         const facilitiesPerProperty = {};
