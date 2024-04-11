@@ -17,6 +17,15 @@ import {
   getPropertiesJoinReservationAndFacilities,
 } from "../backend/FacilityHandler";
 
+/**
+ * Displays a list of reservations and facilities for a user's properties.
+ * Utilizes local storage to fetch user-specific data and manages
+ * the display through pagination.
+ *
+ * @returns {JSX.Element} The reservations page component including headers,
+ *                        property listings with their reservations and facilities,
+ *                        and pagination.
+ */
 const Reservations = () => {
   const [visibleFacilities, setVisibleFacilities] = useState({});
   const [facilities, setFacilities] = useState([]);
@@ -27,6 +36,12 @@ const Reservations = () => {
   const [propertyIDs, setPropertyIDs] = useState([]);
   const [reservations, setReservations] = useState([]);
 
+  // Fetches properties for the current user from backend services.
+  // Utilizes `getUserCondos` to get the user's condo IDs from local storage,
+  // and `getUsersProperty` to fetch property IDs based on those condos.
+  // Sets the property IDs into the state and fetches detailed data for each property.
+  // No parameters are taken as it uses data from local storage and state.
+  // No return value as it updates the component's state directly.
   useEffect(() => {
     const fetchProperties = async () => {
       try {
@@ -50,49 +65,87 @@ const Reservations = () => {
     };
     fetchProperties();
   }, []);
+
+  // Fetches facilities associated with each property the user has.
+  // Triggered after property IDs have been set, indicating that property data has been fetched.
+  // Uses the `getFacilities` function from backend services to fetch facilities for each property ID.
+  // Updates the `facilities` state with the results, keyed by property ID for easy access.
   useEffect(() => {
     const fetchFacilitiesForProperties = async () => {
       try {
+        // Initialize an object to hold facilities data keyed by property ID
         const facilitiesPerProperty = {};
+        // Iterate over each property ID to fetch its facilities
         for (const propertyID of propertyIDs) {
+          // Fetch facilities for a single property
           const fetchedFacilities = await getFacilities(propertyID);
+          // Update the temporary object with fetched facilities for this property
           facilitiesPerProperty[propertyID] = fetchedFacilities;
-          console.log(
-            `Facilities for property ${propertyID}:`,
-            fetchedFacilities
-          );
         }
+        // Update state with the fetched facilities, organized by property ID
         setFacilities(facilitiesPerProperty);
       } catch (error) {
+        // Log any errors encountered during the fetch operation
         console.error("Failed to fetch facilities:", error);
       }
     };
+    // Execute the fetch operation if there are property IDs to fetch facilities for
 
     if (propertyIDs.length > 0) {
       fetchFacilitiesForProperties();
     }
-  }, [propertyIDs]);
+  }, [propertyIDs]); // Effect depends on `propertyIDs`, re-run when they change
+
+  /**
+   * Fetches reservations and facilities data for the user's properties from the backend.
+   * This operation is performed once on component mount. It leverages the backend service
+   * `getPropertiesJoinReservationAndFacilities` which aggregates properties, their reservations,
+   * and facilities into a single data structure for efficiency.
+   *
+   * The async function `fetchReservationsAndFacilities` is defined and executed within the useEffect.
+   * It attempts to fetch aggregated data for the user's properties, including any reservations and
+   * facilities associated with those properties. The data fetched is then set into the component's
+   * state via the `setReservations` function. This operation is crucial for rendering the reservations
+   * and facilities on the UI.
+   *
+   * No parameters are taken by the `fetchReservationsAndFacilities` function itself, as it operates
+   * based on the current user's context, utilizing `store("user")` to identify the user and fetch
+   * relevant data.
+   *
+   * There is no direct return value from `fetchReservationsAndFacilities`. However, it updates the
+   * `reservations` state with the fetched data, which indirectly affects the component's render output
+   * by providing the necessary data to list the user's reservations and facilities.
+   *
+   * Errors during the fetch operation are caught and logged to the console, aiding in debugging and
+   * ensuring the app's resilience against backend issues.
+   */
 
   useEffect(() => {
     const fetchReservationsAndFacilities = async () => {
       try {
+        // Attempt to fetch aggregated data for properties, reservations, and facilities
         const propertiesWithReservationsAndFacilities =
           await getPropertiesJoinReservationAndFacilities(store("user"));
+
+        // Update the reservations state with the fetched data
         setReservations(propertiesWithReservationsAndFacilities);
+
+        // Optional logging for successful fetch operation
         console.log(
           "Properties with reservations and facilities:",
           propertiesWithReservationsAndFacilities
         );
-        console.log("Reservations set successfully:", reservations);
       } catch (error) {
+        // Log any errors encountered to assist in troubleshooting
         console.error(
           "Failed to fetch properties with reservations and facilities:",
           error
         );
       }
     };
+    // Execute the fetch operation on component mount
     fetchReservationsAndFacilities();
-  }, []);
+  }, []); // Empty dependency array ensures this effect runs only once on component mount
 
   const indexOfLastProperty = currentPage * propertiesPerPage;
   const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
