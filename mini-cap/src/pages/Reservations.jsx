@@ -137,7 +137,6 @@ const Reservations = () => {
               <p>No Reservations made yet</p>
             )}
 
-            <ReservationComponent />
             <div className="facilities-card">
               <div className="facilities-header">
                 <h4 style={{ marginRight: "20px" }}>

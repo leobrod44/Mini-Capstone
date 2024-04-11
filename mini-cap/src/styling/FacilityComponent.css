@@ -1,8 +1,17 @@
-.facility-type{
+  .facility-type{
     font-family: "Roboto", sans-serif;
     position: relative;
     color:#2f2c9b;
     font-size: 15px;
+    font-weight: 500;
+    margin-top: 12px; 
+  }
+
+  .facility-title{
+    font-family: "Roboto", sans-serif;
+    position: relative;
+    color:#2f2c9b;
+    font-size: 16px;
     font-weight: 500;
     margin-top: 12px; 
   }
@@ -19,8 +28,7 @@
     border-radius: 8px;
     padding: 14px;
     height: auto;
-    width: 100%;
-    max-width: 400px;
+    width: 400px;
     display: flex;
     flex-direction: column;
     position: relative;

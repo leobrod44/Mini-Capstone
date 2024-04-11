@@ -9,9 +9,10 @@ const ReservationComponent = ({facilityTitle, startTime, endTime, date, month}) 
     
     return (
         <div className="component-container">
-            <div className="facility-title">{facilityTitle}</div>
-            <div className="facility-description">Date {month} {date} </div>
-            <div> {startTime} - {endTime}</div>
+            <div className="facility-title">Upcoming Reservation:{facilityTitle}</div>
+            <div className="facility-description"></div>
+            <div>Date: {date} </div>
+            <div>Time: {startTime} - {endTime}</div>
         </div>
         
     );
