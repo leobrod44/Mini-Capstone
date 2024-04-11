@@ -12,7 +12,7 @@ import FacilityComponent from "../components/FacilityComponent.jsx";
 import store from "storejs";
 import { getUserCondos, getPropertyData } from "../backend/PropertyHandler.js";
 import { getUsersProperty } from "../backend/ImageHandler.js";
-import { getFacilities } from "../backend/FacilityHandler";
+import { getFacilities, getPropertiesJoinReservationAndFacilities } from "../backend/FacilityHandler";
 
 const Reservations = () => {
   const [visibleFacilities, setVisibleFacilities] = useState({});
@@ -22,6 +22,8 @@ const Reservations = () => {
   const propertiesPerPage = 4; // Adjust as needed
   const [properties, setProperties] = useState([]);
   const [propertyIDs, setPropertyIDs] = useState([]);
+  const [ reservations, setReservations] = useState([]);
+
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -69,6 +71,30 @@ const Reservations = () => {
     }
   }, [propertyIDs]);
 
+
+  
+  useEffect(() => {
+    const getPropertiesJoinReservationsAndFacilities = async () => {
+      try {
+        const propertiesWithReservationsAndFacilities =
+          await getPropertiesJoinReservationAndFacilities(store("user"));
+        setReservations(propertiesWithReservationsAndFacilities);
+        console.log(
+          "Properties with reservations and facilities:",
+          propertiesWithReservationsAndFacilities
+        );
+      } catch (error) {
+        console.error(
+          "Failed to fetch properties with reservations and facilities:",
+          error
+        );
+      }
+    };
+   getPropertiesJoinReservationsAndFacilities();
+  }, []);
+
+
+
   const indexOfLastProperty = currentPage * propertiesPerPage;
   const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
 
@@ -88,6 +114,7 @@ const Reservations = () => {
         {properties.map((property, index) => (
           <div key={property.id} className="reserve-container">
             <h3>Property {property.propertyName}</h3>
+        
             <ReservationComponent />
             <div className="facilities-card">
               <div className="facilities-header">

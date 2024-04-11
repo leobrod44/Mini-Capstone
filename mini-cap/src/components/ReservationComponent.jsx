@@ -4,13 +4,13 @@ import "../styling/FacilityComponent.css";
 import  { useState } from "react";
 import DeleteModal from "../components/DeleteModal";
 
-const ReservationComponent = ({facilityTitle, facilityDescription, reservationDate}) => {
+const ReservationComponent = ({facilityTitle, startTime, endTime, date}) => {
     
     return (
         <div className="component-container">
-            <div className="facility-title">Reservation Component{facilityTitle}</div>
-            <div className="facility-description">Little Description{facilityDescription}</div>
-            <div className="facility-description">Date and Time{reservationDate}</div>
+            <div className="facility-title">{facilityTitle}</div>
+            <div className="facility-description">Date {date}</div>
+            <div> {startTime} - {endTime}</div>
         </div>
         
     );
@@ -18,8 +18,7 @@ const ReservationComponent = ({facilityTitle, facilityDescription, reservationDa
 
 ReservationComponent.propTypes = {
     facilityTitle: PropTypes.string,
-    facilityDescription: PropTypes.string,
-    reservationDate: PropTypes.string
+    date: PropTypes.string
 };
 
 export default ReservationComponent;
