@@ -21,7 +21,7 @@ const FacilityForm = ({
   useEffect(() => {
     if (facility) {
       setFormData({
-        title: facility.name,
+        title: facility.type,
         description: facility.description,
       });
     }

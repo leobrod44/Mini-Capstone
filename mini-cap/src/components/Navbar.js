@@ -7,14 +7,13 @@ import { FaCalendarAlt, FaBriefcase } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 import { CgProfile } from "react-icons/cg";
 import { IoIosBusiness } from "react-icons/io";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 import store from "storejs"; // For local storage management
 
-import { getProfilePicture } from "../backend/ImageHandler"; 
+import { getProfilePicture } from "../backend/ImageHandler";
 import { getUserData, getCompanyData } from "../backend/UserHandler";
 import { MANAGEMENT_COMPANY, RENTER_OWNER } from "../backend/Constants"; // Role constants
-
 
 /**
  * Functional component representing the navigation bar.
@@ -82,12 +81,16 @@ const Navbar = () => {
         {/* Render only if user is logged in */}
         {store.get("user") && (
           <div ref={menuRef}>
-            <div className={NavbarCSS.myMenuTrigger} onClick={toggleMenu} data-testid="user-pfp-container"> 
+            <div
+              className={NavbarCSS.myMenuTrigger}
+              onClick={toggleMenu}
+              data-testid="user-pfp-container"
+            >
               {/* Display user profile picture or default image */}
               <img
                 src={profilePicUrl}
                 alt="User profile"
-               data-testid="user-pfp"
+                data-testid="user-pfp"
                 className={NavbarCSS.profilePic}
               />
             </div>
@@ -133,13 +136,6 @@ const Navbar = () => {
                     text={"My properties"}
                   />
                 )}
-                {role === MANAGEMENT_COMPANY && (
-                  <DropdownItem
-                    address={"/myemployees"}
-                    icon={<FaBriefcase />}
-                    text={"My employees"}
-                  />
-                )}
                 {role === RENTER_OWNER && (
                   <DropdownItem
                     address={"/my-reservations"}
@@ -156,7 +152,7 @@ const Navbar = () => {
     </>
   );
 
- /**
+  /**
    * Functional component representing the logout button.
    * @returns {JSX.Element} - The JSX for the logout button.
    */
@@ -185,7 +181,6 @@ const Navbar = () => {
     );
   }
 };
-
 
 // PropTypes for type-checking props
 Navbar.propTypes = {

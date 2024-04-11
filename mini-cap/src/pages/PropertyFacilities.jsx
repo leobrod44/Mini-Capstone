@@ -85,8 +85,8 @@ export default function PropertyFacilities() {
           id: doc.id,
           type: doc.type,
           description: doc.description,
-          startHour: "08:00",
-          endHour: "22:00",
+          startHour: "8:00 AM",
+          endHour: "5:00 PM",
         }))
       );
       //toast.success("Facility updated successfully!");
