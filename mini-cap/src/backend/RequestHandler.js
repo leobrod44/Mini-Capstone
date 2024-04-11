@@ -260,7 +260,7 @@ export async function getNotifications(userID){
         const notificationSnapshot = await getDocs(notificationCollection);
 
         // Map the notification documents and filter based on the current or next day for reservation notifications
-        var notifications = notificationSnapshot.docs.map((doc) => {
+        var notifications =await Promise.all(notificationSnapshot.docs.map((doc) => {
             var data = doc.data();
             if(data.isReservation){
                 var current = new Date().getDate();
@@ -272,10 +272,10 @@ export async function getNotifications(userID){
             else{
                 return data;
             }
-        });
+        }));
 
         // Remove null values and sort the notifications by date in descending order
-        notifications = notifications.filter(notification => notification !== null);
+        notifications = notifications.filter(Boolean);
         return sortArray(notifications, 'date').reverse(); // Return the sorted notifications
     } catch(e) {
         console.error("Error getting notifications: ", e);
