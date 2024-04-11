@@ -58,7 +58,7 @@ const FinancialDetails = ({onRentStatusChange}) => {
      */
     const {
         status
-    } = condoDetails;
+    } = condoDetails || {};
 
     /**
      * Attempts to pay the rent for the current condo.
@@ -185,7 +185,9 @@ const FinancialDetails = ({onRentStatusChange}) => {
                     </>
                 )}
             </div>
-            <button onClick={PayRent} className='PayingRent'>Pay Rent</button>
+            {role !== MANAGEMENT_COMPANY && (
+                <button onClick={PayRent} className='PayingRent'>Pay Rent</button>
+            )}
         </div>
     );
 };
