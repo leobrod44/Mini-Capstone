@@ -9,7 +9,7 @@ import {
   getMonthlyReservations,
   makeReservation,
 } from "../backend/FacilityHandler";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import store from "storejs";
 import { getPropertyData } from "../backend/PropertyHandler";
 
@@ -31,6 +31,9 @@ const CalendarPage = () => {
   const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
   const [reservedTimeSlots, setReservedTimeSlots] = useState([]);
   const [propertyName, setPropertyName] = useState(""); // State variable to store property name
+
+  // for submit button
+  const navigate = useNavigate();
 
   // Calculate min and max date
   const currentYear = new Date().getFullYear();
@@ -222,8 +225,6 @@ const CalendarPage = () => {
         propertyID,
       });
 
-      // Update reservation status to 'reserved'
-      setReservationStatus("reserved");
       // Update ReservedTimeSlots to include new reservation
       const newReservedTimeSlot = {
         date: reservationDateTime,
@@ -233,6 +234,9 @@ const CalendarPage = () => {
       setReservedTimeSlots([...reservedTimeSlots, newReservedTimeSlot]);
 
       console.log("Reservation confirmed for time slot:", selectedTimeSlot);
+
+      // return to reservation page
+      navigate('/my-reservations');
     } catch (e) {
       console.error(e);
     }
