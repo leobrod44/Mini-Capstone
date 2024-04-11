@@ -12,7 +12,10 @@ import FacilityComponent from "../components/FacilityComponent.jsx";
 import store from "storejs";
 import { getUserCondos, getPropertyData } from "../backend/PropertyHandler.js";
 import { getUsersProperty } from "../backend/ImageHandler.js";
-import { getFacilities, getPropertiesJoinReservationAndFacilities } from "../backend/FacilityHandler";
+import {
+  getFacilities,
+  getPropertiesJoinReservationAndFacilities,
+} from "../backend/FacilityHandler";
 
 const Reservations = () => {
   const [visibleFacilities, setVisibleFacilities] = useState({});
@@ -23,7 +26,6 @@ const Reservations = () => {
   const [properties, setProperties] = useState([]);
   const [propertyIDs, setPropertyIDs] = useState([]);
   const [reservations, setReservations] = useState([]);
-
 
   useEffect(() => {
     const fetchProperties = async () => {
@@ -71,21 +73,17 @@ const Reservations = () => {
     }
   }, [propertyIDs]);
 
-
-  
   useEffect(() => {
     const fetchReservationsAndFacilities = async () => {
       try {
-        const propertiesWithReservationsAndFacilities = await getPropertiesJoinReservationAndFacilities(store("user"));
+        const propertiesWithReservationsAndFacilities =
+          await getPropertiesJoinReservationAndFacilities(store("user"));
         setReservations(propertiesWithReservationsAndFacilities);
         console.log(
           "Properties with reservations and facilities:",
           propertiesWithReservationsAndFacilities
         );
-        console.log(
-        "Reservations set successfully:",
-        reservations
-        );
+        console.log("Reservations set successfully:", reservations);
       } catch (error) {
         console.error(
           "Failed to fetch properties with reservations and facilities:",
@@ -94,9 +92,7 @@ const Reservations = () => {
       }
     };
     fetchReservationsAndFacilities();
-  }, []);  
-
-
+  }, []);
 
   const indexOfLastProperty = currentPage * propertiesPerPage;
   const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
