@@ -413,6 +413,9 @@ const CalendarPage = () => {
               onActiveStartDateChange={handleViewChange}
               maxDate={maxDate}
               minDate={minDate}
+              // for testing
+              nextLabel={'Next Month'} 
+              prevLabel={'Last Month'} 
             />
           </div>
           <div className="calendar-container">
