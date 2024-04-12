@@ -30,7 +30,7 @@ export default function PropertyFacilities() {
           type: doc.type,
           description: doc.description,
           startHour: "08:00",
-          endHour: "22:00",
+          endHour: "5:00",
         }));
         console.log("Facilities:", mappedFacilities);
         setFacilities(mappedFacilities);
