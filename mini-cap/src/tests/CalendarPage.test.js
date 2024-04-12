@@ -26,6 +26,7 @@ jest.mock('react-router-dom', () => ({
         search: "?propertyID=XTStwb1XT05Goxj5SYv2&facilityID=pGP2VNo8L1fRlsWRTooW&facilityType=Spa&desc=test2"
     })
 }));
+const fakeMonth = { "11": ["11:00 AM", "08:00 AM"], "12": ["11:00 AM"] }
 
 describe('Calendar Page', () => {
 
@@ -37,13 +38,14 @@ describe('Calendar Page', () => {
     
     it('renders calendar numbers without crashing', () => {
         getPropertyData.mockResolvedValueOnce('propertyData1').mockResolvedValueOnce('propertyData2');
+        getMonthlyReservations.mockResolvedValueOnce('propertyData1').mockResolvedValueOnce('propertyData2');
         render(<Router><CalendarPage /></Router>);
         expect(screen.getByText('21')).toBeInTheDocument();
     });
     
     it('renders reservation status without crashing', async () => {
         getPropertyData.mockResolvedValueOnce('propertyData1').mockResolvedValueOnce('propertyData2');
-        getMonthlyReservations.mockResolvedValueOnce('propertyData1').mockResolvedValueOnce('propertyData2');
+        getMonthlyReservations.mockResolvedValueOnce(fakeMonth).mockResolvedValueOnce(fakeMonth);
         render(<Router><CalendarPage /></Router>);
         // Wait for the text to appear
         await waitFor(() => {
@@ -53,7 +55,7 @@ describe('Calendar Page', () => {
     
     it('updates reservation status message when date is selected', async () => {
         getPropertyData.mockResolvedValueOnce('propertyData1').mockResolvedValueOnce('propertyData2');
-        getMonthlyReservations.mockResolvedValueOnce('propertyData1').mockResolvedValueOnce('propertyData2');
+        getMonthlyReservations.mockResolvedValueOnce(fakeMonth).mockResolvedValueOnce(fakeMonth);
         render(<Router><CalendarPage /></Router>);
         fireEvent.click(screen.getByText('21')); // Adjust the date as needed
         await waitFor(() => {
@@ -63,7 +65,7 @@ describe('Calendar Page', () => {
     
     it('fetches reservations for the selected month when navigating', async () => {
         getPropertyData.mockResolvedValueOnce('propertyData1').mockResolvedValueOnce('propertyData2');
-        getMonthlyReservations.mockResolvedValueOnce('propertyData1').mockResolvedValueOnce('propertyData2');
+        getMonthlyReservations.mockResolvedValueOnce(fakeMonth).mockResolvedValueOnce(fakeMonth);
         render(<Router><CalendarPage /></Router>);
         await fireEvent.click(screen.getByRole('button', { name: 'Next Month' }));
         const nextMonth = new Date.getMonth() + 1;
