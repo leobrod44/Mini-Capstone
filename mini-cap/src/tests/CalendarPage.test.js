@@ -67,12 +67,23 @@ describe('Calendar Page', () => {
         getPropertyData.mockResolvedValueOnce('propertyData1').mockResolvedValueOnce('propertyData2');
         getMonthlyReservations.mockResolvedValueOnce(fakeMonth).mockResolvedValueOnce(fakeMonth);
         render(<Router><CalendarPage /></Router>);
-        await fireEvent.click(screen.getByRole('button', { name: 'Next Month' }));
-        const nextMonth = new Date.getMonth() + 1;
-        await waitFor(() => {
-            expect(getMonthlyReservations).toHaveBeenCalledWith('XTStwb1XT05Goxj5SYv2', 'pGP2VNo8L1fRlsWRTooW', nextMonth);
-        });
+           // Finding the "Next Month" button
+    const nextButtons = screen.getAllByRole('button');
+    const nextButton = nextButtons.find(button =>
+        button.classList.contains('react-calendar__navigation__next-button')
+    );
+
+    // Simulating click on the "Next Month" button
+    fireEvent.click(nextButton); // Using nextButton instead of getByRole
+
+    // Getting the next month's index
+    const nextMonth = new Date().getMonth() + 1;
+
+    // Verifying if getMonthlyReservations is called with the expected arguments
+    await waitFor(() => {
+        expect(getMonthlyReservations).toHaveBeenCalledWith('XTStwb1XT05Goxj5SYv2', 'pGP2VNo8L1fRlsWRTooW', nextMonth);
     });
+});
     
     it('renders null when reservationStatus is null', () => {
         getPropertyData.mockResolvedValueOnce('propertyData1').mockResolvedValueOnce('propertyData2');
