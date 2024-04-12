@@ -249,7 +249,7 @@ const CalendarPage = () => {
   const renderReservationStatusMessage = () => {
     switch (reservationStatus) {
       case "reserved":
-        return <p>This date is fully reserved.</p>;
+        return <p style={{fontWeight:"bold"}}>This date is fully reserved.</p>;
       case "available":
         return (
           <div>
@@ -307,7 +307,7 @@ const CalendarPage = () => {
       case "unavailable":
         return (
           <p style={{ fontWeight: "bolder" }}>
-            Data is unavailable for past dates.
+        
             Reservation is unavailable for past dates.
           </p>
         );
@@ -415,8 +415,7 @@ const CalendarPage = () => {
               maxDate={maxDate}
               minDate={minDate}
               // for testing
-              nextLabel={'Next Month'} 
-              prevLabel={'Last Month'} 
+               
             />
           </div>
           <div className="calendar-container">
