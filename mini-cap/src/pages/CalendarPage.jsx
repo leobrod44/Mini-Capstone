@@ -308,6 +308,7 @@ const CalendarPage = () => {
         return (
           <p style={{ fontWeight: "bolder" }}>
             Data is unavailable for past dates.
+            Reservation is unavailable for past dates.
           </p>
         );
       case "error":
