@@ -63,4 +63,34 @@ describe("FacilityForm", () => {
     fireEvent.click(screen.getByText(/Cancel/i));
     expect(mockOnCancel).toHaveBeenCalled();
   });
+
+  it("should display an error message when form fields are missing", async () => {
+    fireEvent.change(screen.getByLabelText(/Title:/i), {
+      target: { value: "" },
+    });
+    fireEvent.change(screen.getByLabelText(/Description:/i), {
+      target: { value: "" },
+    });
+    fireEvent.click(screen.getByText(/Save/i));
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith("Please fill in all fields.");
+    });
+  });
+
+  it("should display a success message when a new facility is added", async () => {
+    fireEvent.change(screen.getByLabelText(/Title:/i), {
+      target: { value: "Gym" },
+    });
+    fireEvent.change(screen.getByLabelText(/Description:/i), {
+      target: { value: "New Fitness center" },
+    });
+    fireEvent.click(screen.getByText(/Save/i));
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith(
+        "Facility added successfully!"
+      );
+    });
+  });
 });
