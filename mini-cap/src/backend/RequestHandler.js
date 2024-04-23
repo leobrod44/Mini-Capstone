@@ -149,7 +149,6 @@ export async function updateRequest(condoID, requestID) {
             await addRequestNotification(0, userEmail, requestData);
         }
 
-        console.log("reached here");
         // Increment the step of the request
         requestData.step += 1;
 
