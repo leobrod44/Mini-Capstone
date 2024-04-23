@@ -119,7 +119,7 @@ const Dashboard = () => {
                   condo={{
                     property: condo.propertyName,
                     picture: condo.picture,
-                    address: condo.property,
+                    address: condo.propertyAddress,
                     unitNumber: condo.unitNumber,
                     parkingNumber: condo.parkingNumber,
                     lockerNumber: condo.lockerNumber,

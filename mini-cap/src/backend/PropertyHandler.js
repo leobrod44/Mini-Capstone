@@ -378,6 +378,7 @@ export async function getUserCondos(email) {
         if (propertyDoc.exists()) {
           condoData.property = propertyDoc.id;
           condoData.propertyName = propertyDoc.data().propertyName;
+          condoData.propertyAddress= propertyDoc.data().address;
           return condoData;
         } else return null;
       } else return null;
