@@ -109,6 +109,18 @@
   padding: 10px;
 }
 
+@media screen and (max-width: 650px) {
+  .top-button-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .top-button-container > div {
+    margin-bottom: 15px;
+  }
+}
+
 .white_card {
   background-color: #ffffff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
