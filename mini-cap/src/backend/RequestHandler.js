@@ -134,11 +134,7 @@ export async function updateRequest(condoID, requestID) {
         // Get the data of the request
         const requestData = requestDoc.data();
 
-
-
-        // Update the request document
-        await updateDoc(requestRef, requestData);
-
+        var userEmail = (await getCondo(condoID)).occupant;
         // If it's the first step, assign a worker
         if(requestData.step === 1){
             try{
@@ -149,12 +145,16 @@ export async function updateRequest(condoID, requestID) {
             await addRequestNotification(1, userEmail, requestData);
         }
         else{
-            var userEmail = (await getCondo(condoID)).occupant;
+
             await addRequestNotification(0, userEmail, requestData);
         }
 
+        console.log("reached here");
         // Increment the step of the request
         requestData.step += 1;
+
+        // Update the request document
+        await updateDoc(requestRef, requestData);
 
         return requestData.step;
 
