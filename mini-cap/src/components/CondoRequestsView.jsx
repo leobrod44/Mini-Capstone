@@ -29,11 +29,9 @@ const CondoRequestsView = ({ role, type, notes, step, condoId, requestId }) => {
         if (currentStep < 4) {
             // Call the backend function to update the request status
             let newStep = await updateRequest(condoId, requestId);
-            console.log(newStep);
+
             // Update the current step with the new step returned from the backend
             setCurrentStep(newStep);
-
-            //send notification
         }
     };
 
