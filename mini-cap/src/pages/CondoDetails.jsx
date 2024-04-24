@@ -479,37 +479,6 @@ export default function CondoDetails() {
                       <div className="other-info2">{lockerNumber}</div>
                     </div>
 
-                    {/*	THIS ALL PRICE LOGIC:*/}
-                    {/*------------------------------------------------------------------------------------------*/}
-                    {/*<div className='other-info1'>*/}
-                    {/*	<div className='other-info2'><h5>Price/sq ft.: </h5></div>*/}
-                    {/*	<div className='other-info2'>{"pricesf"}</div>*/}
-                    {/*</div>*/}
-
-                    {/*<div className='other-info1'>*/}
-                    {/*	<div className='other-info2'><h5>Unit Price: </h5></div>*/}
-                    {/*	<div className='other-info2'>{"price"}</div>*/}
-
-                    {/*</div>*/}
-
-                    {/*<div className='other-info1'>*/}
-                    {/*{condoStatus === "rented" && (*/}
-                    {/*		<>*/}
-                    {/*			<div className='other-info2'><h5>Current Rent Price: </h5></div>*/}
-                    {/*			<div className='other-info2'>{"currentPrice"}</div>*/}
-                    {/*		</>)}*/}
-                    {/*</div>*/}
-
-                    {/*<div className='other-info1'>*/}
-                    {/*{role === "renter" && condoStatus === "rented" && (*/}
-                    {/*		<>*/}
-                    {/*			<div className='other-info2'><h5>Next Rent Due Date: </h5></div>*/}
-                    {/*			<div className='other-info2'>{"rentDueDate"}</div>*/}
-
-                    {/*		</>)}*/}
-                    {/*</div>*/}
-                    {/*------------------------------------------------------------------------------------------*/}
-
                     <div className="other-info1">
                       {role === MANAGEMENT_COMPANY && status !== "Vacant" && (
                         <>
