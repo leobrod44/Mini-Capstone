@@ -142,12 +142,9 @@ export async function updateRequest(condoID, requestID) {
             } catch(e){
                 console.error("Error assigning worker: ", e);
             }
-            await addRequestNotification(1, userEmail, requestData);
         }
-        else{
 
-            await addRequestNotification(0, userEmail, requestData);
-        }
+        await addRequestNotification(0, userEmail, requestData);
 
         // Increment the step of the request
         requestData.step += 1;
