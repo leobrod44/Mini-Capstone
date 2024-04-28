@@ -336,12 +336,15 @@ export async function addReservationNotification(email, reservationData){
         // Retrieve facility data
         var facility = await getDoc(doc(db, `Property/${reservationData.propertyID}/Facilities/${reservationData.facilityID}`));
 
+
+        const hour = reservationData.startTime.split(":")[0];
+
         // Add the reservation notification document
         const docRef = await addDoc(collection(doc(db, 'Users', email), 'Notifications'), {
             // Notification details
             message: reservationData.startTime + "-" + reservationData.endTime,
             path: "/my-reservations",
-            date: (new Date(2024, reservationData.month, reservationData.date, 0, 0, 0, 0).toISOString()),
+            date: (new Date(2024, reservationData.month, reservationData.date, reservationData.startTime.split(":")[0]).toISOString()),
             type: facility.data().type,
             viewed: false,
             isReservation: true
